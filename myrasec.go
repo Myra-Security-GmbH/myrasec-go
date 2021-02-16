@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -90,15 +89,6 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	// ###########################
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	bodyString := string(bodyBytes)
-	fmt.Println(bodyString)
-	// ###########################
 
 	var res Response
 	err = json.NewDecoder(resp.Body).Decode(&res)
