@@ -106,13 +106,13 @@ var methods = map[string]APIMethod{
 	},
 	"updateRedirect": {
 		Name:   "updateRedirect",
-		Action: "redirect/%s",
+		Action: "redirects/%s",
 		Method: http.MethodPost,
 		Result: Redirect{},
 	},
 	"deleteRedirect": {
 		Name:   "deleteRedirect",
-		Action: "redirect/%s",
+		Action: "redirects/%s",
 		Method: http.MethodDelete,
 		Result: Redirect{},
 	},
