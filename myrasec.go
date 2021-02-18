@@ -12,21 +12,32 @@ import (
 	"github.com/Myra-Security-GmbH/signature"
 )
 
-//
-// APIBaseURL ...
-//
-const APIBaseURL = "https://api.myracloud.com/%s/rapi/%s"
+const (
+	// APIBaseURL ...
+	APIBaseURL = "https://api.myracloud.com/%s/rapi/%s"
+	// DefaultAPILanguage ...
+	DefaultAPILanguage = "en"
+	// DefaultAPIUserAgent ...
+	DefaultAPIUserAgent = "myrasec-go"
+)
+
+// APILanguages ...
+var APILanguages = map[string]bool{
+	"en": true,
+	"de": true,
+}
 
 //
 // API holds the configuration for the current API client.
 //
 type API struct {
-	BaseURL  string
-	Language string
-	key      string
-	secret   string
-	headers  http.Header
-	client   *http.Client
+	BaseURL   string
+	Language  string
+	UserAgent string
+	key       string
+	secret    string
+	headers   http.Header
+	client    *http.Client
 }
 
 //
@@ -55,18 +66,38 @@ type Violation struct {
 //
 func New(key, secret string) (*API, error) {
 	if key == "" || secret == "" {
-		return nil, errors.New("Missing credentials")
+		return nil, errors.New("Missing API credentials")
 	}
 
 	api := &API{
-		BaseURL:  APIBaseURL,
-		Language: "en",
-		key:      key,
-		secret:   secret,
-		headers:  make(http.Header),
-		client:   http.DefaultClient,
+		BaseURL:   APIBaseURL,
+		Language:  DefaultAPILanguage,
+		UserAgent: DefaultAPIUserAgent,
+		key:       key,
+		secret:    secret,
+		headers:   make(http.Header),
+		client:    http.DefaultClient,
 	}
 	return api, nil
+}
+
+//
+// SetUserAgent ...
+//
+func (api *API) SetUserAgent(userAgent string) {
+	api.UserAgent = userAgent
+}
+
+//
+// SetLanguage ...
+//
+func (api *API) SetLanguage(language string) error {
+
+	if _, ok := APILanguages[language]; !ok {
+		return fmt.Errorf("Passed language [\"%s\"] is not supported", language)
+	}
+	api.Language = language
+	return nil
 }
 
 //
@@ -78,8 +109,6 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println(req.URL)
 
 	sig := signature.New(api.secret, api.key, req)
 	request, err := sig.Append()
@@ -133,6 +162,10 @@ func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*h
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+
+	if api.UserAgent != "" {
+		req.Header.Set("User-Agent", api.UserAgent)
+	}
 
 	return req, err
 }
@@ -204,7 +237,7 @@ func prepareResult(response Response, definition interface{}) (interface{}, erro
 
 	var result interface{}
 	if response.TargetObject != nil {
-		result = response.TargetObject
+		result = response.TargetObject.([]interface{})[0]
 	} else if response.List != nil {
 		result = response.List
 	}
