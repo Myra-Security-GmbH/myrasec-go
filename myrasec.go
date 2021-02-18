@@ -46,7 +46,7 @@ type API struct {
 type Response struct {
 	Error         bool          `json:"error,omitempty"`
 	ViolationList []*Violation  `json:"violationList,omitempty"`
-	TargetObject  interface{}   `json:"targetObject,omitempty"`
+	TargetObject  []interface{} `json:"targetObject,omitempty"`
 	List          []interface{} `json:"list,omitempty"`
 	Page          int           `json:"page,omitempty"`
 	Count         int           `json:"count,omitempty"`
@@ -237,7 +237,7 @@ func prepareResult(response Response, definition interface{}) (interface{}, erro
 
 	var result interface{}
 	if response.TargetObject != nil {
-		result = response.TargetObject.([]interface{})[0]
+		result = response.TargetObject[0]
 	} else if response.List != nil {
 		result = response.List
 	}

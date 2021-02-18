@@ -14,11 +14,13 @@ type DNSRecord struct {
 	Created          *types.DateTime `json:"created,omitempty"`
 	Modified         *types.DateTime `json:"modified,omitempty"`
 	Name             string          `json:"name"`
-	TTL              int             `json:"ttl"`
+	Value            string          `json:"value"`
 	RecordType       string          `json:"recordType"`
 	AlternativeCNAME string          `json:"alternativeCname,omitempty"`
+	Comment          string          `json:"comment,omitempty"`
 	Active           bool            `json:"active"`
-	Value            string          `json:"value"`
+	Enabled          bool            `json:"enabled"`
+	TTL              int             `json:"ttl"`
 	Priority         int             `json:"priority,omitempty"`
 	Port             int             `json:"port,omitempty"`
 }
