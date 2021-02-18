@@ -36,11 +36,7 @@ func (dt *DateTime) MarshalJSON() ([]byte, error) {
 func (dt *DateTime) UnmarshalJSON(b []byte) error {
 	date := strings.Trim(string(b), "\"")
 
-	t, err := time.Parse(
-		"2006-01-02T15:04:05Z0700",
-		date,
-	)
-
+	t, err := time.Parse(time.RFC3339, date)
 	dt.Time = t
 
 	return err
