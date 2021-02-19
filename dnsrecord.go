@@ -10,19 +10,34 @@ import (
 // DNSRecord ...
 //
 type DNSRecord struct {
-	ID               int             `json:"id,omitempty"`
-	Created          *types.DateTime `json:"created,omitempty"`
-	Modified         *types.DateTime `json:"modified,omitempty"`
-	Name             string          `json:"name"`
-	Value            string          `json:"value"`
-	RecordType       string          `json:"recordType"`
-	AlternativeCNAME string          `json:"alternativeCname,omitempty"`
-	Comment          string          `json:"comment,omitempty"`
-	Active           bool            `json:"active"`
-	Enabled          bool            `json:"enabled"`
-	TTL              int             `json:"ttl"`
-	Priority         int             `json:"priority,omitempty"`
-	Port             int             `json:"port,omitempty"`
+	ID               int              `json:"id,omitempty"`
+	Created          *types.DateTime  `json:"created,omitempty"`
+	Modified         *types.DateTime  `json:"modified,omitempty"`
+	Name             string           `json:"name"`
+	Value            string           `json:"value"`
+	RecordType       string           `json:"recordType"`
+	AlternativeCNAME string           `json:"alternativeCname,omitempty"`
+	Comment          string           `json:"comment,omitempty"`
+	Active           bool             `json:"active"`
+	Enabled          bool             `json:"enabled"`
+	TTL              int              `json:"ttl"`
+	Priority         int              `json:"priority,omitempty"`
+	Port             int              `json:"port,omitempty"`
+	UpstreamOptions  *UpstreamOptions `json:"upstreamOptions,omitempty"`
+}
+
+//
+// UpstreamOptions ...
+//
+type UpstreamOptions struct {
+	ID          int             `json:"id,omitempty"`
+	Created     *types.DateTime `json:"created,omitempty"`
+	Modified    *types.DateTime `json:"modified,omitempty"`
+	Backup      bool            `json:"backup"`
+	Down        bool            `json:"down"`
+	FailTimeout int             `json:"failTimeout"`
+	MaxFails    int             `json:"maxFails"`
+	Weight      int             `json:"weight"`
 }
 
 //
