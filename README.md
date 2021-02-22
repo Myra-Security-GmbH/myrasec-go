@@ -1,5 +1,7 @@
 # myrasec-go
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Myra-Security-GmbH/myrasec-go)](https://goreportcard.com/report/github.com/Myra-Security-GmbH/myrasec-go)
+
 A Go library for interacting with Myra Security API.
 
 > **Note**: This library is under active development. 
