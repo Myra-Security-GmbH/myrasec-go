@@ -155,6 +155,8 @@ func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*h
 	case http.MethodDelete:
 		req, err = api.prepareDELETERequest(apiURL, payload...)
 		break
+	default:
+		req, err = nil, fmt.Errorf("Passed APIMethod definition has a not supported HTTP method - [%s] is not supported", definition.Method)
 	}
 
 	if err != nil {
@@ -179,7 +181,7 @@ func (api *API) prepareGETRequest(apiURL string, payload ...interface{}) (*http.
 	}
 
 	if len(payload) > 1 {
-		return nil, fmt.Errorf("Unable to handle more than one payload in a GET call. payload should be a map[string]string")
+		return nil, fmt.Errorf("Unable to handle more than one payload in a GET call - payload should be a map[string]string")
 	}
 
 	baseURL, err := url.Parse(apiURL)
@@ -188,7 +190,7 @@ func (api *API) prepareGETRequest(apiURL string, payload ...interface{}) (*http.
 	}
 
 	queryMap := payload[0].(map[string]string)
-	params := url.Values{}
+	params := baseURL.Query()
 	for k, v := range queryMap {
 		params.Add(k, v)
 	}
@@ -259,6 +261,9 @@ func prepareResult(response Response, definition interface{}) (interface{}, erro
 	return res, err
 }
 
+//
+// preparePayload ...
+//
 func preparePayload(payload ...interface{}) ([]byte, error) {
 	var pl interface{}
 	pl = payload
