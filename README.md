@@ -30,6 +30,10 @@ A Go library for interacting with Myra Security API.
 * [X] Update a Cache Setting
 * [X] Delete a Cache Setting
 
+### Settings
+* [X] List Settings for a subdomain
+* [X] Update Settings for a subdomain
+
 ## Usage
 ```go
 package main

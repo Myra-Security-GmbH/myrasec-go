@@ -6,10 +6,11 @@ import "net/http"
 // APIMethod represents API call definitions used in the methods map
 //
 type APIMethod struct {
-	Name   string
-	Action string
-	Method string
-	Result interface{}
+	Name               string
+	Action             string
+	Method             string
+	Result             interface{}
+	ResponseDecodeFunc func(resp *http.Response, definition APIMethod) (interface{}, error)
 }
 
 var methods = map[string]APIMethod{
@@ -115,5 +116,20 @@ var methods = map[string]APIMethod{
 		Action: "redirects/%s",
 		Method: http.MethodDelete,
 		Result: Redirect{},
+	},
+
+	// Settings related API calls
+	"listSettings": {
+		Name:               "listSettings",
+		Action:             "subdomainSetting/%s?flat",
+		Method:             http.MethodGet,
+		Result:             Settings{},
+		ResponseDecodeFunc: decodeSettingsResponse,
+	},
+	"updateSettings": {
+		Name:   "updateSettings",
+		Action: "subdomainSetting/%s",
+		Method: http.MethodPost,
+		Result: Settings{},
 	},
 }

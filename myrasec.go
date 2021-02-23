@@ -41,7 +41,7 @@ type API struct {
 }
 
 //
-// Response ...
+// Response defines a response, returned by the MYRA API
 //
 type Response struct {
 	Error         bool          `json:"error,omitempty"`
@@ -54,7 +54,7 @@ type Response struct {
 }
 
 //
-// Violation ...
+// Violation defines a violation VO, returned by the MYRA API
 //
 type Violation struct {
 	Path    string `json:"path,omitempty"`
@@ -82,14 +82,14 @@ func New(key, secret string) (*API, error) {
 }
 
 //
-// SetUserAgent ...
+// SetUserAgent sets the User-Agent for the API.
 //
 func (api *API) SetUserAgent(userAgent string) {
 	api.UserAgent = userAgent
 }
 
 //
-// SetLanguage ...
+// SetLanguage changes the API language.
 //
 func (api *API) SetLanguage(language string) error {
 
@@ -101,7 +101,7 @@ func (api *API) SetLanguage(language string) error {
 }
 
 //
-// call ...
+// call executes/sends the request to the MYRA API
 //
 func (api *API) call(definition APIMethod, payload ...interface{}) (interface{}, error) {
 
@@ -119,11 +119,22 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	}
 	defer resp.Body.Close()
 
+	if definition.ResponseDecodeFunc != nil {
+		return definition.ResponseDecodeFunc(resp, definition)
+	}
+	return decodeDefaultResponse(resp, definition)
+}
+
+//
+// decodeDefaultResponse handles the default decoding of a response.
+//
+func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
 	var res Response
-	err = json.NewDecoder(resp.Body).Decode(&res)
+	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
 		return nil, err
 	}
+
 	if res.Error {
 		var errorMsg string
 		for _, e := range res.ViolationList {
@@ -173,7 +184,7 @@ func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*h
 }
 
 //
-// prepareGETRequest ...
+// prepareGETRequest handles/prepares GET requests
 //
 func (api *API) prepareGETRequest(apiURL string, payload ...interface{}) (*http.Request, error) {
 	if len(payload) <= 0 {
@@ -200,7 +211,7 @@ func (api *API) prepareGETRequest(apiURL string, payload ...interface{}) (*http.
 }
 
 //
-// preparePOSTRequest - ...
+// preparePOSTRequest handles/prepares POST requests
 //
 func (api *API) preparePOSTRequest(apiURL string, payload ...interface{}) (*http.Request, error) {
 	data, err := preparePayload(payload...)
@@ -211,7 +222,7 @@ func (api *API) preparePOSTRequest(apiURL string, payload ...interface{}) (*http
 }
 
 //
-// preparePUTRequest ...
+// preparePUTRequest handles/prepares PUT requests
 //
 func (api *API) preparePUTRequest(apiURL string, payload ...interface{}) (*http.Request, error) {
 	data, err := preparePayload(payload...)
@@ -222,7 +233,7 @@ func (api *API) preparePUTRequest(apiURL string, payload ...interface{}) (*http.
 }
 
 //
-// prepareDELETERequest ...
+// prepareDELETERequest handles/prepares DELETE requests
 //
 func (api *API) prepareDELETERequest(apiURL string, payload ...interface{}) (*http.Request, error) {
 	data, err := preparePayload(payload...)
@@ -236,7 +247,6 @@ func (api *API) prepareDELETERequest(apiURL string, payload ...interface{}) (*ht
 // prepareResult ...
 //
 func prepareResult(response Response, definition interface{}) (interface{}, error) {
-
 	var result interface{}
 	if response.TargetObject != nil {
 		result = response.TargetObject[0]
