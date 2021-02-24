@@ -22,7 +22,7 @@ type Settings struct {
 	CacheRevalidate             bool     `json:"cache_revalidate"`
 	CDN                         bool     `json:"cdn"`
 	ClientMaxBodySize           int      `json:"client_max_body_size,omitempty"`
-	DeffieHellmanExchange       int      `json:"deffie_hellman_exchange,omitempty"`
+	DiffieHellmanExchange       int      `json:"diffie_hellman_exchange,omitempty"`
 	EnableOriginSNI             bool     `json:"enable_origin_sni"`
 	ForwardedForReplacement     string   `json:"forwarded_for_replacement,omitempty"`
 	HSTS                        bool     `json:"hsts"`
