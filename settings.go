@@ -12,7 +12,7 @@ import (
 type Settings struct {
 	AccessLog                   bool     `json:"access_log"`
 	AntibotPostFlood            bool     `json:"antibot_post_flood"`
-	AntibotPostFloodTreshold    int      `json:"antibot_post_flood_theshold,omitempty"`
+	AntibotPostFloodThreshold   int      `json:"antibot_post_flood_threshold,omitempty"`
 	AntibotProofOfWork          bool     `json:"antibot_proof_of_work"`
 	AntibotProofOfWorkThreshold int      `json:"antibot_proof_of_work_threshold,omitempty"`
 	BalancingMethod             string   `json:"balancing_method,omitempty"`
