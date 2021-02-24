@@ -63,14 +63,14 @@ type Settings struct {
 //
 // ListSettings returns a Setting struct containing the settings for the passed subdomain
 //
-func (api *API) ListSettings(subDomainName string) (*Settings, error) {
+func (api *API) ListSettings(subDomainName string, params map[string]string) (*Settings, error) {
 	if _, ok := methods["listSettings"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listSettings")
 	}
 	definition := methods["listSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 
-	result, err := api.call(definition)
+	result, err := api.call(definition, params)
 	if err != nil {
 		return nil, err
 	}

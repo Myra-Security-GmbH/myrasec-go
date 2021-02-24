@@ -43,14 +43,14 @@ type UpstreamOptions struct {
 //
 // ListDNSRecords returns a slice containing all visible DNS records for a domain
 //
-func (api *API) ListDNSRecords(domainName string) ([]DNSRecord, error) {
+func (api *API) ListDNSRecords(domainName string, params map[string]string) ([]DNSRecord, error) {
 	if _, ok := methods["listDNSRecords"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listDNSRecords")
 	}
 	definition := methods["listDNSRecords"]
 	definition.Action = fmt.Sprintf(definition.Action, domainName, 1)
 
-	result, err := api.call(definition)
+	result, err := api.call(definition, params)
 	if err != nil {
 		return nil, err
 	}

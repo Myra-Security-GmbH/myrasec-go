@@ -25,14 +25,14 @@ type Redirect struct {
 //
 // ListRedirects returns a slice containing all visible redirects for a subdomain
 //
-func (api *API) ListRedirects(subDomainName string) ([]Redirect, error) {
+func (api *API) ListRedirects(subDomainName string, params map[string]string) ([]Redirect, error) {
 	if _, ok := methods["listRedirects"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listRedirects")
 	}
 	definition := methods["listRedirects"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName, 1)
 
-	result, err := api.call(definition)
+	result, err := api.call(definition, params)
 	if err != nil {
 		return nil, err
 	}

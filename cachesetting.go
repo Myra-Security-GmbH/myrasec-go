@@ -25,14 +25,14 @@ type CacheSetting struct {
 //
 // ListCacheSettings returns a slice containing all visible cache settings for a subdomain
 //
-func (api *API) ListCacheSettings(subDomainName string) ([]CacheSetting, error) {
+func (api *API) ListCacheSettings(subDomainName string, params map[string]string) ([]CacheSetting, error) {
 	if _, ok := methods["listCacheSettings"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listCacheSettings")
 	}
 	definition := methods["listCacheSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName, 1)
 
-	result, err := api.call(definition)
+	result, err := api.call(definition, params)
 	if err != nil {
 		return nil, err
 	}

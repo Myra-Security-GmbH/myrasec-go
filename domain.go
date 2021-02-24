@@ -23,14 +23,14 @@ type Domain struct {
 //
 // ListDomains returns a slice containing all visible domains
 //
-func (api *API) ListDomains() ([]Domain, error) {
+func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 	if _, ok := methods["listDomains"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listDomains")
 	}
 	definition := methods["listDomains"]
 	definition.Action = fmt.Sprintf(definition.Action, 1)
 
-	result, err := api.call(definition)
+	result, err := api.call(definition, params)
 	if err != nil {
 		return nil, err
 	}
