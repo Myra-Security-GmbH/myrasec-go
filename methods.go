@@ -132,4 +132,30 @@ var methods = map[string]APIMethod{
 		Method: http.MethodPost,
 		Result: Settings{},
 	},
+
+	//IP FIlter related API calls
+	"listIPFilters": {
+		Name:   "listIPFilters",
+		Action: "ipfilter/%s/%d",
+		Method: http.MethodGet,
+		Result: []IPFilter{},
+	},
+	"createIPFilter": {
+		Name:   "createIPFilter",
+		Action: "ipfilter/%s",
+		Method: http.MethodPut,
+		Result: IPFilter{},
+	},
+	"updateIPFilter": {
+		Name:   "updateIPFilter",
+		Action: "ipfilter/%s",
+		Method: http.MethodPost,
+		Result: IPFilter{},
+	},
+	"deleteIPFilter": {
+		Name:   "deleteIPFilter",
+		Action: "ipfilter/%s",
+		Method: http.MethodDelete,
+		Result: IPFilter{},
+	},
 }

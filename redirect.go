@@ -79,7 +79,7 @@ func (api *API) UpdateRedirect(redirect *Redirect, subDomainName string) (*Redir
 }
 
 //
-// DeleteRedirect deletes the passed cache setting using the MYRA API
+// DeleteRedirect deletes the passed redirect using the MYRA API
 //
 func (api *API) DeleteRedirect(redirect *Redirect, subDomainName string) (*Redirect, error) {
 	if _, ok := methods["deleteRedirect"]; !ok {
