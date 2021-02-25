@@ -16,6 +16,7 @@ type IPFilter struct {
 	Value      string          `json:"value"`
 	Type       string          `json:"type"`
 	ExpireDate *types.DateTime `json:"expireDate,omitempty"`
+	Enabled    bool            `json:"enabled,omitempty"`
 }
 
 //
