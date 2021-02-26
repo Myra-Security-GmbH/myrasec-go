@@ -133,7 +133,7 @@ var methods = map[string]APIMethod{
 		Result: Settings{},
 	},
 
-	//IP FIlter related API calls
+	//IP Filter related API calls
 	"listIPFilters": {
 		Name:   "listIPFilters",
 		Action: "ipfilter/%s/%d",
@@ -157,5 +157,31 @@ var methods = map[string]APIMethod{
 		Action: "ipfilter/%s",
 		Method: http.MethodDelete,
 		Result: IPFilter{},
+	},
+
+	//Rate Limit related API calls
+	"listRateLimits": {
+		Name:   "listRateLimits",
+		Action: "ratelimit/dns/%d",
+		Method: http.MethodGet,
+		Result: []RateLimit{},
+	},
+	"createRateLimit": {
+		Name:   "createRateLimit",
+		Action: "ratelimit",
+		Method: http.MethodPut,
+		Result: RateLimit{},
+	},
+	"updateRateLimit": {
+		Name:   "updateRateLimit",
+		Action: "ratelimit",
+		Method: http.MethodPost,
+		Result: RateLimit{},
+	},
+	"deleteRateLimit": {
+		Name:   "deleteRateLimit",
+		Action: "ratelimit",
+		Method: http.MethodDelete,
+		Result: RateLimit{},
 	},
 }
