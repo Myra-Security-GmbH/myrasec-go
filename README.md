@@ -34,6 +34,20 @@ A Go library for interacting with Myra Security API.
 * [X] List Settings for a subdomain
 * [X] Update Settings for a subdomain
 
+
+### IP Filter
+* [X] List existing IP Filters
+* [X] Create a new IP Filter
+* [X] Update an IP Filter
+* [X] Delete an IP Filter
+
+### Rate Limit
+* [X] List existing Rate Limit Settings
+* [X] Create a new Rate Limit Setting
+* [X] Update a Rate Limit Setting
+* [X] Delete a Rate Limit Setting
+
+
 ## Usage
 ```go
 package main
