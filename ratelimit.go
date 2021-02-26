@@ -22,7 +22,7 @@ type RateLimit struct {
 }
 
 //
-// ListRateLimits returns a slice containing all visible rate limit settings for a subdomain
+// ListRateLimits returns a slice containing all visible rate limit settings
 //
 func (api *API) ListRateLimits(params map[string]string) ([]RateLimit, error) {
 	if _, ok := methods["listRateLimits"]; !ok {
