@@ -162,7 +162,7 @@ var methods = map[string]APIMethod{
 	//Rate Limit related API calls
 	"listRateLimits": {
 		Name:   "listRateLimits",
-		Action: "ratelimit/dns/%d",
+		Action: "ratelimit/%s/%d",
 		Method: http.MethodGet,
 		Result: []RateLimit{},
 	},
@@ -183,5 +183,49 @@ var methods = map[string]APIMethod{
 		Action: "ratelimit",
 		Method: http.MethodDelete,
 		Result: RateLimit{},
+	},
+
+	//WAF related API calls
+	"listWAFConditions": {
+		Name:   "listWAFConditions",
+		Action: "waf/conditions",
+		Method: http.MethodGet,
+		Result: []WAFCondition{},
+	},
+	"listWAFActions": {
+		Name:   "listWAFActions",
+		Action: "waf/actions",
+		Method: http.MethodGet,
+		Result: []WAFAction{},
+	},
+	"listWAFRules": {
+		Name:   "listWAFRules",
+		Action: "waf/rules/%s/%d",
+		Method: http.MethodGet,
+		Result: []WAFRule{},
+	},
+	"fetchWAFRule": {
+		Name:   "fetchWAFRule",
+		Action: "waf/rule/%d",
+		Method: http.MethodGet,
+		Result: []WAFRule{},
+	},
+	"createWAFRule": {
+		Name:   "createWAFRule",
+		Action: "waf/rule",
+		Method: http.MethodPut,
+		Result: WAFRule{},
+	},
+	"updateWAFRule": {
+		Name:   "updateWAFRule",
+		Action: "waf/rule",
+		Method: http.MethodPost,
+		Result: WAFRule{},
+	},
+	"deleteWAFRule": {
+		Name:   "deleteWAFRule",
+		Action: "waf/rule",
+		Method: http.MethodDelete,
+		Result: WAFRule{},
 	},
 }

@@ -23,13 +23,25 @@ type RateLimit struct {
 
 //
 // ListRateLimits returns a slice containing all visible rate limit settings
+// Valid rateLimitType values are "dns" or "tag"
 //
-func (api *API) ListRateLimits(params map[string]string) ([]RateLimit, error) {
+// Rate limit settings can be filtered using the params map
+//
+// Avalilable filters/query parameters:
+//		search (string) - filter by the specified search query
+// Additional valid filters/query parameters for ruleType = "dns":
+//		subDomainName (string) - filter rate limit settings for this subdomain (name)
+//		reference (int) - filter rate limit settings for this domain (ID)
+// Additional valid filters/query parameters for ruleType = "tag":
+//		reference (int) - filter rate limit settings for this tag (ID)
+//
+func (api *API) ListRateLimits(rateLimitType string, params map[string]string) ([]RateLimit, error) {
 	if _, ok := methods["listRateLimits"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listRateLimits")
 	}
+
 	definition := methods["listRateLimits"]
-	definition.Action = fmt.Sprintf(definition.Action, 1)
+	definition.Action = fmt.Sprintf(definition.Action, rateLimitType, 1)
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -50,9 +62,8 @@ func (api *API) CreateRateLimit(ratelimit *RateLimit) (*RateLimit, error) {
 	if _, ok := methods["createRateLimit"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "createRateLimit")
 	}
-	definition := methods["createRateLimit"]
 
-	result, err := api.call(definition, ratelimit)
+	result, err := api.call(methods["createRateLimit"], ratelimit)
 	if err != nil {
 		return nil, err
 	}
@@ -66,9 +77,8 @@ func (api *API) UpdateRateLimit(ratelimit *RateLimit) (*RateLimit, error) {
 	if _, ok := methods["updateRateLimit"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateRateLimit")
 	}
-	definition := methods["updateRateLimit"]
 
-	result, err := api.call(definition, ratelimit)
+	result, err := api.call(methods["updateRateLimit"], ratelimit)
 	if err != nil {
 		return nil, err
 	}
@@ -82,9 +92,8 @@ func (api *API) DeleteRateLimit(ratelimit *RateLimit) (*RateLimit, error) {
 	if _, ok := methods["deleteRateLimit"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteRateLimit")
 	}
-	definition := methods["deleteRateLimit"]
 
-	result, err := api.call(definition, ratelimit)
+	result, err := api.call(methods["deleteRateLimit"], ratelimit)
 	if err != nil {
 		return nil, err
 	}

@@ -92,11 +92,12 @@ func (api *API) SetUserAgent(userAgent string) {
 // SetLanguage changes the API language.
 //
 func (api *API) SetLanguage(language string) error {
-
 	if _, ok := APILanguages[language]; !ok {
 		return fmt.Errorf("Passed language [\"%s\"] is not supported", language)
 	}
+
 	api.Language = language
+
 	return nil
 }
 
@@ -104,7 +105,6 @@ func (api *API) SetLanguage(language string) error {
 // call executes/sends the request to the MYRA API
 //
 func (api *API) call(definition APIMethod, payload ...interface{}) (interface{}, error) {
-
 	req, err := api.prepareRequest(definition, payload...)
 	if err != nil {
 		return nil, err
@@ -122,6 +122,7 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	if definition.ResponseDecodeFunc != nil {
 		return definition.ResponseDecodeFunc(resp, definition)
 	}
+
 	return decodeDefaultResponse(resp, definition)
 }
 
@@ -142,6 +143,7 @@ func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface
 		}
 		return nil, errors.New(errorMsg)
 	}
+
 	return prepareResult(res, definition.Result)
 }
 
@@ -207,6 +209,7 @@ func (api *API) prepareGETRequest(apiURL string, payload ...interface{}) (*http.
 	}
 
 	baseURL.RawQuery = params.Encode()
+
 	return http.NewRequest(http.MethodGet, baseURL.String(), nil)
 }
 
@@ -218,6 +221,7 @@ func (api *API) preparePOSTRequest(apiURL string, payload ...interface{}) (*http
 	if err != nil {
 		return nil, err
 	}
+
 	return http.NewRequest(http.MethodPost, apiURL, bytes.NewBuffer(data))
 }
 
@@ -229,6 +233,7 @@ func (api *API) preparePUTRequest(apiURL string, payload ...interface{}) (*http.
 	if err != nil {
 		return nil, err
 	}
+
 	return http.NewRequest(http.MethodPut, apiURL, bytes.NewBuffer(data))
 }
 
@@ -240,6 +245,7 @@ func (api *API) prepareDELETERequest(apiURL string, payload ...interface{}) (*ht
 	if err != nil {
 		return nil, err
 	}
+
 	return http.NewRequest(http.MethodDelete, apiURL, bytes.NewBuffer(data))
 }
 

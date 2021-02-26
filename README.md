@@ -48,6 +48,15 @@ A Go library for interacting with Myra Security API.
 * [X] Update a Rate Limit Setting
 * [X] Delete a Rate Limit Setting
 
+### WAF
+* [X] List existing WAF rules
+* [X] Fetch a singe WAF rule
+* [X] Fetch existing WAF conditions
+* [X] Fetch existing WAF actions
+* [X] Create a new WAF rule
+* [X] Update a WAF rule
+* [X] Delete a WAF rule
+
 
 ## Usage
 ```go
