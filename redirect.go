@@ -29,6 +29,7 @@ func (api *API) ListRedirects(subDomainName string, params map[string]string) ([
 	if _, ok := methods["listRedirects"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listRedirects")
 	}
+
 	definition := methods["listRedirects"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName, 1)
 
@@ -51,6 +52,7 @@ func (api *API) CreateRedirect(redirect *Redirect, subDomainName string) (*Redir
 	if _, ok := methods["createRedirect"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "createRedirect")
 	}
+
 	definition := methods["createRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 
@@ -68,6 +70,7 @@ func (api *API) UpdateRedirect(redirect *Redirect, subDomainName string) (*Redir
 	if _, ok := methods["updateRedirect"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateRedirect")
 	}
+
 	definition := methods["updateRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 
@@ -85,6 +88,7 @@ func (api *API) DeleteRedirect(redirect *Redirect, subDomainName string) (*Redir
 	if _, ok := methods["deleteRedirect"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteRedirect")
 	}
+
 	definition := methods["deleteRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 

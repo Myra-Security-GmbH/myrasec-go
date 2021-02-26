@@ -67,6 +67,7 @@ func (api *API) ListSettings(subDomainName string, params map[string]string) (*S
 	if _, ok := methods["listSettings"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listSettings")
 	}
+
 	definition := methods["listSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 
@@ -85,8 +86,10 @@ func (api *API) UpdateSettings(settings *Settings, subDomainName string) (*Setti
 	if _, ok := methods["updateSettings"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "createSettings")
 	}
+
 	definition := methods["updateSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
+
 	result, err := api.call(definition, settings)
 	if err != nil {
 		return nil, err

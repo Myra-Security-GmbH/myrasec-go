@@ -27,6 +27,7 @@ func (api *API) ListIPFilters(subDomainName string, params map[string]string) ([
 	if _, ok := methods["listIPFilters"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listIPFilters")
 	}
+
 	definition := methods["listIPFilters"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName, 1)
 
@@ -34,6 +35,7 @@ func (api *API) ListIPFilters(subDomainName string, params map[string]string) ([
 	if err != nil {
 		return nil, err
 	}
+
 	var records []IPFilter
 	for _, v := range *result.(*[]IPFilter) {
 		records = append(records, v)
@@ -49,6 +51,7 @@ func (api *API) CreateIPFilter(filter *IPFilter, subDomainName string) (*IPFilte
 	if _, ok := methods["createIPFilter"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "createIPFilter")
 	}
+
 	definition := methods["createIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 
@@ -66,6 +69,7 @@ func (api *API) UpdateIPFilter(filter *IPFilter, subDomainName string) (*IPFilte
 	if _, ok := methods["updateIPFilter"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateIPFilter")
 	}
+
 	definition := methods["updateIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 
@@ -83,6 +87,7 @@ func (api *API) DeleteIPFilter(filter *IPFilter, subDomainName string) (*IPFilte
 	if _, ok := methods["deleteIPFilter"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteIPFilter")
 	}
+
 	definition := methods["deleteIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 

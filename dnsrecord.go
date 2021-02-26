@@ -47,6 +47,7 @@ func (api *API) ListDNSRecords(domainName string, params map[string]string) ([]D
 	if _, ok := methods["listDNSRecords"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listDNSRecords")
 	}
+
 	definition := methods["listDNSRecords"]
 	definition.Action = fmt.Sprintf(definition.Action, domainName, 1)
 
@@ -54,6 +55,7 @@ func (api *API) ListDNSRecords(domainName string, params map[string]string) ([]D
 	if err != nil {
 		return nil, err
 	}
+
 	var records []DNSRecord
 	for _, v := range *result.(*[]DNSRecord) {
 		records = append(records, v)
@@ -69,6 +71,7 @@ func (api *API) CreateDNSRecord(record *DNSRecord, domainName string) (*DNSRecor
 	if _, ok := methods["createDNSRecord"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "createDNSRecord")
 	}
+
 	definition := methods["createDNSRecord"]
 	definition.Action = fmt.Sprintf(definition.Action, domainName)
 
@@ -86,6 +89,7 @@ func (api *API) UpdateDNSRecord(record *DNSRecord, domainName string) (*DNSRecor
 	if _, ok := methods["updateDNSRecord"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateDNSRecord")
 	}
+
 	definition := methods["updateDNSRecord"]
 	definition.Action = fmt.Sprintf(definition.Action, domainName)
 
@@ -103,6 +107,7 @@ func (api *API) DeleteDNSRecord(record *DNSRecord, domainName string) (*DNSRecor
 	if _, ok := methods["deleteDNSRecord"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteDNSRecord")
 	}
+
 	definition := methods["deleteDNSRecord"]
 	definition.Action = fmt.Sprintf(definition.Action, domainName)
 
