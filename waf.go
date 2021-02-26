@@ -109,7 +109,7 @@ func (api *API) ListWAFActions() ([]WAFAction, error) {
 //
 // Avalilable filters/query parameters:
 //		search (string) - filter by the specified search query
-// Additional valid filters/query parameters for ruleType = "dns":
+// Additional valid filters/query parameters for ruleType = "domanin":
 //		domainName (string) - filter WAF rules for this domain (name)
 //		domain (int) - filter WAF rules for this domain (ID)
 //		subDomain (string) - filter WAF rules for this subdomain (name)
