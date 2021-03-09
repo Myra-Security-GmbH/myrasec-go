@@ -111,7 +111,9 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	}
 
 	sig := signature.New(api.secret, api.key, req)
-	request, err := sig.Append()
+
+	var request *http.Request
+	request, err = sig.Append()
 
 	resp, err := api.client.Do(request)
 	if err != nil {
