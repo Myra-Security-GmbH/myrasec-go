@@ -45,3 +45,21 @@ func (dt *DateTime) UnmarshalJSON(b []byte) error {
 
 	return err
 }
+
+//
+// ParseDate transforms the passed date string (time.RFC3339) to a DateTime struct
+//
+func ParseDate(date string) (*DateTime, error) {
+	if len(date) <= 0 {
+		return nil, nil
+	}
+
+	parsed, err := time.Parse(time.RFC3339, date)
+	if err != nil {
+		return nil, err
+	}
+
+	return &DateTime{
+		Time: parsed,
+	}, nil
+}
