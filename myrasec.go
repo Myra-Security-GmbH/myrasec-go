@@ -53,6 +53,14 @@ type Response struct {
 	PageSize      int           `json:"pageSize,omitempty"`
 }
 
+// Output returns to the client
+type Output struct {
+	Elements []interface{}
+	Page int
+	Count int
+	PageSize int
+}
+
 //
 // Violation defines a violation VO, returned by the MYRA API
 //
@@ -93,7 +101,7 @@ func (api *API) SetUserAgent(userAgent string) {
 //
 func (api *API) SetLanguage(language string) error {
 	if _, ok := APILanguages[language]; !ok {
-		return fmt.Errorf("Passed language [\"%s\"] is not supported", language)
+		return fmt.Errorf("passed language [\"%s\"] is not supported", language)
 	}
 
 	api.Language = language
@@ -173,7 +181,7 @@ func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*h
 		req, err = api.prepareDELETERequest(apiURL, payload...)
 		break
 	default:
-		req, err = nil, fmt.Errorf("Passed APIMethod definition has a not supported HTTP method - [%s] is not supported", definition.Method)
+		req, err = nil, fmt.Errorf("passed APIMethod definition has a not supported HTTP method - [%s] is not supported", definition.Method)
 	}
 
 	if err != nil {
@@ -198,7 +206,7 @@ func (api *API) prepareGETRequest(apiURL string, payload ...interface{}) (*http.
 	}
 
 	if len(payload) > 1 {
-		return nil, fmt.Errorf("Unable to handle more than one payload in a GET call - payload should be a map[string]string")
+		return nil, fmt.Errorf("unable to handle more than one payload in a GET call - payload should be a map[string]string")
 	}
 
 	baseURL, err := url.Parse(apiURL)

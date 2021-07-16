@@ -45,7 +45,8 @@ var methods = map[string]APIMethod{
 		Name:   "listDNSRecords",
 		Action: "dnsRecords/%s/%d",
 		Method: http.MethodGet,
-		Result: []DNSRecord{},
+		Result: Output{},
+		ResponseDecodeFunc: decodeListDNSRecordsResponse,
 	},
 	"createDNSRecord": {
 		Name:   "createDNSRecord",
