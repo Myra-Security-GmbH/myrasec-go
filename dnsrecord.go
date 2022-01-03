@@ -117,9 +117,9 @@ func decodeListDNSRecordsResponse(resp *http.Response, definition APIMethod) (in
 	res := retValue.Interface()
 	decoder.Decode(res)
 
-	output := Output {
-		Count: decodedResponse.Count,
-		Page: decodedResponse.Page,
+	output := Output{
+		Count:    decodedResponse.Count,
+		Page:     decodedResponse.Page,
 		PageSize: decodedResponse.PageSize,
 	}
 

@@ -18,7 +18,7 @@ type Redirect struct {
 	Source        string          `json:"source"`
 	Destination   string          `json:"destination"`
 	Sort          int             `json:"sort,omitempty"`
-	MatchingType  string          `json:"matchinType"`
+	MatchingType  string          `json:"matchingType"`
 	Enabled       bool            `json:"enabled,omitempty"`
 }
 
