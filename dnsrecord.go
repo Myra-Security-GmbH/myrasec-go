@@ -75,7 +75,7 @@ func (api *API) ListDNSRecords(domainName string, params map[string]string) (Out
 	var ok bool
 	output, ok = response.(Output)
 	if ok == false {
-		fmt.Errorf("casting response failed, interface not compatible")
+		err = fmt.Errorf("casting response failed, interface not compatible")
 	}
 
 	if err != nil {

@@ -84,3 +84,10 @@ func main() {
     }
 }
 ```
+
+## Documentation
+- [Setup](./docs/setup.md)
+- [Domain](./docs/domain.md)
+- [DNS record](./docs/dns_record.md)
+- [Cache setting](./docs/cache_setting.md)
+- [Subdomain settings](./docs/subdomain_settings.md)
