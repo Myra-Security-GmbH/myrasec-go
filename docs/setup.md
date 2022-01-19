@@ -15,8 +15,8 @@ if err != nil {
 package main
 
 import (
-	"log"
-    "os"
+	"log"	
+	"os"
 
 	myrasec "github.com/Myra-Security-GmbH/myrasec-go"
 )
@@ -26,14 +26,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-    domains, err := api.ListDomains(map[string]string{"pageSize": "100"})
+	
+	domains, err := api.ListDomains(map[string]string{"pageSize": "100"})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, d := range domains {
-		fmt.Println(d.Name)
-    }
+		log.Println(d.Name)
+	}
 }
 ```
