@@ -10,7 +10,7 @@ if err != nil {
 }
 ```
 
-## List domain example
+## List 100 domains example
 ```go
 package main
 
@@ -27,9 +27,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-    domains, err := api.ListDomains()
+    domains, err := api.ListDomains(map[string]string{"pageSize": "100"})
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	for _, d := range domains {

@@ -52,8 +52,8 @@ type UpstreamOptions struct {
 | Field | Type | Description|
 |---|---|---|
 | `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a DnsRecord it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created is a date type attribute with an ISO8601 format. It will be created by the server after creating a new UpstreamOptions object. This value is only informational so it is not necessary to add this an attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. This value is always a date type with an ISO8601 format. |
+| `Created` | *types.DateTime | Created will be created by the server after creating a new UpstreamOptions object. This value is only informational so it is not necessary to add this an attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. |
 | `Backup` | bool | Marks the origin server as backup. The servers marked as backup will receive the requests when the primary servers are unavailable. |
 | `Down` | bool | Marks the origin server as permanently unavailable. |
 | `FailTimeout` | bool | The time during which the specified number of unsuccessful attempts to communicate with the origin should happen to consider the origin unavailable and the period of time the origin will be considered unavailable. |
@@ -103,11 +103,12 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListDNS
 
 | name | description | default |
 |---|---|---|
-| search | Filters the DNS records with the specified string in the name or in the value field | null |
-| recordTypes | Filters the DNS by record type. It is possible to specify more than one record type as a comma separated list | null |
-| activeOnly | Wen set to "true" only active DNS records are returned | false |
-| loadbalancer | When set to true only returns the DNS record that are being load balanced | false |
-
+| `search` | Filters the DNS records with the specified string in the name or in the value field | null |
+| `page` | Specify the page of the result | 1 |
+| `pageSize` | Specify the amount of results in the response | 50 |
+| `recordTypes` | Filters the DNS by record type. It is possible to specify more than one record type as a comma separated list | null |
+| `activeOnly` | Wen set to "true" only active DNS records are returned | false |
+| `loadbalancer` | When set to true only returns the DNS record that are being load balanced | false |
 
 ## Update
 Updating a DNS record is very similar to creating a new one. You will need to provide the generated "id" and "modified" attributes to identify the version of object you are trying to update.

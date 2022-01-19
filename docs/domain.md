@@ -15,8 +15,8 @@ type Domain struct {
 | Field | Type | Description|
 |---|---|---|
 | `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Domain it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created is a date type attribute with an ISO8601 format. It will be created by the server after creating a new Domain object. This value is informational so it is not necessary to add this attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an ISO8601 format. |
+| `Created` | *types.DateTime | Created will be created by the server after creating a new Domain object. This value is informational so it is not necessary to add this attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
 | `Name` | string | Identifies the domain by its name. The value cannot be changed after creation. To change a typo you need to remove and recreate the domain. |
 | `AutoUpdate` | bool | Shows if the current domain has autoUpdate activated. If autoUpdate is deactivated changes on your configuration are not deployed until you reactivate autoUpdate. This is primary used to change a lot of settings at once to prevent Myra to deploy a half done configuration. In some cases Myra support also deactivates this option to prevent Myra system from removing special configuration settings. Please note that turning autoUpdate off is not correlated to database transactions. This means that any changes are saved but not deployed. |
 | `AutoDNS` | bool | If autoDns flag is set while creating a new domain Myra tries to get a list of subDomains for this domain. Depending on your DNS provider configuration this may fail or return a incomplete list. For best results Myra recomments to use the subDomain API to create DNS records. |
@@ -51,7 +51,14 @@ if err != nil {
     log.Fatal(err)
 }
 ```
+
 It is possible to pass a map of parameters (`map[string]string`) to the `ListDomains` function.
+
+| name | description | default |
+|---|---|---|
+| `search` | Filter by the specified search query | null |
+| `page` | Specify the page of the result | 1 |
+| `pageSize` | Specify the amount of results in the response | 50 |
 
 
 ## Update

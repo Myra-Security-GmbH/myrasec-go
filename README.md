@@ -15,3 +15,6 @@ A Go library for interacting with Myra Security API.
 - [DNS record](./docs/dns_record.md)
 - [Cache setting](./docs/cache_setting.md)
 - [Subdomain settings](./docs/subdomain_settings.md)
+- [IP filter](./docs/ip_filter.md)
+- [IP rate limit](./docs/ratelimit.md)
+- [Redirect](./docs/redirect.md)
