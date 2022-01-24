@@ -53,14 +53,6 @@ type Response struct {
 	PageSize      int           `json:"pageSize,omitempty"`
 }
 
-// Output returns to the client
-type Output struct {
-	Elements []interface{}
-	Page int
-	Count int
-	PageSize int
-}
-
 //
 // Violation defines a violation VO, returned by the MYRA API
 //

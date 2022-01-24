@@ -48,11 +48,10 @@ var methods = map[string]APIMethod{
 
 	// DNS Record related API calls
 	"listDNSRecords": {
-		Name:               "listDNSRecords",
-		Action:             "dnsRecords/%s/%d",
-		Method:             http.MethodGet,
-		Result:             Output{},
-		ResponseDecodeFunc: decodeListDNSRecordsResponse,
+		Name:   "listDNSRecords",
+		Action: "dnsRecords/%s/%d",
+		Method: http.MethodGet,
+		Result: []DNSRecord{},
 	},
 	"createDNSRecord": {
 		Name:   "createDNSRecord",

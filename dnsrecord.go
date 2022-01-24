@@ -1,12 +1,7 @@
 package myrasec
 
 import (
-	"bytes"
-	"encoding/json"
-	"errors"
 	"fmt"
-	"net/http"
-	"reflect"
 	"strconv"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/pkg/types"
@@ -49,85 +44,35 @@ type UpstreamOptions struct {
 //
 // ListDNSRecords returns a slice containing all visible DNS records for a domain
 //
-func (api *API) ListDNSRecords(domainName string, params map[string]string) (Output, error) {
-	var output Output
-
+func (api *API) ListDNSRecords(domainName string, params map[string]string) ([]DNSRecord, error) {
 	if _, ok := methods["listDNSRecords"]; !ok {
-		return output, fmt.Errorf("passed action [%s] is not supported", "listDNSRecords")
+		return nil, fmt.Errorf("Passed action [%s] is not supported", "listDNSRecords")
 	}
 
-	pageNumber, _ := strconv.ParseInt(params["pageNumber"], 10, 64)
-	if pageNumber == 0 {
-		pageNumber = 1
-	}
-
-	pageSize, _ := strconv.ParseInt(params["pageSize"], 10, 64)
-	if pageSize == 0 {
-		pageSize = 50 // default pageSize on API side
+	page := 1
+	var err error
+	if pageParam, ok := params[ParamPage]; ok {
+		delete(params, ParamPage)
+		page, err = strconv.Atoi(pageParam)
+		if err != nil {
+			page = 1
+		}
 	}
 
 	definition := methods["listDNSRecords"]
-	definition.Action = fmt.Sprintf(definition.Action, domainName, pageNumber)
+	definition.Action = fmt.Sprintf(definition.Action, domainName, page)
 
-	response, err := api.call(definition, params)
-
-	//@TODO lets replace it by some correct solution
-	var ok bool
-	output, ok = response.(Output)
-	if ok == false {
-		err = fmt.Errorf("casting response failed, interface not compatible")
-	}
-
-	if err != nil {
-		return output, err
-	}
-
-	return output, nil
-}
-
-func decodeListDNSRecordsResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
-	var decodedResponse Response
-	err := json.NewDecoder(resp.Body).Decode(&decodedResponse)
+	result, err := api.call(definition, params)
 	if err != nil {
 		return nil, err
 	}
 
-	if decodedResponse.Error {
-		var errorMsg string
-		for _, e := range decodedResponse.ViolationList {
-			errorMsg += fmt.Sprintf("%s: %s\n", e.Path, e.Message)
-		}
-		return nil, errors.New(errorMsg)
+	var records []DNSRecord
+	for _, v := range *result.(*[]DNSRecord) {
+		records = append(records, v)
 	}
 
-	var result []interface{}
-
-	if decodedResponse.List != nil {
-		result = decodedResponse.List
-	}
-
-	tmp, err := json.Marshal(result)
-	if err != nil {
-		return nil, err
-	}
-
-	decoder := json.NewDecoder(bytes.NewReader(tmp))
-
-	retValue := reflect.New(reflect.TypeOf([]DNSRecord{}))
-	res := retValue.Interface()
-	decoder.Decode(res)
-
-	output := Output{
-		Count:    decodedResponse.Count,
-		Page:     decodedResponse.Page,
-		PageSize: decodedResponse.PageSize,
-	}
-
-	for _, v := range *res.(*[]DNSRecord) {
-		output.Elements = append(output.Elements, v)
-	}
-
-	return output, err
+	return records, nil
 }
 
 //
