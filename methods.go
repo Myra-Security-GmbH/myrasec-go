@@ -234,4 +234,12 @@ var methods = map[string]APIMethod{
 		Method: http.MethodDelete,
 		Result: WAFRule{},
 	},
+
+	//IP range related API calls
+	"listIPRanges": {
+		Name:   "listIPRanges",
+		Action: "ip-range/%d",
+		Method: http.MethodGet,
+		Result: []IPRange{},
+	},
 }
