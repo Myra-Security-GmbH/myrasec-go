@@ -2,6 +2,7 @@ package myrasec
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/pkg/types"
 )
@@ -28,8 +29,18 @@ func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listDomains")
 	}
 
+	page := 1
+	var err error
+	if pageParam, ok := params[ParamPage]; ok {
+		delete(params, ParamPage)
+		page, err = strconv.Atoi(pageParam)
+		if err != nil {
+			page = 1
+		}
+	}
+
 	definition := methods["listDomains"]
-	definition.Action = fmt.Sprintf(definition.Action, 1)
+	definition.Action = fmt.Sprintf(definition.Action, page)
 
 	result, err := api.call(definition, params)
 	if err != nil {

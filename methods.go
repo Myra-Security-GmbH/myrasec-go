@@ -2,6 +2,12 @@ package myrasec
 
 import "net/http"
 
+const (
+	ParamPage     = "page"
+	ParamPageSize = "pageSize"
+	ParamSearch   = "search"
+)
+
 //
 // APIMethod represents API call definitions used in the methods map
 //
@@ -42,10 +48,10 @@ var methods = map[string]APIMethod{
 
 	// DNS Record related API calls
 	"listDNSRecords": {
-		Name:   "listDNSRecords",
-		Action: "dnsRecords/%s/%d",
-		Method: http.MethodGet,
-		Result: Output{},
+		Name:               "listDNSRecords",
+		Action:             "dnsRecords/%s/%d",
+		Method:             http.MethodGet,
+		Result:             Output{},
 		ResponseDecodeFunc: decodeListDNSRecordsResponse,
 	},
 	"createDNSRecord": {

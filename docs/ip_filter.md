@@ -58,11 +58,11 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListIPF
 
 | name | description | default |
 |---|---|---|
-| `type` | Filter by the specified IP filter type | null |
-| `enabled` | Return only enabled IP filters | null |
 | `search` | Filter by the specified search query | null |
 | `page` | Specify the page of the result | 1 |
 | `pageSize` | Specify the amount of results in the response | 50 |
+| `type` | Filter by the specified IP filter type | null |
+| `enabled` | Return only enabled IP filters | null |
 
 
 ## Update
