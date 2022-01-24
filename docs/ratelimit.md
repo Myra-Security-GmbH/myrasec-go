@@ -56,8 +56,8 @@ It is required to pass a map of parameters (`map[string]string`) to the `ListRat
 | name | rateLimitType | description | default |
 |---|---|---|---|
 | `search` (string) | `dns` and `tag` | Filter by the specified search query | null |
-| `page` | Specify the page of the result | 1 |
-| `pageSize` | Specify the amount of results in the response | 50 |
+| `page` | `dns` and `tag` | Specify the page of the result | 1 |
+| `pageSize` | `dns` and `tag` | Specify the amount of results in the response | 50 |
 | `reference` (int) | `dns` and `tag` | filter rate limit settings for this domain or tag (ID) | null |
 | `subDomainName` (string) | `dns` | filter rate limit settings for this subdomain (name) | null |
 
