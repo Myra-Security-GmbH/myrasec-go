@@ -41,14 +41,11 @@ func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
 
 	definition := methods["listIPRanges"]
 	definition.Action = fmt.Sprintf(definition.Action, page)
-	fmt.Println(definition.Action)
 
 	result, err := api.call(definition, params)
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println(result)
 
 	var records []IPRange
 	for _, v := range *result.(*[]IPRange) {
