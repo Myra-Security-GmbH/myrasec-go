@@ -2,7 +2,6 @@ package myrasec
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/pkg/types"
 )
@@ -29,18 +28,7 @@ func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listIPRanges")
 	}
 
-	page := 1
-	var err error
-	if pageParam, ok := params[ParamPage]; ok {
-		delete(params, ParamPage)
-		page, err = strconv.Atoi(pageParam)
-		if err != nil {
-			page = 1
-		}
-	}
-
 	definition := methods["listIPRanges"]
-	definition.Action = fmt.Sprintf(definition.Action, page)
 
 	result, err := api.call(definition, params)
 	if err != nil {

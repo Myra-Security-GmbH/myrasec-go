@@ -42,7 +42,7 @@ cachesetting := &myrasec.CacheSetting{
     Enabled:     true,
     Enforce:     false,
 }
-c, err := api.CreateCacheSetting(cachesetting, "www.example.com")
+c, err := api.CreateCacheSetting(cachesetting, 1234, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -54,7 +54,7 @@ The listing operation returns a list of cache settings for the passed subdomain 
 
 ### Example 
 ```go
-cachesettings, err := api.ListCacheSettings("www.example.com", nil)
+cachesettings, err := api.ListCacheSettings(1234, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -82,7 +82,7 @@ cachesetting := &myrasec.CacheSetting{
     Path:      "/index.html",
 }
 
-c, err := api.UpdateCacheSetting(cachesetting, "www.example.com");
+c, err := api.UpdateCacheSetting(cachesetting, 1234, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -100,7 +100,7 @@ cachesetting := &myrasec.CacheSetting{
         Time: modified,
     },
 }
-c, err := api.DeleteCacheSetting(cachesetting, "www.example.com");
+c, err := api.DeleteCacheSetting(cachesetting, 1234, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }

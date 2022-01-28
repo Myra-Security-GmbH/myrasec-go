@@ -14,7 +14,7 @@ import (
 
 const (
 	// APIBaseURL ...
-	APIBaseURL = "https://api.myracloud.com/%s/rapi/%s"
+	APIBaseURL = "https://apiv2.myracloud.com/%s"
 	// DefaultAPILanguage ...
 	DefaultAPILanguage = "en"
 	// DefaultAPIUserAgent ...
@@ -46,7 +46,9 @@ type API struct {
 type Response struct {
 	Error         bool          `json:"error,omitempty"`
 	ViolationList []*Violation  `json:"violationList,omitempty"`
+	WarningList   []*Warning    `json:"warningList,omitempty"`
 	TargetObject  []interface{} `json:"targetObject,omitempty"`
+	Data          []interface{} `json:"data,omitempty"`
 	List          []interface{} `json:"list,omitempty"`
 	Page          int           `json:"page,omitempty"`
 	Count         int           `json:"count,omitempty"`
@@ -57,6 +59,14 @@ type Response struct {
 // Violation defines a violation VO, returned by the MYRA API
 //
 type Violation struct {
+	Path    string `json:"path,omitempty"`
+	Message string `json:"message,omitempty"`
+}
+
+//
+// Warning defines a warning VO, returned by the MYRA API
+//
+type Warning struct {
 	Path    string `json:"path,omitempty"`
 	Message string `json:"message,omitempty"`
 }
@@ -158,7 +168,7 @@ func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*h
 	var err error
 	var req *http.Request
 
-	apiURL := fmt.Sprintf(api.BaseURL, api.Language, definition.Action)
+	apiURL := fmt.Sprintf(api.BaseURL, definition.Action)
 	switch definition.Method {
 	case http.MethodGet:
 		req, err = api.prepareGETRequest(apiURL, payload...)
@@ -262,6 +272,8 @@ func prepareResult(response Response, definition interface{}) (interface{}, erro
 		result = response.TargetObject[0]
 	} else if response.List != nil {
 		result = response.List
+	} else if response.Data != nil {
+		result = response.Data
 	}
 
 	tmp, err := json.Marshal(result)

@@ -2,7 +2,6 @@ package myrasec
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/pkg/types"
 )
@@ -26,23 +25,13 @@ type CacheSetting struct {
 //
 // ListCacheSettings returns a slice containing all visible cache settings for a subdomain
 //
-func (api *API) ListCacheSettings(subDomainName string, params map[string]string) ([]CacheSetting, error) {
+func (api *API) ListCacheSettings(domainId int, subDomainName string, params map[string]string) ([]CacheSetting, error) {
 	if _, ok := methods["listCacheSettings"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listCacheSettings")
 	}
 
-	page := 1
-	var err error
-	if pageParam, ok := params[ParamPage]; ok {
-		delete(params, ParamPage)
-		page, err = strconv.Atoi(pageParam)
-		if err != nil {
-			page = 1
-		}
-	}
-
 	definition := methods["listCacheSettings"]
-	definition.Action = fmt.Sprintf(definition.Action, subDomainName, page)
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -60,13 +49,13 @@ func (api *API) ListCacheSettings(subDomainName string, params map[string]string
 //
 // CreateCacheSetting creates a new cache setting for the passed subdomain (name) using the MYRA API
 //
-func (api *API) CreateCacheSetting(setting *CacheSetting, subDomainName string) (*CacheSetting, error) {
+func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := methods["createCacheSetting"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "createCacheSetting")
 	}
 
 	definition := methods["createCacheSetting"]
-	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, setting)
 	if err != nil {
@@ -78,13 +67,13 @@ func (api *API) CreateCacheSetting(setting *CacheSetting, subDomainName string) 
 //
 // UpdateCacheSetting updates the passed cache setting using the MYRA API
 //
-func (api *API) UpdateCacheSetting(setting *CacheSetting, subDomainName string) (*CacheSetting, error) {
+func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := methods["updateCacheSetting"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateCacheSetting")
 	}
 
 	definition := methods["updateCacheSetting"]
-	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, setting.ID)
 
 	result, err := api.call(definition, setting)
 	if err != nil {
@@ -96,13 +85,13 @@ func (api *API) UpdateCacheSetting(setting *CacheSetting, subDomainName string) 
 //
 // DeleteCacheSetting deletes the passed cache setting using the MYRA API
 //
-func (api *API) DeleteCacheSetting(setting *CacheSetting, subDomainName string) (*CacheSetting, error) {
+func (api *API) DeleteCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := methods["deleteCacheSetting"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteCacheSetting")
 	}
 
 	definition := methods["deleteCacheSetting"]
-	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, setting.ID)
 
 	result, err := api.call(definition, setting)
 	if err != nil {

@@ -63,13 +63,13 @@ type Settings struct {
 //
 // ListSettings returns a Setting struct containing the settings for the passed subdomain
 //
-func (api *API) ListSettings(subDomainName string, params map[string]string) (*Settings, error) {
+func (api *API) ListSettings(domainId int, subDomainName string, params map[string]string) (*Settings, error) {
 	if _, ok := methods["listSettings"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listSettings")
 	}
 
 	definition := methods["listSettings"]
-	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -82,13 +82,13 @@ func (api *API) ListSettings(subDomainName string, params map[string]string) (*S
 //
 // UpdateSettings updates the passed settings using the MYRA API
 //
-func (api *API) UpdateSettings(settings *Settings, subDomainName string) (*Settings, error) {
+func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName string) (*Settings, error) {
 	if _, ok := methods["updateSettings"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "createSettings")
 	}
 
 	definition := methods["updateSettings"]
-	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, settings)
 	if err != nil {

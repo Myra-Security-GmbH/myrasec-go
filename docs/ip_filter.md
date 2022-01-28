@@ -36,7 +36,7 @@ filter := &myrasec.IPFilter{
     Value:       "127.0.0.1",
     Enabled:     true,
 }
-f, err := api.CreateIPFilter(filter, "www.example.com")
+f, err := api.CreateIPFilter(filter, 1234, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -48,7 +48,7 @@ The listing operation returns a list of IP filters for the passed subdomain name
 
 ### Example
 ```go
-filters, err := api.ListIPFilters("www.example.com", nil)
+filters, err := api.ListIPFilters(1234, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -78,7 +78,7 @@ filter := &myrasec.IPFilter{
     Value:      "127.0.0.1",
 }
 
-f, err := api.UpdateIPFilter(filter, "www.example.com");
+f, err := api.UpdateIPFilter(filter, 1234, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -97,7 +97,7 @@ filter := &myrasec.IPFilter{
     },
 }
 
-f, err := api.DeleteIPFilter(filter, "www.example.com");
+f, err := api.DeleteIPFilter(filter, 1234, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }

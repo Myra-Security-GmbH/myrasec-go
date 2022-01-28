@@ -24,7 +24,7 @@ type RateLimit struct {
 | `Network` | string | Network in CIDR notation affected by the rate limiter. |
 | `SubDomainName` | string |  |
 | `Timeframe` | int | The affected timeframe in seconds for the rate limit. |
-| `Type` | string | `tag` or `domain` |
+| `Type` | string | Right now, only `domain` is supported |
 | `Value` | int | Maximum amount of requests for the given network. |
 
 
@@ -41,7 +41,7 @@ ratelimit := &myrasec.RateLimit{
     Type:          "domain",
     Network:       "127.0.0.1/24",
 }
-rl, err := api.CreateRateLimit(ratelimit)
+rl, err := api.CreateRateLimit(ratelimit, 1234, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -49,21 +49,19 @@ if err != nil {
 
 
 ## Read
-The listing operation returns a list of IP rate limit settings. The `rateLimitType`, required by this function, can be either `dns` or `tag`.
+The listing operation returns a list of IP rate limit settings.
 
 It is required to pass a map of parameters (`map[string]string`) to the `ListRateLimits` function.
 
-| name | rateLimitType | description | default |
+| name | description | default |
 |---|---|---|---|
-| `search` (string) | `dns` and `tag` | Filter by the specified search query | null |
-| `page` | `dns` and `tag` | Specify the page of the result | 1 |
-| `pageSize` | `dns` and `tag` | Specify the amount of results in the response | 50 |
-| `reference` (int) | `dns` and `tag` | filter rate limit settings for this domain or tag (ID) | null |
-| `subDomainName` (string) | `dns` | filter rate limit settings for this subdomain (name) | null |
+| `search` (string) | Filter by the specified search query | null |
+| `page` | Specify the page of the result | 1 |
+| `pageSize` | Specify the amount of results in the response | 50 |
 
 ### Example
 ```go
-ratelimits, err := api.ListRateLimits("domain", map[string]string{"subDomainName": "www.example.com"})
+ratelimits, err := api.ListRateLimits(1234, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -83,7 +81,7 @@ ratelimit := &myrasec.RateLimit{
     Value:      200,
 }
 
-rl, err := api.UpdateRateLimit(ratelimit);
+rl, err := api.UpdateRateLimit(ratelimit, 1234, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -102,7 +100,7 @@ ratelimit := &myrasec.RateLimit{
     },
 }
 
-rl, err := api.DeleteRateLimit(rateLimit);
+rl, err := api.DeleteRateLimit(rateLimit, 1234, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }

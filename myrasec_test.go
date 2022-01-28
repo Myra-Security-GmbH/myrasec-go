@@ -146,7 +146,7 @@ func TestPrepareRequest(t *testing.T) {
 		t.Errorf("Unexpected error: %s\n", err)
 	}
 
-	expectedURL := fmt.Sprintf(APIBaseURL, "en", "test")
+	expectedURL := fmt.Sprintf(APIBaseURL, "test")
 	if req.URL.String() != expectedURL {
 		t.Errorf("Expected request URL path to be [%s] but got [%s]\n", expectedURL, req.URL.String())
 	}

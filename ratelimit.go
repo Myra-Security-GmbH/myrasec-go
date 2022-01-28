@@ -2,7 +2,6 @@ package myrasec
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/pkg/types"
 )
@@ -24,35 +23,14 @@ type RateLimit struct {
 
 //
 // ListRateLimits returns a slice containing all visible rate limit settings
-// Valid rateLimitType values are "dns" or "tag"
 //
-// Rate limit settings can be filtered using the params map
-//
-// Avalilable filters/query parameters:
-//		search (string) - filter by the specified search query
-// Additional valid filters/query parameters for ruleType = "dns":
-//		subDomainName (string) - filter rate limit settings for this subdomain (name)
-//		reference (int) - filter rate limit settings for this domain (ID)
-// Additional valid filters/query parameters for ruleType = "tag":
-//		reference (int) - filter rate limit settings for this tag (ID)
-//
-func (api *API) ListRateLimits(rateLimitType string, params map[string]string) ([]RateLimit, error) {
+func (api *API) ListRateLimits(domainId int, subDomainName string, params map[string]string) ([]RateLimit, error) {
 	if _, ok := methods["listRateLimits"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listRateLimits")
 	}
 
-	page := 1
-	var err error
-	if pageParam, ok := params[ParamPage]; ok {
-		delete(params, ParamPage)
-		page, err = strconv.Atoi(pageParam)
-		if err != nil {
-			page = 1
-		}
-	}
-
 	definition := methods["listRateLimits"]
-	definition.Action = fmt.Sprintf(definition.Action, rateLimitType, page)
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -69,12 +47,15 @@ func (api *API) ListRateLimits(rateLimitType string, params map[string]string) (
 //
 // CreateRateLimit creates a new rate limit setting for the passed subdomain (name) using the MYRA API
 //
-func (api *API) CreateRateLimit(ratelimit *RateLimit) (*RateLimit, error) {
+func (api *API) CreateRateLimit(ratelimit *RateLimit, domainId int, subDomainName string) (*RateLimit, error) {
 	if _, ok := methods["createRateLimit"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "createRateLimit")
 	}
 
-	result, err := api.call(methods["createRateLimit"], ratelimit)
+	definition := methods["createRateLimit"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
+
+	result, err := api.call(definition, ratelimit)
 	if err != nil {
 		return nil, err
 	}
@@ -84,12 +65,15 @@ func (api *API) CreateRateLimit(ratelimit *RateLimit) (*RateLimit, error) {
 //
 // UpdateRateLimit updates the passed rate limit setting using the MYRA API
 //
-func (api *API) UpdateRateLimit(ratelimit *RateLimit) (*RateLimit, error) {
+func (api *API) UpdateRateLimit(ratelimit *RateLimit, domainId int, subDomainName string) (*RateLimit, error) {
 	if _, ok := methods["updateRateLimit"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateRateLimit")
 	}
 
-	result, err := api.call(methods["updateRateLimit"], ratelimit)
+	definition := methods["updateRateLimit"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, ratelimit.ID)
+
+	result, err := api.call(definition, ratelimit)
 	if err != nil {
 		return nil, err
 	}
@@ -99,12 +83,15 @@ func (api *API) UpdateRateLimit(ratelimit *RateLimit) (*RateLimit, error) {
 //
 // DeleteRateLimit deletes the passed rate limit setting using the MYRA API
 //
-func (api *API) DeleteRateLimit(ratelimit *RateLimit) (*RateLimit, error) {
+func (api *API) DeleteRateLimit(ratelimit *RateLimit, domainId int, subDomainName string) (*RateLimit, error) {
 	if _, ok := methods["deleteRateLimit"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteRateLimit")
 	}
 
-	result, err := api.call(methods["deleteRateLimit"], ratelimit)
+	definition := methods["deleteRateLimit"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, ratelimit.ID)
+
+	result, err := api.call(definition, ratelimit)
 	if err != nil {
 		return nil, err
 	}

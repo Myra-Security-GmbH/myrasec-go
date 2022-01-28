@@ -81,7 +81,7 @@ rec := &myrasec.DNSRecord{
         Weight:      1,
     },
 }
-r, err := api.CreateDNSRecord(rec, "example.com")
+r, err := api.CreateDNSRecord(rec, 1234)
 if err != nil {
     panic(err)
 }
@@ -93,7 +93,7 @@ The listing operation returns a list of DNS records for the passed domain name.
 
 ### Example
 ```go
-records, err := api.ListDNSRecords(domainName, nil)
+records, err := api.ListDNSRecords(1234, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -123,7 +123,7 @@ rec := &myrasec.DNSRecord{
     Value:      "127.0.0.1",
 }
 
-r, err := api.UpdateDNSRecord(rec, "example.com");
+r, err := api.UpdateDNSRecord(rec, 1234);
 if err != nil {
     log.Fatal(err)
 }
@@ -142,7 +142,7 @@ rec := &myrasec.DNSRecord{
     },
 }
 
-r, err := api.DeleteDNSRecord(rec, "example.com");
+r, err := api.DeleteDNSRecord(rec, 1234);
 if err != nil {
     log.Fatal(err)
 }

@@ -124,13 +124,13 @@ To create new (sub)domain settings you have to send a (sub)domain settings objec
 
 ### Example
 ```go
-s, err := api.ListSettings("www.example.com", nil)
+s, err := api.ListSettings(1234, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
 
 s.OnlyHTTPS = true
-s, err = api.UpdateSettings(s, "www.example.com")
+s, err = api.UpdateSettings(s, 1234, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }

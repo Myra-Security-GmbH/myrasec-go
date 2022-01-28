@@ -2,7 +2,6 @@ package myrasec
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/pkg/types"
 )
@@ -104,36 +103,14 @@ func (api *API) ListWAFActions() ([]WAFAction, error) {
 
 //
 // ListWAFRules returns a list of WAF rules.
-// Valid ruleType values are "domain", "tag" or "template"
 //
-// Rules can be filtered using the params map
-//
-// Avalilable filters/query parameters:
-//		search (string) - filter by the specified search query
-// Additional valid filters/query parameters for ruleType = "domanin":
-//		domainName (string) - filter WAF rules for this domain (name)
-//		domain (int) - filter WAF rules for this domain (ID)
-//		subDomain (string) - filter WAF rules for this subdomain (name)
-// Additional valid filters/query parameters for ruleType = "tag":
-//		tagId (int) - filter WAF rules for this tag (ID)
-//
-func (api *API) ListWAFRules(ruleType string, params map[string]string) ([]WAFRule, error) {
+func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule, error) {
 	if _, ok := methods["listWAFRules"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "listWAFRules")
 	}
 
-	page := 1
-	var err error
-	if pageParam, ok := params[ParamPage]; ok {
-		delete(params, ParamPage)
-		page, err = strconv.Atoi(pageParam)
-		if err != nil {
-			page = 1
-		}
-	}
-
 	definition := methods["listWAFRules"]
-	definition.Action = fmt.Sprintf(definition.Action, ruleType, page)
+	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -178,12 +155,15 @@ func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error)
 //
 // CreateWAFRule creates a new WAF rule
 //
-func (api *API) CreateWAFRule(rule *WAFRule) (*WAFRule, error) {
+func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
 	if _, ok := methods["createWAFRule"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "createWAFRule")
 	}
 
-	result, err := api.call(methods["createWAFRule"], rule)
+	definition := methods["createWAFRule"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
+
+	result, err := api.call(definition, rule)
 	if err != nil {
 		return nil, err
 	}
@@ -193,12 +173,15 @@ func (api *API) CreateWAFRule(rule *WAFRule) (*WAFRule, error) {
 //
 // UpdateWAFRule updates the passed WAF rule
 //
-func (api *API) UpdateWAFRule(rule *WAFRule) (*WAFRule, error) {
+func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
 	if _, ok := methods["updateWAFRule"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateWAFRule")
 	}
 
-	result, err := api.call(methods["updateWAFRule"], rule)
+	definition := methods["updateWAFRule"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, rule.ID)
+
+	result, err := api.call(definition, rule)
 	if err != nil {
 		return nil, err
 	}
@@ -213,7 +196,10 @@ func (api *API) DeleteWAFRule(rule *WAFRule) (*WAFRule, error) {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteWAFRule")
 	}
 
-	result, err := api.call(methods["deleteWAFRule"], rule)
+	definition := methods["deleteWAFRule"]
+	definition.Action = fmt.Sprintf(definition.Action, rule.ID)
+
+	result, err := api.call(definition, rule)
 	if err != nil {
 		return nil, err
 	}

@@ -43,7 +43,7 @@ redirect := &myrasec.Redirect{
     SubDomainName: "www.example.com.",
     Type:          "redirect",
 }
-r, err := api.CreateRedirect(redirect, "www.example.com")
+r, err := api.CreateRedirect(redirect, 1234, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -55,7 +55,7 @@ The listing operation returns a list of redirects for the given domain.
 
 ### Example
 ```go
-redirects, err := api.ListRedirects("www.example.com", nil)
+redirects, err := api.ListRedirects(1234, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -65,7 +65,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListRed
 
 | name | description | default |
 |---|---|---|
-| `search` (string) | `dns` and `tag` | Filter by the specified search query | null |
+| `search` (string) | Filter by the specified search query | null |
 | `page` | Specify the page of the result | 1 |
 | `pageSize` | Specify the amount of results in the response | 50 |
 | `enabled` | Return only enabled IP filters | null |
@@ -83,7 +83,7 @@ redirect := &myrasec.Redirect{
     Enabled: false,
 }
 
-r, err := api.UpdateRedirect(redirect, "www.example.com");
+r, err := api.UpdateRedirect(redirect, 1234, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -102,7 +102,7 @@ redirect := &myrasec.Redirect{
     },
 }
 
-r, err := api.DeleteRedirect(redirect, "www.example.com");
+r, err := api.DeleteRedirect(redirect, 1234, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
