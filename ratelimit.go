@@ -91,9 +91,9 @@ func (api *API) DeleteRateLimit(ratelimit *RateLimit, domainId int, subDomainNam
 	definition := methods["deleteRateLimit"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, ratelimit.ID)
 
-	result, err := api.call(definition, ratelimit)
+	_, err := api.call(definition, ratelimit)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*RateLimit), nil
+	return ratelimit, nil
 }

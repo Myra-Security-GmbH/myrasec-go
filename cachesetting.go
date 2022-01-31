@@ -93,9 +93,9 @@ func (api *API) DeleteCacheSetting(setting *CacheSetting, domainId int, subDomai
 	definition := methods["deleteCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, setting.ID)
 
-	result, err := api.call(definition, setting)
+	_, err := api.call(definition, setting)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CacheSetting), nil
+	return setting, nil
 }

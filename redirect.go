@@ -92,9 +92,9 @@ func (api *API) DeleteRedirect(redirect *Redirect, domainId int, subDomainName s
 	definition := methods["deleteRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, redirect.ID)
 
-	result, err := api.call(definition, redirect)
+	_, err := api.call(definition, redirect)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Redirect), nil
+	return redirect, nil
 }

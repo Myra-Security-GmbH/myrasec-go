@@ -111,9 +111,9 @@ func (api *API) DeleteDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	definition := methods["deleteDNSRecord"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, record.ID)
 
-	result, err := api.call(definition, record)
+	_, err := api.call(definition, record)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DNSRecord), nil
+	return record, nil
 }

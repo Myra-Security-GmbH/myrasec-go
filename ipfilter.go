@@ -91,9 +91,9 @@ func (api *API) DeleteIPFilter(filter *IPFilter, domainId int, subDomainName str
 	definition := methods["deleteIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, filter.ID)
 
-	result, err := api.call(definition, filter)
+	_, err := api.call(definition, filter)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*IPFilter), nil
+	return filter, nil
 }

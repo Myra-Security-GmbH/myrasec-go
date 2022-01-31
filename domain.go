@@ -89,9 +89,9 @@ func (api *API) DeleteDomain(domain *Domain) (*Domain, error) {
 	definition := methods["deleteDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, domain.ID)
 
-	result, err := api.call(definition, domain)
+	_, err := api.call(definition, domain)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Domain), nil
+	return domain, nil
 }

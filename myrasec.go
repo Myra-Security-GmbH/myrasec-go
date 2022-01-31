@@ -144,6 +144,11 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 // decodeDefaultResponse handles the default decoding of a response.
 //
 func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+
+	if definition.Method == http.MethodDelete {
+		return nil, nil
+	}
+
 	var res Response
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
@@ -158,7 +163,7 @@ func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface
 		return nil, errors.New(errorMsg)
 	}
 
-	return prepareResult(res, definition.Result)
+	return prepareResult(res, definition)
 }
 
 //
@@ -263,17 +268,18 @@ func (api *API) prepareDELETERequest(apiURL string, payload ...interface{}) (*ht
 	return http.NewRequest(http.MethodDelete, apiURL, bytes.NewBuffer(data))
 }
 
-//
-// prepareResult ...
-//
-func prepareResult(response Response, definition interface{}) (interface{}, error) {
+func prepareResult(response Response, definition APIMethod) (interface{}, error) {
 	var result interface{}
 	if response.TargetObject != nil {
 		result = response.TargetObject[0]
 	} else if response.List != nil {
 		result = response.List
 	} else if response.Data != nil {
-		result = response.Data
+		if definition.Method == http.MethodGet {
+			result = response.Data
+		} else {
+			result = response.Data[0]
+		}
 	}
 
 	tmp, err := json.Marshal(result)
@@ -281,12 +287,12 @@ func prepareResult(response Response, definition interface{}) (interface{}, erro
 		return nil, err
 	}
 
-	if definition == nil {
+	if definition.Result == nil {
 		return tmp, nil
 	}
 
 	decoder := json.NewDecoder(bytes.NewReader(tmp))
-	retValue := reflect.New(reflect.TypeOf(definition))
+	retValue := reflect.New(reflect.TypeOf(definition.Result))
 	res := retValue.Interface()
 	decoder.Decode(res)
 

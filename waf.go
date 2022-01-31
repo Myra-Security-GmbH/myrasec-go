@@ -199,9 +199,9 @@ func (api *API) DeleteWAFRule(rule *WAFRule) (*WAFRule, error) {
 	definition := methods["deleteWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, rule.ID)
 
-	result, err := api.call(definition, rule)
+	_, err := api.call(definition, rule)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*WAFRule), nil
+	return rule, nil
 }
