@@ -114,7 +114,7 @@ func (api *API) UpdateDNSRecord(record *DNSRecord, domainName string) (*DNSRecor
 //
 // DeleteDNSRecord deletes the passed DNS record using the MYRA API
 //
-func (api *API) DeleteDNSRecord(record *DNSRecord, domainName string) (*DNSRecord, error) {
+func (api *API) DeleteDNSRecord(record *DNSRecord, domainName int) (*DNSRecord, error) {
 	if _, ok := methods["deleteDNSRecord"]; !ok {
 		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteDNSRecord")
 	}
