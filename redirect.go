@@ -20,6 +20,7 @@ type Redirect struct {
 	Sort          int             `json:"sort,omitempty"`
 	MatchingType  string          `json:"matchingType"`
 	Enabled       bool            `json:"enabled,omitempty"`
+	ExpertMode    bool            `json:"expertMode,omitempty"`
 }
 
 //
