@@ -13,7 +13,7 @@ type IPRange struct {
 }
 ```
 
-| Field | Type | Description|
+| Field | Type | Description |
 |---|---|---|
 | `ID` | int | Id is an unique identifier for an object. |
 | `Created` | *types.DateTime | Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call. |
@@ -37,7 +37,7 @@ if err != nil {
 
 It is possible to pass a map of parameters (`map[string]string`) to the `ListIPRanges` function.
 
-| name | description | default |
+| Name | Description | Default |
 |---|---|---|
 | `search` | Filter by the specified search query | null |
 | `page` | Specify the page of the result | 1 |

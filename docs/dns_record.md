@@ -19,7 +19,7 @@ type DNSRecord struct {
 }
 ```
 
-| Field | Type | Description|
+| Field | Type | Description |
 |---|---|---|
 | `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a DnsRecord it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an ISO8601 format. It will be created by the server after creating a new DnsRecord object. This value is only informational so it is not necessary to add this an attribute to any API call. |
@@ -49,7 +49,7 @@ type UpstreamOptions struct {
 }
 ```
 
-| Field | Type | Description|
+| Field | Type | Description |
 |---|---|---|
 | `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a DnsRecord it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created will be created by the server after creating a new UpstreamOptions object. This value is only informational so it is not necessary to add this an attribute to any API call. |
@@ -101,7 +101,7 @@ if err != nil {
 
 It is possible to pass a map of parameters (`map[string]string`) to the `ListDNSRecords` function.
 
-| name | description | default |
+| Name | Description | Default |
 |---|---|---|
 | `search` | Filters the DNS records with the specified string in the name or in the value field | null |
 | `page` | Specify the page of the result | 1 |

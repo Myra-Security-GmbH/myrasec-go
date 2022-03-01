@@ -53,7 +53,7 @@ type Settings struct {
 }
 ```
 
-| Field | Type | Description|
+| Field | Type | Description |
 |---|---|---|
 | AccessLog | bool | Activate separated access log. A access log from each Myra node delivering your website will be saved. You can download the access log files via sftp from custlogs.myracloud.com. |
 | AntibotPostFlood | bool |  |

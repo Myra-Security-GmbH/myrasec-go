@@ -14,7 +14,7 @@ type IPFilter struct {
 }
 ```
 
-| Field | Type | Description|
+| Field | Type | Description |
 |---|---|---|
 | `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an IP filter it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call. |
@@ -56,7 +56,7 @@ if err != nil {
 
 It is possible to pass a map of parameters (`map[string]string`) to the `ListIPFilters` function.
 
-| name | description | default |
+| Name | Description | Default |
 |---|---|---|
 | `search` | Filter by the specified search query | null |
 | `page` | Specify the page of the result | 1 |

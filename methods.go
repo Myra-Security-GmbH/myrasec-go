@@ -235,6 +235,32 @@ var methods = map[string]APIMethod{
 		Result: WAFRule{},
 	},
 
+	//SSL certificate related API calls
+	"listSSLCertificates": {
+		Name:   "listSSLCertificates",
+		Action: "certificates/%s/%d",
+		Method: http.MethodGet,
+		Result: []SSLCertificate{},
+	},
+	"createSSLCertificate": {
+		Name:   "createSSLCertificate",
+		Action: "certificates/%s",
+		Method: http.MethodPut,
+		Result: SSLCertificate{},
+	},
+	"updateSSLCertificate": {
+		Name:   "updateSSLCertificate",
+		Action: "certificates/%s",
+		Method: http.MethodPost,
+		Result: SSLCertificate{},
+	},
+	"deleteSSLCertificate": {
+		Name:   "deleteSSLCertificate",
+		Action: "certificates/%s",
+		Method: http.MethodPost,
+		Result: SSLCertificate{},
+	},
+
 	//IP range related API calls
 	"listIPRanges": {
 		Name:   "listIPRanges",
