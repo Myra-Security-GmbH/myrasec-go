@@ -1,6 +1,6 @@
-module github.com/Myra-Security-GmbH/myrasec-go
+module github.com/Myra-Security-GmbH/myrasec-go/v2
 
-go 1.13
+go 1.17
 
 require (
 	github.com/Myra-Security-GmbH/signature v0.0.0-20210212094602-405a72309036

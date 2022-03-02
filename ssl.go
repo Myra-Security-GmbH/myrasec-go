@@ -3,7 +3,7 @@ package myrasec
 import (
 	"fmt"
 
-	"github.com/Myra-Security-GmbH/myrasec-go/pkg/types"
+	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
 type Certificate struct {
