@@ -19,3 +19,4 @@ A Go library for interacting with Myra Security API.
 - [IP rate limit](./docs/ratelimit.md)
 - [Redirect](./docs/redirect.md)
 - [IP ranges](./docs/ip_range.md)
+- [IP ranges](./docs/ssl.md)
