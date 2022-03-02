@@ -15,7 +15,7 @@ type Certificate struct {
 	Algorithm    string          `json:"algorithm"`
 	ValidFrom    *types.DateTime `json:"validFrom"`
 	ValidTo      *types.DateTime `json:"validTo"`
-	Fingerprint  string          `json:"finterprint"`
+	Fingerprint  string          `json:"fingerprint"`
 	SerialNumber string          `json:"serialNumber"`
 	Cert         string          `json:"cert,omitempty"`
 }
