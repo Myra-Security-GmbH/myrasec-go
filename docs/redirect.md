@@ -10,8 +10,9 @@ type Redirect struct {
 	SubDomainName string          `json:"subDomainName"`
 	Source        string          `json:"source"`
 	Destination   string          `json:"destination"`
-	Sort          int             `json:"sort,omitempty"`
 	MatchingType  string          `json:"matchingType"`
+	Comment       string          `json:"comment,omitempty"`
+	Sort          int             `json:"sort,omitempty"`
 	Enabled       bool            `json:"enabled,omitempty"`
 }
 ```
@@ -25,6 +26,7 @@ type Redirect struct {
 | `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) where this redirect belongs to. This value cannot be changed through the object’s attribute as it is set via URL parameter. |
 | `Source` | string | Location to match your query against, it is also possible to match against a regexp instead of hard coded locations |
 | `Destination` | string | The destination you want your customer redirect to. This can be a valid HTTP(S) address or a relative location on your domain. |
+| `Comment` | string |  |
 | `Sort` | int | |
 | `MatchingType` | string | The matching type allows you to change the way how the redirect is matched. This field allows three different values: ’prefix’, ’suffix’, and ’exact’. |
 | `Enabled` | bool | |

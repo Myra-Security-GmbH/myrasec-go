@@ -14,11 +14,11 @@ type IPFilter struct {
 	ID         int             `json:"id,omitempty"`
 	Created    *types.DateTime `json:"created,omitempty"`
 	Modified   *types.DateTime `json:"modified,omitempty"`
+	ExpireDate *types.DateTime `json:"expireDate,omitempty"`
 	Value      string          `json:"value"`
 	Type       string          `json:"type"`
-	ExpireDate *types.DateTime `json:"expireDate,omitempty"`
-	Enabled    bool            `json:"enabled,omitempty"`
 	Comment    string          `json:"comment,omitempty"`
+	Enabled    bool            `json:"enabled,omitempty"`
 }
 
 //

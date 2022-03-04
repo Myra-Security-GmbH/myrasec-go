@@ -18,8 +18,9 @@ type Redirect struct {
 	SubDomainName string          `json:"subDomainName"`
 	Source        string          `json:"source"`
 	Destination   string          `json:"destination"`
-	Sort          int             `json:"sort,omitempty"`
+	Comment       string          `json:"comment,omitempty"`
 	MatchingType  string          `json:"matchingType"`
+	Sort          int             `json:"sort,omitempty"`
 	Enabled       bool            `json:"enabled,omitempty"`
 	ExpertMode    bool            `json:"expertMode,omitempty"`
 }

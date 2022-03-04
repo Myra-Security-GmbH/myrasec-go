@@ -14,11 +14,11 @@ type IPRange struct {
 	ID        int             `json:"id,omitempty"`
 	Created   *types.DateTime `json:"created,omitempty"`
 	Modified  *types.DateTime `json:"modified,omitempty"`
-	Network   string          `json:"network"`
 	ValidFrom *types.DateTime `json:"validFrom,omitempty"`
 	ValidTo   *types.DateTime `json:"validTo,omitempty"`
-	Enabled   bool            `json:"enabled,omitempty"`
+	Network   string          `json:"network"`
 	Comment   string          `json:"comment,omitempty"`
+	Enabled   bool            `json:"enabled,omitempty"`
 }
 
 //

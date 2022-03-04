@@ -5,11 +5,11 @@ type IPRange struct {
 	ID        int             `json:"id,omitempty"`
 	Created   *types.DateTime `json:"created,omitempty"`
 	Modified  *types.DateTime `json:"modified,omitempty"`
-	Network   string          `json:"network"`
 	ValidFrom *types.DateTime `json:"validFrom,omitempty"`
 	ValidTo   *types.DateTime `json:"validTo,omitempty"`
-	Enabled   bool            `json:"enabled,omitempty"`
+	Network   string          `json:"network"`
 	Comment   string          `json:"comment,omitempty"`
+	Enabled   bool            `json:"enabled,omitempty"`
 }
 ```
 
@@ -18,11 +18,11 @@ type IPRange struct {
 | `ID` | int | Id is an unique identifier for an object. |
 | `Created` | *types.DateTime | Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. |
-| `Network` | string | The nework (CIDR notation) |
 | `ValidFrom` | *types.DateTime | |
 | `ValidTo` | *types.DateTime | |
-| `Enabled` | bool | |
+| `Network` | string | The nework (CIDR notation) |
 | `Comment` | string | |
+| `Enabled` | bool | |
 
 ## Read
 The listing operation returns a list of IP ranges.
