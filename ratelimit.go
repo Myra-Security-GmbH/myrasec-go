@@ -13,11 +13,11 @@ type RateLimit struct {
 	ID            int             `json:"id,omitempty"`
 	Created       *types.DateTime `json:"created,omitempty"`
 	Modified      *types.DateTime `json:"modified,omitempty"`
-	Burst         int             `json:"burst"`
 	Network       string          `json:"network"`
 	SubDomainName string          `json:"subDomainName"`
-	Timeframe     int             `json:"timeframe"`
 	Type          string          `json:"type"`
+	Burst         int             `json:"burst"`
+	Timeframe     int             `json:"timeframe"`
 	Value         int             `json:"value"`
 }
 
