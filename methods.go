@@ -20,6 +20,20 @@ type APIMethod struct {
 }
 
 var methods = map[string]APIMethod{
+	// VHost related API calls
+	"listAllSubdomains": {
+		Name:   "listAllSubdomains",
+		Action: "subdomains",
+		Method: http.MethodGet,
+		Result: []VHost{},
+	},
+	"listSubdomainsForDomain": {
+		Name:   "listSubdomainsForDomain",
+		Action: "domain/%d/subdomains",
+		Method: http.MethodGet,
+		Result: []VHost{},
+	},
+
 	// Domain related API calls
 	"listDomains": {
 		Name:   "listDomains",
