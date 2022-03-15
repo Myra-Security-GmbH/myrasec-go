@@ -21,6 +21,25 @@ type IPFilter struct {
 }
 
 //
+// GetIPFilter returns a single ip filter with/for the given identifier
+//
+func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilter, error) {
+	if _, ok := methods["getIPFilter"]; !ok {
+		return nil, fmt.Errorf("Passed action [%s] is not supported", "getIPFilter")
+	}
+
+	definition := methods["getIPFilter"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, id)
+
+	result, err := api.call(definition, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+
+	return result.(*IPFilter), nil
+}
+
+//
 // ListIPFilters returns a slice containing all visible ip filters for a subdomain
 //
 func (api *API) ListIPFilters(domainId int, subDomainName string, params map[string]string) ([]IPFilter, error) {

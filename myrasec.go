@@ -149,6 +149,30 @@ func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface
 		return nil, nil
 	}
 
+	res, err := decodeBaseResponse(resp, definition)
+	if err != nil {
+		return nil, err
+	}
+
+	return prepareResult(*res, definition)
+}
+
+//
+// decodeSingleElementResponse decodes the response for a single element (like GetDomain or GetDNSRecord)
+//
+func decodeSingleElementResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+	res, err := decodeBaseResponse(resp, definition)
+	if err != nil {
+		return nil, err
+	}
+
+	return prepareSingleElementResult(*res, definition)
+}
+
+//
+// decodeBaseResponse decodes the passed http.Response to a Response struct for further processing
+//
+func decodeBaseResponse(resp *http.Response, definition APIMethod) (*Response, error) {
 	var res Response
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
@@ -163,7 +187,7 @@ func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface
 		return nil, errors.New(errorMsg)
 	}
 
-	return prepareResult(res, definition)
+	return &res, nil
 }
 
 //
@@ -268,6 +292,9 @@ func (api *API) prepareDELETERequest(apiURL string, payload ...interface{}) (*ht
 	return http.NewRequest(http.MethodDelete, apiURL, bytes.NewBuffer(data))
 }
 
+//
+// prepareResult ...
+//
 func prepareResult(response Response, definition APIMethod) (interface{}, error) {
 	var result interface{}
 	if response.TargetObject != nil {
@@ -281,6 +308,30 @@ func prepareResult(response Response, definition APIMethod) (interface{}, error)
 			result = response.Data[0]
 		}
 	}
+
+	tmp, err := json.Marshal(result)
+	if err != nil {
+		return nil, err
+	}
+
+	if definition.Result == nil {
+		return tmp, nil
+	}
+
+	decoder := json.NewDecoder(bytes.NewReader(tmp))
+	retValue := reflect.New(reflect.TypeOf(definition.Result))
+	res := retValue.Interface()
+	decoder.Decode(res)
+
+	return res, err
+}
+
+//
+// prepareSingleElementResult ...
+//
+func prepareSingleElementResult(response Response, definition APIMethod) (interface{}, error) {
+	var result interface{}
+	result = response.Data[0]
 
 	tmp, err := json.Marshal(result)
 	if err != nil {

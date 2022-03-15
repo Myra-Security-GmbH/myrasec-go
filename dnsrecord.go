@@ -41,6 +41,25 @@ type UpstreamOptions struct {
 }
 
 //
+// GetDNSRecord returns a single DNS record with/for the given identifier
+//
+func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
+	if _, ok := methods["getDNSRecord"]; !ok {
+		return nil, fmt.Errorf("Passed action [%s] is not supported", "getDNSRecord")
+	}
+
+	definition := methods["getDNSRecord"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, id)
+
+	result, err := api.call(definition, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+
+	return result.(*DNSRecord), nil
+}
+
+//
 // ListDNSRecords returns a slice containing all visible DNS records for a domain
 //
 func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRecord, error) {

@@ -37,6 +37,25 @@ type SSLIntermediate struct {
 }
 
 //
+// GetSSLCertificate returns a single SSL certificate with/for the given identifier
+//
+func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error) {
+	if _, ok := methods["getSSLCertificate"]; !ok {
+		return nil, fmt.Errorf("Passed action [%s] is not supported", "getSSLCertificate")
+	}
+
+	definition := methods["getSSLCertificate"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, id)
+
+	result, err := api.call(definition, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+
+	return result.(*SSLCertificate), nil
+}
+
+//
 // ListSSLCertificates returns a slice containing all visible SSL certificates for a domain
 //
 func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]SSLCertificate, error) {

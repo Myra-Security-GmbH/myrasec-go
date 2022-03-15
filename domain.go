@@ -21,6 +21,25 @@ type Domain struct {
 }
 
 //
+// GetDomain returns a single domain with/for the given identifier
+//
+func (api *API) GetDomain(id int) (*Domain, error) {
+	if _, ok := methods["getDomain"]; !ok {
+		return nil, fmt.Errorf("Passed action [%s] is not supported", "getDomain")
+	}
+
+	definition := methods["getDomain"]
+	definition.Action = fmt.Sprintf(definition.Action, id)
+
+	result, err := api.call(definition, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+
+	return result.(*Domain), nil
+}
+
+//
 // ListDomains returns a slice containing all visible domains
 //
 func (api *API) ListDomains(params map[string]string) ([]Domain, error) {

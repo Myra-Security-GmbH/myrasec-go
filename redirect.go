@@ -25,6 +25,25 @@ type Redirect struct {
 }
 
 //
+// GetRedirect returns a single redirect with/for the given identifier
+//
+func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redirect, error) {
+	if _, ok := methods["getRedirect"]; !ok {
+		return nil, fmt.Errorf("Passed action [%s] is not supported", "getRedirect")
+	}
+
+	definition := methods["getRedirect"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, id)
+
+	result, err := api.call(definition, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+
+	return result.(*Redirect), nil
+}
+
+//
 // ListRedirects returns a slice containing all visible redirects for a subdomain
 //
 func (api *API) ListRedirects(domainId int, subDomainName string, params map[string]string) ([]Redirect, error) {

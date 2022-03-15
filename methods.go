@@ -35,6 +35,13 @@ var methods = map[string]APIMethod{
 	},
 
 	// Domain related API calls
+	"getDomain": {
+		Name:               "getDomain",
+		Action:             "domains/%d",
+		Method:             http.MethodGet,
+		Result:             Domain{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	},
 	"listDomains": {
 		Name:   "listDomains",
 		Action: "domains",
@@ -61,6 +68,13 @@ var methods = map[string]APIMethod{
 	},
 
 	// DNS Record related API calls
+	"getDNSRecord": {
+		Name:               "getDNSRecord",
+		Action:             "domain/%d/dns-records/%d",
+		Method:             http.MethodGet,
+		Result:             DNSRecord{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	},
 	"listDNSRecords": {
 		Name:   "listDNSRecords",
 		Action: "domain/%d/dns-records",
@@ -113,6 +127,13 @@ var methods = map[string]APIMethod{
 	},
 
 	// Redirect related API calls
+	"getRedirect": {
+		Name:               "getRedirect",
+		Action:             "domain/%d/redirects/%s/%d",
+		Method:             http.MethodGet,
+		Result:             Redirect{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	},
 	"listRedirects": {
 		Name:   "listRedirects",
 		Action: "domain/%d/redirects/%s",
@@ -154,6 +175,13 @@ var methods = map[string]APIMethod{
 	},
 
 	//IP Filter related API calls
+	"getIPFilter": {
+		Name:               "getIPFilter",
+		Action:             "domain/%d/ip-filters/%s/%d",
+		Method:             http.MethodGet,
+		Result:             IPFilter{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	},
 	"listIPFilters": {
 		Name:   "listIPFilters",
 		Action: "domain/%d/ip-filters/%s",
@@ -250,6 +278,13 @@ var methods = map[string]APIMethod{
 	},
 
 	//SSL certificate related API calls
+	"getSSLCertificate": {
+		Name:               "getSSLCertificate",
+		Action:             "domain/%d/ssl/certificates/%d",
+		Method:             http.MethodGet,
+		Result:             SSLCertificate{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	},
 	"listSSLCertificates": {
 		Name:   "listSSLCertificates",
 		Action: "domain/%d/ssl/certificates",
