@@ -36,7 +36,7 @@ type WAFAction struct {
 	ID                int             `json:"id,omitempty"`
 	Created           *types.DateTime `json:"created,omitempty"`
 	Modified          *types.DateTime `json:"modified,omitempty"`
-	ForceCustomValues bool            `json:"forceCustomValues,omitempty"`
+	ForceCustomValues bool            `json:"forceCustomValues"`
 	AvailablePhases   int             `json:"availablePhases"`
 	Name              string          `json:"name"`
 	Type              string          `json:"type"`
@@ -51,7 +51,7 @@ type WAFCondition struct {
 	ID                int             `json:"id,omitempty"`
 	Created           *types.DateTime `json:"created,omitempty"`
 	Modified          *types.DateTime `json:"modified,omitempty"`
-	ForceCustomValues bool            `json:"forceCustomValues,omitempty"`
+	ForceCustomValues bool            `json:"forceCustomValues"`
 	AvailablePhases   int             `json:"availablePhases"`
 	Alias             string          `json:"alias"`
 	Category          string          `json:"category"`

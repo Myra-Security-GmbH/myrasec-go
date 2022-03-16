@@ -10,8 +10,8 @@ type VHost struct {
 	Label      string `json:"label,omitempty"`
 	Value      string `json:"value,omitempty"`
 	DomainName string `json:"domainName,omitempty"`
-	Access     bool   `json:"access,omitempty"`
-	Paused     bool   `json:"paused,omitempty"`
+	Access     bool   `json:"access"`
+	Paused     bool   `json:"paused"`
 }
 
 //

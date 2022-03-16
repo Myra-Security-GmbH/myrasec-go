@@ -27,7 +27,7 @@ type SSLCertificate struct {
 	ExtendedValidation  bool              `json:"extendedValidation"`
 	Subdomains          []string          `json:"subdomains,omitempty"`
 	Key                 string            `json:"key,omitempty"`
-	CertRefreshForced   bool              `json:"certRefreshForced,omitempty"`
+	CertRefreshForced   bool              `json:"certRefreshForced"`
 	CertToRefresh       int               `json:"certToRefresh,omitempty"`
 }
 

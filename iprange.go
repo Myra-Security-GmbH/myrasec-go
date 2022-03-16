@@ -16,7 +16,7 @@ type IPRange struct {
 	Network   string          `json:"network"`
 	ValidFrom *types.DateTime `json:"validFrom,omitempty"`
 	ValidTo   *types.DateTime `json:"validTo,omitempty"`
-	Enabled   bool            `json:"enabled,omitempty"`
+	Enabled   bool            `json:"enabled"`
 	Comment   string          `json:"comment,omitempty"`
 }
 
