@@ -19,8 +19,8 @@ type CacheSetting struct {
 	TTL         int             `json:"ttl"`
 	NotFoundTTL int             `json:"notFoundTtl"`
 	Sort        int             `json:"sort,omitempty"`
-	Enabled     bool            `json:"enabled,omitempty"`
-	Enforce     bool            `json:"enforce,omitempty"`
+	Enabled     bool            `json:"enabled"`
+	Enforce     bool            `json:"enforce"`
 }
 
 //

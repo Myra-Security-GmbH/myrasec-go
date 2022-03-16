@@ -21,8 +21,8 @@ type Redirect struct {
 	Comment       string          `json:"comment,omitempty"`
 	MatchingType  string          `json:"matchingType"`
 	Sort          int             `json:"sort,omitempty"`
-	Enabled       bool            `json:"enabled,omitempty"`
-	ExpertMode    bool            `json:"expertMode,omitempty"`
+	Enabled       bool            `json:"enabled"`
+	ExpertMode    bool            `json:"expertMode"`
 }
 
 //

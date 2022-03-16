@@ -18,7 +18,7 @@ type IPFilter struct {
 	Value      string          `json:"value"`
 	Type       string          `json:"type"`
 	Comment    string          `json:"comment,omitempty"`
-	Enabled    bool            `json:"enabled,omitempty"`
+	Enabled    bool            `json:"enabled"`
 }
 
 //
