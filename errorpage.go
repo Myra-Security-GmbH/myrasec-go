@@ -8,9 +8,9 @@ import (
 )
 
 //
-// ErrorPageUpdate
+// errorPageUpdate
 //
-type ErrorPageUpdate struct {
+type errorPageUpdate struct {
 	ID          int                     `json:"id,omitempty"`
 	PageContent string                  `json:"pageContent,omitempty"`
 	Selection   map[string]map[int]bool `json:"selection,omitempty"`
@@ -142,15 +142,16 @@ func decodeErrorPageResponse(resp *http.Response, definition APIMethod) (interfa
 //
 // convertErrorPageToErrorPageUpdate
 //
-func convertErrorPageToErrorPageUpdate(errorPage *ErrorPage) *ErrorPageUpdate {
-	errorCode := make(map[int]bool)
-	errorCode[errorPage.ErrorCode] = true
-	selection := make(map[string]map[int]bool)
-	selection[errorPage.SubDomainName] = errorCode
+func convertErrorPageToErrorPageUpdate(errorPage *ErrorPage) *errorPageUpdate {
+	errorCode := map[int]bool{
+		errorPage.ErrorCode: true,
+	}
+	selection := map[string]map[int]bool{
+		errorPage.SubDomainName: errorCode,
+	}
 
-	update := ErrorPageUpdate{
+	return &errorPageUpdate{
 		PageContent: errorPage.Content,
 		Selection:   selection,
 	}
-	return &update
 }
