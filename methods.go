@@ -317,4 +317,39 @@ var methods = map[string]APIMethod{
 		Method: http.MethodGet,
 		Result: []IPRange{},
 	},
+
+	// Error Page related API calls
+	"listErrorPages": {
+		Name:   "listErrorPages",
+		Action: "domain/%d/errorpages",
+		Method: http.MethodGet,
+		Result: []ErrorPage{},
+	},
+	"getErrorPage": {
+		Name:               "getErrorPage",
+		Action:             "domain/%d/errorpages/%d",
+		Method:             http.MethodGet,
+		Result:             ErrorPage{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	},
+	"createErrorPage": {
+		Name:               "createErrorPage",
+		Action:             "domain/%d/errorpages",
+		Method:             http.MethodPost,
+		Result:             ErrorPage{},
+		ResponseDecodeFunc: decodeErrorPageResponse,
+	},
+	"updateErrorPage": {
+		Name:               "updateErrorPage",
+		Action:             "domain/%d/errorpages",
+		Method:             http.MethodPost,
+		Result:             ErrorPage{},
+		ResponseDecodeFunc: decodeErrorPageResponse,
+	},
+	"deleteErrorPage": {
+		Name:   "deleteErrorPage",
+		Action: "domain/%d/errorpages",
+		Method: http.MethodDelete,
+		Result: ErrorPage{},
+	},
 }
