@@ -76,7 +76,7 @@ type Warning struct {
 //
 func New(key, secret string) (*API, error) {
 	if key == "" || secret == "" {
-		return nil, errors.New("Missing API credentials")
+		return nil, errors.New("missing API credentials")
 	}
 
 	api := &API{
@@ -201,16 +201,12 @@ func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*h
 	switch definition.Method {
 	case http.MethodGet:
 		req, err = api.prepareGETRequest(apiURL, payload...)
-		break
 	case http.MethodPost:
 		req, err = api.preparePOSTRequest(apiURL, payload...)
-		break
 	case http.MethodPut:
 		req, err = api.preparePUTRequest(apiURL, payload...)
-		break
 	case http.MethodDelete:
 		req, err = api.prepareDELETERequest(apiURL, payload...)
-		break
 	default:
 		req, err = nil, fmt.Errorf("passed APIMethod definition has a not supported HTTP method - [%s] is not supported", definition.Method)
 	}
@@ -330,8 +326,7 @@ func prepareResult(response Response, definition APIMethod) (interface{}, error)
 // prepareSingleElementResult ...
 //
 func prepareSingleElementResult(response Response, definition APIMethod) (interface{}, error) {
-	var result interface{}
-	result = response.Data[0]
+	result := response.Data[0]
 
 	tmp, err := json.Marshal(result)
 	if err != nil {

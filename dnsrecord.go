@@ -35,7 +35,7 @@ type UpstreamOptions struct {
 	Modified    *types.DateTime `json:"modified,omitempty"`
 	Backup      bool            `json:"backup"`
 	Down        bool            `json:"down"`
-	FailTimeout int             `json:"failTimeout"`
+	FailTimeout string          `json:"failTimeout"`
 	MaxFails    int             `json:"maxFails"`
 	Weight      int             `json:"weight"`
 }
@@ -45,7 +45,7 @@ type UpstreamOptions struct {
 //
 func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
 	if _, ok := methods["getDNSRecord"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "getDNSRecord")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "getDNSRecord")
 	}
 
 	definition := methods["getDNSRecord"]
@@ -64,7 +64,7 @@ func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
 //
 func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRecord, error) {
 	if _, ok := methods["listDNSRecords"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listDNSRecords")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listDNSRecords")
 	}
 
 	definition := methods["listDNSRecords"]
@@ -76,9 +76,7 @@ func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRec
 	}
 
 	var records []DNSRecord
-	for _, v := range *result.(*[]DNSRecord) {
-		records = append(records, v)
-	}
+	records = append(records, *result.(*[]DNSRecord)...)
 
 	return records, nil
 }
@@ -124,7 +122,7 @@ func (api *API) UpdateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 //
 func (api *API) DeleteDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
 	if _, ok := methods["deleteDNSRecord"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteDNSRecord")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteDNSRecord")
 	}
 
 	definition := methods["deleteDNSRecord"]

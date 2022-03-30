@@ -66,7 +66,7 @@ type WAFCondition struct {
 //
 func (api *API) ListWAFConditions() ([]WAFCondition, error) {
 	if _, ok := methods["listWAFConditions"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listWAFConditions")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFConditions")
 	}
 
 	result, err := api.call(methods["listWAFConditions"])
@@ -74,9 +74,7 @@ func (api *API) ListWAFConditions() ([]WAFCondition, error) {
 		return nil, err
 	}
 	var conditions []WAFCondition
-	for _, v := range *result.(*[]WAFCondition) {
-		conditions = append(conditions, v)
-	}
+	conditions = append(conditions, *result.(*[]WAFCondition)...)
 
 	return conditions, nil
 }
@@ -86,7 +84,7 @@ func (api *API) ListWAFConditions() ([]WAFCondition, error) {
 //
 func (api *API) ListWAFActions() ([]WAFAction, error) {
 	if _, ok := methods["listWAFActions"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listWAFActions")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFActions")
 	}
 
 	result, err := api.call(methods["listWAFActions"])
@@ -94,9 +92,7 @@ func (api *API) ListWAFActions() ([]WAFAction, error) {
 		return nil, err
 	}
 	var actions []WAFAction
-	for _, v := range *result.(*[]WAFAction) {
-		actions = append(actions, v)
-	}
+	actions = append(actions, *result.(*[]WAFAction)...)
 
 	return actions, nil
 }
@@ -106,7 +102,7 @@ func (api *API) ListWAFActions() ([]WAFAction, error) {
 //
 func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule, error) {
 	if _, ok := methods["listWAFRules"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listWAFRules")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFRules")
 	}
 
 	definition := methods["listWAFRules"]
@@ -117,9 +113,7 @@ func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule,
 		return nil, err
 	}
 	var rules []WAFRule
-	for _, v := range *result.(*[]WAFRule) {
-		rules = append(rules, v)
-	}
+	rules = append(rules, *result.(*[]WAFRule)...)
 
 	return rules, nil
 }
@@ -129,7 +123,7 @@ func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule,
 //
 func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error) {
 	if _, ok := methods["fetchWAFRule"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "fetchWAFRule")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "fetchWAFRule")
 	}
 
 	definition := methods["fetchWAFRule"]
@@ -141,12 +135,10 @@ func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error)
 	}
 
 	var rules []WAFRule
-	for _, v := range *result.(*[]WAFRule) {
-		rules = append(rules, v)
-	}
+	rules = append(rules, *result.(*[]WAFRule)...)
 
 	if len(rules) <= 0 {
-		return nil, fmt.Errorf("Unable to fetch WAF rule for passed id [%d]", id)
+		return nil, fmt.Errorf("unable to fetch WAF rule for passed id [%d]", id)
 	}
 
 	return &rules[0], nil
@@ -157,7 +149,7 @@ func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error)
 //
 func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
 	if _, ok := methods["createWAFRule"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "createWAFRule")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createWAFRule")
 	}
 
 	definition := methods["createWAFRule"]
@@ -175,7 +167,7 @@ func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 //
 func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
 	if _, ok := methods["updateWAFRule"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateWAFRule")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateWAFRule")
 	}
 
 	definition := methods["updateWAFRule"]
@@ -193,7 +185,7 @@ func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 //
 func (api *API) DeleteWAFRule(rule *WAFRule) (*WAFRule, error) {
 	if _, ok := methods["deleteWAFRule"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteWAFRule")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteWAFRule")
 	}
 
 	definition := methods["deleteWAFRule"]

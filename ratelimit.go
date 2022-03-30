@@ -26,7 +26,7 @@ type RateLimit struct {
 //
 func (api *API) ListRateLimits(domainId int, subDomainName string, params map[string]string) ([]RateLimit, error) {
 	if _, ok := methods["listRateLimits"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listRateLimits")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listRateLimits")
 	}
 
 	definition := methods["listRateLimits"]
@@ -37,9 +37,7 @@ func (api *API) ListRateLimits(domainId int, subDomainName string, params map[st
 		return nil, err
 	}
 	var records []RateLimit
-	for _, v := range *result.(*[]RateLimit) {
-		records = append(records, v)
-	}
+	records = append(records, *result.(*[]RateLimit)...)
 
 	return records, nil
 }
@@ -49,7 +47,7 @@ func (api *API) ListRateLimits(domainId int, subDomainName string, params map[st
 //
 func (api *API) CreateRateLimit(ratelimit *RateLimit, domainId int, subDomainName string) (*RateLimit, error) {
 	if _, ok := methods["createRateLimit"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "createRateLimit")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createRateLimit")
 	}
 
 	definition := methods["createRateLimit"]
@@ -67,7 +65,7 @@ func (api *API) CreateRateLimit(ratelimit *RateLimit, domainId int, subDomainNam
 //
 func (api *API) UpdateRateLimit(ratelimit *RateLimit, domainId int, subDomainName string) (*RateLimit, error) {
 	if _, ok := methods["updateRateLimit"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateRateLimit")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateRateLimit")
 	}
 
 	definition := methods["updateRateLimit"]
@@ -85,7 +83,7 @@ func (api *API) UpdateRateLimit(ratelimit *RateLimit, domainId int, subDomainNam
 //
 func (api *API) DeleteRateLimit(ratelimit *RateLimit, domainId int, subDomainName string) (*RateLimit, error) {
 	if _, ok := methods["deleteRateLimit"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteRateLimit")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteRateLimit")
 	}
 
 	definition := methods["deleteRateLimit"]

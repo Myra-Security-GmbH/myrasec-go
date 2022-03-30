@@ -65,7 +65,7 @@ type Settings struct {
 //
 func (api *API) ListSettings(domainId int, subDomainName string, params map[string]string) (*Settings, error) {
 	if _, ok := methods["listSettings"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listSettings")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listSettings")
 	}
 
 	definition := methods["listSettings"]
@@ -84,7 +84,7 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 //
 func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName string) (*Settings, error) {
 	if _, ok := methods["updateSettings"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "createSettings")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createSettings")
 	}
 
 	definition := methods["updateSettings"]

@@ -25,7 +25,7 @@ type IPFilter struct {
 //
 func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilter, error) {
 	if _, ok := methods["getIPFilter"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "getIPFilter")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "getIPFilter")
 	}
 
 	definition := methods["getIPFilter"]
@@ -44,7 +44,7 @@ func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilt
 //
 func (api *API) ListIPFilters(domainId int, subDomainName string, params map[string]string) ([]IPFilter, error) {
 	if _, ok := methods["listIPFilters"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listIPFilters")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listIPFilters")
 	}
 
 	definition := methods["listIPFilters"]
@@ -56,9 +56,7 @@ func (api *API) ListIPFilters(domainId int, subDomainName string, params map[str
 	}
 
 	var records []IPFilter
-	for _, v := range *result.(*[]IPFilter) {
-		records = append(records, v)
-	}
+	records = append(records, *result.(*[]IPFilter)...)
 
 	return records, nil
 }
@@ -68,7 +66,7 @@ func (api *API) ListIPFilters(domainId int, subDomainName string, params map[str
 //
 func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
 	if _, ok := methods["createIPFilter"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "createIPFilter")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createIPFilter")
 	}
 
 	definition := methods["createIPFilter"]
@@ -86,7 +84,7 @@ func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName str
 //
 func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
 	if _, ok := methods["updateIPFilter"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateIPFilter")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateIPFilter")
 	}
 
 	definition := methods["updateIPFilter"]
@@ -104,7 +102,7 @@ func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName str
 //
 func (api *API) DeleteIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
 	if _, ok := methods["deleteIPFilter"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteIPFilter")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteIPFilter")
 	}
 
 	definition := methods["deleteIPFilter"]

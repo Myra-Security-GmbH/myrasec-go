@@ -413,7 +413,7 @@ func TestPreparePayloadWithMapPayload(t *testing.T) {
 		t.Error("Unexpected error parsing the payload")
 	}
 
-	if bytes.Compare(expected, current) != 0 {
+	if !bytes.Equal(expected, current) {
 		t.Errorf("Expected that [%s] is [%s]", string(current), string(expected))
 	}
 
@@ -435,7 +435,7 @@ func TestPreparePayloadWithStructPayload(t *testing.T) {
 		t.Error("Unexpected error parsing the payload")
 	}
 
-	if bytes.Compare(expected, current) != 0 {
+	if !bytes.Equal(expected, current) {
 		t.Errorf("Expected that [%s] is [%s]", string(current), string(expected))
 	}
 }
@@ -464,7 +464,7 @@ func TestPreparePayloadWithMultiplePayloads(t *testing.T) {
 		t.Error("Unexpected error parsing the payload")
 	}
 
-	if bytes.Compare(expected, current) != 0 {
+	if !bytes.Equal(expected, current) {
 		t.Errorf("Expected that [%s] is [%s]", string(current), string(expected))
 	}
 }
@@ -485,7 +485,7 @@ func TestPreparePayloadWithNilPayload(t *testing.T) {
 		t.Error("Unexpected error parsing the payload")
 	}
 
-	if bytes.Compare(expected, current) != 0 {
+	if !bytes.Equal(expected, current) {
 		t.Errorf("Expected that [%s] is [%s]", string(current), string(expected))
 	}
 }

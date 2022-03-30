@@ -35,7 +35,7 @@ type ErrorPage struct {
 //
 func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
 	if _, ok := methods["getErrorPage"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "getErrorPage")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "getErrorPage")
 	}
 
 	definition := methods["getErrorPage"]
@@ -54,7 +54,7 @@ func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
 //
 func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorPage, error) {
 	if _, ok := methods["listErrorPages"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listErrorPages")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listErrorPages")
 	}
 
 	definition := methods["listErrorPages"]
@@ -66,9 +66,7 @@ func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorP
 	}
 
 	var records []ErrorPage
-	for _, v := range *result.(*[]ErrorPage) {
-		records = append(records, v)
-	}
+	records = append(records, *result.(*[]ErrorPage)...)
 
 	return records, nil
 }
@@ -78,7 +76,7 @@ func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorP
 //
 func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
 	if _, ok := methods["createErrorPage"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "createErrorPage")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createErrorPage")
 	}
 
 	definition := methods["createErrorPage"]
@@ -98,7 +96,7 @@ func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 //
 func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
 	if _, ok := methods["updateErrorPage"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateErrorPage")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateErrorPage")
 	}
 
 	definition := methods["updateErrorPage"]
@@ -118,7 +116,7 @@ func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 //
 func (api *API) DeleteErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
 	if _, ok := methods["deleteErrorPage"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteErrorPage")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteErrorPage")
 	}
 
 	definition := methods["deleteErrorPage"]

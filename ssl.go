@@ -41,7 +41,7 @@ type SSLIntermediate struct {
 //
 func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error) {
 	if _, ok := methods["getSSLCertificate"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "getSSLCertificate")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "getSSLCertificate")
 	}
 
 	definition := methods["getSSLCertificate"]
@@ -60,7 +60,7 @@ func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error)
 //
 func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]SSLCertificate, error) {
 	if _, ok := methods["listSSLCertificates"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listSSLCertificates")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listSSLCertificates")
 	}
 
 	definition := methods["listSSLCertificates"]
@@ -72,9 +72,7 @@ func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]S
 	}
 
 	var records []SSLCertificate
-	for _, v := range *result.(*[]SSLCertificate) {
-		records = append(records, v)
-	}
+	records = append(records, *result.(*[]SSLCertificate)...)
 
 	return records, nil
 }
@@ -84,7 +82,7 @@ func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]S
 //
 func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	if _, ok := methods["createSSLCertificate"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "createSSLCertificate")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createSSLCertificate")
 	}
 
 	definition := methods["createSSLCertificate"]
@@ -102,7 +100,7 @@ func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 //
 func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	if _, ok := methods["updateSSLCertificate"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateSSLCertificate")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSSLCertificate")
 	}
 
 	definition := methods["updateSSLCertificate"]
@@ -120,7 +118,7 @@ func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 //
 func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	if _, ok := methods["deleteSSLCertificate"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteSSLCertificate")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteSSLCertificate")
 	}
 
 	definition := methods["deleteSSLCertificate"]

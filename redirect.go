@@ -29,7 +29,7 @@ type Redirect struct {
 //
 func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redirect, error) {
 	if _, ok := methods["getRedirect"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "getRedirect")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "getRedirect")
 	}
 
 	definition := methods["getRedirect"]
@@ -48,7 +48,7 @@ func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redire
 //
 func (api *API) ListRedirects(domainId int, subDomainName string, params map[string]string) ([]Redirect, error) {
 	if _, ok := methods["listRedirects"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listRedirects")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listRedirects")
 	}
 
 	definition := methods["listRedirects"]
@@ -59,9 +59,7 @@ func (api *API) ListRedirects(domainId int, subDomainName string, params map[str
 		return nil, err
 	}
 	var records []Redirect
-	for _, v := range *result.(*[]Redirect) {
-		records = append(records, v)
-	}
+	records = append(records, *result.(*[]Redirect)...)
 
 	return records, nil
 }
@@ -71,7 +69,7 @@ func (api *API) ListRedirects(domainId int, subDomainName string, params map[str
 //
 func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
 	if _, ok := methods["createRedirect"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "createRedirect")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createRedirect")
 	}
 
 	definition := methods["createRedirect"]
@@ -89,7 +87,7 @@ func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName s
 //
 func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
 	if _, ok := methods["updateRedirect"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateRedirect")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateRedirect")
 	}
 
 	definition := methods["updateRedirect"]
@@ -107,7 +105,7 @@ func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName s
 //
 func (api *API) DeleteRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
 	if _, ok := methods["deleteRedirect"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteRedirect")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteRedirect")
 	}
 
 	definition := methods["deleteRedirect"]

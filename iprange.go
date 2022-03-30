@@ -25,7 +25,7 @@ type IPRange struct {
 //
 func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
 	if _, ok := methods["listIPRanges"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listIPRanges")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listIPRanges")
 	}
 
 	definition := methods["listIPRanges"]
@@ -36,9 +36,7 @@ func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
 	}
 
 	var records []IPRange
-	for _, v := range *result.(*[]IPRange) {
-		records = append(records, v)
-	}
+	records = append(records, *result.(*[]IPRange)...)
 
 	return records, nil
 }

@@ -43,7 +43,7 @@ type UpstreamOptions struct {
 	Modified    *types.DateTime `json:"modified,omitempty"`
 	Backup      bool            `json:"backup"`
 	Down        bool            `json:"down"`
-	FailTimeout int             `json:"failTimeout"`
+	FailTimeout string          `json:"failTimeout"`
 	MaxFails    int             `json:"maxFails"`
 	Weight      int             `json:"weight"`
 }
@@ -56,7 +56,7 @@ type UpstreamOptions struct {
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. |
 | `Backup` | bool | Marks the origin server as backup. The servers marked as backup will receive the requests when the primary servers are unavailable. |
 | `Down` | bool | Marks the origin server as permanently unavailable. |
-| `FailTimeout` | bool | The time during which the specified number of unsuccessful attempts to communicate with the origin should happen to consider the origin unavailable and the period of time the origin will be considered unavailable. |
+| `FailTimeout` | string | The time during which the specified number of unsuccessful attempts to communicate with the origin should happen to consider the origin unavailable and the period of time the origin will be considered unavailable. |
 | `MaxFails` | int | Sets the number of unsuccessful attempts to communicate with the origin that should happen in the duration set by the failTimeout parameter to consider the origin unavailable for a duration also set by the failTimeout parameter. |
 | `Weight` | int | Defines the priority for the origin server, the higher the number, the higher the priority of the server. |
 
@@ -76,7 +76,7 @@ rec := &myrasec.DNSRecord{
     UpstreamOptions: &myrasec.UpstreamOptions{
         Backup:      false,
         Down:        false,
-        FailTimeout: 1,
+        FailTimeout: "1",
         MaxFails:    100,
         Weight:      1,
     },

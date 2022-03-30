@@ -25,7 +25,7 @@ type Domain struct {
 //
 func (api *API) GetDomain(id int) (*Domain, error) {
 	if _, ok := methods["getDomain"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "getDomain")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "getDomain")
 	}
 
 	definition := methods["getDomain"]
@@ -44,7 +44,7 @@ func (api *API) GetDomain(id int) (*Domain, error) {
 //
 func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 	if _, ok := methods["listDomains"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listDomains")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listDomains")
 	}
 
 	definition := methods["listDomains"]
@@ -55,9 +55,7 @@ func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 	}
 
 	var domains []Domain
-	for _, v := range *result.(*[]Domain) {
-		domains = append(domains, v)
-	}
+	domains = append(domains, *result.(*[]Domain)...)
 
 	return domains, nil
 }
@@ -67,7 +65,7 @@ func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 //
 func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
 	if _, ok := methods["createDomain"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "createDomain")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createDomain")
 	}
 
 	definition := methods["createDomain"]
@@ -84,7 +82,7 @@ func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
 //
 func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
 	if _, ok := methods["updateDomain"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateDomain")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateDomain")
 	}
 
 	definition := methods["updateDomain"]
@@ -102,7 +100,7 @@ func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
 //
 func (api *API) DeleteDomain(domain *Domain) (*Domain, error) {
 	if _, ok := methods["deleteDomain"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteDomain")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteDomain")
 	}
 
 	definition := methods["deleteDomain"]

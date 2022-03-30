@@ -19,7 +19,7 @@ type VHost struct {
 //
 func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 	if _, ok := methods["listAllSubdomains"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listAllSubdomains")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listAllSubdomains")
 	}
 
 	definition := methods["listAllSubdomains"]
@@ -31,9 +31,7 @@ func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 	}
 
 	var vhosts []VHost
-	for _, v := range *result.(*[]VHost) {
-		vhosts = append(vhosts, v)
-	}
+	vhosts = append(vhosts, *result.(*[]VHost)...)
 
 	return vhosts, nil
 }
@@ -43,7 +41,7 @@ func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 //
 func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]string) ([]VHost, error) {
 	if _, ok := methods["listSubdomainsForDomain"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listSubdomainsForDomain")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listSubdomainsForDomain")
 	}
 
 	definition := methods["listSubdomainsForDomain"]
@@ -55,9 +53,7 @@ func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]strin
 	}
 
 	var vhosts []VHost
-	for _, v := range *result.(*[]VHost) {
-		vhosts = append(vhosts, v)
-	}
+	vhosts = append(vhosts, *result.(*[]VHost)...)
 
 	return vhosts, nil
 }

@@ -27,7 +27,7 @@ type CacheSetting struct {
 //
 func (api *API) ListCacheSettings(domainId int, subDomainName string, params map[string]string) ([]CacheSetting, error) {
 	if _, ok := methods["listCacheSettings"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "listCacheSettings")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listCacheSettings")
 	}
 
 	definition := methods["listCacheSettings"]
@@ -39,9 +39,7 @@ func (api *API) ListCacheSettings(domainId int, subDomainName string, params map
 	}
 
 	var records []CacheSetting
-	for _, v := range *result.(*[]CacheSetting) {
-		records = append(records, v)
-	}
+	records = append(records, *result.(*[]CacheSetting)...)
 
 	return records, nil
 }
@@ -51,7 +49,7 @@ func (api *API) ListCacheSettings(domainId int, subDomainName string, params map
 //
 func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := methods["createCacheSetting"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "createCacheSetting")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createCacheSetting")
 	}
 
 	definition := methods["createCacheSetting"]
@@ -69,7 +67,7 @@ func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomai
 //
 func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := methods["updateCacheSetting"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "updateCacheSetting")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateCacheSetting")
 	}
 
 	definition := methods["updateCacheSetting"]
@@ -87,7 +85,7 @@ func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomai
 //
 func (api *API) DeleteCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := methods["deleteCacheSetting"]; !ok {
-		return nil, fmt.Errorf("Passed action [%s] is not supported", "deleteCacheSetting")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteCacheSetting")
 	}
 
 	definition := methods["deleteCacheSetting"]
