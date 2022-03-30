@@ -35,8 +35,8 @@ func TestNewWithEmptyKey(t *testing.T) {
 		t.Error("Passing an empty key should fail")
 	}
 
-	if err.Error() != "Missing API credentials" {
-		t.Errorf("Expected error message to be [%s] but got [%s]", "Missing API credentials", err.Error())
+	if err.Error() != "missing API credentials" {
+		t.Errorf("Expected error message to be [%s] but got [%s]", "missing API credentials", err.Error())
 	}
 }
 
@@ -49,8 +49,8 @@ func TestNewWithEmptySecret(t *testing.T) {
 		t.Error("Passing an empty secret should fail")
 	}
 
-	if err.Error() != "Missing API credentials" {
-		t.Errorf("Expected error message to be [%s] but got [%s]", "Missing API credentials", err.Error())
+	if err.Error() != "missing API credentials" {
+		t.Errorf("Expected error message to be [%s] but got [%s]", "missing API credentials", err.Error())
 	}
 }
 
@@ -63,8 +63,8 @@ func TestNewWithEmptyParams(t *testing.T) {
 		t.Error("Passing an empty key/secret should fail")
 	}
 
-	if err.Error() != "Missing API credentials" {
-		t.Errorf("Expected error message to be [%s] but got [%s]", "Missing API credentials", err.Error())
+	if err.Error() != "missing API credentials" {
+		t.Errorf("Expected error message to be [%s] but got [%s]", "missing API credentials", err.Error())
 	}
 }
 
