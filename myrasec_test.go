@@ -489,3 +489,47 @@ func TestPreparePayloadWithNilPayload(t *testing.T) {
 		t.Errorf("Expected that [%s] is [%s]", string(current), string(expected))
 	}
 }
+
+func TestIntInSlice(t *testing.T) {
+	var result bool
+
+	result = intInSlice(1, []int{1})
+	if !result {
+		t.Errorf("Expected to find the passed needle in the haystack")
+	}
+
+	result = intInSlice(1, []int{5})
+	if result {
+		t.Errorf("Expected not to find the passed needle in the haystack")
+	}
+
+	result = intInSlice(1, []int{1})
+	if !result {
+		t.Errorf("Expected to find the passed needle in the haystack")
+	}
+
+	result = intInSlice(200, []int{1, 2, 3, 4, 200, 201, 204, 403, 404, 500})
+	if !result {
+		t.Errorf("Expected to find the passed needle in the haystack")
+	}
+
+	result = intInSlice(200, []int{})
+	if result {
+		t.Errorf("Expected not to find the passed needle in the haystack")
+	}
+
+	result = intInSlice(0, []int{})
+	if result {
+		t.Errorf("Expected not to find the passed needle in the haystack")
+	}
+
+	result = intInSlice(0, []int{1})
+	if result {
+		t.Errorf("Expected not to find the passed needle in the haystack")
+	}
+
+	result = intInSlice(0, []int{0})
+	if !result {
+		t.Errorf("Expected to find the passed needle in the haystack")
+	}
+}

@@ -133,6 +133,14 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	}
 	defer resp.Body.Close()
 
+	if !intInSlice(resp.StatusCode, []int{
+		http.StatusOK,
+		http.StatusCreated,
+		http.StatusNoContent,
+	}) {
+		return nil, fmt.Errorf("%d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
+	}
+
 	if definition.ResponseDecodeFunc != nil {
 		return definition.ResponseDecodeFunc(resp, definition)
 	}
@@ -360,4 +368,16 @@ func preparePayload(payload ...interface{}) ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
+}
+
+//
+// IntInSlice checks if the haystack []int slice contains the passed needle int
+//
+func intInSlice(needle int, haystack []int) bool {
+	for _, a := range haystack {
+		if a == needle {
+			return true
+		}
+	}
+	return false
 }
