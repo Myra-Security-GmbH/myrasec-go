@@ -2,12 +2,16 @@ package myrasec
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"reflect"
+	"time"
+
+	"golang.org/x/time/rate"
 
 	"github.com/Myra-Security-GmbH/signature"
 )
@@ -19,6 +23,10 @@ const (
 	DefaultAPILanguage = "en"
 	// DefaultAPIUserAgent ...
 	DefaultAPIUserAgent = "myrasec-go"
+	// APITimeout ...
+	APITimeout = 10
+	// ErrorMsgRateLimitReached ...
+	ErrorMsgRateLimitReached = "rate limit reached - too many requests"
 )
 
 // APILanguages ...
@@ -38,6 +46,7 @@ type API struct {
 	secret    string
 	headers   http.Header
 	client    *http.Client
+	limiter   *rate.Limiter
 }
 
 //
@@ -87,6 +96,7 @@ func New(key, secret string) (*API, error) {
 		secret:    secret,
 		headers:   make(http.Header),
 		client:    http.DefaultClient,
+		limiter:   rate.NewLimiter(rate.Limit(5), 1), //5rps = 300req/min
 	}
 	return api, nil
 }
@@ -118,6 +128,13 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	req, err := api.prepareRequest(definition, payload...)
 	if err != nil {
 		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(req.Context(), APITimeout*time.Second)
+	defer cancel()
+
+	if err = api.limiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf(ErrorMsgRateLimitReached)
 	}
 
 	sig := signature.New(api.secret, api.key, req)
