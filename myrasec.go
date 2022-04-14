@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"time"
 
 	"golang.org/x/time/rate"
 
@@ -23,8 +22,6 @@ const (
 	DefaultAPILanguage = "en"
 	// DefaultAPIUserAgent ...
 	DefaultAPIUserAgent = "myrasec-go"
-	// APITimeout ...
-	APITimeout = 10
 	// ErrorMsgRateLimitReached ...
 	ErrorMsgRateLimitReached = "rate limit reached - too many requests"
 )
@@ -130,10 +127,7 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 		return nil, err
 	}
 
-	ctx, cancel := context.WithTimeout(req.Context(), APITimeout*time.Second)
-	defer cancel()
-
-	if err = api.limiter.Wait(ctx); err != nil {
+	if err = api.limiter.Wait(context.Background()); err != nil {
 		return nil, fmt.Errorf(ErrorMsgRateLimitReached)
 	}
 
