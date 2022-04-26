@@ -318,7 +318,7 @@ var methods = map[string]APIMethod{
 		Result: []IPRange{},
 	},
 
-	// Error Page related API calls
+	//Error Page related API calls
 	"listErrorPages": {
 		Name:   "listErrorPages",
 		Action: "domain/%d/errorpages",
@@ -351,5 +351,31 @@ var methods = map[string]APIMethod{
 		Action: "domain/%d/errorpages",
 		Method: http.MethodDelete,
 		Result: ErrorPage{},
+	},
+
+	//Maintenance related API calls
+	"listMaintenances": {
+		Name:   "listMaintenances",
+		Action: "/domain/%d/%s/maintenances",
+		Method: http.MethodGet,
+		Result: []Maintenance{},
+	},
+	"createMaintenance": {
+		Name:   "createMaintenance",
+		Action: "/domain/%d/%s/maintenances",
+		Method: http.MethodPost,
+		Result: Maintenance{},
+	},
+	"updateMaintenance": {
+		Name:   "updateMaintenance",
+		Action: "/domain/%d/%s/maintenances/%d",
+		Method: http.MethodPut,
+		Result: Maintenance{},
+	},
+	"deleteMaintenance": {
+		Name:   "deleteMaintenance",
+		Action: "/domain/%d/%s/maintenances/%d",
+		Method: http.MethodDelete,
+		Result: Maintenance{},
 	},
 }
