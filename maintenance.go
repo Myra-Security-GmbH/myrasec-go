@@ -29,7 +29,7 @@ func (api *API) ListMaintenances(domainId int, subDomainName string, params map[
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listMaintenances")
 	}
 
-	definition := methods["lastMaintenances"]
+	definition := methods["listMaintenances"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, params)
