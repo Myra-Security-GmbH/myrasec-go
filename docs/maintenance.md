@@ -82,7 +82,7 @@ maintenance := &myrasec.Maintenance{
 		Modified: &types.DateTime{
 			Time: modified,
 		},
-		Start:   &types.DateTime{Time: time.Now().Add(2 * time.Hour)},,
+		Start:   &types.DateTime{Time: time.Now().Add(2 * time.Hour)},
 		End:     &types.DateTime{Time: time.Now().Add(4 * time.Hour)},
 		Content: "<DOCTYPE html><html><head><title>Maintenance</title></head><body><h1>Maintenance</h1></body></html>",
 		FQDN:    "www.example.com.",
