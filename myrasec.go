@@ -151,9 +151,9 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	}) {
 		_, err = errorMessage(resp)
 		if err != nil {
-			return nil, fmt.Errorf("%d: %s:\n%s", resp.StatusCode, http.StatusText(resp.StatusCode), err.Error())
+			return nil, fmt.Errorf("%s (%d):\n%s", http.StatusText(resp.StatusCode), resp.StatusCode, err.Error())
 		}
-		return nil, fmt.Errorf("%d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
+		return nil, fmt.Errorf("%s (%d)", http.StatusText(resp.StatusCode), resp.StatusCode)
 	}
 
 	if definition.ResponseDecodeFunc != nil {
