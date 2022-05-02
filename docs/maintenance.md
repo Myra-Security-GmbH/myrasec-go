@@ -51,7 +51,7 @@ The listing operation returns a list of maintenance pages for the passed subdoma
 
 ### Example
 ```go
-filters, err := api.ListMaintenances(1234, "www.example.com", nil)
+pages, err := api.ListMaintenances(1234, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -72,11 +72,6 @@ Updating a maintenance page is very similar to creating a new one. The main diff
 
 ### Example
 ```go
-filter := &myrasec.IPFilter{
-
-    Value:      "127.0.0.1",
-}
-
 maintenance := &myrasec.Maintenance{
 	    ID:   0000,
 		Modified: &types.DateTime{
