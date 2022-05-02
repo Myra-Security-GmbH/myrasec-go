@@ -65,7 +65,7 @@ type Response struct {
 // Violation defines a violation VO, returned by the MYRA API
 //
 type Violation struct {
-	Path    string `json:"path,omitempty"`
+	Path    string `json:"propertypath,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
@@ -149,6 +149,10 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 		http.StatusCreated,
 		http.StatusNoContent,
 	}) {
+		_, err = errorMessage(resp)
+		if err != nil {
+			return nil, fmt.Errorf("%d: %s:\n%s", resp.StatusCode, http.StatusText(resp.StatusCode), err.Error())
+		}
 		return nil, fmt.Errorf("%d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
 	}
 
@@ -160,6 +164,17 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 }
 
 //
+// errorMessage returns the error message (error) from the response passed to the function.
+//
+func errorMessage(resp *http.Response) (*Response, error) {
+	res, err := decodeBaseResponse(resp)
+	if err != nil {
+		return res, err
+	}
+	return res, nil
+}
+
+//
 // decodeDefaultResponse handles the default decoding of a response.
 //
 func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
@@ -168,7 +183,7 @@ func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface
 		return nil, nil
 	}
 
-	res, err := decodeBaseResponse(resp, definition)
+	res, err := decodeBaseResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +195,7 @@ func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface
 // decodeSingleElementResponse decodes the response for a single element (like GetDomain or GetDNSRecord)
 //
 func decodeSingleElementResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
-	res, err := decodeBaseResponse(resp, definition)
+	res, err := decodeBaseResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -191,7 +206,7 @@ func decodeSingleElementResponse(resp *http.Response, definition APIMethod) (int
 //
 // decodeBaseResponse decodes the passed http.Response to a Response struct for further processing
 //
-func decodeBaseResponse(resp *http.Response, definition APIMethod) (*Response, error) {
+func decodeBaseResponse(resp *http.Response) (*Response, error) {
 	var res Response
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
