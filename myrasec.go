@@ -3,12 +3,14 @@ package myrasec
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"reflect"
+	"time"
 
 	"golang.org/x/time/rate"
 
@@ -22,6 +24,8 @@ const (
 	DefaultAPILanguage = "en"
 	// DefaultAPIUserAgent ...
 	DefaultAPIUserAgent = "myrasec-go"
+	// DefaultCachingTTL ...
+	DefaultCachingTTL = 10
 	// ErrorMsgRateLimitReached ...
 	ErrorMsgRateLimitReached = "rate limit reached - too many requests"
 )
@@ -41,9 +45,30 @@ type API struct {
 	UserAgent string
 	key       string
 	secret    string
+	cache     map[string]*responseCache
+	caching   bool
+	cacheTTL  int
 	headers   http.Header
 	client    *http.Client
 	limiter   *rate.Limiter
+}
+
+//
+// responseCache ...
+//
+type responseCache struct {
+	Key     string
+	Created int64
+	Expire  int64
+	Request *http.Request
+	Body    interface{}
+}
+
+//
+// isExpired checks if the cached response is expired
+//
+func (c *responseCache) isExpired() bool {
+	return c.Expire < time.Now().Unix()
 }
 
 //
@@ -89,6 +114,9 @@ func New(key, secret string) (*API, error) {
 		BaseURL:   APIBaseURL,
 		Language:  DefaultAPILanguage,
 		UserAgent: DefaultAPIUserAgent,
+		cache:     make(map[string]*responseCache),
+		caching:   false,
+		cacheTTL:  0,
 		key:       key,
 		secret:    secret,
 		headers:   make(http.Header),
@@ -96,6 +124,29 @@ func New(key, secret string) (*API, error) {
 		limiter:   rate.NewLimiter(rate.Limit(5), 1), //5rps = 300req/min
 	}
 	return api, nil
+}
+
+//
+// EnableCaching enables the caching of the response. Note: Only GET requests are cached.
+//
+func (api *API) EnableCaching() {
+	api.caching = true
+	api.cacheTTL = DefaultCachingTTL
+}
+
+//
+// DisableCaching disables the caching of the response
+//
+func (api *API) DisableCaching() {
+	api.caching = false
+	api.cacheTTL = 0
+}
+
+//
+// SetCachingTTL sets a ttl value for the caching. You have to first call the EnableCaching function to enable the caching.
+//
+func (api *API) SetCachingTTL(ttl int) {
+	api.cacheTTL = ttl
 }
 
 //
@@ -122,9 +173,17 @@ func (api *API) SetLanguage(language string) error {
 // call executes/sends the request to the MYRA API
 //
 func (api *API) call(definition APIMethod, payload ...interface{}) (interface{}, error) {
+
 	req, err := api.prepareRequest(definition, payload...)
 	if err != nil {
 		return nil, err
+	}
+
+	if api.caching && api.inCache(req) {
+		res := api.fromCache(req)
+		if res != nil {
+			return res, nil
+		}
 	}
 
 	if err = api.limiter.Wait(context.Background()); err != nil {
@@ -157,10 +216,20 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	}
 
 	if definition.ResponseDecodeFunc != nil {
-		return definition.ResponseDecodeFunc(resp, definition)
+		res, err := definition.ResponseDecodeFunc(resp, definition)
+		if err == nil && api.caching && isCachable(req) && !api.inCache(req) {
+			api.cacheResponse(req, res)
+		}
+
+		return res, err
 	}
 
-	return decodeDefaultResponse(resp, definition)
+	res, err := decodeDefaultResponse(resp, definition)
+	if err == nil && api.caching && isCachable(req) && !api.inCache(req) {
+		api.cacheResponse(req, res)
+	}
+
+	return res, err
 }
 
 //
@@ -323,7 +392,86 @@ func (api *API) prepareDELETERequest(apiURL string, payload ...interface{}) (*ht
 }
 
 //
-// prepareResult ...
+// inCache checks the cache if the response for the passed request is stored in the cache.
+//
+func (api *API) inCache(req *http.Request) bool {
+
+	h := sha256.New()
+	h.Write([]byte(req.URL.String()))
+	s := fmt.Sprintf("%x", h.Sum(nil))
+
+	if c, ok := api.cache[s]; ok {
+		// if ttl is expired - remove from cache and return false
+		if c.isExpired() {
+			api.removeFromCache(s)
+			return false
+		}
+
+		// if the body is nil - return false as we do not have any response cached to return
+		if c.Body == nil {
+			return false
+		}
+		return true
+	}
+	return false
+}
+
+//
+// fromCache loads the response from the cache (if it is cached)
+//
+func (api *API) fromCache(req *http.Request) interface{} {
+	if !api.inCache(req) {
+		return nil
+	}
+
+	h := sha256.New()
+	h.Write([]byte(req.URL.String()))
+	s := fmt.Sprintf("%x", h.Sum(nil))
+
+	if c, ok := api.cache[s]; ok {
+		return c.Body
+	}
+
+	return nil
+}
+
+//
+// cacheResponse stores the response body in the cache
+//
+func (api *API) cacheResponse(req *http.Request, resp interface{}) {
+	if !api.caching {
+		return
+	}
+
+	h := sha256.New()
+	h.Write([]byte(req.URL.String()))
+	s := fmt.Sprintf("%x", h.Sum(nil))
+
+	api.cache[s] = &responseCache{
+		Key:     s,
+		Created: time.Now().Unix(),
+		Expire:  time.Now().Add(time.Second * time.Duration(api.cacheTTL)).Unix(),
+		Request: req,
+		Body:    resp,
+	}
+}
+
+//
+// isCachable checks if the passed request is cachable - only GET requests are cachable right now
+//
+func isCachable(req *http.Request) bool {
+	return req.Method == http.MethodGet
+}
+
+//
+// removeFromCache removes a single element from the cache
+//
+func (api *API) removeFromCache(s string) {
+	delete(api.cache, s)
+}
+
+//
+// prepareResult prepares the response for further processing
 //
 func prepareResult(response Response, definition APIMethod) (interface{}, error) {
 	var result interface{}
