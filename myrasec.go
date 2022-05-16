@@ -128,6 +128,7 @@ func New(key, secret string) (*API, error) {
 
 //
 // EnableCaching enables the caching of the response. Note: Only GET requests are cached.
+// NOTE: The caching feature is still in development and may not work as expected.
 //
 func (api *API) EnableCaching() {
 	api.caching = true
@@ -136,6 +137,7 @@ func (api *API) EnableCaching() {
 
 //
 // DisableCaching disables the caching of the response
+// NOTE: The caching feature is still in development and may not work as expected.
 //
 func (api *API) DisableCaching() {
 	api.caching = false
@@ -144,6 +146,7 @@ func (api *API) DisableCaching() {
 
 //
 // SetCachingTTL sets a ttl value for the caching. You have to first call the EnableCaching function to enable the caching.
+// NOTE: The caching feature is still in development and may not work as expected.
 //
 func (api *API) SetCachingTTL(ttl int) {
 	api.cacheTTL = ttl
