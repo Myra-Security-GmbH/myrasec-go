@@ -3,7 +3,6 @@ package myrasec
 import (
 	"bytes"
 	"context"
-	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -399,9 +398,7 @@ func (api *API) prepareDELETERequest(apiURL string, payload ...interface{}) (*ht
 //
 func (api *API) inCache(req *http.Request) bool {
 
-	h := sha256.New()
-	h.Write([]byte(req.URL.String()))
-	s := fmt.Sprintf("%x", h.Sum(nil))
+	s := BuildSHA256(req.URL.String())
 
 	if c, ok := api.cache[s]; ok {
 		// if ttl is expired - remove from cache and return false
@@ -427,9 +424,7 @@ func (api *API) fromCache(req *http.Request) interface{} {
 		return nil
 	}
 
-	h := sha256.New()
-	h.Write([]byte(req.URL.String()))
-	s := fmt.Sprintf("%x", h.Sum(nil))
+	s := BuildSHA256(req.URL.String())
 
 	if c, ok := api.cache[s]; ok {
 		return c.Body
@@ -446,9 +441,7 @@ func (api *API) cacheResponse(req *http.Request, resp interface{}) {
 		return
 	}
 
-	h := sha256.New()
-	h.Write([]byte(req.URL.String()))
-	s := fmt.Sprintf("%x", h.Sum(nil))
+	s := BuildSHA256(req.URL.String())
 
 	api.cache[s] = &responseCache{
 		Key:     s,
@@ -545,16 +538,4 @@ func preparePayload(payload ...interface{}) ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
-}
-
-//
-// IntInSlice checks if the haystack []int slice contains the passed needle int
-//
-func intInSlice(needle int, haystack []int) bool {
-	for _, a := range haystack {
-		if a == needle {
-			return true
-		}
-	}
-	return false
 }
