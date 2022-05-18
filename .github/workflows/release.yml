@@ -26,8 +26,8 @@ jobs:
         with:
           fetch-depth: 0
       -
-        name: Unshallow
-        run: git fetch --prune --unshallow
+        name: Fetch all tags
+        run: git fetch --force --tags
       -
         name: Set up Go
         uses: actions/setup-go@v2
