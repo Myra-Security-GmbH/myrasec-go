@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"strconv"
 	"testing"
 )
 
@@ -125,7 +127,7 @@ func TestSetLanguage(t *testing.T) {
 	}
 }
 
-func TestPrepareRequest(t *testing.T) {
+func TestPrepareRequestGET(t *testing.T) {
 	definition := APIMethod{
 		Name:   "Test",
 		Action: "test",
@@ -157,6 +159,127 @@ func TestPrepareRequest(t *testing.T) {
 
 	if req.Header.Get("User-Agent") != DefaultAPIUserAgent {
 		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", DefaultAPIUserAgent, req.Header.Get("User-Agent"))
+	}
+
+	if req.Method != http.MethodGet {
+		t.Errorf("Expected request method to be [%s] but got [%s]", http.MethodGet, req.Method)
+	}
+}
+
+func TestPrepareRequestPOST(t *testing.T) {
+	definition := APIMethod{
+		Name:   "Test",
+		Action: "test",
+		Method: http.MethodPost,
+		Result: Domain{},
+	}
+
+	key := "abc123"
+	secret := "123abc"
+
+	api, err := New(key, secret)
+	if err != nil {
+		t.Error("Unexpected error")
+	}
+
+	req, err := api.prepareRequest(definition, map[string]string{})
+	if err != nil {
+		t.Errorf("Unexpected error: %s\n", err)
+	}
+
+	expectedURL := fmt.Sprintf(APIBaseURL, "test")
+	if req.URL.String() != expectedURL {
+		t.Errorf("Expected request URL path to be [%s] but got [%s]\n", expectedURL, req.URL.String())
+	}
+
+	if req.Header.Get("Content-Type") != "application/json" {
+		t.Errorf("Expected request header \"Content-Type\" to be [%s] but got [%s]\n", "application/json", req.Header.Get("Content-Type"))
+	}
+
+	if req.Header.Get("User-Agent") != DefaultAPIUserAgent {
+		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", DefaultAPIUserAgent, req.Header.Get("User-Agent"))
+	}
+
+	if req.Method != http.MethodPost {
+		t.Errorf("Expected request method to be [%s] but got [%s]", http.MethodPost, req.Method)
+	}
+}
+
+func TestPrepareRequestPUT(t *testing.T) {
+	definition := APIMethod{
+		Name:   "Test",
+		Action: "test",
+		Method: http.MethodPut,
+		Result: Domain{},
+	}
+
+	key := "abc123"
+	secret := "123abc"
+
+	api, err := New(key, secret)
+	if err != nil {
+		t.Error("Unexpected error")
+	}
+
+	req, err := api.prepareRequest(definition, map[string]string{})
+	if err != nil {
+		t.Errorf("Unexpected error: %s\n", err)
+	}
+
+	expectedURL := fmt.Sprintf(APIBaseURL, "test")
+	if req.URL.String() != expectedURL {
+		t.Errorf("Expected request URL path to be [%s] but got [%s]\n", expectedURL, req.URL.String())
+	}
+
+	if req.Header.Get("Content-Type") != "application/json" {
+		t.Errorf("Expected request header \"Content-Type\" to be [%s] but got [%s]\n", "application/json", req.Header.Get("Content-Type"))
+	}
+
+	if req.Header.Get("User-Agent") != DefaultAPIUserAgent {
+		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", DefaultAPIUserAgent, req.Header.Get("User-Agent"))
+	}
+
+	if req.Method != http.MethodPut {
+		t.Errorf("Expected request method to be [%s] but got [%s]", http.MethodPut, req.Method)
+	}
+}
+
+func TestPrepareRequestDELETE(t *testing.T) {
+	definition := APIMethod{
+		Name:   "Test",
+		Action: "test",
+		Method: http.MethodDelete,
+		Result: Domain{},
+	}
+
+	key := "abc123"
+	secret := "123abc"
+
+	api, err := New(key, secret)
+	if err != nil {
+		t.Error("Unexpected error")
+	}
+
+	req, err := api.prepareRequest(definition, map[string]string{})
+	if err != nil {
+		t.Errorf("Unexpected error: %s\n", err)
+	}
+
+	expectedURL := fmt.Sprintf(APIBaseURL, "test")
+	if req.URL.String() != expectedURL {
+		t.Errorf("Expected request URL path to be [%s] but got [%s]\n", expectedURL, req.URL.String())
+	}
+
+	if req.Header.Get("Content-Type") != "application/json" {
+		t.Errorf("Expected request header \"Content-Type\" to be [%s] but got [%s]\n", "application/json", req.Header.Get("Content-Type"))
+	}
+
+	if req.Header.Get("User-Agent") != DefaultAPIUserAgent {
+		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", DefaultAPIUserAgent, req.Header.Get("User-Agent"))
+	}
+
+	if req.Method != http.MethodDelete {
+		t.Errorf("Expected request method to be [%s] but got [%s]", http.MethodDelete, req.Method)
 	}
 }
 
@@ -416,7 +539,13 @@ func TestPreparePayloadWithMapPayload(t *testing.T) {
 	if !bytes.Equal(expected, current) {
 		t.Errorf("Expected that [%s] is [%s]", string(current), string(expected))
 	}
+}
 
+func TestPreparePayloadWithInvalidPayload(t *testing.T) {
+	_, err := preparePayload(func() {})
+	if err == nil {
+		t.Errorf("Expected to get an error on passing a non-valid payload")
+	}
 }
 
 func TestPreparePayloadWithStructPayload(t *testing.T) {
@@ -488,4 +617,275 @@ func TestPreparePayloadWithNilPayload(t *testing.T) {
 	if !bytes.Equal(expected, current) {
 		t.Errorf("Expected that [%s] is [%s]", string(current), string(expected))
 	}
+}
+
+func TestEnableDisableCaching(t *testing.T) {
+	key := "abc123"
+	secret := "123abc"
+
+	api, err := New(key, secret)
+	if err != nil {
+		t.Error("Unexpected error")
+	}
+
+	api.EnableCaching()
+
+	if api.caching != true {
+		t.Errorf("Expected to have caching enabled")
+	}
+
+	if api.cacheTTL != DefaultCachingTTL {
+		t.Errorf("Expected cacheTTL to be %d", DefaultCachingTTL)
+	}
+
+	api.SetCachingTTL(10)
+
+	if api.caching != true {
+		t.Errorf("Expected to have caching enabled")
+	}
+
+	if api.cacheTTL != 10 {
+		t.Errorf("Expected cacheTTL to be %d", 10)
+	}
+
+	api.DisableCaching()
+
+	if api.caching != false {
+		t.Errorf("Expected to have caching disabled")
+	}
+
+	if api.cacheTTL != 0 {
+		t.Errorf("Expected cacheTTL to be %d", 0)
+	}
+}
+
+func TestRetryFunctions(t *testing.T) {
+	key := "abc123"
+	secret := "123abc"
+
+	api, err := New(key, secret)
+	if err != nil {
+		t.Error("Unexpected error")
+	}
+
+	if api.maxRetries != DefaultRetryCount {
+		t.Errorf("Expected maxRetries to be %d", DefaultRetryCount)
+	}
+
+	if api.retrySleep != DefaultRetrySleep {
+		t.Errorf("Expected retrySleep to be %d", DefaultRetrySleep)
+	}
+
+	api.SetMaxRetries(3)
+
+	if api.maxRetries != 3 {
+		t.Errorf("Expected maxRetries to be %d", 3)
+	}
+
+	if api.retrySleep != DefaultRetrySleep {
+		t.Errorf("Expected retrySleep to be %d", DefaultRetrySleep)
+	}
+
+	api.SetMaxRetries(DefaultRetryCount)
+	api.SetRetrySleep(3)
+
+	if api.maxRetries != DefaultRetryCount {
+		t.Errorf("Expected maxRetries to be %d", DefaultRetryCount)
+	}
+
+	if api.retrySleep != 3 {
+		t.Errorf("Expected retrySleep to be %d", 3)
+	}
+}
+
+func TestErrorMessageWithErrorInResponse(t *testing.T) {
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusBadRequest),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": true, "violationList": [{"propertypath": "test", "message": "this is a test message."}]}`)),
+	}
+
+	_, err := errorMessage(&resp)
+	if err == nil {
+		t.Errorf("Expected to have an error.")
+	}
+
+	if err.Error() != "test: this is a test message.\n" {
+		t.Errorf("Expected to get error message [%s] but got [%s]", "test: this is a test message.", err.Error())
+	}
+
+}
+
+func TestErrorMessageWithoutError(t *testing.T) {
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusBadRequest),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": false}`)),
+	}
+
+	_, err := errorMessage(&resp)
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s].", err.Error())
+	}
+}
+
+func TestDecodeDefaultResponse(t *testing.T) {
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusOK),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": false, "pageSize": 10, "page": 1, "count": 1, "targetObject": [{"id": 1, "name": "example.com"}]}`)),
+	}
+
+	result, err := decodeDefaultResponse(&resp, APIMethod{
+		Name:               "TEST",
+		Action:             "TEST",
+		Method:             http.MethodGet,
+		Result:             Domain{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	})
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if result == nil {
+		t.Errorf("Expected to get a domain but did not get anything.")
+	}
+
+	d := result.(*Domain)
+	if d.ID != 1 {
+		t.Errorf("Expected to get ID [%d] but got [%d]", 1, d.ID)
+	}
+
+	if d.Name != "example.com" {
+		t.Errorf("Expected to get Name [%s] but got [%s]", "example.com", d.Name)
+	}
+}
+
+func TestDecodeDefaultResponseWithInvalidBody(t *testing.T) {
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusOK),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"this will not work": func(){}}`)),
+	}
+
+	_, err := decodeDefaultResponse(&resp, APIMethod{
+		Name:               "TEST",
+		Action:             "TEST",
+		Method:             http.MethodGet,
+		Result:             Domain{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	})
+
+	if err == nil {
+		t.Errorf("Expected to get an error.")
+	}
+}
+
+func TestDecodeDefaultResponseForDELETEMethod(t *testing.T) {
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusNoContent),
+	}
+
+	result, err := decodeDefaultResponse(&resp, APIMethod{
+		Name:               "TEST",
+		Action:             "TEST",
+		Method:             http.MethodDelete,
+		Result:             nil,
+		ResponseDecodeFunc: nil,
+	})
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if result != nil {
+		t.Errorf("Expected to get no result on MethodDelete.")
+	}
+}
+
+func TestDecodeSingleElementResponse(t *testing.T) {
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusOK),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [{"id": 1, "name": "example.com"}]}`)),
+	}
+
+	result, err := decodeSingleElementResponse(&resp, APIMethod{
+		Name:               "TEST",
+		Action:             "TEST",
+		Method:             http.MethodGet,
+		Result:             Domain{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	})
+
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if result == nil {
+		t.Errorf("Expected to get a domain but did not get anything.")
+	}
+
+	d := result.(*Domain)
+	if d.ID != 1 {
+		t.Errorf("Expected to get ID [%d] but got [%d]", 1, d.ID)
+	}
+
+	if d.Name != "example.com" {
+		t.Errorf("Expected to get Name [%s] but got [%s]", "example.com", d.Name)
+	}
+}
+
+func TestDecodeSingleElementResponseWithCorruptBody(t *testing.T) {
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusOK),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"fooooo": func() {}}`)),
+	}
+
+	_, err := decodeSingleElementResponse(&resp, APIMethod{
+		Name:               "TEST",
+		Action:             "TEST",
+		Method:             http.MethodGet,
+		Result:             Domain{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	})
+
+	if err == nil {
+		t.Errorf("Expected to get an error.")
+	}
+}
+
+func TestDecodeBaseResponse(t *testing.T) {
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusOK),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": false, "pageSize": 10, "page": 1, "count": 0}`)),
+	}
+
+	r, err := decodeBaseResponse(&resp)
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if r.Error != false {
+		t.Errorf("Expected to have Error set to false")
+	}
+
+	if r.Page != 1 {
+		t.Errorf("Expected to have Page set to [%d] but got [%d]", 1, r.Page)
+	}
+
+	if r.PageSize != 10 {
+		t.Errorf("Expected to have PageSize set to [%d] but got [%d]", 10, r.PageSize)
+	}
+
+	if r.Count != 0 {
+		t.Errorf("Expected to have Page set to [%d] but got [%d]", 0, r.Count)
+	}
+}
+
+func TestDecodeBaseResponseWithCorruptBody(t *testing.T) {
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusBadRequest),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"wrong": format}`)),
+	}
+
+	_, err := decodeBaseResponse(&resp)
+	if err == nil {
+		t.Errorf("Expected to get an error")
+	}
+
 }
