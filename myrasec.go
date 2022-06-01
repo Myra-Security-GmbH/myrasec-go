@@ -197,6 +197,18 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	}
 	defer resp.Body.Close()
 
+	if !intInSlice(resp.StatusCode, []int{
+		http.StatusOK,
+		http.StatusCreated,
+		http.StatusNoContent,
+	}) {
+		_, err = errorMessage(resp)
+		if err != nil {
+			return nil, fmt.Errorf("%s (%d):\n%s", http.StatusText(resp.StatusCode), resp.StatusCode, err.Error())
+		}
+		return nil, fmt.Errorf("%s (%d)", http.StatusText(resp.StatusCode), resp.StatusCode)
+	}
+
 	if definition.ResponseDecodeFunc != nil {
 		res, err := definition.ResponseDecodeFunc(resp, definition)
 		if err == nil && api.caching && isCachable(req) && !api.inCache(req) {
@@ -244,16 +256,8 @@ func (api *API) sendRequest(definition APIMethod, payload ...interface{}) (*http
 
 		retries++
 
-		if resp.StatusCode != http.StatusInternalServerError {
+		if resp.StatusCode != http.StatusInternalServerError || retries >= api.maxRetries {
 			return resp, err
-		}
-
-		if retries >= api.maxRetries {
-			_, err = errorMessage(resp)
-			if err != nil {
-				return nil, fmt.Errorf("%s (%d):\n%s", http.StatusText(resp.StatusCode), resp.StatusCode, err.Error())
-			}
-			return nil, fmt.Errorf("%s (%d)", http.StatusText(resp.StatusCode), resp.StatusCode)
 		}
 
 		time.Sleep(time.Duration(api.retrySleep) * time.Second)
