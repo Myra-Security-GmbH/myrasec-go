@@ -244,11 +244,7 @@ func (api *API) sendRequest(definition APIMethod, payload ...interface{}) (*http
 
 		retries++
 
-		if intInSlice(resp.StatusCode, []int{
-			http.StatusOK,
-			http.StatusCreated,
-			http.StatusNoContent,
-		}) {
+		if resp.StatusCode != http.StatusInternalServerError {
 			return resp, err
 		}
 
