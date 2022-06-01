@@ -8,50 +8,64 @@ import (
 	"testing"
 )
 
-func preCacheGetDomain(api *API) {
-	responseJSON := `{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [{"id": 1, "name": "example.com"}]}`
+type TestCache struct {
+	Req *http.Request
+	Res interface{}
+}
+
+func preCacheGetDomain(json string) *TestCache {
 
 	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains/1", nil)
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(responseJSON)),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(json)),
 	}
 
 	res, _ := methods["getDomain"].ResponseDecodeFunc(&resp, methods["getDomain"])
-	api.cacheResponse(req, res)
+
+	return &TestCache{
+		Req: req,
+		Res: res,
+	}
 }
 
-func preCacheListDomains(api *API) {
-
-	responseJSON := `{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [{"id": 1, "name": "example.com"}, {"id": 2, "name": "example2.com"}, {"id": 3, "name": "example3.com"}]}`
+func preCacheListDomains(json string) *TestCache {
 
 	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(responseJSON)),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(json)),
 	}
 
 	res, _ := decodeDefaultResponse(&resp, methods["listDomains"])
-	api.cacheResponse(req, res)
+
+	return &TestCache{
+		Req: req,
+		Res: res,
+	}
 }
 
 //
 // preCacheDomainAPI will mock the data, returned by the api.call function. Like this we can test without sending real API requests.
 //
-func preCacheDomainAPI() (*API, error) {
+func preCacheDomainAPI(mocks []*TestCache) (*API, error) {
 	api, _ := New("abc123", "123abc")
 	api.EnableCaching()
 	api.SetCachingTTL(120)
 
-	preCacheGetDomain(api)
-	preCacheListDomains(api)
+	for _, c := range mocks {
+		api.cacheResponse(c.Req, c.Res)
+	}
 
 	return api, nil
 }
 
 func TestGetDomain(t *testing.T) {
 
-	api, err := preCacheDomainAPI()
+	api, err := preCacheDomainAPI([]*TestCache{
+		preCacheGetDomain(`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [{"id": 1, "name": "example.com"}]}`),
+	})
+
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -71,7 +85,9 @@ func TestGetDomain(t *testing.T) {
 }
 
 func TestListDomains(t *testing.T) {
-	api, err := preCacheDomainAPI()
+	api, err := preCacheDomainAPI([]*TestCache{
+		preCacheListDomains(`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [{"id": 1, "name": "example.com"}, {"id": 2, "name": "example2.com"}, {"id": 3, "name": "example3.com"}]}`),
+	})
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
