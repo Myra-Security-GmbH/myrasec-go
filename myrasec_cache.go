@@ -30,7 +30,7 @@ func (c *responseCache) isExpired() bool {
 // inCache checks the cache if the response for the passed request is stored in the cache.
 //
 func (api *API) inCache(req *http.Request) bool {
-	s := BuildSHA256(req.URL.String())
+	s := BuildCacheKey(req)
 
 	mutex.Lock()
 	c, ok := api.cache[s]
@@ -42,7 +42,7 @@ func (api *API) inCache(req *http.Request) bool {
 
 	// if ttl is expired - remove from cache and return false
 	if c.isExpired() {
-		api.removeFromCache(s)
+		api.RemoveFromCache(s)
 		return false
 	}
 	// if the body is nil - return false as we do not have any response cached to return
@@ -61,7 +61,7 @@ func (api *API) fromCache(req *http.Request) interface{} {
 		return nil
 	}
 
-	s := BuildSHA256(req.URL.String())
+	s := BuildCacheKey(req)
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -80,7 +80,7 @@ func (api *API) cacheResponse(req *http.Request, resp interface{}) {
 		return
 	}
 
-	s := BuildSHA256(req.URL.String())
+	s := BuildCacheKey(req)
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -101,10 +101,24 @@ func isCachable(req *http.Request) bool {
 }
 
 //
-// removeFromCache removes a single element from the cache
+// RemoveFromCache removes a single element from the cache
 //
-func (api *API) removeFromCache(s string) {
+func (api *API) RemoveFromCache(s string) {
 	mutex.Lock()
 	delete(api.cache, s)
 	mutex.Unlock()
+}
+
+//
+// PruneCache
+//
+func (api *API) PruneCache() {
+	api.cache = make(map[string]*responseCache)
+}
+
+//
+// BuildCacheKey
+//
+func BuildCacheKey(req *http.Request) string {
+	return BuildSHA256(req.URL.String())
 }

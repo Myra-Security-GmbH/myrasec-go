@@ -49,7 +49,7 @@ func TestInCache(t *testing.T) {
 	}
 
 	for k := range api.cache {
-		api.removeFromCache(k)
+		api.RemoveFromCache(k)
 	}
 
 	if api.inCache(req) {
@@ -70,7 +70,7 @@ func TestFromCache(t *testing.T) {
 	}
 
 	for k := range api.cache {
-		api.removeFromCache(k)
+		api.RemoveFromCache(k)
 	}
 
 	api.cacheTTL = -10
@@ -142,11 +142,42 @@ func TestRemoveFromCache(t *testing.T) {
 	}
 
 	for k := range api.cache {
-		api.removeFromCache(k)
+		api.RemoveFromCache(k)
 	}
 
 	if len(api.cache) != 0 {
 		t.Errorf("Expected not to have any element in the cache")
 	}
 
+}
+
+func TestPruneCache(t *testing.T) {
+	api, _ := New("abc123", "123abc")
+	api.EnableCaching()
+
+	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	api.cacheResponse(req, "CONTENT")
+
+	if len(api.cache) != 1 {
+		t.Errorf("Expected to have a single element in the cache")
+	}
+
+	api.PruneCache()
+
+	if len(api.cache) != 0 {
+		t.Errorf("Expected not to have any element in the cache")
+	}
+}
+
+func TestBuildCacheKey(t *testing.T) {
+	api, _ := New("abc123", "123abc")
+	api.EnableCaching()
+
+	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	sha := BuildSHA256(req.URL.String())
+	key := BuildCacheKey(req)
+
+	if sha != key {
+		t.Errorf("Expected to have key and sha the same value")
+	}
 }
