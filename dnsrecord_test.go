@@ -68,6 +68,10 @@ func TestGetDNSRecord(t *testing.T) {
 		t.Errorf("Expected to get DNS record with Value [%s] but got [%s]", "127.0.0.1", rec.Value)
 	}
 
+	if rec.RecordType != "A" {
+		t.Errorf("Expected to get DNS record with RecordType [%s] but got [%s]", "A", rec.RecordType)
+	}
+
 	if rec.TTL != 300 {
 		t.Errorf("Expected to get DNS record with TTL [%d] but got [%d]", 300, rec.TTL)
 	}
