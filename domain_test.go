@@ -8,17 +8,12 @@ import (
 	"testing"
 )
 
-type TestCache struct {
-	Req *http.Request
-	Res interface{}
-}
+func preCacheGetDomain(url string, body string) *TestCache {
 
-func preCacheGetDomain(json string) *TestCache {
-
-	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains/1", nil)
+	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(json)),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(body)),
 	}
 
 	res, _ := methods["getDomain"].ResponseDecodeFunc(&resp, methods["getDomain"])
@@ -29,12 +24,12 @@ func preCacheGetDomain(json string) *TestCache {
 	}
 }
 
-func preCacheListDomains(json string) *TestCache {
+func preCacheListDomains(url string, body string) *TestCache {
 
-	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(json)),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(body)),
 	}
 
 	res, _ := decodeDefaultResponse(&resp, methods["listDomains"])
@@ -45,27 +40,14 @@ func preCacheListDomains(json string) *TestCache {
 	}
 }
 
-//
-// preCacheDomainAPI will mock the data, returned by the api.call function. Like this we can test without sending real API requests.
-//
-func preCacheDomainAPI(mocks []*TestCache) (*API, error) {
-	api, _ := New("abc123", "123abc")
-	api.EnableCaching()
-	api.SetCachingTTL(120)
-
-	for _, c := range mocks {
-		api.cacheResponse(c.Req, c.Res)
-	}
-
-	return api, nil
-}
-
 func TestGetDomain(t *testing.T) {
 
-	api, err := preCacheDomainAPI([]*TestCache{
-		preCacheGetDomain(`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [{"id": 1, "name": "example.com"}]}`),
+	api, err := setupPreCachedAPI([]*TestCache{
+		preCacheGetDomain(
+			"https://apiv2.myracloud.com/domains/1",
+			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [{"id": 1, "name": "example.com"}]}`,
+		),
 	})
-
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -85,8 +67,11 @@ func TestGetDomain(t *testing.T) {
 }
 
 func TestListDomains(t *testing.T) {
-	api, err := preCacheDomainAPI([]*TestCache{
-		preCacheListDomains(`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [{"id": 1, "name": "example.com"}, {"id": 2, "name": "example2.com"}, {"id": 3, "name": "example3.com"}]}`),
+	api, err := setupPreCachedAPI([]*TestCache{
+		preCacheListDomains(
+			"https://apiv2.myracloud.com/domains",
+			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [{"id": 1, "name": "example.com"}, {"id": 2, "name": "example2.com"}, {"id": 3, "name": "example3.com"}]}`,
+		),
 	})
 	if err != nil {
 		t.Error("Unexpected error.")
