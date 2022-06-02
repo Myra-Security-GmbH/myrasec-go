@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"time"
 
 	"golang.org/x/time/rate"
 
@@ -24,6 +25,10 @@ const (
 	DefaultAPIUserAgent = "myrasec-go"
 	// DefaultCachingTTL ...
 	DefaultCachingTTL = 10
+	// DefaultRetryCount ...
+	DefaultRetryCount = 1
+	// DefaultRetrySleep ...
+	DefaultRetrySleep = 0
 	// ErrorMsgRateLimitReached ...
 	ErrorMsgRateLimitReached = "rate limit reached - too many requests"
 )
@@ -38,17 +43,19 @@ var APILanguages = map[string]bool{
 // API holds the configuration for the current API client.
 //
 type API struct {
-	BaseURL   string
-	Language  string
-	UserAgent string
-	key       string
-	secret    string
-	cache     map[string]*responseCache
-	caching   bool
-	cacheTTL  int
-	headers   http.Header
-	client    *http.Client
-	limiter   *rate.Limiter
+	BaseURL    string
+	Language   string
+	UserAgent  string
+	key        string
+	secret     string
+	cache      map[string]*responseCache
+	caching    bool
+	cacheTTL   int
+	headers    http.Header
+	client     *http.Client
+	limiter    *rate.Limiter
+	maxRetries int
+	retrySleep int
 }
 
 //
@@ -91,17 +98,19 @@ func New(key, secret string) (*API, error) {
 	}
 
 	api := &API{
-		BaseURL:   APIBaseURL,
-		Language:  DefaultAPILanguage,
-		UserAgent: DefaultAPIUserAgent,
-		cache:     make(map[string]*responseCache),
-		caching:   false,
-		cacheTTL:  0,
-		key:       key,
-		secret:    secret,
-		headers:   make(http.Header),
-		client:    http.DefaultClient,
-		limiter:   rate.NewLimiter(rate.Limit(5), 1), //5rps = 300req/min
+		BaseURL:    APIBaseURL,
+		Language:   DefaultAPILanguage,
+		UserAgent:  DefaultAPIUserAgent,
+		cache:      make(map[string]*responseCache),
+		caching:    false,
+		cacheTTL:   0,
+		key:        key,
+		secret:     secret,
+		headers:    make(http.Header),
+		client:     http.DefaultClient,
+		limiter:    rate.NewLimiter(rate.Limit(5), 1), //5rps = 300req/min
+		maxRetries: DefaultRetryCount,
+		retrySleep: DefaultRetrySleep,
 	}
 	return api, nil
 }
@@ -153,10 +162,23 @@ func (api *API) SetLanguage(language string) error {
 }
 
 //
+// SetMaxRetries sets the maxRetries value in the API struct. In case of a non-successfull request, it will try (in total) n times.
+//
+func (api *API) SetMaxRetries(n int) {
+	api.maxRetries = n
+}
+
+//
+// SetRetrySleep sets a sleep value. It will wait for n-seconds to do the request again in case of retry operation.
+//
+func (api *API) SetRetrySleep(n int) {
+	api.retrySleep = n
+}
+
+//
 // call executes/sends the request to the MYRA API
 //
 func (api *API) call(definition APIMethod, payload ...interface{}) (interface{}, error) {
-
 	req, err := api.prepareRequest(definition, payload...)
 	if err != nil {
 		return nil, err
@@ -169,18 +191,7 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 		}
 	}
 
-	if err = api.limiter.Wait(context.Background()); err != nil {
-		return nil, fmt.Errorf(ErrorMsgRateLimitReached)
-	}
-
-	sig := signature.New(api.secret, api.key, req)
-
-	request, err := sig.Append()
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := api.client.Do(request)
+	resp, err := api.sendRequest(definition, payload...)
 	if err != nil {
 		return nil, err
 	}
@@ -213,6 +224,44 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	}
 
 	return res, err
+}
+
+//
+// sendRequest performs the concrete send-action
+//
+func (api *API) sendRequest(definition APIMethod, payload ...interface{}) (*http.Response, error) {
+	var retries int
+
+	for {
+		req, err := api.prepareRequest(definition, payload...)
+		if err != nil {
+			return nil, err
+		}
+
+		if err = api.limiter.Wait(context.Background()); err != nil {
+			return nil, fmt.Errorf(ErrorMsgRateLimitReached)
+		}
+
+		sig := signature.New(api.secret, api.key, req)
+
+		request, err := sig.Append()
+		if err != nil {
+			return nil, err
+		}
+
+		resp, err := api.client.Do(request)
+		if err != nil {
+			return resp, err
+		}
+
+		retries++
+
+		if resp.StatusCode != http.StatusInternalServerError || retries >= api.maxRetries {
+			return resp, err
+		}
+
+		time.Sleep(time.Duration(api.retrySleep) * time.Second)
+	}
 }
 
 //
