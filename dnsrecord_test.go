@@ -1,50 +1,17 @@
 package myrasec
 
 import (
-	"bytes"
-	"io/ioutil"
-	"net/http"
-	"strconv"
 	"testing"
 )
 
-func preCacheGetDNSRecord(url string, body string) *TestCache {
-
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	resp := http.Response{
-		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(body)),
-	}
-
-	res, _ := methods["getDNSRecord"].ResponseDecodeFunc(&resp, methods["getDNSRecord"])
-
-	return &TestCache{
-		Req: req,
-		Res: res,
-	}
-}
-
-func preCacheListDNSRecords(url string, body string) *TestCache {
-
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	resp := http.Response{
-		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(body)),
-	}
-
-	res, _ := decodeDefaultResponse(&resp, methods["listDNSRecords"])
-
-	return &TestCache{
-		Req: req,
-		Res: res,
-	}
-}
-
 func TestGetDNSRecord(t *testing.T) {
 	api, err := setupPreCachedAPI([]*TestCache{
-		preCacheGetDNSRecord(
+		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/dns-records/1",
-			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 1, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}]}`,
+			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
+				{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 1, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}
+			]}`,
+			methods["getDNSRecord"],
 		),
 	})
 	if err != nil {
@@ -103,9 +70,13 @@ func TestGetDNSRecord(t *testing.T) {
 
 func TestListDNSRecords(t *testing.T) {
 	api, err := setupPreCachedAPI([]*TestCache{
-		preCacheListDNSRecords(
+		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/dns-records",
-			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 1, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}, {"id": 2, "name": "example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 2, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}]}`,
+			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
+				{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 1, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}, 
+				{"id": 2, "name": "example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 2, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}
+			]}`,
+			methods["listDNSRecords"],
 		),
 	})
 	if err != nil {

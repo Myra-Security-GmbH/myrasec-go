@@ -33,6 +33,28 @@ func setupPreCachedAPI(mocks []*TestCache) (*API, error) {
 	return api, nil
 }
 
+//
+// preCacheRequest builds a request/response for the passed url and body ans stores it in the cache.
+//
+func preCacheRequest(url string, body string, definition APIMethod) *TestCache {
+	req, _ := http.NewRequest(http.MethodGet, url, nil)
+	resp := http.Response{
+		Status: strconv.Itoa(http.StatusOK),
+		Body:   ioutil.NopCloser(bytes.NewBufferString(body)),
+	}
+	var res interface{}
+	if definition.ResponseDecodeFunc != nil {
+		res, _ = definition.ResponseDecodeFunc(&resp, definition)
+	} else {
+		res, _ = decodeDefaultResponse(&resp, definition)
+	}
+
+	return &TestCache{
+		Req: req,
+		Res: res,
+	}
+}
+
 func TestNew(t *testing.T) {
 	key := "abc123"
 	secret := "123abc"

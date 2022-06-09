@@ -1,34 +1,18 @@
 package myrasec
 
 import (
-	"bytes"
-	"io/ioutil"
-	"net/http"
-	"strconv"
 	"testing"
 )
 
-func preCacheListCacheSettings(url string, body string) *TestCache {
-
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	resp := http.Response{
-		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(body)),
-	}
-
-	res, _ := decodeDefaultResponse(&resp, methods["listCacheSettings"])
-
-	return &TestCache{
-		Req: req,
-		Res: res,
-	}
-}
-
 func TestListCacheSettings(t *testing.T) {
 	api, err := setupPreCachedAPI([]*TestCache{
-		preCacheListCacheSettings(
+		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/www.example.com/cache-settings",
-			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [{"id": 1, "path": "/index.html", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": true}, {"id": 2, "path": "/index.php", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": false}]}`,
+			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
+				{"id": 1, "path": "/index.html", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": true}, 
+				{"id": 2, "path": "/index.php", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": false}
+			]}`,
+			methods["listCacheSettings"],
 		),
 	})
 	if err != nil {
