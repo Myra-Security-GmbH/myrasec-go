@@ -33,6 +33,9 @@ func setupPreCachedAPI(mocks []*TestCache) (*API, error) {
 	return api, nil
 }
 
+//
+// preCacheRequest builds a request/response for the passed url and body ans stores it in the cache.
+//
 func preCacheRequest(url string, body string, definition APIMethod) *TestCache {
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	resp := http.Response{
