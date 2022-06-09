@@ -1,51 +1,18 @@
 package myrasec
 
 import (
-	"bytes"
-	"io/ioutil"
-	"net/http"
-	"strconv"
 	"testing"
 )
-
-func preCacheGetDomain(url string, body string) *TestCache {
-
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	resp := http.Response{
-		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(body)),
-	}
-
-	res, _ := methods["getDomain"].ResponseDecodeFunc(&resp, methods["getDomain"])
-
-	return &TestCache{
-		Req: req,
-		Res: res,
-	}
-}
-
-func preCacheListDomains(url string, body string) *TestCache {
-
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	resp := http.Response{
-		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(body)),
-	}
-
-	res, _ := decodeDefaultResponse(&resp, methods["listDomains"])
-
-	return &TestCache{
-		Req: req,
-		Res: res,
-	}
-}
 
 func TestGetDomain(t *testing.T) {
 
 	api, err := setupPreCachedAPI([]*TestCache{
-		preCacheGetDomain(
+		preCacheRequest(
 			"https://apiv2.myracloud.com/domains/1",
-			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [{"id": 1, "name": "example.com"}]}`,
+			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
+				{"id": 1, "name": "example.com"}
+			]}`,
+			methods["getDomain"],
 		),
 	})
 	if err != nil {
@@ -68,9 +35,14 @@ func TestGetDomain(t *testing.T) {
 
 func TestListDomains(t *testing.T) {
 	api, err := setupPreCachedAPI([]*TestCache{
-		preCacheListDomains(
+		preCacheRequest(
 			"https://apiv2.myracloud.com/domains",
-			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [{"id": 1, "name": "example.com"}, {"id": 2, "name": "example2.com"}, {"id": 3, "name": "example3.com"}]}`,
+			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
+				{"id": 1, "name": "example.com"}, 
+				{"id": 2, "name": "example2.com"}, 
+				{"id": 3, "name": "example3.com"}
+			]}`,
+			methods["listDomains"],
 		),
 	})
 	if err != nil {
