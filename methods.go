@@ -378,4 +378,11 @@ var methods = map[string]APIMethod{
 		Method: http.MethodDelete,
 		Result: Maintenance{},
 	},
+
+	"clearCache": {
+		Name:   "clearCache",
+		Action: "domain/%d/cache-clear",
+		Method: http.MethodPut,
+		Result: CacheClear{},
+	},
 }
