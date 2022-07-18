@@ -379,6 +379,32 @@ var methods = map[string]APIMethod{
 		Result: Maintenance{},
 	},
 
+	//MaintenanceTemplate related API calls
+	"listMaintenanceTemplates": {
+		Name:   "listMaintenanceTemplates",
+		Action: "domain/%d/maintenance-templates",
+		Method: http.MethodGet,
+		Result: []MaintenanceTemplate{},
+	},
+	"createMaintenanceTemplate": {
+		Name:   "createMaintenanceTemplate",
+		Action: "domain/%d/maintenance-templates",
+		Method: http.MethodPost,
+		Result: MaintenanceTemplate{},
+	},
+	"updateMaintenanceTemplate": {
+		Name:   "updateMaintenanceTemplate",
+		Action: "domain/%d/maintenance-templates/%d",
+		Method: http.MethodPut,
+		Result: MaintenanceTemplate{},
+	},
+	"deleteMaintenanceTemplate": {
+		Name:   "deleteMaintenanceTemplate",
+		Action: "domain/%d/maintenance-templates/%d",
+		Method: http.MethodDelete,
+		Result: MaintenanceTemplate{},
+	},
+
 	"clearCache": {
 		Name:   "clearCache",
 		Action: "domain/%d/cache-clear",
