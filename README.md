@@ -22,4 +22,5 @@ A Go library for interacting with Myra Security API.
 - [IP ranges](./docs/ip_range.md)
 - [SSL certificates](./docs/ssl.md)
 - [Maintenance](./docs/maintenance.md)
+- [Maintenance templates](./docs/maintenance_template.md)
 - [Error page](./docs/error_page.md)

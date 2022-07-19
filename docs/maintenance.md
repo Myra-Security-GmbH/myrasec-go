@@ -102,7 +102,7 @@ maintenance := &myrasec.Maintenance{
     },
 }
 
-m, err := api.DeleteIPFilter(maintenance, 1234, "www.example.com");
+m, err := api.DeleteMaintenance(maintenance, 1234, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
