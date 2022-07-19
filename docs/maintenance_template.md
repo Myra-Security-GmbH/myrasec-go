@@ -25,12 +25,12 @@ To create a new maintenance template, you need to send a MaintenanceTemplate str
 ### Example
 ```go
 template := &myrasec.MaintenanceTemplate{
-        Name:    "Default maintenance page",
-		Content: "<DOCTYPE html><html><head><title>Maintenance</title></head><body><h1>Maintenance</h1></body></html>",
+	Name:    "Default maintenance page",
+	Content: "<DOCTYPE html><html><head><title>Maintenance</title></head><body><h1>Maintenance</h1></body></html>",
 }
-m, err := api.CreateMaintenanceTemplate(template, 1234)
+mt, err := api.CreateMaintenanceTemplate(template, 1234)
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 ```
 
@@ -41,7 +41,7 @@ The listing operation returns a list of maintenance templates for the passed dom
 ```go
 templates, err := api.ListMaintenanceTemplatess(1234, nil)
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 ```
 
@@ -61,17 +61,17 @@ Updating a maintenance template is very similar to creating a new one. The main 
 ### Example
 ```go
 template := &myrasec.MaintenanceTemplate{
-	    ID:   0000,
-		Modified: &types.DateTime{
-			Time: modified,
-		},
-		FQDN:    "Default maintenance page (updated)",
-		Content: "<DOCTYPE html><html><head><title>Maintenance</title></head><body><h1>Maintenance</h1></body></html>",
+	ID:   0000,
+	Modified: &types.DateTime{
+		Time: modified,
+	},
+	FQDN:    "Default maintenance page (updated)",
+	Content: "<DOCTYPE html><html><head><title>Maintenance</title></head><body><h1>Maintenance</h1></body></html>",
 }
 
 mt, err := api.UpdateMaintenanceTemplate(template, 1234);
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 ```
 
@@ -82,14 +82,14 @@ To delete a maintenance template you only need to send "id" and "modified" as bo
 ### Example
 ```go
 template := &myrasec.MaintenanceTemplate{
-    ID:   0000,
-    Modified: &types.DateTime{
-        Time: modified,
-    },
+	ID:   0000,
+	Modified: &types.DateTime{
+		Time: modified,
+	},
 }
 
 mt, err := api.DeleteMaintenanceTemplate(template, 1234);
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 ```
