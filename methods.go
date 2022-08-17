@@ -411,4 +411,37 @@ var methods = map[string]APIMethod{
 		Method: http.MethodPut,
 		Result: CacheClear{},
 	},
+
+	//Tag related API calls
+	"getTag": {
+		Name:               "getTag",
+		Action:             "tags/%d",
+		Method:             http.MethodGet,
+		Result:             Tag{},
+		ResponseDecodeFunc: decodeSingleElementResponse,
+	},
+	"listTags": {
+		Name:   "listTags",
+		Action: "tags",
+		Method: http.MethodGet,
+		Result: []Tag{},
+	},
+	"createTags": {
+		Name:   "createTags",
+		Action: "tags",
+		Method: http.MethodPost,
+		Result: Tag{},
+	},
+	"updateTags": {
+		Name:   "updateTags",
+		Action: "tags",
+		Method: http.MethodPut,
+		Result: Tag{},
+	},
+	"deleteTags": {
+		Name:   "deleteTags",
+		Action: "tags",
+		Method: http.MethodDelete,
+		Result: Tag{},
+	},
 }
