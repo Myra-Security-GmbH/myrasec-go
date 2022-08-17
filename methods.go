@@ -426,21 +426,21 @@ var methods = map[string]APIMethod{
 		Method: http.MethodGet,
 		Result: []Tag{},
 	},
-	"createTags": {
-		Name:   "createTags",
+	"createTag": {
+		Name:   "createTag",
 		Action: "tags",
 		Method: http.MethodPost,
 		Result: Tag{},
 	},
-	"updateTags": {
-		Name:   "updateTags",
-		Action: "tags",
+	"updateTag": {
+		Name:   "updateTag",
+		Action: "tags/%d",
 		Method: http.MethodPut,
 		Result: Tag{},
 	},
-	"deleteTags": {
-		Name:   "deleteTags",
-		Action: "tags",
+	"deleteTag": {
+		Name:   "deleteTag",
+		Action: "tags/%d",
 		Method: http.MethodDelete,
 		Result: Tag{},
 	},

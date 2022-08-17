@@ -19,6 +19,9 @@ type Tag struct {
 	Assignments  []TagAssignment `json:"assignments"`
 }
 
+//
+// TagAssignment
+//
 type TagAssignment struct {
 	ID            int             `json:"id,omitempty"`
 	Created       *types.DateTime `json:"created,omitempty"`
