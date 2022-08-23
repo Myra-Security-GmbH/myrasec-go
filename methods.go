@@ -444,4 +444,18 @@ var methods = map[string]APIMethod{
 		Method: http.MethodDelete,
 		Result: Tag{},
 	},
+	// Settings related API calls
+	"listTagSettings": {
+		Name:               "listTagSettings",
+		Action:             "tag/%d/settings",
+		Method:             http.MethodGet,
+		Result:             Settings{},
+		ResponseDecodeFunc: decodeSettingsResponse,
+	},
+	"updateTagSettings": {
+		Name:   "updateTagSettings",
+		Action: "tag/%d/settings",
+		Method: http.MethodPut,
+		Result: Settings{},
+	},
 }
