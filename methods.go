@@ -444,4 +444,29 @@ var methods = map[string]APIMethod{
 		Method: http.MethodDelete,
 		Result: Tag{},
 	},
+
+	"listTagCacheSettings": {
+		Name:   "listTagCacheSettings",
+		Action: "tag/%d/cache-settings",
+		Method: http.MethodGet,
+		Result: []CacheSetting{},
+	},
+	"createTagCacheSetting": {
+		Name:   "createTagCacheSetting",
+		Action: "tag/%d/cache-settings",
+		Method: http.MethodPost,
+		Result: CacheSetting{},
+	},
+	"updateTagCacheSetting": {
+		Name:   "updateTagCacheSetting",
+		Action: "tag/%d/cache-settings/%d",
+		Method: http.MethodPut,
+		Result: CacheSetting{},
+	},
+	"deleteTagCacheSetting": {
+		Name:   "deleteTagCacheSetting",
+		Action: "tag/%d/cache-settings/%d",
+		Method: http.MethodDelete,
+		Result: CacheSetting{},
+	},
 }
