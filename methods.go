@@ -450,7 +450,7 @@ var methods = map[string]APIMethod{
 		Action:             "tag/%d/settings",
 		Method:             http.MethodGet,
 		Result:             Settings{},
-		ResponseDecodeFunc: decodeSettingsResponse,
+		ResponseDecodeFunc: decodeTagSettingsResponse,
 	},
 	"updateTagSettings": {
 		Name:   "updateTagSettings",

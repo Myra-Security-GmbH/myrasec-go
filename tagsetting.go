@@ -1,8 +1,17 @@
 package myrasec
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 )
+
+//
+// TagSettingsResponse
+//
+type TagSettingsResponse struct {
+	Settings Settings `json:"settings"`
+}
 
 //
 // ListTagSettings returns a Setting struct containing the settings for the passed tag
@@ -40,4 +49,16 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 	}
 	return result.(*Settings), nil
 
+}
+
+//
+// decodeTagSettingsResponse - custom decode function for tag settings response. Used in the ListTagSettings action.
+//
+func decodeTagSettingsResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+	var res TagSettingsResponse
+	err := json.NewDecoder(resp.Body).Decode(&res)
+	if err != nil {
+		return nil, err
+	}
+	return &res.Settings, nil
 }
