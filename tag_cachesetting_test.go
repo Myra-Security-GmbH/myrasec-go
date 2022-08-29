@@ -19,7 +19,7 @@ func TestListTagCacheSettings(t *testing.T) {
 		t.Error("Unexpected error.")
 	}
 
-	settings, err := api.ListTagCacheSettings(1)
+	settings, err := api.ListTagCacheSettings(1, map[string]string{})
 	if err != nil {
 		t.Errorf("Expected not to get an error but got [%s]", err.Error())
 	}

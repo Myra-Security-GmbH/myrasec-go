@@ -7,7 +7,7 @@ import (
 //
 // ListTagCacheSettings returns a slice containing all visible cache settings for a subdomain
 //
-func (api *API) ListTagCacheSettings(tagId int) ([]CacheSetting, error) {
+func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]CacheSetting, error) {
 	if _, ok := methods["listTagCacheSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagCacheSettings")
 	}
@@ -15,7 +15,7 @@ func (api *API) ListTagCacheSettings(tagId int) ([]CacheSetting, error) {
 	definition := methods["listTagCacheSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(definition, params)
 	if err != nil {
 		return nil, err
 	}

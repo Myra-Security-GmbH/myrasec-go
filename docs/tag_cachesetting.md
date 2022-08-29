@@ -54,7 +54,7 @@ The listing operation returns a list of tag cache settings for the passed tagId
 
 ### Example 
 ```go
-cachesettings, err := api.ListTagCacheSettings(1234)
+cachesettings, err := api.ListTagCacheSettings(1234, map[string]string{})
 if err != nil {
     log.Fatal(err)
 }
@@ -73,7 +73,7 @@ cachesetting := &myrasec.CacheSetting{
     Path:      "/index.html",
 }
 
-c, err := api.UpdateCacheSetting(cachesetting, 1234);
+c, err := api.UpdateTagCacheSetting(cachesetting, 1234);
 if err != nil {
     log.Fatal(err)
 }
@@ -83,7 +83,7 @@ if err != nil {
 ## Delete
 To delete a tag cache setting you only need to send "id" and "modified" as body content.
 
-### Example 
+### Example
 ```go
 cachesetting := &myrasec.CacheSetting{
     ID:   0000,
@@ -91,7 +91,7 @@ cachesetting := &myrasec.CacheSetting{
         Time: modified,
     },
 }
-c, err := api.DeleteCacheSetting(cachesetting, 1234);
+c, err := api.DeleteTagCacheSetting(cachesetting, 1234);
 if err != nil {
     log.Fatal(err)
 }
