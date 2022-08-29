@@ -445,6 +445,7 @@ var methods = map[string]APIMethod{
 		Result: Tag{},
 	},
 
+  //Tag cache setting related API calls
 	"listTagCacheSettings": {
 		Name:   "listTagCacheSettings",
 		Action: "tag/%d/cache-settings",
@@ -468,5 +469,19 @@ var methods = map[string]APIMethod{
 		Action: "tag/%d/cache-settings/%d",
 		Method: http.MethodDelete,
 		Result: CacheSetting{},
+
+	//Tag settings related API calls
+	"listTagSettings": {
+		Name:               "listTagSettings",
+		Action:             "tag/%d/settings",
+		Method:             http.MethodGet,
+		Result:             Settings{},
+		ResponseDecodeFunc: decodeTagSettingsResponse,
+	},
+	"updateTagSettings": {
+		Name:   "updateTagSettings",
+		Action: "tag/%d/settings",
+		Method: http.MethodPut,
+		Result: Settings{},
 	},
 }
