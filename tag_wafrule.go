@@ -7,7 +7,7 @@ import (
 )
 
 //
-// WAFRule ...
+// TagWAFRule ...
 //
 type TagWAFRule struct {
 	ID            int             `json:"id,omitempty"`
@@ -25,8 +25,6 @@ type TagWAFRule struct {
 	Actions       []*WAFAction    `json:"actions"`
 	Conditions    []*WAFCondition `json:"conditions"`
 	TagId         int             `json:"tagId"`
-	//SubDomainName string          `json:"subDomainName,omitempty"`
-	//Template      bool            `json:"template"`
 }
 
 //
@@ -51,7 +49,7 @@ func (api *API) GetTagWAFRule(tagId int, ruleId int) (*TagWAFRule, error) {
 //
 // ListTagWAFRules returns a slice containing all visible tags
 //
-func (api *API) ListTagWAFRules(tagId int) ([]TagWAFRule, error) {
+func (api *API) ListTagWAFRules(tagId int, params map[string]string) ([]TagWAFRule, error) {
 	if _, ok := methods["listTagWAFRules"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagWAFRules")
 	}
@@ -59,7 +57,7 @@ func (api *API) ListTagWAFRules(tagId int) ([]TagWAFRule, error) {
 	definition := methods["listTagWAFRules"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(definition, params)
 	if err != nil {
 		return nil, err
 	}

@@ -123,7 +123,7 @@ func TestListTagWAFRules(t *testing.T) {
 		t.Error("Unexpected error.")
 	}
 
-	rules, err := api.ListTagWAFRules(1)
+	rules, err := api.ListTagWAFRules(1, map[string]string{})
 	if err != nil {
 		t.Errorf("Expected not to get an error but got [%s]", err.Error())
 	}
@@ -136,10 +136,6 @@ func TestListTagWAFRules(t *testing.T) {
 		if rule.Name != "WAF Test" {
 			t.Errorf("Expected to get WAF rule with Name [%s] but got [%s]", "WAF Test", rule.Name)
 		}
-
-		//if rule.SubDomainName != "www.example.com" {
-		//	t.Errorf("Expected to get WAF rule with SubDomainName [%s] but got [%s]", "www.example.com", rule.SubDomainName)
-		//}
 
 		if rule.Direction != "in" {
 			t.Errorf("Expected to get WAF rule with Direction [%s] but got [%s]", "in", rule.Direction)
