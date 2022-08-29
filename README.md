@@ -27,4 +27,4 @@ A Go library for interacting with Myra Security API.
 - [Tag](./docs/tag.md)
 - [Tag cache setting](./docs/tag_cachesetting.md)
 - [Tag settings](./docs/tag_settings.md)
-- [Tag Waf rule](./docs/tag_wafrule.md)
+- [Tag WAF rule](./docs/tag_wafrule.md)
