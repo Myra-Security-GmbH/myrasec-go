@@ -25,3 +25,4 @@ A Go library for interacting with Myra Security API.
 - [Maintenance templates](./docs/maintenance_template.md)
 - [Error page](./docs/error_page.md)
 - [Tag](./docs/tag.md)
+- [TagSettings](./docs/tag_settings.md)

@@ -7,9 +7,9 @@ import (
 )
 
 //
-// TagSettingsResponse
+// tagSettingsResponse
 //
-type TagSettingsResponse struct {
+type tagSettingsResponse struct {
 	Settings Settings `json:"settings"`
 }
 
@@ -55,7 +55,7 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 // decodeTagSettingsResponse - custom decode function for tag settings response. Used in the ListTagSettings action.
 //
 func decodeTagSettingsResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
-	var res TagSettingsResponse
+	var res tagSettingsResponse
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
 		return nil, err
