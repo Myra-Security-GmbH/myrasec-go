@@ -120,11 +120,11 @@ func (api *API) DeleteTag(tag *Tag) (*Tag, error) {
 	definition := methods["deleteTag"]
 	definition.Action = fmt.Sprintf(definition.Action, tag.ID)
 
-	result, err := api.call(definition, tag)
+	_, err := api.call(definition, tag)
 	if err != nil {
 		return nil, err
 	}
 
-	return result.(*Tag), nil
+	return tag, nil
 
 }
