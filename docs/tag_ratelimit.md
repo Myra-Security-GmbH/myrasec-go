@@ -38,8 +38,7 @@ ratelimit := &myrasec.TagRateLimit{
     Burst:         50,
     Value:         100,
     Timeframe:     60,
-    SubDomainName: "www.example.com.",
-    Type:          "domain",
+    Type:          "tag",
     Network:       "127.0.0.1/24",
 }
 rl, err := api.CreateTagRateLimit(ratelimit, tagId)
