@@ -66,7 +66,7 @@ The listing operation returns a list of TagWAFRules for the given TagID.
 
 ### Example
 ```go
-rules, err := api.ListTagWAFRules(12)
+rules, err := api.ListTagWAFRules(12, nil)
 if err != nil {
     log.Fatal(err)
 }
