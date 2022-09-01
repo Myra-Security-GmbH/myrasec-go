@@ -23,7 +23,7 @@ type TagRateLimit struct {
 | `Burst` | int | Burst defines how many requests a client can make in excess of the specified rate. |
 | `Network` | string | Network in CIDR notation affected by the rate limiter. |
 | `Timeframe` | int | The affected timeframe in seconds for the rate limit. |
-| `Type` | string | Right now, only `domain` is supported |
+| `Type` | string | Right now, only `tag` is supported |
 | `Value` | int | Maximum amount of requests for the given network. |
 
 
