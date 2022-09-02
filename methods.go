@@ -516,6 +516,7 @@ var methods = map[string]APIMethod{
 		Action: "tag/%d/waf-rules/%d",
 		Method: http.MethodDelete,
 		Result: TagWAFRule{},
+	},
 
 	//Tag Rate Limit related API calls
 	"listTagRateLimits": {
