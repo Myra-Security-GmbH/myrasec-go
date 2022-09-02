@@ -516,5 +516,30 @@ var methods = map[string]APIMethod{
 		Action: "tag/%d/waf-rules/%d",
 		Method: http.MethodDelete,
 		Result: TagWAFRule{},
+
+	//Tag Rate Limit related API calls
+	"listTagRateLimits": {
+		Name:   "listTagRateLimits",
+		Action: "tag/%d/ratelimits",
+		Method: http.MethodGet,
+		Result: []TagRateLimit{},
+	},
+	"createTagRateLimit": {
+		Name:   "createTagRateLimit",
+		Action: "tag/%d/ratelimits",
+		Method: http.MethodPost,
+		Result: TagRateLimit{},
+	},
+	"updateTagRateLimit": {
+		Name:   "updateTagRateLimit",
+		Action: "tag/%d/ratelimits/%d",
+		Method: http.MethodPut,
+		Result: TagRateLimit{},
+	},
+	"deleteTagRateLimit": {
+		Name:   "deleteTagRateLimit",
+		Action: "tag/%d/ratelimits/%d",
+		Method: http.MethodDelete,
+		Result: TagRateLimit{},
 	},
 }
