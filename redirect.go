@@ -2,9 +2,49 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getRedirectMethods returns Redirect related API calls
+//
+func getRedirectMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"getRedirect": {
+			Name:               "getRedirect",
+			Action:             "domain/%d/redirects/%s/%d",
+			Method:             http.MethodGet,
+			Result:             Redirect{},
+			ResponseDecodeFunc: decodeSingleElementResponse,
+		},
+		"listRedirects": {
+			Name:   "listRedirects",
+			Action: "domain/%d/redirects/%s",
+			Method: http.MethodGet,
+			Result: []Redirect{},
+		},
+		"createRedirect": {
+			Name:   "createRedirect",
+			Action: "domain/%d/redirects/%s",
+			Method: http.MethodPost,
+			Result: Redirect{},
+		},
+		"updateRedirect": {
+			Name:   "updateRedirect",
+			Action: "domain/%d/redirects/%s/%d",
+			Method: http.MethodPut,
+			Result: Redirect{},
+		},
+		"deleteRedirect": {
+			Name:   "deleteRedirect",
+			Action: "domain/%d/redirects/%s/%d",
+			Method: http.MethodDelete,
+			Result: Redirect{},
+		},
+	}
+}
 
 //
 // Redirect ...

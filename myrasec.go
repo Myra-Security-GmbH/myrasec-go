@@ -89,6 +89,10 @@ type Warning struct {
 	Message string `json:"message,omitempty"`
 }
 
+func init() {
+	initializeMethods()
+}
+
 //
 // New returns a new MYRA API Client
 //

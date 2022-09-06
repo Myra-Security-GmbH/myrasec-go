@@ -1,6 +1,30 @@
 package myrasec
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
+
+//
+// getVHostMethods returns VHost related API calls
+//
+func getVHostMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		// VHost related API calls
+		"listAllSubdomains": {
+			Name:   "listAllSubdomains",
+			Action: "subdomains",
+			Method: http.MethodGet,
+			Result: []VHost{},
+		},
+		"listSubdomainsForDomain": {
+			Name:   "listSubdomainsForDomain",
+			Action: "domain/%d/subdomains",
+			Method: http.MethodGet,
+			Result: []VHost{},
+		},
+	}
+}
 
 //
 // VHost ...

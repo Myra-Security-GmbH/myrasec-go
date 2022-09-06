@@ -2,9 +2,60 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getWAFMethods returns WAF related API calls
+//
+func getWAFMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listWAFConditions": {
+			Name:   "listWAFConditions",
+			Action: "waf/conditions",
+			Method: http.MethodGet,
+			Result: []WAFCondition{},
+		},
+		"listWAFActions": {
+			Name:   "listWAFActions",
+			Action: "waf/actions",
+			Method: http.MethodGet,
+			Result: []WAFAction{},
+		},
+		"listWAFRules": {
+			Name:   "listWAFRules",
+			Action: "domain/%d/waf-rules",
+			Method: http.MethodGet,
+			Result: []WAFRule{},
+		},
+		"fetchWAFRule": {
+			Name:   "fetchWAFRule",
+			Action: "domain/waf-rules/%d",
+			Method: http.MethodGet,
+			Result: []WAFRule{},
+		},
+		"createWAFRule": {
+			Name:   "createWAFRule",
+			Action: "domain/%d/%s/waf-rules",
+			Method: http.MethodPost,
+			Result: WAFRule{},
+		},
+		"updateWAFRule": {
+			Name:   "updateWAFRule",
+			Action: "domain/%d/%s/waf-rules/%d",
+			Method: http.MethodPut,
+			Result: WAFRule{},
+		},
+		"deleteWAFRule": {
+			Name:   "deleteWAFRule",
+			Action: "domain/waf-rules/%d",
+			Method: http.MethodDelete,
+			Result: WAFRule{},
+		},
+	}
+}
 
 //
 // WAFRule ...

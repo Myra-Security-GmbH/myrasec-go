@@ -2,9 +2,42 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getCacheSettingMethods returns Cache Setting related API calls
+//
+func getCacheSettingMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listCacheSettings": {
+			Name:   "listCacheSettings",
+			Action: "domain/%d/%s/cache-settings",
+			Method: http.MethodGet,
+			Result: []CacheSetting{},
+		},
+		"createCacheSetting": {
+			Name:   "createCacheSetting",
+			Action: "domain/%d/%s/cache-settings",
+			Method: http.MethodPost,
+			Result: CacheSetting{},
+		},
+		"updateCacheSetting": {
+			Name:   "updateCacheSetting",
+			Action: "domain/%d/%s/cache-settings/%d",
+			Method: http.MethodPut,
+			Result: CacheSetting{},
+		},
+		"deleteCacheSetting": {
+			Name:   "deleteCacheSetting",
+			Action: "domain/%d/%s/cache-settings/%d",
+			Method: http.MethodDelete,
+			Result: CacheSetting{},
+		},
+	}
+}
 
 //
 // CacheSetting ...

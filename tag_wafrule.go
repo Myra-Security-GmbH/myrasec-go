@@ -2,9 +2,49 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getTagWAFRuleMethods returns Tag WAF rule related API calls
+//
+func getTagWAFRuleMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"getTagWAFRule": {
+			Name:               "getTagWAFRule",
+			Action:             "tag/%d/waf-rules/%d",
+			Method:             http.MethodGet,
+			Result:             TagWAFRule{},
+			ResponseDecodeFunc: decodeSingleElementResponse,
+		},
+		"listTagWAFRules": {
+			Name:   "listTagWAFRules",
+			Action: "tag/%d/waf-rules",
+			Method: http.MethodGet,
+			Result: []TagWAFRule{},
+		},
+		"createTagWAFRule": {
+			Name:   "createTagWAFRule",
+			Action: "tag/%d/waf-rules",
+			Method: http.MethodPost,
+			Result: TagWAFRule{},
+		},
+		"updateTagWAFRule": {
+			Name:   "updateTagWAFRule",
+			Action: "tag/%d/waf-rules/%d",
+			Method: http.MethodPut,
+			Result: TagWAFRule{},
+		},
+		"deleteTagWAFRule": {
+			Name:   "deleteTagWAFRule",
+			Action: "tag/%d/waf-rules/%d",
+			Method: http.MethodDelete,
+			Result: TagWAFRule{},
+		},
+	}
+}
 
 //
 // TagWAFRule ...

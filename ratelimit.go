@@ -2,9 +2,42 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getRateLimitMethods returns Rate Limit related API calls
+//
+func getRateLimitMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listRateLimits": {
+			Name:   "listRateLimits",
+			Action: "domain/%d/%s/ratelimits",
+			Method: http.MethodGet,
+			Result: []RateLimit{},
+		},
+		"createRateLimit": {
+			Name:   "createRateLimit",
+			Action: "domain/%d/%s/ratelimits",
+			Method: http.MethodPost,
+			Result: RateLimit{},
+		},
+		"updateRateLimit": {
+			Name:   "updateRateLimit",
+			Action: "domain/%d/%s/ratelimits/%d",
+			Method: http.MethodPut,
+			Result: RateLimit{},
+		},
+		"deleteRateLimit": {
+			Name:   "deleteRateLimit",
+			Action: "domain/%d/%s/ratelimits/%d",
+			Method: http.MethodDelete,
+			Result: RateLimit{},
+		},
+	}
+}
 
 //
 // RateLimit ...

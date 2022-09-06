@@ -1,6 +1,23 @@
 package myrasec
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
+
+//
+// getCacheClearMethods returns cache clear related API calls
+//
+func getCacheClearMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"clearCache": {
+			Name:   "clearCache",
+			Action: "domain/%d/cache-clear",
+			Method: http.MethodPut,
+			Result: CacheClear{},
+		},
+	}
+}
 
 //
 // CacheClear ...

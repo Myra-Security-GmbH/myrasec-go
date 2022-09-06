@@ -2,7 +2,40 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 )
+
+//
+// getTagCacheSettingMethods returns Tag cache setting related API calls
+//
+func getTagCacheSettingMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listTagCacheSettings": {
+			Name:   "listTagCacheSettings",
+			Action: "tag/%d/cache-settings",
+			Method: http.MethodGet,
+			Result: []CacheSetting{},
+		},
+		"createTagCacheSetting": {
+			Name:   "createTagCacheSetting",
+			Action: "tag/%d/cache-settings",
+			Method: http.MethodPost,
+			Result: CacheSetting{},
+		},
+		"updateTagCacheSetting": {
+			Name:   "updateTagCacheSetting",
+			Action: "tag/%d/cache-settings/%d",
+			Method: http.MethodPut,
+			Result: CacheSetting{},
+		},
+		"deleteTagCacheSetting": {
+			Name:   "deleteTagCacheSetting",
+			Action: "tag/%d/cache-settings/%d",
+			Method: http.MethodDelete,
+			Result: CacheSetting{},
+		},
+	}
+}
 
 //
 // ListTagCacheSettings returns a slice containing all visible cache settings for a subdomain
