@@ -68,6 +68,7 @@ type Response struct {
 	TargetObject  []interface{} `json:"targetObject,omitempty"`
 	Data          []interface{} `json:"data,omitempty"`
 	List          []interface{} `json:"list,omitempty"`
+	Result        []interface{} `json:"result,omitempty"`
 	Page          int           `json:"page,omitempty"`
 	Count         int           `json:"count,omitempty"`
 	PageSize      int           `json:"pageSize,omitempty"`
@@ -336,7 +337,11 @@ func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*h
 	var err error
 	var req *http.Request
 
-	apiURL := fmt.Sprintf(api.BaseURL, definition.Action)
+	baseURL := api.BaseURL
+	if definition.BaseURL != "" {
+		baseURL = definition.BaseURL
+	}
+	apiURL := fmt.Sprintf(baseURL, definition.Action)
 	switch definition.Method {
 	case http.MethodGet:
 		req, err = api.prepareGETRequest(apiURL, payload...)
@@ -442,6 +447,8 @@ func prepareResult(response Response, definition APIMethod) (interface{}, error)
 		} else {
 			result = response.Data[0]
 		}
+	} else if response.Result != nil {
+		result = response.Result
 	}
 
 	tmp, err := json.Marshal(result)
@@ -465,7 +472,14 @@ func prepareResult(response Response, definition APIMethod) (interface{}, error)
 // prepareSingleElementResult ...
 //
 func prepareSingleElementResult(response Response, definition APIMethod) (interface{}, error) {
-	result := response.Data[0]
+	var result interface{}
+	if response.Data != nil {
+		result = response.Data[0]
+	}
+
+	if result == nil {
+		return nil, fmt.Errorf("unable to detect element in API response")
+	}
 
 	tmp, err := json.Marshal(result)
 	if err != nil {
