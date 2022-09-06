@@ -2,9 +2,49 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getSSLMethods returns SSL certificate related API calls
+//
+func getSSLMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"getSSLCertificate": {
+			Name:               "getSSLCertificate",
+			Action:             "domain/%d/ssl/certificates/%d",
+			Method:             http.MethodGet,
+			Result:             SSLCertificate{},
+			ResponseDecodeFunc: decodeSingleElementResponse,
+		},
+		"listSSLCertificates": {
+			Name:   "listSSLCertificates",
+			Action: "domain/%d/ssl/certificates",
+			Method: http.MethodGet,
+			Result: []SSLCertificate{},
+		},
+		"createSSLCertificate": {
+			Name:   "createSSLCertificate",
+			Action: "domain/%d/certificates",
+			Method: http.MethodPost,
+			Result: SSLCertificate{},
+		},
+		"updateSSLCertificate": {
+			Name:   "updateSSLCertificate",
+			Action: "domain/%d/certificates/%d",
+			Method: http.MethodPut,
+			Result: SSLCertificate{},
+		},
+		"deleteSSLCertificate": {
+			Name:   "deleteSSLCertificate",
+			Action: "domain/%d/certificates/%d",
+			Method: http.MethodPut,
+			Result: SSLCertificate{},
+		},
+	}
+}
 
 type Certificate struct {
 	ID           int             `json:"id,omitempty"`

@@ -2,9 +2,42 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getMaintenanceMethods returns Maintenance related API calls
+//
+func getMaintenanceMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listMaintenances": {
+			Name:   "listMaintenances",
+			Action: "domain/%d/%s/maintenances",
+			Method: http.MethodGet,
+			Result: []Maintenance{},
+		},
+		"createMaintenance": {
+			Name:   "createMaintenance",
+			Action: "domain/%d/%s/maintenances",
+			Method: http.MethodPost,
+			Result: Maintenance{},
+		},
+		"updateMaintenance": {
+			Name:   "updateMaintenance",
+			Action: "domain/%d/%s/maintenances/%d",
+			Method: http.MethodPut,
+			Result: Maintenance{},
+		},
+		"deleteMaintenance": {
+			Name:   "deleteMaintenance",
+			Action: "domain/%d/%s/maintenances/%d",
+			Method: http.MethodDelete,
+			Result: Maintenance{},
+		},
+	}
+}
 
 //
 // Maintenance ...

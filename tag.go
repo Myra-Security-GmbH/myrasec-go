@@ -2,12 +2,52 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
 //
-// Tag
+// getTagMethods returns Tag related API calls
+//
+func getTagMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"getTag": {
+			Name:               "getTag",
+			Action:             "tags/%d",
+			Method:             http.MethodGet,
+			Result:             Tag{},
+			ResponseDecodeFunc: decodeSingleElementResponse,
+		},
+		"listTags": {
+			Name:   "listTags",
+			Action: "tags",
+			Method: http.MethodGet,
+			Result: []Tag{},
+		},
+		"createTag": {
+			Name:   "createTag",
+			Action: "tags",
+			Method: http.MethodPost,
+			Result: Tag{},
+		},
+		"updateTag": {
+			Name:   "updateTag",
+			Action: "tags/%d",
+			Method: http.MethodPut,
+			Result: Tag{},
+		},
+		"deleteTag": {
+			Name:   "deleteTag",
+			Action: "tags/%d",
+			Method: http.MethodDelete,
+			Result: Tag{},
+		},
+	}
+}
+
+//
+// Tag ...
 //
 type Tag struct {
 	ID           int             `json:"id,omitempty"`
@@ -20,7 +60,7 @@ type Tag struct {
 }
 
 //
-// TagAssignment
+// TagAssignment ...
 //
 type TagAssignment struct {
 	ID            int             `json:"id,omitempty"`

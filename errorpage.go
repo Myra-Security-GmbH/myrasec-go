@@ -8,6 +8,47 @@ import (
 )
 
 //
+// getErrorPageMethods returns Error Page related API calls
+//
+func getErrorPageMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listErrorPages": {
+			Name:   "listErrorPages",
+			Action: "domain/%d/errorpages",
+			Method: http.MethodGet,
+			Result: []ErrorPage{},
+		},
+		"getErrorPage": {
+			Name:               "getErrorPage",
+			Action:             "domain/%d/errorpages/%d",
+			Method:             http.MethodGet,
+			Result:             ErrorPage{},
+			ResponseDecodeFunc: decodeSingleElementResponse,
+		},
+		"createErrorPage": {
+			Name:               "createErrorPage",
+			Action:             "domain/%d/errorpages",
+			Method:             http.MethodPost,
+			Result:             ErrorPage{},
+			ResponseDecodeFunc: decodeErrorPageResponse,
+		},
+		"updateErrorPage": {
+			Name:               "updateErrorPage",
+			Action:             "domain/%d/errorpages",
+			Method:             http.MethodPost,
+			Result:             ErrorPage{},
+			ResponseDecodeFunc: decodeErrorPageResponse,
+		},
+		"deleteErrorPage": {
+			Name:   "deleteErrorPage",
+			Action: "domain/%d/errorpages",
+			Method: http.MethodDelete,
+			Result: ErrorPage{},
+		},
+	}
+}
+
+//
 // errorPageUpdate
 //
 type errorPageUpdate struct {

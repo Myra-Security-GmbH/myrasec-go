@@ -2,9 +2,42 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getTagRateLimitMethods returns Tag Rate Limit related API calls
+//
+func getTagRateLimitMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listTagRateLimits": {
+			Name:   "listTagRateLimits",
+			Action: "tag/%d/ratelimits",
+			Method: http.MethodGet,
+			Result: []TagRateLimit{},
+		},
+		"createTagRateLimit": {
+			Name:   "createTagRateLimit",
+			Action: "tag/%d/ratelimits",
+			Method: http.MethodPost,
+			Result: TagRateLimit{},
+		},
+		"updateTagRateLimit": {
+			Name:   "updateTagRateLimit",
+			Action: "tag/%d/ratelimits/%d",
+			Method: http.MethodPut,
+			Result: TagRateLimit{},
+		},
+		"deleteTagRateLimit": {
+			Name:   "deleteTagRateLimit",
+			Action: "tag/%d/ratelimits/%d",
+			Method: http.MethodDelete,
+			Result: TagRateLimit{},
+		},
+	}
+}
 
 //
 // TagRateLimit ...

@@ -2,9 +2,49 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getDNSRecordMethods returns DNS record related API calls
+//
+func getDNSRecordMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"getDNSRecord": {
+			Name:               "getDNSRecord",
+			Action:             "domain/%d/dns-records/%d",
+			Method:             http.MethodGet,
+			Result:             DNSRecord{},
+			ResponseDecodeFunc: decodeSingleElementResponse,
+		},
+		"listDNSRecords": {
+			Name:   "listDNSRecords",
+			Action: "domain/%d/dns-records",
+			Method: http.MethodGet,
+			Result: []DNSRecord{},
+		},
+		"createDNSRecord": {
+			Name:   "createDNSRecord",
+			Action: "domain/%d/dns-records",
+			Method: http.MethodPost,
+			Result: DNSRecord{},
+		},
+		"updateDNSRecord": {
+			Name:   "updateDNSRecord",
+			Action: "domain/%d/dns-records/%d",
+			Method: http.MethodPut,
+			Result: DNSRecord{},
+		},
+		"deleteDNSRecord": {
+			Name:   "deleteDNSRecord",
+			Action: "domain/%d/dns-records/%d",
+			Method: http.MethodDelete,
+			Result: DNSRecord{},
+		},
+	}
+}
 
 //
 // DNSRecord ...

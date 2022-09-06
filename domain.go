@@ -2,9 +2,49 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getDomainMethods returns Domain related API calls
+//
+func getDomainMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"getDomain": {
+			Name:               "getDomain",
+			Action:             "domains/%d",
+			Method:             http.MethodGet,
+			Result:             Domain{},
+			ResponseDecodeFunc: decodeSingleElementResponse,
+		},
+		"listDomains": {
+			Name:   "listDomains",
+			Action: "domains",
+			Method: http.MethodGet,
+			Result: []Domain{},
+		},
+		"createDomain": {
+			Name:   "createDomain",
+			Action: "domains",
+			Method: http.MethodPost,
+			Result: Domain{},
+		},
+		"updateDomain": {
+			Name:   "updateDomain",
+			Action: "domains/%d",
+			Method: http.MethodPut,
+			Result: Domain{},
+		},
+		"deleteDomain": {
+			Name:   "deleteDomain",
+			Action: "domains/%d",
+			Method: http.MethodDelete,
+			Result: Domain{},
+		},
+	}
+}
 
 //
 // Domain ...

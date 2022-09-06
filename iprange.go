@@ -2,9 +2,24 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getIPRangeMethods returns IP range related API calls
+//
+func getIPRangeMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listIPRanges": {
+			Name:   "listIPRanges",
+			Action: "ip-ranges",
+			Method: http.MethodGet,
+			Result: []IPRange{},
+		},
+	}
+}
 
 //
 // IPRange ...

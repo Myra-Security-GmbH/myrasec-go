@@ -2,9 +2,42 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getMaintenanceTemplateMethods returns Maintenance template related API calls
+//
+func getMaintenanceTemplateMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listMaintenanceTemplates": {
+			Name:   "listMaintenanceTemplates",
+			Action: "domain/%d/maintenance-templates",
+			Method: http.MethodGet,
+			Result: []MaintenanceTemplate{},
+		},
+		"createMaintenanceTemplate": {
+			Name:   "createMaintenanceTemplate",
+			Action: "domain/%d/maintenance-templates",
+			Method: http.MethodPost,
+			Result: MaintenanceTemplate{},
+		},
+		"updateMaintenanceTemplate": {
+			Name:   "updateMaintenanceTemplate",
+			Action: "domain/%d/maintenance-templates/%d",
+			Method: http.MethodPut,
+			Result: MaintenanceTemplate{},
+		},
+		"deleteMaintenanceTemplate": {
+			Name:   "deleteMaintenanceTemplate",
+			Action: "domain/%d/maintenance-templates/%d",
+			Method: http.MethodDelete,
+			Result: MaintenanceTemplate{},
+		},
+	}
+}
 
 //
 // MaintenanceTemplate ...

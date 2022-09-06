@@ -7,6 +7,27 @@ import (
 )
 
 //
+// getTagSettingsMethods returns Tag settings related API calls
+//
+func getTagSettingsMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listTagSettings": {
+			Name:               "listTagSettings",
+			Action:             "tag/%d/settings",
+			Method:             http.MethodGet,
+			Result:             Settings{},
+			ResponseDecodeFunc: decodeTagSettingsResponse,
+		},
+		"updateTagSettings": {
+			Name:   "updateTagSettings",
+			Action: "tag/%d/settings",
+			Method: http.MethodPut,
+			Result: Settings{},
+		},
+	}
+}
+
+//
 // tagSettingsResponse
 //
 type tagSettingsResponse struct {

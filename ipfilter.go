@@ -2,9 +2,49 @@ package myrasec
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
+
+//
+// getIPFilterMethods returns IP Filter related API calls
+//
+func getIPFilterMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"getIPFilter": {
+			Name:               "getIPFilter",
+			Action:             "domain/%d/ip-filters/%s/%d",
+			Method:             http.MethodGet,
+			Result:             IPFilter{},
+			ResponseDecodeFunc: decodeSingleElementResponse,
+		},
+		"listIPFilters": {
+			Name:   "listIPFilters",
+			Action: "domain/%d/ip-filters/%s",
+			Method: http.MethodGet,
+			Result: []IPFilter{},
+		},
+		"createIPFilter": {
+			Name:   "createIPFilter",
+			Action: "domain/%d/ip-filters/%s",
+			Method: http.MethodPost,
+			Result: IPFilter{},
+		},
+		"updateIPFilter": {
+			Name:   "updateIPFilter",
+			Action: "domain/%d/ip-filters/%s/%d",
+			Method: http.MethodPut,
+			Result: IPFilter{},
+		},
+		"deleteIPFilter": {
+			Name:   "deleteIPFilter",
+			Action: "domain/%d/ip-filters/%s/%d",
+			Method: http.MethodDelete,
+			Result: IPFilter{},
+		},
+	}
+}
 
 //
 // IPFilter ...

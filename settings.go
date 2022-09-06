@@ -7,6 +7,27 @@ import (
 )
 
 //
+// getSettingsMethods returns Settings related API calls
+//
+func getSettingsMethods() map[string]APIMethod {
+	return map[string]APIMethod{
+		"listSettings": {
+			Name:               "listSettings",
+			Action:             "domain/%d/%s/settings?flat",
+			Method:             http.MethodGet,
+			Result:             Settings{},
+			ResponseDecodeFunc: decodeSettingsResponse,
+		},
+		"updateSettings": {
+			Name:   "updateSettings",
+			Action: "domain/%d/%s/settings",
+			Method: http.MethodPost,
+			Result: Settings{},
+		},
+	}
+}
+
+//
 // Settings ...
 //
 type Settings struct {
