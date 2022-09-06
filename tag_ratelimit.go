@@ -12,7 +12,6 @@ import (
 //
 func getTagRateLimitMethods() map[string]APIMethod {
 	return map[string]APIMethod{
-		//Tag Rate Limit related API calls
 		"listTagRateLimits": {
 			Name:   "listTagRateLimits",
 			Action: "tag/%d/ratelimits",

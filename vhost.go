@@ -10,7 +10,6 @@ import (
 //
 func getVHostMethods() map[string]APIMethod {
 	return map[string]APIMethod{
-		// VHost related API calls
 		"listAllSubdomains": {
 			Name:   "listAllSubdomains",
 			Action: "subdomains",
