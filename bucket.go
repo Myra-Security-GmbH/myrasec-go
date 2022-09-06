@@ -44,6 +44,27 @@ func getBucketMethods() map[string]APIMethod {
 			Result:             Bucket{},
 			ResponseDecodeFunc: decodeSingleBucketResponse,
 		},
+		"linkBucket": {
+			BaseURL: "https://upload.myracloud.com/%s",
+			Name:    "linkBucket",
+			Action:  "v2/bucket/link/%s",
+			Method:  http.MethodPut,
+			Result:  BucketLink{},
+		},
+		//"unlinkBucket": {
+		//	BaseURL: "https://upload.myracloud.com/%s",
+		//	Name:    "unlinkBucket",
+		//	Action:  "v2/bucket/link/%s",
+		//	Method:  http.MethodDelete,
+		//	Result:  BucketLink{},
+		//},
+		"deleteBucket": {
+			BaseURL: "https://upload.myracloud.com/%s",
+			Name:    "deleteBucket",
+			Action:  "v2/bucket/delete/%s",
+			Method:  http.MethodDelete,
+			Result:  Bucket{},
+		},
 	}
 }
 
