@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getRedirectMethods returns Redirect related API calls
-//
 func getRedirectMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getRedirect": {
@@ -46,9 +44,7 @@ func getRedirectMethods() map[string]APIMethod {
 	}
 }
 
-//
 // Redirect ...
-//
 type Redirect struct {
 	ID            int             `json:"id,omitempty"`
 	Created       *types.DateTime `json:"created,omitempty"`
@@ -64,9 +60,7 @@ type Redirect struct {
 	ExpertMode    bool            `json:"expertMode,omitempty"`
 }
 
-//
 // GetRedirect returns a single redirect with/for the given identifier
-//
 func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redirect, error) {
 	if _, ok := methods["getRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getRedirect")
@@ -83,9 +77,7 @@ func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redire
 	return result.(*Redirect), nil
 }
 
-//
 // ListRedirects returns a slice containing all visible redirects for a subdomain
-//
 func (api *API) ListRedirects(domainId int, subDomainName string, params map[string]string) ([]Redirect, error) {
 	if _, ok := methods["listRedirects"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listRedirects")
@@ -104,9 +96,7 @@ func (api *API) ListRedirects(domainId int, subDomainName string, params map[str
 	return records, nil
 }
 
-//
 // CreateRedirect creates a new redirect for the passed subdomain (name) using the MYRA API
-//
 func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
 	if _, ok := methods["createRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createRedirect")
@@ -122,9 +112,7 @@ func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName s
 	return result.(*Redirect), nil
 }
 
-//
 // UpdateRedirect updates the passed redirect using the MYRA API
-//
 func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
 	if _, ok := methods["updateRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateRedirect")
@@ -140,9 +128,7 @@ func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName s
 	return result.(*Redirect), nil
 }
 
-//
 // DeleteRedirect deletes the passed redirect using the MYRA API
-//
 func (api *API) DeleteRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
 	if _, ok := methods["deleteRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteRedirect")

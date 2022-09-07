@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getMaintenanceTemplateMethods returns Maintenance template related API calls
-//
 func getMaintenanceTemplateMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listMaintenanceTemplates": {
@@ -39,9 +37,7 @@ func getMaintenanceTemplateMethods() map[string]APIMethod {
 	}
 }
 
-//
 // MaintenanceTemplate ...
-//
 type MaintenanceTemplate struct {
 	ID       int             `json:"id,omitempty"`
 	Created  *types.DateTime `json:"created,omitempty"`
@@ -50,9 +46,7 @@ type MaintenanceTemplate struct {
 	Content  string          `json:"content"`
 }
 
-//
 // ListMaintenanceTemplates returns a slice containing all maintenance templates for a domain
-//
 func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string) ([]MaintenanceTemplate, error) {
 	if _, ok := methods["listMaintenanceTemplates"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listMaintenanceTemplates")
@@ -72,9 +66,7 @@ func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string)
 	return records, nil
 }
 
-//
 // CreateMaintenanceTemplate creates a new maintenance template for the passed domain (id) using the MYRA API
-//
 func (api *API) CreateMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
 	if _, ok := methods["createMaintenanceTemplate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createMaintenanceTemplate")
@@ -90,9 +82,7 @@ func (api *API) CreateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 	return result.(*MaintenanceTemplate), nil
 }
 
-//
 // UpdateMaintenanceTemplate updates the passed maintenance template using the MYRA API
-//
 func (api *API) UpdateMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
 	if _, ok := methods["updateMaintenanceTemplate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateMaintenanceTemplate")
@@ -108,9 +98,7 @@ func (api *API) UpdateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 	return result.(*MaintenanceTemplate), nil
 }
 
-//
 // DeleteMaintenanceTemplate deletes the passed maintenance template using the MYRA API
-//
 func (api *API) DeleteMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
 	if _, ok := methods["deleteMaintenanceTemplate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteMaintenanceTemplate")

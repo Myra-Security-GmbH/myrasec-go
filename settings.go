@@ -6,9 +6,7 @@ import (
 	"net/http"
 )
 
-//
 // getSettingsMethods returns Settings related API calls
-//
 func getSettingsMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listSettings": {
@@ -27,9 +25,7 @@ func getSettingsMethods() map[string]APIMethod {
 	}
 }
 
-//
 // Settings ...
-//
 type Settings struct {
 	AccessLog                   bool     `json:"access_log"`
 	AntibotPostFlood            bool     `json:"antibot_post_flood"`
@@ -81,9 +77,7 @@ type Settings struct {
 	WAFPolicy                   string   `json:"waf_policy,omitempty"`
 }
 
-//
 // ListSettings returns a Setting struct containing the settings for the passed subdomain
-//
 func (api *API) ListSettings(domainId int, subDomainName string, params map[string]string) (*Settings, error) {
 	if _, ok := methods["listSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSettings")
@@ -100,9 +94,7 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 	return result.(*Settings), nil
 }
 
-//
 // UpdateSettings updates the passed settings using the MYRA API
-//
 func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName string) (*Settings, error) {
 	if _, ok := methods["updateSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createSettings")
@@ -118,9 +110,7 @@ func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName s
 	return result.(*Settings), nil
 }
 
-//
 // decodeSettingsResponse - custom decode function for settings response. Used in the ListSettings action.
-//
 func decodeSettingsResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
 	var res Settings
 	err := json.NewDecoder(resp.Body).Decode(&res)

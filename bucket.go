@@ -8,9 +8,7 @@ import (
 	"reflect"
 )
 
-//
 // getBucketMethods returns Cache Setting related API calls
-//
 func getBucketMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listBuckets": {
@@ -68,33 +66,25 @@ func getBucketMethods() map[string]APIMethod {
 	}
 }
 
-//
 // bucketResponse ...
-//
 type bucketResponse struct {
 	Error  bool        `json:"error"`
 	Result interface{} `json:"result"`
 }
 
-//
 // Bucket ...
-//
 type Bucket struct {
 	Name          string   `json:"bucket"`
 	LinkedDomains []string `json:"linkedDomains"`
 }
 
-//
 // BucketStatus ...
-//
 type BucketStatus struct {
 	Status     string `json:"status"`
 	StatusCode int    `json:"statusCode"`
 }
 
-//
 // BucketStatistics ...
-//
 type BucketStatistics struct {
 	Files       int   `json:"files"`
 	Folders     int   `json:"folders"`
@@ -102,17 +92,13 @@ type BucketStatistics struct {
 	ContentSize int64 `json:"contentSize"`
 }
 
-//
 // BucketLink ...
-//
 type BucketLink struct {
 	Bucket        string `json:"bucket"`
 	SubDomainName string `json:"subDomainName"`
 }
 
-//
 // ListBuckets returns a list of all created buckets for the given domain.
-//
 func (api *API) ListBuckets(domainName string) ([]Bucket, error) {
 	if _, ok := methods["listBuckets"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listBuckets")
@@ -132,9 +118,7 @@ func (api *API) ListBuckets(domainName string) ([]Bucket, error) {
 	return records, nil
 }
 
-//
 // GetBucketStatus allows you to get a status for your newly created bucket.
-//
 func (api *API) GetBucketStatus(domainName string, bucketName string) (*BucketStatus, error) {
 	if _, ok := methods["getBucketStatus"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getBucketStatus")
@@ -151,9 +135,7 @@ func (api *API) GetBucketStatus(domainName string, bucketName string) (*BucketSt
 	return result.(*BucketStatus), nil
 }
 
-//
 // GetBucketStatistics returns statistics for a specific bucket.
-//
 func (api *API) GetBucketStatistics(domainName string, bucketName string) (*BucketStatistics, error) {
 	if _, ok := methods["getBucketStatistics"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getBucketStatistics")
@@ -170,9 +152,7 @@ func (api *API) GetBucketStatistics(domainName string, bucketName string) (*Buck
 	return result.(*BucketStatistics), nil
 }
 
-//
 // CreateBucket creates a new Bucket for the given domain
-//
 func (api *API) CreateBucket(domainName string) (*Bucket, error) {
 	if _, ok := methods["createBucket"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createBucket")
@@ -188,9 +168,7 @@ func (api *API) CreateBucket(domainName string) (*Bucket, error) {
 	return result.(*Bucket), nil
 }
 
-//
 // LinkBucket links a sub domain to a bucket
-//
 func (api *API) LinkBucket(link *BucketLink, domainName string) (*BucketLink, error) {
 	if _, ok := methods["linkBucket"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "linkBucket")
@@ -206,9 +184,7 @@ func (api *API) LinkBucket(link *BucketLink, domainName string) (*BucketLink, er
 	return link, nil
 }
 
-//
 // UnlinkBucket unlinks a sub domain from a bucket
-//
 func (api *API) UnlinkBucket(link *BucketLink, domainName string) (*BucketLink, error) {
 
 	return nil, fmt.Errorf("this action is currently not supported")
@@ -227,9 +203,7 @@ func (api *API) UnlinkBucket(link *BucketLink, domainName string) (*BucketLink, 
 	return link, nil
 }
 
-//
 // DeleteBucket removes a bucket
-//
 func (api *API) DeleteBucket(bucket *Bucket, domainName string) (*Bucket, error) {
 	if _, ok := methods["deleteBucket"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteBucket")
@@ -245,9 +219,7 @@ func (api *API) DeleteBucket(bucket *Bucket, domainName string) (*Bucket, error)
 	return bucket, nil
 }
 
-//
 // decodeTagSettingsResponse - custom decode function for bucket status response
-//
 func decodeBucketStatusResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
 	var res BucketStatus
 	err := json.NewDecoder(resp.Body).Decode(&res)
@@ -257,9 +229,7 @@ func decodeBucketStatusResponse(resp *http.Response, definition APIMethod) (inte
 	return &res, nil
 }
 
-//
 // decodeSingleBucketResponse - custom decode function for bucket responses as they sometimes contain an object instead of an array (result)
-//
 func decodeSingleBucketResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
 	var res bucketResponse
 	err := json.NewDecoder(resp.Body).Decode(&res)

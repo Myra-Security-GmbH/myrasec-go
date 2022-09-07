@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getTagRateLimitMethods returns Tag Rate Limit related API calls
-//
 func getTagRateLimitMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listTagRateLimits": {
@@ -39,9 +37,7 @@ func getTagRateLimitMethods() map[string]APIMethod {
 	}
 }
 
-//
 // TagRateLimit ...
-//
 type TagRateLimit struct {
 	ID        int             `json:"id,omitempty"`
 	Created   *types.DateTime `json:"created,omitempty"`
@@ -54,9 +50,7 @@ type TagRateLimit struct {
 	Value     int             `json:"value"`
 }
 
-//
 // ListTagRateLimits returns a slice containing all visible rate limits for a tag
-//
 func (api *API) ListTagRateLimits(tagId int, params map[string]string) ([]TagRateLimit, error) {
 	if _, ok := methods["listTagRateLimits"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagRateLimits")
@@ -76,9 +70,7 @@ func (api *API) ListTagRateLimits(tagId int, params map[string]string) ([]TagRat
 	return rateLimits, nil
 }
 
-//
 // CreateTagRateLimit creates a new rate limit for passed tag
-//
 func (api *API) CreateTagRateLimit(rateLimit *TagRateLimit, tagId int) (*TagRateLimit, error) {
 	if _, ok := methods["createTagRateLimit"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagRateLimit")
@@ -94,9 +86,7 @@ func (api *API) CreateTagRateLimit(rateLimit *TagRateLimit, tagId int) (*TagRate
 	return result.(*TagRateLimit), nil
 }
 
-//
 // UpdateTagRateLimit updates a new rate limit for passed tag
-//
 func (api *API) UpdateTagRateLimit(rateLimit *TagRateLimit, tagId int) (*TagRateLimit, error) {
 	if _, ok := methods["updateTagRateLimit"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagRateLimit")
@@ -112,9 +102,7 @@ func (api *API) UpdateTagRateLimit(rateLimit *TagRateLimit, tagId int) (*TagRate
 	return result.(*TagRateLimit), nil
 }
 
-//
 // DeleteTagRateLimit deletes a new rate limit for passed tag
-//
 func (api *API) DeleteTagRateLimit(rateLimit *TagRateLimit, tagId int) (*TagRateLimit, error) {
 	if _, ok := methods["deleteTagRateLimit"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTagRateLimit")

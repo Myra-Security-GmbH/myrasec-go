@@ -5,9 +5,7 @@ import (
 	"net/http"
 )
 
-//
 // getTagCacheSettingMethods returns Tag cache setting related API calls
-//
 func getTagCacheSettingMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listTagCacheSettings": {
@@ -37,9 +35,7 @@ func getTagCacheSettingMethods() map[string]APIMethod {
 	}
 }
 
-//
 // ListTagCacheSettings returns a slice containing all visible cache settings for a subdomain
-//
 func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]CacheSetting, error) {
 	if _, ok := methods["listTagCacheSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagCacheSettings")
@@ -59,9 +55,7 @@ func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]Cac
 	return records, nil
 }
 
-//
 // CreateTagCacheSetting creates a new cache setting for the passed subdomain (name) using the MYRA API
-//
 func (api *API) CreateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
 	if _, ok := methods["createTagCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagCacheSetting")
@@ -77,9 +71,7 @@ func (api *API) CreateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 	return result.(*CacheSetting), nil
 }
 
-//
 // UpdateTagCacheSetting updates the passed cache setting using the MYRA API
-//
 func (api *API) UpdateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
 	if _, ok := methods["updateTagCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagCacheSetting")
@@ -95,9 +87,7 @@ func (api *API) UpdateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 	return result.(*CacheSetting), nil
 }
 
-//
 // DeleteTagCacheSetting deletes the passed cache setting using the MYRA API
-//
 func (api *API) DeleteTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
 	if _, ok := methods["deleteTagCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTagCacheSetting")

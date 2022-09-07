@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getIPRangeMethods returns IP range related API calls
-//
 func getIPRangeMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listIPRanges": {
@@ -21,9 +19,7 @@ func getIPRangeMethods() map[string]APIMethod {
 	}
 }
 
-//
 // IPRange ...
-//
 type IPRange struct {
 	ID        int             `json:"id,omitempty"`
 	Created   *types.DateTime `json:"created,omitempty"`
@@ -35,9 +31,7 @@ type IPRange struct {
 	Comment   string          `json:"comment,omitempty"`
 }
 
-//
 // ListIPRanges returns a slice containing all ip ranges
-//
 func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
 	if _, ok := methods["listIPRanges"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listIPRanges")

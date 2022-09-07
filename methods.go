@@ -8,9 +8,7 @@ const (
 	ParamSearch   = "search"
 )
 
-//
 // APIMethod represents API call definitions used in the methods map
-//
 type APIMethod struct {
 	BaseURL            string
 	Name               string
@@ -20,14 +18,10 @@ type APIMethod struct {
 	ResponseDecodeFunc func(resp *http.Response, definition APIMethod) (interface{}, error)
 }
 
-//
 // methods stores the available APIMethods
-//
 var methods = map[string]APIMethod{}
 
-//
 // initializeMethods ...
-//
 func initializeMethods() {
 	for _, m := range []map[string]APIMethod{
 		getBucketMethods(),

@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getCacheSettingMethods returns Cache Setting related API calls
-//
 func getCacheSettingMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listCacheSettings": {
@@ -39,9 +37,7 @@ func getCacheSettingMethods() map[string]APIMethod {
 	}
 }
 
-//
 // CacheSetting ...
-//
 type CacheSetting struct {
 	ID          int             `json:"id,omitempty"`
 	Created     *types.DateTime `json:"created,omitempty"`
@@ -55,9 +51,7 @@ type CacheSetting struct {
 	Enforce     bool            `json:"enforce"`
 }
 
-//
 // ListCacheSettings returns a slice containing all visible cache settings for a subdomain
-//
 func (api *API) ListCacheSettings(domainId int, subDomainName string, params map[string]string) ([]CacheSetting, error) {
 	if _, ok := methods["listCacheSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listCacheSettings")
@@ -77,9 +71,7 @@ func (api *API) ListCacheSettings(domainId int, subDomainName string, params map
 	return records, nil
 }
 
-//
 // CreateCacheSetting creates a new cache setting for the passed subdomain (name) using the MYRA API
-//
 func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := methods["createCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createCacheSetting")
@@ -95,9 +87,7 @@ func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomai
 	return result.(*CacheSetting), nil
 }
 
-//
 // UpdateCacheSetting updates the passed cache setting using the MYRA API
-//
 func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := methods["updateCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateCacheSetting")
@@ -113,9 +103,7 @@ func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomai
 	return result.(*CacheSetting), nil
 }
 
-//
 // DeleteCacheSetting deletes the passed cache setting using the MYRA API
-//
 func (api *API) DeleteCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := methods["deleteCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteCacheSetting")

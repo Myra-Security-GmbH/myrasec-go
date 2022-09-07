@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getTagMethods returns Tag related API calls
-//
 func getTagMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getTag": {
@@ -46,9 +44,7 @@ func getTagMethods() map[string]APIMethod {
 	}
 }
 
-//
 // Tag ...
-//
 type Tag struct {
 	ID           int             `json:"id,omitempty"`
 	Created      *types.DateTime `json:"created,omitempty"`
@@ -59,9 +55,7 @@ type Tag struct {
 	Assignments  []TagAssignment `json:"assignments"`
 }
 
-//
 // TagAssignment ...
-//
 type TagAssignment struct {
 	ID            int             `json:"id,omitempty"`
 	Created       *types.DateTime `json:"created,omitempty"`
@@ -71,9 +65,7 @@ type TagAssignment struct {
 	SubDomainName string          `json:"subDomainName"`
 }
 
-//
 // GetTag returns a single tag for the given identifier
-//
 func (api *API) GetTag(id int) (*Tag, error) {
 	if _, ok := methods["getTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getTag")
@@ -90,9 +82,7 @@ func (api *API) GetTag(id int) (*Tag, error) {
 	return result.(*Tag), nil
 }
 
-//
 // ListTags returns a slice containing all visible tags
-//
 func (api *API) ListTags(params map[string]string) ([]Tag, error) {
 	if _, ok := methods["listTags"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTags")
@@ -111,9 +101,7 @@ func (api *API) ListTags(params map[string]string) ([]Tag, error) {
 	return tags, nil
 }
 
-//
 // CreateTag creates a new tag using the MYRA API
-//
 func (api *API) CreateTag(tag *Tag) (*Tag, error) {
 	if _, ok := methods["createTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTag")
@@ -129,9 +117,7 @@ func (api *API) CreateTag(tag *Tag) (*Tag, error) {
 	return result.(*Tag), nil
 }
 
-//
 // UpdateTag updates the passed tag using the MYRA API
-//
 func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
 	if _, ok := methods["updateTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTag")
@@ -149,9 +135,7 @@ func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
 
 }
 
-//
 // DeleteTag deletes the passed tag using the MYRA API
-//
 func (api *API) DeleteTag(tag *Tag) (*Tag, error) {
 	if _, ok := methods["deleteTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTag")

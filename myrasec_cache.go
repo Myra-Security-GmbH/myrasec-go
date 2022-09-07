@@ -8,9 +8,7 @@ import (
 
 var mutex = &sync.Mutex{}
 
-//
 // responseCache ...
-//
 type responseCache struct {
 	Key     string
 	Created int64
@@ -19,16 +17,12 @@ type responseCache struct {
 	Body    interface{}
 }
 
-//
 // isExpired checks if the cached response is expired
-//
 func (c *responseCache) isExpired() bool {
 	return c.Expire < time.Now().Unix()
 }
 
-//
 // inCache checks the cache if the response for the passed request is stored in the cache.
-//
 func (api *API) inCache(req *http.Request) bool {
 	s := BuildCacheKey(req)
 
@@ -53,9 +47,7 @@ func (api *API) inCache(req *http.Request) bool {
 	return true
 }
 
-//
 // fromCache loads the response from the cache (if it is cached)
-//
 func (api *API) fromCache(req *http.Request) interface{} {
 	if !api.inCache(req) {
 		return nil
@@ -72,9 +64,7 @@ func (api *API) fromCache(req *http.Request) interface{} {
 	return nil
 }
 
-//
 // cacheResponse stores the response body in the cache
-//
 func (api *API) cacheResponse(req *http.Request, resp interface{}) {
 	if !api.caching {
 		return
@@ -93,32 +83,24 @@ func (api *API) cacheResponse(req *http.Request, resp interface{}) {
 	}
 }
 
-//
 // isCachable checks if the passed request is cachable - only GET requests are cachable right now
-//
 func isCachable(req *http.Request) bool {
 	return req.Method == http.MethodGet
 }
 
-//
 // RemoveFromCache removes a single element from the cache
-//
 func (api *API) RemoveFromCache(s string) {
 	mutex.Lock()
 	delete(api.cache, s)
 	mutex.Unlock()
 }
 
-//
 // PruneCache
-//
 func (api *API) PruneCache() {
 	api.cache = make(map[string]*responseCache)
 }
 
-//
 // BuildCacheKey
-//
 func BuildCacheKey(req *http.Request) string {
 	return BuildSHA256(req.URL.String())
 }

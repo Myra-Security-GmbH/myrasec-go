@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getMaintenanceMethods returns Maintenance related API calls
-//
 func getMaintenanceMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listMaintenances": {
@@ -39,9 +37,7 @@ func getMaintenanceMethods() map[string]APIMethod {
 	}
 }
 
-//
 // Maintenance ...
-//
 type Maintenance struct {
 	ID          int             `json:"id,omitempty"`
 	Created     *types.DateTime `json:"created,omitempty"`
@@ -54,9 +50,7 @@ type Maintenance struct {
 	FQDN        string          `json:"fqdn"`
 }
 
-//
 // ListMaintenances returns a slice containing all maintenance pages for a subdomain
-//
 func (api *API) ListMaintenances(domainId int, subDomainName string, params map[string]string) ([]Maintenance, error) {
 	if _, ok := methods["listMaintenances"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listMaintenances")
@@ -76,9 +70,7 @@ func (api *API) ListMaintenances(domainId int, subDomainName string, params map[
 	return records, nil
 }
 
-//
 // CreateMaintenance creates a new maintenance page for the passed subdomain (name) using the MYRA API
-//
 func (api *API) CreateMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
 	if _, ok := methods["createMaintenance"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createMaintenance")
@@ -94,9 +86,7 @@ func (api *API) CreateMaintenance(maintenance *Maintenance, domainId int, subDom
 	return result.(*Maintenance), nil
 }
 
-//
 // UpdateMaintenance updates the passed maintenance page using the MYRA API
-//
 func (api *API) UpdateMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
 	if _, ok := methods["updateMaintenance"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateMaintenance")
@@ -112,9 +102,7 @@ func (api *API) UpdateMaintenance(maintenance *Maintenance, domainId int, subDom
 	return result.(*Maintenance), nil
 }
 
-//
 // DeleteMaintenance deletes the passed maintenance page using the MYRA API
-//
 func (api *API) DeleteMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
 	if _, ok := methods["deleteMaintenance"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteMaintenance")

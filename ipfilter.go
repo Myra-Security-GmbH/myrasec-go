@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getIPFilterMethods returns IP Filter related API calls
-//
 func getIPFilterMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getIPFilter": {
@@ -46,9 +44,7 @@ func getIPFilterMethods() map[string]APIMethod {
 	}
 }
 
-//
 // IPFilter ...
-//
 type IPFilter struct {
 	ID         int             `json:"id,omitempty"`
 	Created    *types.DateTime `json:"created,omitempty"`
@@ -60,9 +56,7 @@ type IPFilter struct {
 	Enabled    bool            `json:"enabled"`
 }
 
-//
 // GetIPFilter returns a single ip filter with/for the given identifier
-//
 func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilter, error) {
 	if _, ok := methods["getIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getIPFilter")
@@ -79,9 +73,7 @@ func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilt
 	return result.(*IPFilter), nil
 }
 
-//
 // ListIPFilters returns a slice containing all visible ip filters for a subdomain
-//
 func (api *API) ListIPFilters(domainId int, subDomainName string, params map[string]string) ([]IPFilter, error) {
 	if _, ok := methods["listIPFilters"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listIPFilters")
@@ -101,9 +93,7 @@ func (api *API) ListIPFilters(domainId int, subDomainName string, params map[str
 	return records, nil
 }
 
-//
 // CreateIPFilter creates a new ip filter for the passed subdomain (name) using the MYRA API
-//
 func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
 	if _, ok := methods["createIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createIPFilter")
@@ -119,9 +109,7 @@ func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName str
 	return result.(*IPFilter), nil
 }
 
-//
 // UpdateIPFilter updates the passed ip filter using the MYRA API
-//
 func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
 	if _, ok := methods["updateIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateIPFilter")
@@ -137,9 +125,7 @@ func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName str
 	return result.(*IPFilter), nil
 }
 
-//
 // DeleteIPFilter deletes the passed ip filter using the MYRA API
-//
 func (api *API) DeleteIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
 	if _, ok := methods["deleteIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteIPFilter")
