@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getWAFMethods returns WAF related API calls
-//
 func getWAFMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listWAFConditions": {
@@ -57,9 +55,7 @@ func getWAFMethods() map[string]APIMethod {
 	}
 }
 
-//
 // WAFRule ...
-//
 type WAFRule struct {
 	ID            int             `json:"id,omitempty"`
 	Created       *types.DateTime `json:"created,omitempty"`
@@ -80,9 +76,7 @@ type WAFRule struct {
 	Conditions    []*WAFCondition `json:"conditions"`
 }
 
-//
 // WAFAction ...
-//
 type WAFAction struct {
 	ID                int             `json:"id,omitempty"`
 	Created           *types.DateTime `json:"created,omitempty"`
@@ -95,9 +89,7 @@ type WAFAction struct {
 	Value             string          `json:"value"`
 }
 
-//
 // WAFCondition ...
-//
 type WAFCondition struct {
 	ID                int             `json:"id,omitempty"`
 	Created           *types.DateTime `json:"created,omitempty"`
@@ -112,9 +104,7 @@ type WAFCondition struct {
 	Value             string          `json:"value"`
 }
 
-//
 // ListWAFConditions returns a list of available WAF conditions
-//
 func (api *API) ListWAFConditions() ([]WAFCondition, error) {
 	if _, ok := methods["listWAFConditions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFConditions")
@@ -130,9 +120,7 @@ func (api *API) ListWAFConditions() ([]WAFCondition, error) {
 	return conditions, nil
 }
 
-//
 // ListWAFActions returns a list of available WAF actions
-//
 func (api *API) ListWAFActions() ([]WAFAction, error) {
 	if _, ok := methods["listWAFActions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFActions")
@@ -148,9 +136,7 @@ func (api *API) ListWAFActions() ([]WAFAction, error) {
 	return actions, nil
 }
 
-//
 // ListWAFRules returns a list of WAF rules.
-//
 func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule, error) {
 	if _, ok := methods["listWAFRules"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFRules")
@@ -169,9 +155,7 @@ func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule,
 	return rules, nil
 }
 
-//
 // FetchWAFRule returns a single WAF rule for the given ID
-//
 func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error) {
 	if _, ok := methods["fetchWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "fetchWAFRule")
@@ -195,9 +179,7 @@ func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error)
 	return &rules[0], nil
 }
 
-//
 // CreateWAFRule creates a new WAF rule
-//
 func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
 	if _, ok := methods["createWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createWAFRule")
@@ -213,9 +195,7 @@ func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 	return result.(*WAFRule), nil
 }
 
-//
 // UpdateWAFRule updates the passed WAF rule
-//
 func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
 	if _, ok := methods["updateWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateWAFRule")
@@ -231,9 +211,7 @@ func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 	return result.(*WAFRule), nil
 }
 
-//
 // DeleteWAFRule deletes the passed WAF rule
-//
 func (api *API) DeleteWAFRule(rule *WAFRule) (*WAFRule, error) {
 	if _, ok := methods["deleteWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteWAFRule")

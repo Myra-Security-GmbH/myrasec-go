@@ -10,17 +10,13 @@ import (
 	"testing"
 )
 
-//
 // TestCache is some helper struct for using precached requests in the tests, so we don't have to perform a real API request
-//
 type TestCache struct {
 	Req *http.Request
 	Res interface{}
 }
 
-//
 // preCacheAPI will mock the data, returned by the api.call function. Like this we can test without sending real API requests.
-//
 func setupPreCachedAPI(mocks []*TestCache) (*API, error) {
 	api, _ := New("abc123", "123abc")
 	api.EnableCaching()
@@ -33,9 +29,7 @@ func setupPreCachedAPI(mocks []*TestCache) (*API, error) {
 	return api, nil
 }
 
-//
 // preCacheRequest builds a request/response for the passed url and body ans stores it in the cache.
-//
 func preCacheRequest(url string, body string, definition APIMethod) *TestCache {
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	resp := http.Response{

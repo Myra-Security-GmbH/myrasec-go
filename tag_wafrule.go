@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getTagWAFRuleMethods returns Tag WAF rule related API calls
-//
 func getTagWAFRuleMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getTagWAFRule": {
@@ -46,9 +44,7 @@ func getTagWAFRuleMethods() map[string]APIMethod {
 	}
 }
 
-//
 // TagWAFRule ...
-//
 type TagWAFRule struct {
 	ID            int             `json:"id,omitempty"`
 	Created       *types.DateTime `json:"created,omitempty"`
@@ -67,9 +63,7 @@ type TagWAFRule struct {
 	TagId         int             `json:"tagId"`
 }
 
-//
 // GetTagWAFRule returns a single tag for the given identifier
-//
 func (api *API) GetTagWAFRule(tagId int, ruleId int) (*TagWAFRule, error) {
 	if _, ok := methods["getTagWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getTagWAFRule")
@@ -86,9 +80,7 @@ func (api *API) GetTagWAFRule(tagId int, ruleId int) (*TagWAFRule, error) {
 	return result.(*TagWAFRule), nil
 }
 
-//
 // ListTagWAFRules returns a slice containing all visible tags
-//
 func (api *API) ListTagWAFRules(tagId int, params map[string]string) ([]TagWAFRule, error) {
 	if _, ok := methods["listTagWAFRules"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagWAFRules")
@@ -108,9 +100,7 @@ func (api *API) ListTagWAFRules(tagId int, params map[string]string) ([]TagWAFRu
 	return tags, nil
 }
 
-//
 // CreateTagWAFRule creates a new tag using the MYRA API
-//
 func (api *API) CreateTagWAFRule(rule *TagWAFRule, tagId int) (*TagWAFRule, error) {
 	if _, ok := methods["createTagWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagWAFRule")
@@ -127,9 +117,7 @@ func (api *API) CreateTagWAFRule(rule *TagWAFRule, tagId int) (*TagWAFRule, erro
 	return result.(*TagWAFRule), nil
 }
 
-//
 // UpdateTagWAFRule updates the passed tag using the MYRA API
-//
 func (api *API) UpdateTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
 	if _, ok := methods["updateTagWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagWAFRule")
@@ -146,9 +134,7 @@ func (api *API) UpdateTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
 	return result.(*TagWAFRule), nil
 }
 
-//
 // DeleteTagWAFRule deletes the passed tag using the MYRA API
-//
 func (api *API) DeleteTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
 	if _, ok := methods["deleteTagWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTagWAFRule")

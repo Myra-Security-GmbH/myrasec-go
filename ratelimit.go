@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getRateLimitMethods returns Rate Limit related API calls
-//
 func getRateLimitMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listRateLimits": {
@@ -39,9 +37,7 @@ func getRateLimitMethods() map[string]APIMethod {
 	}
 }
 
-//
 // RateLimit ...
-//
 type RateLimit struct {
 	ID            int             `json:"id,omitempty"`
 	Created       *types.DateTime `json:"created,omitempty"`
@@ -54,9 +50,7 @@ type RateLimit struct {
 	Value         int             `json:"value"`
 }
 
-//
 // ListRateLimits returns a slice containing all visible rate limit settings
-//
 func (api *API) ListRateLimits(domainId int, subDomainName string, params map[string]string) ([]RateLimit, error) {
 	if _, ok := methods["listRateLimits"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listRateLimits")
@@ -75,9 +69,7 @@ func (api *API) ListRateLimits(domainId int, subDomainName string, params map[st
 	return records, nil
 }
 
-//
 // CreateRateLimit creates a new rate limit setting for the passed subdomain (name) using the MYRA API
-//
 func (api *API) CreateRateLimit(ratelimit *RateLimit, domainId int, subDomainName string) (*RateLimit, error) {
 	if _, ok := methods["createRateLimit"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createRateLimit")
@@ -93,9 +85,7 @@ func (api *API) CreateRateLimit(ratelimit *RateLimit, domainId int, subDomainNam
 	return result.(*RateLimit), nil
 }
 
-//
 // UpdateRateLimit updates the passed rate limit setting using the MYRA API
-//
 func (api *API) UpdateRateLimit(ratelimit *RateLimit, domainId int, subDomainName string) (*RateLimit, error) {
 	if _, ok := methods["updateRateLimit"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateRateLimit")
@@ -111,9 +101,7 @@ func (api *API) UpdateRateLimit(ratelimit *RateLimit, domainId int, subDomainNam
 	return result.(*RateLimit), nil
 }
 
-//
 // DeleteRateLimit deletes the passed rate limit setting using the MYRA API
-//
 func (api *API) DeleteRateLimit(ratelimit *RateLimit, domainId int, subDomainName string) (*RateLimit, error) {
 	if _, ok := methods["deleteRateLimit"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteRateLimit")

@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getDomainMethods returns Domain related API calls
-//
 func getDomainMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getDomain": {
@@ -46,9 +44,7 @@ func getDomainMethods() map[string]APIMethod {
 	}
 }
 
-//
 // Domain ...
-//
 type Domain struct {
 	ID          int             `json:"id,omitempty"`
 	Created     *types.DateTime `json:"created,omitempty"`
@@ -60,9 +56,7 @@ type Domain struct {
 	PausedUntil *types.DateTime `json:"pausedUntil,omitempty"`
 }
 
-//
 // GetDomain returns a single domain with/for the given identifier
-//
 func (api *API) GetDomain(id int) (*Domain, error) {
 	if _, ok := methods["getDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getDomain")
@@ -79,9 +73,7 @@ func (api *API) GetDomain(id int) (*Domain, error) {
 	return result.(*Domain), nil
 }
 
-//
 // ListDomains returns a slice containing all visible domains
-//
 func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 	if _, ok := methods["listDomains"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listDomains")
@@ -100,9 +92,7 @@ func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 	return domains, nil
 }
 
-//
 // CreateDomain creates a new domain using the MYRA API
-//
 func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
 	if _, ok := methods["createDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createDomain")
@@ -117,9 +107,7 @@ func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
 	return result.(*Domain), nil
 }
 
-//
 // UpdateDomain updates the passed domain using the MYRA API
-//
 func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
 	if _, ok := methods["updateDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateDomain")
@@ -135,9 +123,7 @@ func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
 	return result.(*Domain), nil
 }
 
-//
 // DeleteDomain deletes the passed domain using the MYRA API
-//
 func (api *API) DeleteDomain(domain *Domain) (*Domain, error) {
 	if _, ok := methods["deleteDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteDomain")

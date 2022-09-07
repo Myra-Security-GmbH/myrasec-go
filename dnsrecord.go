@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getDNSRecordMethods returns DNS record related API calls
-//
 func getDNSRecordMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getDNSRecord": {
@@ -46,9 +44,7 @@ func getDNSRecordMethods() map[string]APIMethod {
 	}
 }
 
-//
 // DNSRecord ...
-//
 type DNSRecord struct {
 	ID               int              `json:"id,omitempty"`
 	Created          *types.DateTime  `json:"created,omitempty"`
@@ -66,9 +62,7 @@ type DNSRecord struct {
 	UpstreamOptions  *UpstreamOptions `json:"upstreamOptions,omitempty"`
 }
 
-//
 // UpstreamOptions ...
-//
 type UpstreamOptions struct {
 	ID          int             `json:"id,omitempty"`
 	Created     *types.DateTime `json:"created,omitempty"`
@@ -80,9 +74,7 @@ type UpstreamOptions struct {
 	Weight      int             `json:"weight"`
 }
 
-//
 // GetDNSRecord returns a single DNS record with/for the given identifier
-//
 func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
 	if _, ok := methods["getDNSRecord"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getDNSRecord")
@@ -99,9 +91,7 @@ func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
 	return result.(*DNSRecord), nil
 }
 
-//
 // ListDNSRecords returns a slice containing all visible DNS records for a domain
-//
 func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRecord, error) {
 	if _, ok := methods["listDNSRecords"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listDNSRecords")
@@ -121,9 +111,7 @@ func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRec
 	return records, nil
 }
 
-//
 // CreateDNSRecord creates a new DNS record using the MYRA API
-//
 func (api *API) CreateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
 	if _, ok := methods["createDNSRecord"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createDNSRecord")
@@ -139,9 +127,7 @@ func (api *API) CreateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	return result.(*DNSRecord), nil
 }
 
-//
 // UpdateDNSRecord updates the passed DNS record using the MYRA API
-//
 func (api *API) UpdateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
 	if _, ok := methods["updateDNSRecord"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateDNSRecord")
@@ -157,9 +143,7 @@ func (api *API) UpdateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	return result.(*DNSRecord), nil
 }
 
-//
 // DeleteDNSRecord deletes the passed DNS record using the MYRA API
-//
 func (api *API) DeleteDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
 	if _, ok := methods["deleteDNSRecord"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteDNSRecord")

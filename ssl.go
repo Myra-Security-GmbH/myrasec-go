@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getSSLMethods returns SSL certificate related API calls
-//
 func getSSLMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getSSLCertificate": {
@@ -76,9 +74,7 @@ type SSLIntermediate struct {
 	Issuer string `json:"issuer"`
 }
 
-//
 // GetSSLCertificate returns a single SSL certificate with/for the given identifier
-//
 func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error) {
 	if _, ok := methods["getSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getSSLCertificate")
@@ -95,9 +91,7 @@ func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error)
 	return result.(*SSLCertificate), nil
 }
 
-//
 // ListSSLCertificates returns a slice containing all visible SSL certificates for a domain
-//
 func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]SSLCertificate, error) {
 	if _, ok := methods["listSSLCertificates"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSSLCertificates")
@@ -117,9 +111,7 @@ func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]S
 	return records, nil
 }
 
-//
 // CreateSSLCertificate creates a new SSL certificates on the passed domain (ID) using the MYRA API
-//
 func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	if _, ok := methods["createSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createSSLCertificate")
@@ -135,9 +127,7 @@ func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	return result.(*SSLCertificate), nil
 }
 
-//
 // UpdateSSLCertificate updates the passed SSL certificate using the MYRA API
-//
 func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	if _, ok := methods["updateSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSSLCertificate")
@@ -153,9 +143,7 @@ func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	return result.(*SSLCertificate), nil
 }
 
-//
 // DeleteSSLCertificate "deletes" the passed SSL certificate by removing the assigned subdomains from the certificate using the MYRA API
-//
 func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	if _, ok := methods["deleteSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteSSLCertificate")

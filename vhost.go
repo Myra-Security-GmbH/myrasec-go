@@ -5,9 +5,7 @@ import (
 	"net/http"
 )
 
-//
 // getVHostMethods returns VHost related API calls
-//
 func getVHostMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listAllSubdomains": {
@@ -25,9 +23,7 @@ func getVHostMethods() map[string]APIMethod {
 	}
 }
 
-//
 // VHost ...
-//
 type VHost struct {
 	ID         int    `json:"id,omitempty"`
 	Label      string `json:"label,omitempty"`
@@ -37,9 +33,7 @@ type VHost struct {
 	Paused     bool   `json:"paused"`
 }
 
-//
 // ListAllSubdomains ...
-//
 func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 	if _, ok := methods["listAllSubdomains"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listAllSubdomains")
@@ -59,9 +53,7 @@ func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 	return vhosts, nil
 }
 
-//
 // ListAllSubdomainsForDomain ...
-//
 func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]string) ([]VHost, error) {
 	if _, ok := methods["listSubdomainsForDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSubdomainsForDomain")

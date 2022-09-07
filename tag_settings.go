@@ -6,9 +6,7 @@ import (
 	"net/http"
 )
 
-//
 // getTagSettingsMethods returns Tag settings related API calls
-//
 func getTagSettingsMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listTagSettings": {
@@ -27,16 +25,12 @@ func getTagSettingsMethods() map[string]APIMethod {
 	}
 }
 
-//
 // tagSettingsResponse ...
-//
 type tagSettingsResponse struct {
 	Settings Settings `json:"settings"`
 }
 
-//
 // ListTagSettings returns a Setting struct containing the settings for the passed tag
-//
 func (api *API) ListTagSettings(tagId int) (*Settings, error) {
 	if _, ok := methods["listTagSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagSettings")
@@ -53,9 +47,7 @@ func (api *API) ListTagSettings(tagId int) (*Settings, error) {
 	return result.(*Settings), nil
 }
 
-//
 // UpdateTagSettings updates the passed settings using the MYRA API
-//
 func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, error) {
 	if _, ok := methods["updateTagSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagSettings")
@@ -72,9 +64,7 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 
 }
 
-//
 // decodeTagSettingsResponse - custom decode function for tag settings response. Used in the ListTagSettings action.
-//
 func decodeTagSettingsResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
 	var res tagSettingsResponse
 	err := json.NewDecoder(resp.Body).Decode(&res)

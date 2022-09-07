@@ -7,9 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-//
 // getErrorPageMethods returns Error Page related API calls
-//
 func getErrorPageMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listErrorPages": {
@@ -48,9 +46,7 @@ func getErrorPageMethods() map[string]APIMethod {
 	}
 }
 
-//
 // errorPageUpdate
-//
 type errorPageUpdate struct {
 	ID          int                     `json:"id,omitempty"`
 	PageContent string                  `json:"pageContent,omitempty"`
@@ -59,9 +55,7 @@ type errorPageUpdate struct {
 	Modified    *types.DateTime         `json:"modified,omitempty"`
 }
 
-//
 // ErrorPage
-//
 type ErrorPage struct {
 	ID            int             `json:"id,omitempty"`
 	Created       *types.DateTime `json:"created,omitempty"`
@@ -71,9 +65,7 @@ type ErrorPage struct {
 	SubDomainName string          `json:"subDomainName,omitempty"`
 }
 
-//
 // GetErrorPage returns a single error page with/for the given identifier
-//
 func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
 	if _, ok := methods["getErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getErrorPage")
@@ -90,9 +82,7 @@ func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
 	return result.(*ErrorPage), nil
 }
 
-//
 // ListErrorPages returns a slice containing all error pages
-//
 func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorPage, error) {
 	if _, ok := methods["listErrorPages"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listErrorPages")
@@ -112,9 +102,7 @@ func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorP
 	return records, nil
 }
 
-//
 // CreateErrorPage creates a new error page using the MYRA API
-//
 func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
 	if _, ok := methods["createErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createErrorPage")
@@ -132,9 +120,7 @@ func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	return errorPage, nil
 }
 
-//
 // UpdateErrorPage updates the passed error page using the MYRA API
-//
 func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
 	if _, ok := methods["updateErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateErrorPage")
@@ -152,9 +138,7 @@ func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	return errorPage, nil
 }
 
-//
 // DeleteErrorPage deletes the passed error page using the MYRA API
-//
 func (api *API) DeleteErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
 	if _, ok := methods["deleteErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteErrorPage")
@@ -171,16 +155,12 @@ func (api *API) DeleteErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	return errorPage, nil
 }
 
-//
 // decodeErrorPageResponse handles an empty response as it is returned by save error codes
-//
 func decodeErrorPageResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
 	return nil, nil
 }
 
-//
 // convertErrorPageToErrorPageUpdate
-//
 func convertErrorPageToErrorPageUpdate(errorPage *ErrorPage) *errorPageUpdate {
 	errorCode := map[int]bool{
 		errorPage.ErrorCode: true,
