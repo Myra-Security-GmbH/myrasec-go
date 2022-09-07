@@ -1,5 +1,8 @@
 # Bucket
 
+Managing buckets allows you to create, link, or remove buckets. With a bucket you have the flexibility to upload a full version set of your site without publishing it. After uploading the version set you can link a sub domain to a bucket. The access the published data you need to have a activated CDN in the backend.  
+To remove the old content from the CDN just remove the bucket.    
+
 ```go
 type Bucket struct {
     Name          string   `json:"bucket"`
