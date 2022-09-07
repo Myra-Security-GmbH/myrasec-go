@@ -6,7 +6,7 @@ To remove the old content from the CDN just remove the bucket.
 ```go
 type Bucket struct {
     Name          string   `json:"bucket"`
-	LinkedDomains []string `json:"linkedDomains"`
+    LinkedDomains []string `json:"linkedDomains"`
 }
 ```
 
@@ -17,8 +17,8 @@ type Bucket struct {
 
 ```go
 type BucketStatus struct {
-	Status     string `json:"status"`
-	StatusCode int    `json:"statusCode"`
+    Status     string `json:"status"`
+    StatusCode int    `json:"statusCode"`
 }
 ```
 
@@ -30,10 +30,10 @@ type BucketStatus struct {
 
 ```go
 type BucketStatistics struct {
-	Files       int   `json:"files"`
-	Folders     int   `json:"folders"`
-	StorageSize int64 `json:"storageSize"`
-	ContentSize int64 `json:"contentSize"`
+    Files       int   `json:"files"`
+    Folders     int   `json:"folders"`
+    StorageSize int64 `json:"storageSize"`
+    ContentSize int64 `json:"contentSize"`
 }
 ```
 
@@ -47,8 +47,8 @@ type BucketStatistics struct {
 
 ```go
 type BucketLink struct {
-	Bucket        string `json:"bucket"`
-	SubDomainName string `json:"subDomainName"`
+    Bucket        string `json:"bucket"`
+    SubDomainName string `json:"subDomainName"`
 }
 ```
 

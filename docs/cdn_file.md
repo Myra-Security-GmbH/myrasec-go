@@ -4,11 +4,11 @@ Using the File API allows basic actions of files within the CDN. These actions a
 
 ```go
 type FileQuery struct {
-	Bucket string `json:"bucket,omitempty"`
-	Path   string `json:"path,omitempty"`
-	Limit  int    `json:"limit,omitempty"`
-	Type   int    `json:"type,omitempty"`
-	Cursor string `json:"cursor,omitempty"`
+    Bucket string `json:"bucket,omitempty"`
+    Path   string `json:"path,omitempty"`
+    Limit  int    `json:"limit,omitempty"`
+    Type   int    `json:"type,omitempty"`
+    Cursor string `json:"cursor,omitempty"`
 }
 ```
 
@@ -23,13 +23,13 @@ type FileQuery struct {
 
 ```go
 type File struct {
-	Type        int             `json:"type"`
-	Path        string          `json:"path"`
-	Basename    string          `json:"basename"`
-	Size        int             `json:"size"`
-	Hash        string          `json:"hash"`
-	Modified    *types.DateTime `json:"modified"`
-	ContentType string          `json:"contentType"`
+    Type        int             `json:"type"`
+    Path        string          `json:"path"`
+    Basename    string          `json:"basename"`
+    Size        int             `json:"size"`
+    Hash        string          `json:"hash"`
+    Modified    *types.DateTime `json:"modified"`
+    ContentType string          `json:"contentType"`
 }
 ```
 
