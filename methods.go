@@ -12,6 +12,7 @@ const (
 // APIMethod represents API call definitions used in the methods map
 //
 type APIMethod struct {
+	BaseURL            string
 	Name               string
 	Action             string
 	Method             string
@@ -29,6 +30,7 @@ var methods = map[string]APIMethod{}
 //
 func initializeMethods() {
 	for _, m := range []map[string]APIMethod{
+		getBucketMethods(),
 		getCacheClearMethods(),
 		getCacheSettingMethods(),
 		getDNSRecordMethods(),
