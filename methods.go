@@ -30,6 +30,7 @@ func initializeMethods() {
 		getDNSRecordMethods(),
 		getDomainMethods(),
 		getErrorPageMethods(),
+		getFileMethods(),
 		getIPFilterMethods(),
 		getIPRangeMethods(),
 		getMaintenanceMethods(),

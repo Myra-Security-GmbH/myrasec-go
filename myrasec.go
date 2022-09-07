@@ -176,6 +176,15 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	}
 	defer resp.Body.Close()
 
+	/********************************
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Println(err)
+	}
+	bodyString := string(bodyBytes)
+	log.Println(bodyString)
+	/********************************/
+
 	if !intInSlice(resp.StatusCode, []int{
 		http.StatusOK,
 		http.StatusCreated,

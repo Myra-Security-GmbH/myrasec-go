@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"testing"
@@ -34,7 +34,7 @@ func preCacheRequest(url string, body string, definition APIMethod) *TestCache {
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(body)),
+		Body:   io.NopCloser(bytes.NewBufferString(body)),
 	}
 	var res interface{}
 	if definition.ResponseDecodeFunc != nil {
@@ -740,7 +740,7 @@ func TestRetryFunctions(t *testing.T) {
 func TestErrorMessageWithErrorInResponse(t *testing.T) {
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusBadRequest),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": true, "violationList": [{"propertypath": "test", "message": "this is a test message."}]}`)),
+		Body:   io.NopCloser(bytes.NewBufferString(`{"error": true, "violationList": [{"propertypath": "test", "message": "this is a test message."}]}`)),
 	}
 
 	_, err := errorMessage(&resp)
@@ -757,7 +757,7 @@ func TestErrorMessageWithErrorInResponse(t *testing.T) {
 func TestErrorMessageWithoutError(t *testing.T) {
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusBadRequest),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": false}`)),
+		Body:   io.NopCloser(bytes.NewBufferString(`{"error": false}`)),
 	}
 
 	_, err := errorMessage(&resp)
@@ -769,7 +769,7 @@ func TestErrorMessageWithoutError(t *testing.T) {
 func TestDecodeDefaultResponse(t *testing.T) {
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": false, "pageSize": 10, "page": 1, "count": 1, "targetObject": [{"id": 1, "name": "example.com"}]}`)),
+		Body:   io.NopCloser(bytes.NewBufferString(`{"error": false, "pageSize": 10, "page": 1, "count": 1, "targetObject": [{"id": 1, "name": "example.com"}]}`)),
 	}
 
 	result, err := decodeDefaultResponse(&resp, APIMethod{
@@ -800,7 +800,7 @@ func TestDecodeDefaultResponse(t *testing.T) {
 func TestDecodeDefaultResponseWithInvalidBody(t *testing.T) {
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"this will not work": func(){}}`)),
+		Body:   io.NopCloser(bytes.NewBufferString(`{"this will not work": func(){}}`)),
 	}
 
 	_, err := decodeDefaultResponse(&resp, APIMethod{
@@ -840,7 +840,7 @@ func TestDecodeDefaultResponseForDELETEMethod(t *testing.T) {
 func TestDecodeSingleElementResponse(t *testing.T) {
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [{"id": 1, "name": "example.com"}]}`)),
+		Body:   io.NopCloser(bytes.NewBufferString(`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [{"id": 1, "name": "example.com"}]}`)),
 	}
 
 	result, err := decodeSingleElementResponse(&resp, APIMethod{
@@ -872,7 +872,7 @@ func TestDecodeSingleElementResponse(t *testing.T) {
 func TestDecodeSingleElementResponseWithCorruptBody(t *testing.T) {
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"fooooo": func() {}}`)),
+		Body:   io.NopCloser(bytes.NewBufferString(`{"fooooo": func() {}}`)),
 	}
 
 	_, err := decodeSingleElementResponse(&resp, APIMethod{
@@ -891,7 +891,7 @@ func TestDecodeSingleElementResponseWithCorruptBody(t *testing.T) {
 func TestDecodeBaseResponse(t *testing.T) {
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"error": false, "pageSize": 10, "page": 1, "count": 0}`)),
+		Body:   io.NopCloser(bytes.NewBufferString(`{"error": false, "pageSize": 10, "page": 1, "count": 0}`)),
 	}
 
 	r, err := decodeBaseResponse(&resp)
@@ -919,7 +919,7 @@ func TestDecodeBaseResponse(t *testing.T) {
 func TestDecodeBaseResponseWithCorruptBody(t *testing.T) {
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusBadRequest),
-		Body:   ioutil.NopCloser(bytes.NewBufferString(`{"wrong": format}`)),
+		Body:   io.NopCloser(bytes.NewBufferString(`{"wrong": format}`)),
 	}
 
 	_, err := decodeBaseResponse(&resp)
