@@ -51,13 +51,13 @@ func getBucketMethods() map[string]APIMethod {
 			Method:  http.MethodPut,
 			Result:  BucketLink{},
 		},
-		//"unlinkBucket": {
-		//	BaseURL: "https://upload.myracloud.com/%s",
-		//	Name:    "unlinkBucket",
-		//	Action:  "v2/bucket/link/%s",
-		//	Method:  http.MethodDelete,
-		//	Result:  BucketLink{},
-		//},
+		"unlinkBucket": {
+			BaseURL: "https://upload.myracloud.com/%s",
+			Name:    "unlinkBucket",
+			Action:  "v2/bucket/link/%s",
+			Method:  http.MethodDelete,
+			Result:  BucketLink{},
+		},
 		"deleteBucket": {
 			BaseURL: "https://upload.myracloud.com/%s",
 			Name:    "deleteBucket",
@@ -111,7 +111,7 @@ type BucketLink struct {
 }
 
 //
-// ListBuckets ...
+// ListBuckets returns a list of all created buckets for the given domain.
 //
 func (api *API) ListBuckets(domainName string) ([]Bucket, error) {
 	if _, ok := methods["listBuckets"]; !ok {
@@ -133,7 +133,7 @@ func (api *API) ListBuckets(domainName string) ([]Bucket, error) {
 }
 
 //
-// GetBucketStatus ...
+// GetBucketStatus allows you to get a status for your newly created bucket.
 //
 func (api *API) GetBucketStatus(domainName string, bucketName string) (*BucketStatus, error) {
 	if _, ok := methods["getBucketStatus"]; !ok {
@@ -152,7 +152,7 @@ func (api *API) GetBucketStatus(domainName string, bucketName string) (*BucketSt
 }
 
 //
-// GetBucketStatistics ...
+// GetBucketStatistics returns statistics for a specific bucket.
 //
 func (api *API) GetBucketStatistics(domainName string, bucketName string) (*BucketStatistics, error) {
 	if _, ok := methods["getBucketStatistics"]; !ok {
@@ -189,7 +189,7 @@ func (api *API) CreateBucket(domainName string) (*Bucket, error) {
 }
 
 //
-// LinkBucket ...
+// LinkBucket links a sub domain to a bucket
 //
 func (api *API) LinkBucket(link *BucketLink, domainName string) (*BucketLink, error) {
 	if _, ok := methods["linkBucket"]; !ok {
@@ -207,9 +207,12 @@ func (api *API) LinkBucket(link *BucketLink, domainName string) (*BucketLink, er
 }
 
 //
-// UnlinkBucket ...
+// UnlinkBucket unlinks a sub domain from a bucket
 //
 func (api *API) UnlinkBucket(link *BucketLink, domainName string) (*BucketLink, error) {
+
+	return nil, fmt.Errorf("this action is currently not supported")
+
 	if _, ok := methods["unlinkBucket"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "unlinkBucket")
 	}
@@ -225,7 +228,7 @@ func (api *API) UnlinkBucket(link *BucketLink, domainName string) (*BucketLink, 
 }
 
 //
-// DeleteBucket ...
+// DeleteBucket removes a bucket
 //
 func (api *API) DeleteBucket(bucket *Bucket, domainName string) (*Bucket, error) {
 	if _, ok := methods["deleteBucket"]; !ok {

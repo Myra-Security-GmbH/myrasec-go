@@ -29,3 +29,4 @@ A Go library for interacting with Myra Security API.
 - [Tag rate limit](./docs/tag_ratelimit.md)
 - [Tag settings](./docs/tag_settings.md)
 - [Tag WAF rule](./docs/tag_wafrule.md)
+- [CDN bucket](./docs/cdn_bucket.md)
