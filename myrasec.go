@@ -176,15 +176,6 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 	}
 	defer resp.Body.Close()
 
-	/********************************
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-	}
-	bodyString := string(bodyBytes)
-	log.Println(bodyString)
-	/********************************/
-
 	if !intInSlice(resp.StatusCode, []int{
 		http.StatusOK,
 		http.StatusCreated,
@@ -465,9 +456,19 @@ func preparePayload(payload ...interface{}) ([]byte, error) {
 		pl = payload[0]
 	}
 
-	data, err := json.Marshal(pl)
+	var data []byte
+	var err error
+
+	switch v := pl.(type) {
+	case []byte:
+		data = v
+	default:
+		data, err = json.Marshal(pl)
+	}
+
 	if err != nil {
 		return nil, err
 	}
+
 	return data, nil
 }

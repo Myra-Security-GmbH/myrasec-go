@@ -3,7 +3,9 @@ package myrasec
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
@@ -63,7 +65,24 @@ type File struct {
 }
 
 // UploadFile ...
-func (api *API) UploadFile(domainName string, bucketName string, path string) error {
+func (api *API) UploadFile(file *os.File, domainName string, bucketName string, path string) error {
+	if _, ok := methods["uploadFile"]; !ok {
+		return fmt.Errorf("passed action [%s] is not supported", "uploadFile")
+	}
+
+	definition := methods["uploadFile"]
+	definition.Action = fmt.Sprintf(definition.Action, domainName, bucketName, path)
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		return err
+	}
+
+	_, err = api.call(definition, data)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

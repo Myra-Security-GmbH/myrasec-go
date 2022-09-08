@@ -52,6 +52,16 @@ The path within this request is used to save the file. Sub folders are automatic
 
 ### Example
 ```go
+file, err := os.Open("/file/to/upload")
+if err != nil {
+    return err
+}
+defer file.Close()
+
+err = api.UploadFile(file, "example.com", "b1", "/uploaded/file")
+if err != nil {
+    return err
+}
 ```
 
 ## List files
