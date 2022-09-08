@@ -60,6 +60,7 @@ type API struct {
 type Response struct {
 	Error         bool          `json:"error,omitempty"`
 	ViolationList []*Violation  `json:"violationList,omitempty"`
+	ErrorMessage  string        `json:"errorMessage,omitempty"`
 	WarningList   []*Warning    `json:"warningList,omitempty"`
 	TargetObject  []interface{} `json:"targetObject,omitempty"`
 	Data          []interface{} `json:"data,omitempty"`
@@ -288,6 +289,15 @@ func decodeBaseResponse(resp *http.Response) (*Response, error) {
 		for _, e := range res.ViolationList {
 			errorMsg += fmt.Sprintf("%s: %s\n", e.Path, e.Message)
 		}
+
+		if res.ErrorMessage != "" {
+			errorMsg += fmt.Sprintf("%s\n", res.ErrorMessage)
+		}
+
+		if errorMsg == "" {
+			errorMsg = "The API returned an error."
+		}
+
 		return nil, errors.New(errorMsg)
 	}
 
@@ -325,6 +335,12 @@ func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*h
 
 	if api.UserAgent != "" {
 		req.Header.Set("User-Agent", api.UserAgent)
+	}
+
+	if definition.AdditionalHeaders != nil {
+		for k, v := range definition.AdditionalHeaders {
+			req.Header.Set(k, v)
+		}
 	}
 
 	return req, err

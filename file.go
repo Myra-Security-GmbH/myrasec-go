@@ -19,6 +19,15 @@ func getFileMethods() map[string]APIMethod {
 			Action:  "v2/upload/%s/%s/%s",
 			Method:  http.MethodPut,
 		},
+		"uploadArchive": {
+			BaseURL: "https://upload.myracloud.com/%s",
+			Name:    "uploadFile",
+			Action:  "v2/upload/%s/%s/%s",
+			Method:  http.MethodPut,
+			AdditionalHeaders: map[string]string{
+				"X-Myra-Unzip": "1",
+			},
+		},
 		"listFiles": {
 			BaseURL:            "https://upload.myracloud.com/%s",
 			Name:               "listFiles",
@@ -64,13 +73,35 @@ type File struct {
 	ContentType string          `json:"contentType"`
 }
 
-// UploadFile ...
+// UploadFile uploads a file to the CDN
 func (api *API) UploadFile(file *os.File, domainName string, bucketName string, path string) error {
 	if _, ok := methods["uploadFile"]; !ok {
 		return fmt.Errorf("passed action [%s] is not supported", "uploadFile")
 	}
 
 	definition := methods["uploadFile"]
+	definition.Action = fmt.Sprintf(definition.Action, domainName, bucketName, path)
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		return err
+	}
+
+	_, err = api.call(definition, data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UploadArchive uploads an archive to the CDN. The uploaded archive is extracted to the given filepath.
+func (api *API) UploadArchive(file *os.File, domainName string, bucketName string, path string) error {
+	if _, ok := methods["uploadArchive"]; !ok {
+		return fmt.Errorf("passed action [%s] is not supported", "uploadArchive")
+	}
+
+	definition := methods["uploadArchive"]
 	definition.Action = fmt.Sprintf(definition.Action, domainName, bucketName, path)
 
 	data, err := io.ReadAll(file)

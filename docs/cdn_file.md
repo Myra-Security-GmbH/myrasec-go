@@ -46,10 +46,6 @@ type File struct {
 ## Upload files
 The path within this request is used to save the file. Sub folders are automatically created, if they are not existing. The content inside the CDN is compressed if it fits some expectations on content and size. For client that are not able to use a compressed format like gzip our nodes will decompress the data for the client before sending.
 
-> **Archive upload**  
-> It is possible to upload a zip archive instead of single files. The API will extract the archive to the given filepath. After uploading the server will answer with a status code and a complete list of files.  
-> The file will be unpacked relative to the given folder which is given by the parameter "path"
-
 ### Example
 ```go
 file, err := os.Open("/file/to/upload")
@@ -59,6 +55,24 @@ if err != nil {
 defer file.Close()
 
 err = api.UploadFile(file, "example.com", "b1", "/uploaded/file")
+if err != nil {
+    return err
+}
+```
+
+## Upload archive
+It is possible to upload a zip archive instead of single files. The API will extract the archive to the given filepath.
+The file will be unpacked relative to the given folder which is given by the parameter "path".
+
+### Example
+```go
+archive, err := os.Open("/file/to/upload.zip")
+if err != nil {
+    return err
+}
+defer archive.Close()
+
+err = api.UploadArchive(archive, "example.com", "b1", "/uploaded/archive/")
 if err != nil {
     return err
 }
