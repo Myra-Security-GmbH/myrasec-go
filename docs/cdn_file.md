@@ -61,6 +61,9 @@ if err != nil {
 ```
 
 ## Upload archive
+
+> **This action is currently not supported. Support for this action will be added in the future.**
+
 It is possible to upload a zip archive instead of single files. The API will extract the archive to the given filepath.
 The file will be unpacked relative to the given folder which is given by the parameter "path".
 
