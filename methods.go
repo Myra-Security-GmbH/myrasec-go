@@ -15,6 +15,7 @@ type APIMethod struct {
 	Action             string
 	Method             string
 	Result             interface{}
+	AdditionalHeaders  map[string]string
 	ResponseDecodeFunc func(resp *http.Response, definition APIMethod) (interface{}, error)
 }
 
@@ -30,6 +31,7 @@ func initializeMethods() {
 		getDNSRecordMethods(),
 		getDomainMethods(),
 		getErrorPageMethods(),
+		getFileMethods(),
 		getIPFilterMethods(),
 		getIPRangeMethods(),
 		getMaintenanceMethods(),
