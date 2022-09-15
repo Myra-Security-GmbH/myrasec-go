@@ -40,6 +40,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListIPR
 | name | description | default |
 |---|---|---|
 | `search` | Filter by the specified search query | null |
+| `ipVersion` | Filter for the specified IP version. Possible values are `ipv4` and `ipv6` | null |
 | `page` | Specify the page of the result | 1 |
 | `pageSize` | Specify the amount of results in the response | 50 |
 | `enabled` | Return only enabled IP ranges | null |
