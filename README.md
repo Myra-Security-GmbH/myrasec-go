@@ -10,6 +10,38 @@ A Go library for interacting with Myra Security API.
 > Upcoming changes may break existing functionality.
 > Consider this library as unstable.
 
+
+**Note:** v1 of this library is not maintained anymore. Please use v2 (`"github.com/Myra-Security-GmbH/myrasec-go/v2"`) of this library. 
+
+## Example usage
+
+```go
+package main
+
+import (
+	"log"
+	"os"
+
+	myrasec "github.com/Myra-Security-GmbH/myrasec-go/v2"
+)
+
+func main() {
+	api, err := myrasec.New(os.Getenv("MYRA_API_KEY"), os.Getenv("MYRA_API_SECRET"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	domains, err := api.ListDomains(map[string]string{"pageSize": "100"})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, d := range domains {
+		log.Println(d.Name)
+	}
+}
+```
+
 ## Documentation
 - [Setup](./docs/setup.md)
 - [Domain](./docs/domain.md)
