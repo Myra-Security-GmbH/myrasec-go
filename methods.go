@@ -1,6 +1,8 @@
 package myrasec
 
-import "net/http"
+import (
+	"net/http"
+)
 
 const (
 	ParamPage     = "page"
