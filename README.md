@@ -63,3 +63,4 @@ func main() {
 - [Tag WAF rule](./docs/tag_wafrule.md)
 - [CDN bucket](./docs/cdn_bucket.md)
 - [CDN file](./docs/cdn_file.md)
+- [Statistics](./docs/statistics.md)
