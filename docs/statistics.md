@@ -176,6 +176,7 @@ In addition to traffic and request statistics, Myra allows you to view detailled
 The structure of the returned data depends on the requested type. Data sources requested with type "stats" will be returned as an object with min/max/avg/sum keys as seen in "bytes_cached_stats" above. Responses for type "histogram" will contain multiple objects with the key "value", one object for every aggregation bucket. Please note that the `timestamp` used as key is in `milliseconds`.
 
 ## Query
+To fetch statistical data of your domains, you can use the QueryStatistics function.
 
 ### Example
 ```go

@@ -6,16 +6,12 @@ import (
 	"time"
 )
 
-//
 // DateTime ...
-//
 type DateTime struct {
 	time.Time
 }
 
-//
 // DateTimeNow ...
-//
 func DateTimeNow() *DateTime {
 	ret := &DateTime{}
 	ret.Time = time.Now()
@@ -23,16 +19,12 @@ func DateTimeNow() *DateTime {
 	return ret
 }
 
-//
 // MarshalJSON ...
-//
 func (dt *DateTime) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dt.Format("2006-01-02T15:04:05Z0700"))
 }
 
-//
 // UnmarshalJSON ...
-//
 func (dt *DateTime) UnmarshalJSON(b []byte) error {
 	date := strings.Trim(string(b), "\"")
 
@@ -46,9 +38,7 @@ func (dt *DateTime) UnmarshalJSON(b []byte) error {
 	return err
 }
 
-//
 // ParseDate transforms the passed date string (time.RFC3339) to a DateTime struct
-//
 func ParseDate(date string) (*DateTime, error) {
 	if len(date) <= 0 {
 		return nil, nil

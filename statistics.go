@@ -21,13 +21,13 @@ func getStatisticsMethods() map[string]APIMethod {
 	}
 }
 
-// Statistics ...
+// Statistics struct contains the statistical data (Result)
 type Statistics struct {
 	Query  *StatisticQuery        `json:"query"`
 	Result map[string]interface{} `json:"result,omitempty"`
 }
 
-// StatisticQuery ...
+// StatisticQuery struct is used to specify the query for the statistical data
 type StatisticQuery struct {
 	AggregationInterval string                       `json:"aggregationInterval"`
 	DataSources         map[string]map[string]string `json:"dataSources"`
@@ -37,7 +37,7 @@ type StatisticQuery struct {
 	Type                string                       `json:"type"`
 }
 
-// QueryStatistics ...
+// QueryStatistics function is used to fetch statistical data
 func (api *API) QueryStatistics(query *StatisticQuery) (*Statistics, error) {
 	if _, ok := methods["queryStatistics"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "queryStatistics")

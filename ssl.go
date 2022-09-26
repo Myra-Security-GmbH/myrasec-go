@@ -44,6 +44,7 @@ func getSSLMethods() map[string]APIMethod {
 	}
 }
 
+// Certificate strict ...
 type Certificate struct {
 	ID           int             `json:"id,omitempty"`
 	Created      *types.DateTime `json:"created,omitempty"`
@@ -57,6 +58,7 @@ type Certificate struct {
 	Cert         string          `json:"cert,omitempty"`
 }
 
+// SSLCertificate struct ...
 type SSLCertificate struct {
 	*Certificate
 	SubjectAlternatives []string          `json:"subjectAlternatives"`
@@ -69,6 +71,7 @@ type SSLCertificate struct {
 	CertToRefresh       int               `json:"certToRefresh,omitempty"`
 }
 
+// SSLIntermediate struct ...
 type SSLIntermediate struct {
 	*Certificate
 	Issuer string `json:"issuer"`
