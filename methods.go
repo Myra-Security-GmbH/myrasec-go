@@ -42,6 +42,7 @@ func initializeMethods() {
 		getRedirectMethods(),
 		getSettingsMethods(),
 		getSSLMethods(),
+		getStatisticsMethods(),
 		getTagCacheSettingMethods(),
 		getTagRateLimitMethods(),
 		getTagSettingsMethods(),
