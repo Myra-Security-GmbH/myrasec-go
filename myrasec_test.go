@@ -166,6 +166,41 @@ func TestSetLanguage(t *testing.T) {
 	}
 }
 
+func TestSetProxy(t *testing.T) {
+	key := "abc123"
+	secret := "123abc"
+
+	api, err := New(key, secret)
+	if err != nil {
+		t.Error("Unexpected error")
+	}
+
+	if api.client.Transport != nil {
+		t.Errorf("Expected not to have any proxy set by default.")
+	}
+
+	err = api.SetProxy("socks5://localhost:8080")
+	if err != nil {
+		t.Errorf("Expected not to get an error for passing a valid URL but got [%s]\n", err.Error())
+	}
+	if api.client.Transport == nil {
+		t.Error("Expected to have any proxy set but it is still not set.")
+	}
+
+	err = api.SetProxy("")
+	if err != nil {
+		t.Errorf("Expected not to get an error for passing an empty string but got [%s]\n", err.Error())
+	}
+	if api.client.Transport != nil {
+		t.Error("Expected not to have any proxy set when empty string was passed.")
+	}
+
+	err = api.SetProxy(":invalid")
+	if err == nil {
+		t.Error("Expected to get an error as the passed URL is not valid")
+	}
+}
+
 func TestPrepareRequestGET(t *testing.T) {
 	definition := APIMethod{
 		Name:   "Test",
