@@ -62,22 +62,22 @@ if err != nil {
 
 ## Upload archive
 
-> **This action is currently not supported. Support for this action will be added in the future.**
-
 It is possible to upload a zip archive instead of single files. The API will extract the archive to the given filepath.
 The file will be unpacked relative to the given folder which is given by the parameter "path".
 
 ### Example
 ```go
-archive, err := os.Open("/file/to/upload.zip")
-if err != nil {
-    return err
-}
-defer archive.Close()
+filePath := "/path/to/your/archive.zip"
 
-err = api.UploadArchive(archive, "example.com", "b1", "/uploaded/archive/")
+file, err := os.Open(filePath)
 if err != nil {
-    return err
+    panic(err)
+}
+defer file.Close()
+
+err = api.UploadArchive(file, "example.com", "b1", "/uploaded/archive/folder")
+if err != nil {
+    panic(err)
 }
 ```
 
