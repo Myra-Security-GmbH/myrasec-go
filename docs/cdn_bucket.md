@@ -137,7 +137,17 @@ if err != nil {
 ## Unlink
 Unlinking a sub domain from a bucket. After removing a link you are no longer able to access the bucket’s content for that sub domain.
 
-> **This action is currently not supported. Support for this action will be added in the future.**
+### Example
+```go
+link := &myrasec.BucketLink{
+    Bucket:        "b1",
+    SubDomainName: "www.example.com",
+}
+b, err := api.UnlinkBucket(link, "example.com")
+if err != nil {
+    panic(err)
+}
+```
 
 ## Delete
 Removing a bucket will also delete all of the content within the bucket. It is not possible to delete a bucket that have links from sub domains.
