@@ -186,7 +186,6 @@ func (api *API) LinkBucket(link *BucketLink, domainName string) (*BucketLink, er
 
 // UnlinkBucket unlinks a sub domain from a bucket
 func (api *API) UnlinkBucket(link *BucketLink, domainName string) (*BucketLink, error) {
-	//return nil, fmt.Errorf("this action is currently not supported")
 	if _, ok := methods["unlinkBucket"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "unlinkBucket")
 	}
