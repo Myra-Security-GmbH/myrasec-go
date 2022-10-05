@@ -157,6 +157,26 @@ func (api *API) SetRetrySleep(n int) {
 	api.retrySleep = n
 }
 
+// SetProxy allows to set a custom proxyURL for the api client.
+func (api *API) SetProxy(proxyURL string) error {
+	if proxyURL == "" {
+		api.client.Transport = nil
+		return nil
+	}
+
+	purl, err := url.Parse(proxyURL)
+	if err != nil {
+		return fmt.Errorf("error setting proxy url [\"%s\"] is not a valid url: %s", proxyURL, err.Error())
+	}
+
+	transport := &http.Transport{}
+	transport.Proxy = http.ProxyURL(purl)
+
+	api.client.Transport = transport
+
+	return nil
+}
+
 // call executes/sends the request to the MYRA API
 func (api *API) call(definition APIMethod, payload ...interface{}) (interface{}, error) {
 	req, err := api.prepareRequest(definition, payload...)
