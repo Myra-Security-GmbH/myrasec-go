@@ -52,7 +52,7 @@ func getBucketMethods() map[string]APIMethod {
 		"unlinkBucket": {
 			BaseURL: "https://upload.myracloud.com/%s",
 			Name:    "unlinkBucket",
-			Action:  "v2/bucket/link/%s",
+			Action:  "v2/bucket/unlink/%s",
 			Method:  http.MethodDelete,
 			Result:  BucketLink{},
 		},
@@ -186,7 +186,19 @@ func (api *API) LinkBucket(link *BucketLink, domainName string) (*BucketLink, er
 
 // UnlinkBucket unlinks a sub domain from a bucket
 func (api *API) UnlinkBucket(link *BucketLink, domainName string) (*BucketLink, error) {
-	return nil, fmt.Errorf("this action is currently not supported")
+	//return nil, fmt.Errorf("this action is currently not supported")
+	if _, ok := methods["unlinkBucket"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "unlinkBucket")
+	}
+
+	definition := methods["unlinkBucket"]
+	definition.Action = fmt.Sprintf(definition.Action, domainName)
+
+	_, err := api.call(definition, link)
+	if err != nil {
+		return nil, err
+	}
+	return link, nil
 }
 
 // DeleteBucket removes a bucket
