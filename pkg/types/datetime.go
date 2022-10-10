@@ -38,6 +38,17 @@ func (dt *DateTime) UnmarshalJSON(b []byte) error {
 	return err
 }
 
+// ToUnixDate ...
+func (dt *DateTime) ToUnixDate() string {
+	format := "_2. Jan 2006 "
+
+	if dt.Year() == time.Now().Year() {
+		format = "_2. Jan 15:04"
+	}
+
+	return dt.Format(format)
+}
+
 // ParseDate transforms the passed date string (time.RFC3339) to a DateTime struct
 func ParseDate(date string) (*DateTime, error) {
 	if len(date) <= 0 {
