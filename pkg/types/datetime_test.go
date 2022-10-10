@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -55,4 +56,18 @@ func TestParseDate(t *testing.T) {
 	if dt.Format("2006-01-02") != now.Format("2006-01-02") {
 		t.Errorf("Expected to get a date like [%s] but got [%s]", now.Format("2006-01-02"), dt.Format("2006-01-02"))
 	}
+}
+
+func TestToUinxDate(t *testing.T) {
+	now := time.Now()
+	dt, err := ParseDate(now.Format(time.RFC3339))
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+	expected := fmt.Sprintf("%s. %s %s:%s", now.Format("_2"), now.Format("Jan"), now.Format("15"), now.Format("04"))
+	formatted := dt.ToUnixDate()
+	if formatted != expected {
+		t.Errorf("Expected to get a date like [%s] but got [%s]", expected, formatted)
+	}
+
 }
