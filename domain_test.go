@@ -5,7 +5,6 @@ import (
 )
 
 func TestGetDomain(t *testing.T) {
-
 	api, err := setupPreCachedAPI([]*TestCache{
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domains/1",
