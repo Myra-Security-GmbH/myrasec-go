@@ -107,7 +107,7 @@ It is possible to fetch a single domain struct by passing the domain name to the
 
 ### Example
 ```go
-domain, err := api.FetchDomainForSubdomainName("example.com")
+domain, err := api.FetchDomain("example.com")
 if err != nil {
     panic(err)
 }
