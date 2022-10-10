@@ -36,7 +36,7 @@ newDomain := &myrasec.Domain{
 
 d, err := api.CreateDomain(newDomain)
 if err != nil {
-    log.Fatal(err)
+    panic(err)
 }
 ```
 
@@ -48,7 +48,7 @@ The listing operation returns a list of domains. The list contains domains for t
 ```go
 domains, err := api.ListDomains(nil)
 if err != nil {
-    log.Fatal(err)
+    panic(err)
 }
 ```
 
@@ -79,7 +79,7 @@ domain := &myrasec.Domain{
 }
 d, err := api.UpdateDomain(domain)
 if err != nil {
-    log.Fatal(err)
+    panic(err)
 }
 ```
 
@@ -98,6 +98,28 @@ domain := &myrasec.Domain{
 }
 d, err := api.DeleteDomain(domain)
 if err != nil {
-    log.Fatal(err)
+    panic(err)
+}
+```
+
+## Fetch a domanin by a domain name
+It is possible to fetch a single domain struct by passing the domain name to the `FetchDomain` function. 
+
+### Example
+```go
+domain, err := api.FetchDomainForSubdomainName("example.com")
+if err != nil {
+    panic(err)
+}
+```
+
+## Fetch a domain by a subdomain name
+It is possible to fetch a single domain struct by passing a subdomain name to the `FetchDomainForSubdomainName` function. 
+
+### Example
+```go
+domain, err := api.FetchDomainForSubdomainName("www.example.com")
+if err != nil {
+    panic(err)
 }
 ```
