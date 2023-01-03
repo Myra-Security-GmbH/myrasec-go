@@ -46,14 +46,15 @@ func getIPFilterMethods() map[string]APIMethod {
 
 // IPFilter ...
 type IPFilter struct {
-	ID         int             `json:"id,omitempty"`
-	Created    *types.DateTime `json:"created,omitempty"`
-	Modified   *types.DateTime `json:"modified,omitempty"`
-	ExpireDate *types.DateTime `json:"expireDate,omitempty"`
-	Value      string          `json:"value"`
-	Type       string          `json:"type"`
-	Comment    string          `json:"comment,omitempty"`
-	Enabled    bool            `json:"enabled"`
+	ID            int             `json:"id,omitempty"`
+	Created       *types.DateTime `json:"created,omitempty"`
+	Modified      *types.DateTime `json:"modified,omitempty"`
+	ExpireDate    *types.DateTime `json:"expireDate,omitempty"`
+	Value         string          `json:"value"`
+	Type          string          `json:"type"`
+	Comment       string          `json:"comment,omitempty"`
+	Enabled       bool            `json:"enabled"`
+	SubDomainName string          `json:"subDomainName"`
 }
 
 // GetIPFilter returns a single ip filter with/for the given identifier
