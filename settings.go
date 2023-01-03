@@ -75,6 +75,7 @@ type Settings struct {
 	WAFEnable                   bool     `json:"waf_enable"`
 	WAFLevelsEnable             []string `json:"waf_levels_enable,omitempty"`
 	WAFPolicy                   string   `json:"waf_policy,omitempty"`
+	ProxyHostHeader             *string  `json:"host_header"`
 }
 
 // ListSettings returns a Setting struct containing the settings for the passed subdomain
