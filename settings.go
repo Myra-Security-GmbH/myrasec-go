@@ -22,6 +22,12 @@ func getSettingsMethods() map[string]APIMethod {
 			Method: http.MethodPost,
 			Result: Settings{},
 		},
+		"updateSettingsPartial": {
+			Name:   "updateSettingsPartial",
+			Action: "domain/%d/%s/settings",
+			Method: http.MethodPost,
+			Result: map[string]interface{}{},
+		},
 	}
 }
 
@@ -96,6 +102,7 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 }
 
 // UpdateSettings updates the passed settings using the MYRA API
+// Deprecated: this method uses myra-api settings in a wrong way, please use UpdateSettingsPartial instead
 func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName string) (*Settings, error) {
 	if _, ok := methods["updateSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createSettings")
@@ -109,6 +116,22 @@ func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName s
 		return nil, err
 	}
 	return result.(*Settings), nil
+}
+
+// UpdateSettingsPartial updates the passed settings using the MYRA API
+func (api *API) UpdateSettingsPartial(settings map[string]interface{}, domainId int, subDomainName string) (interface{}, error) {
+	if _, ok := methods["updateSettingsPartial"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "createSettings")
+	}
+
+	definition := methods["updateSettingsPartial"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
+
+	result, err := api.call(definition, settings)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 // decodeSettingsResponse - custom decode function for settings response. Used in the ListSettings action.
