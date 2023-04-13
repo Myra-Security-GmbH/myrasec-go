@@ -22,6 +22,12 @@ func getTagSettingsMethods() map[string]APIMethod {
 			Method: http.MethodPut,
 			Result: Settings{},
 		},
+		"updateTagSettingsPartial": {
+			Name:   "updateTagSettingsPartial",
+			Action: "tag/%d/settings",
+			Method: http.MethodPut,
+			Result: map[string]interface{}{},
+		},
 	}
 }
 
@@ -50,7 +56,7 @@ func (api *API) ListTagSettings(tagId int) (*Settings, error) {
 // UpdateTagSettings updates the passed settings using the MYRA API
 func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, error) {
 	if _, ok := methods["updateTagSettings"]; !ok {
-		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagSettings")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagSettings")
 	}
 
 	definition := methods["updateTagSettings"]
@@ -61,6 +67,23 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 		return nil, err
 	}
 	return result.(*Settings), nil
+
+}
+
+// UpdateTagSettings updates the passed settings using the MYRA API
+func (api *API) UpdateTagSettingsPartial(settings map[string]interface{}, tagId int) (interface{}, error) {
+	if _, ok := methods["updateTagSettingsPartial"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagSettingsPartial")
+	}
+
+	definition := methods["updateTagSettingsPartial"]
+	definition.Action = fmt.Sprintf(definition.Action, tagId)
+
+	result, err := api.call(definition, settings)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 
 }
 

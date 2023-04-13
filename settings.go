@@ -105,7 +105,7 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 // Deprecated: this method uses myra-api settings in a wrong way, please use UpdateSettingsPartial instead
 func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName string) (*Settings, error) {
 	if _, ok := methods["updateSettings"]; !ok {
-		return nil, fmt.Errorf("passed action [%s] is not supported", "createSettings")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSettings")
 	}
 
 	definition := methods["updateSettings"]
@@ -121,7 +121,7 @@ func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName s
 // UpdateSettingsPartial updates the passed settings using the MYRA API
 func (api *API) UpdateSettingsPartial(settings map[string]interface{}, domainId int, subDomainName string) (interface{}, error) {
 	if _, ok := methods["updateSettingsPartial"]; !ok {
-		return nil, fmt.Errorf("passed action [%s] is not supported", "createSettings")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSettingsPartial")
 	}
 
 	definition := methods["updateSettingsPartial"]
