@@ -2,24 +2,20 @@
 
 For tag settings you need the object from [Tag](./tag.md) and [Settings](./subdomain_settings.md)
 
-## Create/Update
-To create/update a new tag settings you need to send a Settings object with a tagId.
+## Create/Update/Delete
+To create/update/delete a tag settings you need to send a `map[string]interface{}` with a tagId.
 
-To create a new tag settings, you need to leave the attributes "id", "created", "modified" empty. To update you have to set these attributes.
+To create/update you add the specific attribute to the map with the required value.
 
+To delete an attribute you have to add the attribute with `nil`.
+
+Only attributes in the map will be touched in the api.
 ### Example
 ```go
-// Create tag settings with default values
 tagId := 0000
-settings := &myrasec.Settings{}
-ts, err := api.UpdateTagSettings(settings, tagId)
-if err != nil {
-    log.Fatal(err)
-}
-
-// Update tag settings
-ts.AccessLog = true
-updated, err := api.UpdateTagSettings(ts, tagId)
+settingsMap['only_https'] = true // update/create
+settingsMap['myra_ssl_header'] = nil // delete
+ts, err := api.UpdateTagSettingsPartial(settingsMap, tagId)
 if err != nil {
     log.Fatal(err)
 }
