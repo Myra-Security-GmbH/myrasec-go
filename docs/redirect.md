@@ -62,6 +62,16 @@ if err != nil {
 }
 ```
 
+**Note:** Second parameter here is subdomain, and in special case when redirects are listed for General domain settings, special format needs to be used: ```ALL-1234``` where 1234 is the domain ID.
+
+### Example
+```go
+redirects, err := api.ListRedirects(1234, "ALL-1234", nil)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
 It is possible to pass a map of parameters (`map[string]string`) to the `ListRedirects` function.
 
 | name | description | default |
