@@ -16,6 +16,13 @@ func getSettingsMethods() map[string]APIMethod {
 			Result:             Settings{},
 			ResponseDecodeFunc: decodeSettingsResponse,
 		},
+		"listSettingsFull": {
+			Name:               "listSettingsFull",
+			Action:             "domain/%d/%s/settings",
+			Method:             http.MethodGet,
+			Result:             map[string]interface{}{},
+			ResponseDecodeFunc: decodeSettingsResponse,
+		},
 		"updateSettings": {
 			Name:   "updateSettings",
 			Action: "domain/%d/%s/settings",
@@ -99,6 +106,23 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 	}
 
 	return result.(*Settings), nil
+}
+
+// ListSettingsFull returns a Setting struct containing the full hierarchie of the settings
+func (api *API) ListSettingsFull(domainId int, subDomainName string, params map[string]string) (interface{}, error) {
+	if _, ok := methods["listSettingsFull"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listSettings")
+	}
+
+	definition := methods["listSettingsFull"]
+	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
+
+	result, err := api.call(definition, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // UpdateSettings updates the passed settings using the MYRA API
