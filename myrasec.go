@@ -69,6 +69,7 @@ type Response struct {
 	Page          int           `json:"page,omitempty"`
 	Count         int           `json:"count,omitempty"`
 	PageSize      int           `json:"pageSize,omitempty"`
+	Domain        []interface{} `json:"domain,omitempty"`
 }
 
 // Violation defines a violation VO, returned by the MYRA API
