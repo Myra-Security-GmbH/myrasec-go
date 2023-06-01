@@ -21,7 +21,7 @@ func getSettingsMethods() map[string]APIMethod {
 			Action:             "domain/%d/%s/settings",
 			Method:             http.MethodGet,
 			Result:             map[string]interface{}{},
-			ResponseDecodeFunc: decodeSettingsResponse,
+			ResponseDecodeFunc: decodeSettingsResponseFull,
 		},
 		"updateSettings": {
 			Name:   "updateSettings",
@@ -161,6 +161,16 @@ func (api *API) UpdateSettingsPartial(settings map[string]interface{}, domainId 
 // decodeSettingsResponse - custom decode function for settings response. Used in the ListSettings action.
 func decodeSettingsResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
 	var res Settings
+	err := json.NewDecoder(resp.Body).Decode(&res)
+	if err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+// decodeSettingsResponseFull - custom decode function for full settings response. Used in the ListSettingsFull action.
+func decodeSettingsResponseFull(resp *http.Response, definition APIMethod) (interface{}, error) {
+	var res map[string]interface{}
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
 		return nil, err
