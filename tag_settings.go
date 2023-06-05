@@ -16,6 +16,13 @@ func getTagSettingsMethods() map[string]APIMethod {
 			Result:             Settings{},
 			ResponseDecodeFunc: decodeTagSettingsResponse,
 		},
+		"listTagSettingsMap": {
+			Name:               "listTagSettingsMap",
+			Action:             "tag/%d/settings",
+			Method:             http.MethodGet,
+			Result:             map[string]interface{}{},
+			ResponseDecodeFunc: decodeTagSettingsMapResponse,
+		},
 		"updateTagSettings": {
 			Name:   "updateTagSettings",
 			Action: "tag/%d/settings",
@@ -51,6 +58,21 @@ func (api *API) ListTagSettings(tagId int) (*Settings, error) {
 	}
 
 	return result.(*Settings), nil
+}
+
+func (api *API) ListTagSettingsMap(tagId int) (interface{}, error) {
+	if _, ok := methods["listTagSettingsMap"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagSettingsMap")
+	}
+
+	definition := methods["listTagSettingsMap"]
+	definition.Action = fmt.Sprintf(definition.Action, tagId)
+
+	result, err := api.call(definition, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 // UpdateTagSettings updates the passed settings using the MYRA API
@@ -95,4 +117,14 @@ func decodeTagSettingsResponse(resp *http.Response, definition APIMethod) (inter
 		return nil, err
 	}
 	return &res.Settings, nil
+}
+
+// decodeSettingsResponseFull - custom decode function for full settings response. Used in the ListSettingsFull action.
+func decodeTagSettingsMapResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+	var res map[string]interface{}
+	err := json.NewDecoder(resp.Body).Decode(&res)
+	if err != nil {
+		return nil, err
+	}
+	return &res, nil
 }
