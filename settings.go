@@ -46,6 +46,7 @@ type Settings struct {
 	AntibotProofOfWork          bool     `json:"antibot_proof_of_work"`
 	AntibotProofOfWorkThreshold int      `json:"antibot_proof_of_work_threshold,omitempty"`
 	BalancingMethod             string   `json:"balancing_method,omitempty"`
+	CookieName                  string   `json:"cookie_name,omitempty"`
 	BlockNotWhitelisted         bool     `json:"block_not_whitelisted"`
 	BlockTorNetwork             bool     `json:"block_tor_network"`
 	CacheEnabled                bool     `json:"cache_enabled"`
