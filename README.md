@@ -3,7 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Myra-Security-GmbH/myrasec-go)](https://goreportcard.com/report/github.com/Myra-Security-GmbH/myrasec-go)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Myra-Security-GmbH/myrasec-go.svg)](https://pkg.go.dev/github.com/Myra-Security-GmbH/myrasec-go)
 
->## v1 of this library is deprecated and not maintained anymore. Please use v2 of this library.
+>## v1 of this library is deprecated and not maintained anymore. Please use v2 of this library: [APIv2](https://github.com/Myra-Security-GmbH/myrasec-go/tree/APIv2)
 
 A Go library for interacting with Myra Security API.
 
