@@ -19,7 +19,7 @@ import (
 	"log"
 	"os"
 
-	myrasec "github.com/Myra-Security-GmbH/myrasec-go/"
+	myrasec "github.com/Myra-Security-GmbH/myrasec-go/v2"
 )
 
 func main() {
