@@ -10,9 +10,6 @@ A Go library for interacting with Myra Security API.
 > Upcoming changes may break existing functionality.
 > Consider this library as unstable.
 
-
-**Note:** v1 of this library is not maintained anymore. Please use v2 (`"github.com/Myra-Security-GmbH/myrasec-go/v2"`) of this library. 
-
 ## Example usage
 
 ```go
