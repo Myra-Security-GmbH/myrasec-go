@@ -54,6 +54,7 @@ type Domain struct {
 	AutoDNS     bool            `json:"autoDns"`
 	Paused      bool            `json:"paused"`
 	PausedUntil *types.DateTime `json:"pausedUntil,omitempty"`
+	Reversed    bool            `json:"reversed"`
 }
 
 // GetDomain returns a single domain with/for the given identifier
