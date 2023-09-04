@@ -61,4 +61,5 @@ func main() {
 - [CDN bucket](./docs/cdn_bucket.md)
 - [CDN file](./docs/cdn_file.md)
 - [Statistics](./docs/statistics.md)
+- [CacheClear](./docs/cacheclear.md)
 - [General Domain settings](./docs/general_domain_settings.md)
