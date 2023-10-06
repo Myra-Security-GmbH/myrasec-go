@@ -23,10 +23,10 @@ type CacheSetting struct {
 | `Type` | string | This will tell the server how to match the given path against a request. Available options are ’prefix’, ’suffix’ and ’exact’. |
 | `Path` | string | A request will be matched against this path to decide if this request is cacheable or not. It is possible to write a regexp in this attribute. It is not allowed to use start ’ˆ’ or end ’$’ regexp characters as it they are generated depending on the given type. |
 | `TTL` |  int| Time to live limits the lifespan of a cached response for the given path. This is a numeric value and is given in seconds. Special case is ’like origin server’, which uses the TTL returned by your origin server. |
-| `NotFoundTTL` | int |  |
-| `Sort` | int |  |
-| `Enabled` | bool |  |
-| `Enforce` | bool |  |
+| `NotFoundTTL` | int | How long an object will be cached. Origin responses with the HTTP codes 404 will be cached. |
+| `Sort` | int | The order in which the cache rules take action as long as the cache sorting is activated. |
+| `Enabled` | bool | Define wether this cache setting is enabled or not. |
+| `Enforce` | bool | Enforce cache TTL allows you to set the cache TTL (Cache Control: max-age) in the backend regardless of the response sent from your Origin. |
 
 
 ## Create
@@ -42,7 +42,7 @@ cachesetting := &myrasec.CacheSetting{
     Enabled:     true,
     Enforce:     false,
 }
-c, err := api.CreateCacheSetting(cachesetting, 1234, "www.example.com")
+c, err := api.CreateCacheSetting(cachesetting, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -54,7 +54,7 @@ The listing operation returns a list of cache settings for the passed subdomain 
 
 ### Example 
 ```go
-cachesettings, err := api.ListCacheSettings(1234, "www.example.com", nil)
+cachesettings, err := api.ListCacheSettings(domainId, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -82,7 +82,7 @@ cachesetting := &myrasec.CacheSetting{
     Path:      "/index.html",
 }
 
-c, err := api.UpdateCacheSetting(cachesetting, 1234, "www.example.com");
+c, err := api.UpdateCacheSetting(cachesetting, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -100,7 +100,7 @@ cachesetting := &myrasec.CacheSetting{
         Time: modified,
     },
 }
-c, err := api.DeleteCacheSetting(cachesetting, 1234, "www.example.com");
+c, err := api.DeleteCacheSetting(cachesetting, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }

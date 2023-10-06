@@ -30,18 +30,18 @@ errorPage := &myrasec.ErrorPage{
     ErrorCode: 500,
     Content: "<html><body>Error 500</body></html",
 }
-ep, err := api.CreateErrorPage(errorPage, 1234)
+ep, err := api.CreateErrorPage(errorPage, domainId)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-## Read
+## List
 The listing operation returns a list of error pages for the passed domain id.
 
 ### Example
 ```go
-errorPages, err := api.ListErrorPages(1234)
+errorPages, err := api.ListErrorPages(domainId)
 if err != nil {
     log.Fata(err)
 }
@@ -55,6 +55,15 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListErr
 | `page` | Specify the page of the result | 1 |
 | `pageSize` | Specify the amount of results in the response | 50 |
 
+## Read
+The read operation returns a single error page by it's ID and domainId
+```go
+errrorPage, err := api.GetErrorPage(domainId, errorPageId)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
 ## Update
 Updating the ErrorPage is very similar to create a new one. You can only update the content, the SubDomainName and the ErrorCode must be the same as on the one you want to update
 ### Example
@@ -64,7 +73,7 @@ errorPage := &myrasec.ErrorPage{
     ErrorCode: 500,
     Content: "<html><body>Update error page</body></html",
 }
-ep, err := api.UpdateErrorPage(errorPage, 1234)
+ep, err := api.UpdateErrorPage(errorPage, domainId)
 if err != nil {
     log.Fatal(err)
 }
@@ -79,7 +88,7 @@ errorPage := &myrasec.ErrorPage{
     SubDomainName: "example.com.",
     ErrorCode: 500,
 }
-ep, err := api.DeleteErrorPage(errorPage, 1234)
+ep, err := api.DeleteErrorPage(errorPage, domainId)
 if err != nil {
     log.Fatal(err)
 }

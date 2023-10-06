@@ -22,7 +22,7 @@ type RateLimit struct {
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. |
 | `Burst` | int | Burst defines how many requests a client can make in excess of the specified rate. |
 | `Network` | string | Network in CIDR notation affected by the rate limiter. |
-| `SubDomainName` | string |  |
+| `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) where this ratelimit belongs to. This value cannot be changed through the object’s attribute as it is set via URL parameter. |
 | `Timeframe` | int | The affected timeframe in seconds for the rate limit. |
 | `Type` | string | Right now, only `domain` is supported |
 | `Value` | int | Maximum amount of requests for the given network. |
@@ -41,7 +41,7 @@ ratelimit := &myrasec.RateLimit{
     Type:          "domain",
     Network:       "127.0.0.1/24",
 }
-rl, err := api.CreateRateLimit(ratelimit, 1234, "www.example.com")
+rl, err := api.CreateRateLimit(ratelimit, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -61,7 +61,7 @@ It is required to pass a map of parameters (`map[string]string`) to the `ListRat
 
 ### Example
 ```go
-ratelimits, err := api.ListRateLimits(1234, "www.example.com", nil)
+ratelimits, err := api.ListRateLimits(domainId, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -81,7 +81,7 @@ ratelimit := &myrasec.RateLimit{
     Value:      200,
 }
 
-rl, err := api.UpdateRateLimit(ratelimit, 1234, "www.example.com");
+rl, err := api.UpdateRateLimit(ratelimit, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -100,7 +100,7 @@ ratelimit := &myrasec.RateLimit{
     },
 }
 
-rl, err := api.DeleteRateLimit(rateLimit, 1234, "www.example.com");
+rl, err := api.DeleteRateLimit(rateLimit, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }

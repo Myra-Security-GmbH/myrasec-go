@@ -54,14 +54,14 @@ The listing operation returns a list of IP rate limit settings.
 It is required to pass a map of parameters (`map[string]string`) to the `TagListRateLimits` function.
 
 | name | description | default |
-|---|---|---|---|
+|---|---|---|
 | `search` (string) | Filter by the specified search query | null |
 | `page` | Specify the page of the result | 1 |
 | `pageSize` | Specify the amount of results in the response | 50 |
 
 ### Example
 ```go
-ratelimits, err := api.ListTagRateLimits(1234, nil)
+ratelimits, err := api.ListTagRateLimits(tagId, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -81,7 +81,7 @@ ratelimit := &myrasec.TagRateLimit{
     Value:      200,
 }
 
-rl, err := api.UpdateTagRateLimit(ratelimit, 1234);
+rl, err := api.UpdateTagRateLimit(ratelimit, tagId);
 if err != nil {
     log.Fatal(err)
 }
@@ -100,7 +100,7 @@ ratelimit := &myrasec.TagRateLimit{
     },
 }
 
-rl, err := api.DeleteTagRateLimit(rateLimit, 1234);
+rl, err := api.DeleteTagRateLimit(rateLimit, tagId);
 if err != nil {
     log.Fatal(err)
 }

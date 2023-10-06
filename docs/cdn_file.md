@@ -54,7 +54,8 @@ if err != nil {
 }
 defer file.Close()
 
-err = api.UploadFile(file, "example.com", "b1", "/uploaded/file")
+bucketName := b.Name
+err = api.UploadFile(file, "example.com", bucketName, "/uploaded/file")
 if err != nil {
     return err
 }
@@ -75,7 +76,8 @@ if err != nil {
 }
 defer file.Close()
 
-err = api.UploadArchive(file, "example.com", "b1", "/uploaded/archive/folder")
+bucketName := b.Name
+err = api.UploadArchive(file, "example.com", bucketName, "/uploaded/archive/folder")
 if err != nil {
     panic(err)
 }
@@ -87,8 +89,9 @@ To flip between pages you have to append "cursor", which you will receive as att
 
 ### Example
 ```go
+bucketName := b.Name
 query := &myrasec.FileQuery{
-    Bucket: "b1",
+    Bucket: bucketName,
     Path:   "/",
     Limit:  100,
     Type:   0,
@@ -106,7 +109,7 @@ for _, f := range files {
 }
 
 nextQuery := &myrasec.FileQuery{
-    Bucket: "b1",
+    Bucket: bucketName,
     Path:   "/",
     Limit:  100,
     Type:   0,
@@ -125,8 +128,9 @@ For deleting a specific file it is necessary to set an absolute path to the file
 
 ### Example
 ```go
+bucketName := b.Name
 query := &myrasec.FileQuery{
-    Bucket: "b1",
+    Bucket: bucketName,
     Path:   "/example.jpg",
 }
 

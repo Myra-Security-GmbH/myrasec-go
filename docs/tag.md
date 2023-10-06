@@ -16,7 +16,7 @@ type Tag struct {
 | `Created` | *types.DateTime | Created will be created by the server after creating a new Tag object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
 | `Name` | string | Identifies the tag by its name. |
-| `Type` | string | Defines the type of the tag and must be one of CONFIG, WAF, CACHE, RATE_LIMIT |
+| `Type` | string | Defines the type of the tag and must be one of `CONFIG`, `WAF`, `CACHE`, `RATE_LIMIT` |
 | `Assignments` | []TagAssignments |
 
 ```go
@@ -34,7 +34,7 @@ type TagAssignment struct {
 | `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a TagAssignment it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created will be created by the server after creating a new TagAssignment object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
-| `Type` | string | Defines the type of the tag assignment and must be one of DOMAIN, SUBDOMAIN |
+| `Type` | string | Defines the type of the tag assignment and must be one of `DOMAIN`, `SUBDOMAIN` |
 | `Title` | string | Identifies the tag assignment by its domain name. |
 | `SubDomainName` | string | Only set on SUBDOMAIN tag assignments |
 
@@ -61,7 +61,7 @@ if err != nil {
 }
 ```
 
-## Read
+## List
 The listing operation returns a list of tags. The list contains tags for the organization of the account you are accessing the API with.
 
 ### Example
@@ -79,6 +79,15 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListTag
 | `search` | Filter by the specified search query | null |
 | `page` | Specify the page of the result | 1 |
 | `pageSize` | Specify the amount of results in the response | 50 |
+
+## Read
+The read operation returns a single Tag by it's ID
+```go
+tag, err := api.GetTag(tagId)
+if err != nil {
+    log.Fatal(err)
+}
+```
 
 ## Update
 Updating a tag is very similar to creating a new one. The main difference is that an update will need the generated "id" and "modified" attributes to identify the object you are trying to update.

@@ -18,12 +18,12 @@ type Certificate struct {
 | Field | Type | Description |  
 |---|---|---|  
 | `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a DnsRecord it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created is a date type attribute with an ISO8601 format. It will be created by the server after creating a new DnsRecord object. This value is only informational so it is not necessary to add this an attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. This value is always a date type with an ISO8601 format. |  
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. It will be created by the server after creating a new DnsRecord object. This value is only informational so it is not necessary to add this an attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. This value is always a date type with an `ISO 8601` format. |  
 | `Subject` | string | Shows the subject of the uploaded certificate. |  
 | `Algorithm` | string | Contains the signature algorithm. |  
-| `ValidFrom` | *types.DateTime | Time when the certificate starts to be valid. This property is a date type with an ISO8601 format. |  
-| `ValidTo` | *types.DateTime | Time when the certificate expires. This property is a date type with an ISO8601 format. |  
+| `ValidFrom` | *types.DateTime | Time when the certificate starts to be valid. This property is a date type with an `ISO 8601` format. |  
+| `ValidTo` | *types.DateTime | Time when the certificate expires. This property is a date type with an `ISO 8601` format. |  
 | `Fingerprint` | string | Fingerprint of the certificate. |  
 | `SerialNumber` | string | Serial number of the certificate. |  
 | `Cert` | string | Cert contains the certificate. |  
@@ -99,18 +99,18 @@ ssl := &myrasec.SSLCertificate{
 }
 cert, err := api.CreateSSLCertificate(ssl, "example.com")
 if err != nil {
-    return err
+    log.Fatal(err)
 }
 ```
 
-## Read
-The listing operation returns a list of SSL certificates for the passed domain name.
+## List
+The listing operation returns a list of SSL certificates for the passed domainId.
 
 ### Example
 ```go
-api.ListSSLCertificates("example.com", nil)
+api.ListSSLCertificates(domainId, nil)
 if err != nil {
-    return err
+    log.Fatal(err)
 }
 ```
 
@@ -120,6 +120,15 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListSSL
 |---|---|---|
 | `page` | Specify the page of the result | 1 |
 | `pageSize` | Specify the amount of results in the response | 50 |
+
+## Read
+The read operation returns a single SSL certificate by it's ID
+```go
+cert, err := api.GetSSLCertificate(domaindId, certId)
+if err != nil {
+    log.Fatal(err)
+}
+```
 
 ## Update
 Updating a SSL certificate is very similar to creating a new one. You will need to provide the generated "id" and "modified" attributes to identify the version of object you are trying to update.  
@@ -142,7 +151,7 @@ ssl := &myrasec.SSLCertificate{
 
 cert, err := api.UpdateSSLCertificate(ssl, "example.com")
 if err != nil {
-    return err
+    log.Fatal(err)
 }
 ```
 
@@ -165,7 +174,7 @@ ssl := &myrasec.SSLCertificate{
 
 cert, err := api.DeleteSSLCertificate(ssl, "example.com")
 if err != nil {
-    return err
+    log.Fatal(err)
 }
 
 log.Println(cert.SubDomains)

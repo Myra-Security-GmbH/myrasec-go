@@ -41,7 +41,7 @@ if err != nil {
 ```
 
 
-## Read
+## List
 The listing operation returns a list of domains. The list contains domains for the account you are accessing the API with, and also all foreign domains you are allowed to manage.
 
 ### Example
@@ -60,6 +60,14 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListDom
 | `page` | Specify the page of the result | 1 |
 | `pageSize` | Specify the amount of results in the response | 50 |
 
+## Read
+The read operation returns a single domain by it's ID
+```go
+domain, err := api.GetDomain(domainId)
+if err != nil {
+    panic(err)
+}
+```
 
 ## Update
 Updating a domain is very similar to creating a new one. The main difference is that an update will need
