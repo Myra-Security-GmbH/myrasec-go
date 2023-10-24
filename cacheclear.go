@@ -19,7 +19,7 @@ func getCacheClearMethods() map[string]APIMethod {
 
 // CacheClear ...
 type CacheClear struct {
-	FQDN      string `json:"fqdn"`
+	FQDN      string `json:"fqdn,omitempty"`
 	Resource  string `json:"resource"`
 	Recursive bool   `json:"recursive"`
 }
