@@ -36,6 +36,22 @@ if err != nil {
 log.Println(cc)
 ```
 
+## Clear the cache of a complete domain
+To enqueue a cache clear operation for the complete domain you can create the `myrasec.ClearCache` struct without the `FQDN`
+```go
+domainId := 123
+cc := &myrasec.ClearCache{
+    Resource: "/*.jpg",
+    Recursive: true
+}
+cc, err := api.ClearCache(cc, domainId)
+if err != nil {
+    panic(err)
+}
+
+log.Println(cc)
+```
+
 
 ## Resource Pattern matching
 Internally we use the [fnmatch](https://man7.org/linux/man-pages/man3/fnmatch.3.html) (flags=FNM_PATHNAME) function to find the matching resources that should be deleted. To allow you to do recurseve deletion in folder, the flag `recursive` was added.
