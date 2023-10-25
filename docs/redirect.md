@@ -13,6 +13,7 @@ type Redirect struct {
 	MatchingType  string          `json:"matchingType"`
 	Sort          int             `json:"sort,omitempty"`
 	Enabled       bool            `json:"enabled,omitempty"`
+    ExpertMode    bool            `json:"expertMode,omitempty"`
 }
 ```
 
@@ -25,10 +26,10 @@ type Redirect struct {
 | `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) where this redirect belongs to. This value cannot be changed through the object’s attribute as it is set via URL parameter. |
 | `Source` | string | Location to match your query against, it is also possible to match against a regexp instead of hard coded locations |
 | `Destination` | string | The destination you want your customer redirect to. This can be a valid HTTP(S) address or a relative location on your domain. |
-| `Comment` | string |  |
+| `Comment` | string | A comment to describe this redirect. |
 | `MatchingType` | string | The matching type allows you to change the way how the redirect is matched. This field allows three different values: ’prefix’, ’suffix’, and ’exact’. |
-| `Sort` | int | |
-| `Enabled` | bool | |
+| `Sort` | int | The ascending order for the redirect rules. |
+| `Enabled` | bool | Disable redirect loop detection. |
 
 
 ## Create
@@ -44,19 +45,19 @@ redirect := &myrasec.Redirect{
     SubDomainName: "www.example.com.",
     Type:          "redirect",
 }
-r, err := api.CreateRedirect(redirect, 1234, "www.example.com")
+r, err := api.CreateRedirect(redirect, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
 ```
 
 
-## Read
+## List
 The listing operation returns a list of redirects for the given domain.
 
 ### Example
 ```go
-redirects, err := api.ListRedirects(1234, "www.example.com", nil)
+redirects, err := api.ListRedirects(domainId, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -71,6 +72,15 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListRed
 | `pageSize` | Specify the amount of results in the response | 50 |
 | `enabled` | Return only enabled IP filters | null |
 
+## Read
+The read operation returns a single redirect objct.
+```go
+redirect, err := api.GetRedirect(domainId, "www.example.com", redirectId)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
 ## Update
 Updating a redirect is very similar to creating a new one. The main difference is that an update will need the generated "id" and "modified" attributes to identify the object you are trying to update.
 
@@ -84,7 +94,7 @@ redirect := &myrasec.Redirect{
     Enabled: false,
 }
 
-r, err := api.UpdateRedirect(redirect, 1234, "www.example.com");
+r, err := api.UpdateRedirect(redirect, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -103,7 +113,7 @@ redirect := &myrasec.Redirect{
     },
 }
 
-r, err := api.DeleteRedirect(redirect, 1234, "www.example.com");
+r, err := api.DeleteRedirect(redirect, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }

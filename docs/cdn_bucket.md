@@ -1,7 +1,7 @@
 # Bucket
 
-Managing buckets allows you to create, link, or remove buckets. With a bucket you have the flexibility to upload a full version set of your site without publishing it. After uploading the version set you can link a sub domain to a bucket. The access the published data you need to have a activated CDN in the backend.  
-To remove the old content from the CDN just remove the bucket.    
+Managing buckets allows you to create, link, or remove buckets. With a bucket you have the flexibility to upload a full version set of your site without publishing it. After uploading the version set you can link a sub domain to a bucket. To access the published data you need to have an activated CDN in the backend.
+To remove the old content from the CDN just remove the bucket.
 
 ```go
 type Bucket struct {
@@ -25,7 +25,7 @@ type BucketStatus struct {
 | Field | Type | Description|
 |---|---|---|
 | `Status` | string | Status message |
-| `StatusCode` | int | 0 = Bucket available, 1 = Bucket is deleted, 2 = Bucket creating still in progress, 4 = Unknown bucket status |
+| `StatusCode` | int | 0 = Bucket available<br>1 = Bucket is deleted<br>2 = Bucket creating still in progress<br>4 = Unknown bucket status |
 
 
 ```go
@@ -76,7 +76,8 @@ Allows you to get a status for your newly created bucket. This API call does not
 
 ### Example
 ```go
-status, err := api.GetBucketStatus("example.com", "b1")
+bucketName := b.Name
+status, err := api.GetBucketStatus("example.com", bucketName)
 if err != nil {
     panic(err)
 }
@@ -90,7 +91,8 @@ Returns statistics for a specific bucket. The given sizes are estimations. The s
 
 ### Example
 ```go
-statistics, err := api.GetBucketStatistics("example.com", "b1")
+bucketName := b.Name
+statistics, err := api.GetBucketStatistics("example.com", bucketName)
 if err != nil {
     panic(err)
 }
@@ -125,7 +127,7 @@ Linking a sub domain to a bucket allows you to publish the content inside the bu
 ### Example
 ```go
 link := &myrasec.BucketLink{
-    Bucket:        "b1",
+    Bucket:        b.name,
     SubDomainName: "www.example.com",
 }
 b, err := api.LinkBucket(link, "example.com")
@@ -140,7 +142,7 @@ Unlinking a sub domain from a bucket. After removing a link you are no longer ab
 ### Example
 ```go
 link := &myrasec.BucketLink{
-    Bucket:        "b1",
+    Bucket:        b.name,
     SubDomainName: "www.example.com",
 }
 b, err := api.UnlinkBucket(link, "example.com")

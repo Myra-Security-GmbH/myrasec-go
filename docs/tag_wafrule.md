@@ -20,6 +20,7 @@ type TagWafRule struct {
 }
 ```
 | Field | Type | Description |
+| --- | --- | --- |
 | `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a TagWAFRule it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created will be created by the server after creating a new TagWAFRule object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
@@ -27,13 +28,13 @@ type TagWafRule struct {
 | `Name` | string | Identifies the tag by its name. |
 | `Description` | string | The Description will explain what the TagWAFRule is for |
 | `Direction` | string | The direction can be 'in' or 'out' |
-| `LogIdentifier` | string | ... |
+| `LogIdentifier` | string | A comment to identify the matching rule in the access log. |
 | `Sort` | int | Defines the sorting of TagWAFRules |
 | `Sync` | bool | ... |
-| `ProcessNext` | bool | ... |
+| `ProcessNext` | bool | After a rule has been applied, the rule chain will be executed as determined. |
 | `Enabled` | bool | Describes if the rule is enabled or not |
-| `Actions` | []WAFAction | ... |
-| `Conditions` | []WAFCondition | ... |
+| `Actions` | []WAFAction | List of WAF actions |
+| `Conditions` | []WAFCondition | List of WAF conditions |
 | `TagId` | int | the related TagId |
 
 ## Create
@@ -61,12 +62,21 @@ if err != nil {
 }
 ```
 
-## Read
+## List
 The listing operation returns a list of TagWAFRules for the given TagID.
 
 ### Example
 ```go
 rules, err := api.ListTagWAFRules(12, nil)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+## Read
+The read operation returns an object of TagWAFRule for the given tagId and ruleId
+```go
+rule, err := api.GetTagWAFRule(tagId, ruleId)
 if err != nil {
     log.Fatal(err)
 }

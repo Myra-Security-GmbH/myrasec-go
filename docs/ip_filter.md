@@ -3,14 +3,15 @@ The IP black/whitelist of Myra lets you grant or deny access from individual IP 
 
 ```go
 type IPFilter struct {
-	ID         int             `json:"id,omitempty"`
-	Created    *types.DateTime `json:"created,omitempty"`
-	Modified   *types.DateTime `json:"modified,omitempty"`
-	Value      string          `json:"value"`
-	Type       string          `json:"type"`
-	ExpireDate *types.DateTime `json:"expireDate,omitempty"`
-	Enabled    bool            `json:"enabled,omitempty"`
-	Comment    string          `json:"comment,omitempty"`
+	ID            int             `json:"id,omitempty"`
+	Created       *types.DateTime `json:"created,omitempty"`
+	Modified      *types.DateTime `json:"modified,omitempty"`
+	Value         string          `json:"value"`
+	Type          string          `json:"type"`
+	ExpireDate    *types.DateTime `json:"expireDate,omitempty"`
+	Enabled       bool            `json:"enabled,omitempty"`
+	Comment       string          `json:"comment,omitempty"`
+    SubDomainName string          `json:"subDomainName,omitempty"`
 }
 ```
 
@@ -20,10 +21,11 @@ type IPFilter struct {
 | `Created` | *types.DateTime | Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. |
 | `Value` | string | The value of an IP filter rule can contain a single IP address or a CIDR notation. IPv4 and IPv6 are both supported. An IP filter for IPv6 can only contain a /128 subnet. |
-| `Type` | string | This specifies how the rule is applied. |
-| `ExpireDate` | *types.DateTime | |
-| `Enabled` | bool | |
-| `Comment` | string | |
+| `Type` | string | This specifies how the rule is applied. `BLACKLIST`, `WHITELIST`, `WHITELIST_REQUEST_LIMITER` |
+| `ExpireDate` | *types.DateTime | Expire date schedules the deaktivation of the filter. If none is set, the filter will be active until manual deactivation. |
+| `Enabled` | bool | Enable or disable a filter. |
+| `Comment` | string | A comment to describe this IP filter. |
+| `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) where this IP filter belongs to. This value cannot be changed through the object’s attribute as it is set via URL parameter. |
 
 
 ## Create
@@ -36,19 +38,19 @@ filter := &myrasec.IPFilter{
     Value:       "127.0.0.1",
     Enabled:     true,
 }
-f, err := api.CreateIPFilter(filter, 1234, "www.example.com")
+f, err := api.CreateIPFilter(filter, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
 ```
 
 
-## Read
+## List
 The listing operation returns a list of IP filters for the passed subdomain name.
 
 ### Example
 ```go
-filters, err := api.ListIPFilters(1234, "www.example.com", nil)
+filters, err := api.ListIPFilters(domainId, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -64,13 +66,21 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListIPF
 | `type` | Filter by the specified IP filter type | null |
 | `enabled` | Return only enabled IP filters | null |
 
+## Read
+The read operation returns a single IP filter for passed domainId, subDomainName and it's ID
+```go
+filter, err := api.GetIPFilter(domainId, "www.example.com", filterId)
+if err != nil {
+    log.Fatal(err)
+}
+```
 
 ## Update
 Updating an IP black/whitelist setting is very similar to creating a new one. The main difference is that an update will need the "id" and "modified" attributes to identify the version of the object you are trying to update.
 
 ### Example
 ```go
-filter := &myrasec.IPFilter{
+filter := &myrasec.IPFilter{n
     ID:   0000,
     Modified: &types.DateTime{
         Time: modified,
@@ -78,7 +88,7 @@ filter := &myrasec.IPFilter{
     Value:      "127.0.0.1",
 }
 
-f, err := api.UpdateIPFilter(filter, 1234, "www.example.com");
+f, err := api.UpdateIPFilter(filter, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -97,7 +107,7 @@ filter := &myrasec.IPFilter{
     },
 }
 
-f, err := api.DeleteIPFilter(filter, 1234, "www.example.com");
+f, err := api.DeleteIPFilter(filter, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
