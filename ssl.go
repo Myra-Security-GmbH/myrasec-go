@@ -61,14 +61,15 @@ type Certificate struct {
 // SSLCertificate struct ...
 type SSLCertificate struct {
 	*Certificate
-	SubjectAlternatives []string          `json:"subjectAlternatives"`
-	Intermediates       []SSLIntermediate `json:"intermediates,omitempty"`
-	Wildcard            bool              `json:"wildcard"`
-	ExtendedValidation  bool              `json:"extendedValidation"`
-	Subdomains          []string          `json:"subdomains,omitempty"`
-	Key                 string            `json:"key,omitempty"`
-	CertRefreshForced   bool              `json:"certRefreshForced"`
-	CertToRefresh       int               `json:"certToRefresh,omitempty"`
+	SubjectAlternatives  []string          `json:"subjectAlternatives"`
+	Intermediates        []SSLIntermediate `json:"intermediates,omitempty"`
+	Wildcard             bool              `json:"wildcard"`
+	ExtendedValidation   bool              `json:"extendedValidation"`
+	Subdomains           []string          `json:"subdomains,omitempty"`
+	Key                  string            `json:"key,omitempty"`
+	CertRefreshForced    bool              `json:"certRefreshForced"`
+	CertToRefresh        int               `json:"certToRefresh,omitempty"`
+	SslConfigurationName string            `json:"sslConfigurationName,omitempty"`
 }
 
 // SSLIntermediate struct ...

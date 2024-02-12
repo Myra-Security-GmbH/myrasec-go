@@ -79,6 +79,12 @@ func TestInitializeMethods(t *testing.T) {
 		}
 	}
 
+	for k := range getSslConfigurationMethods() {
+		if _, ok := methods[k]; !ok {
+			t.Errorf("Expected to find [%s] in the methods variable", k)
+		}
+	}
+
 	for k := range getSSLMethods() {
 		if _, ok := methods[k]; !ok {
 			t.Errorf("Expected to find [%s] in the methods variable", k)
