@@ -71,6 +71,8 @@ type Settings struct {
 	MonitoringContactEMail      string   `json:"monitoring_contact_email,omitempty"`
 	MonitoringSendAlert         bool     `json:"monitoring_send_alert"`
 	MyraSSLHeader               bool     `json:"myra_ssl_header"`
+	MyraSSLCertificate          []string `json:"myra_ssl_certificate"`
+	MyraSSLCertificateKey       []string `json:"myra_ssl_certificate_key"`
 	NextUpstream                []string `json:"next_upstream,omitempty"`
 	OnlyHTTPS                   bool     `json:"only_https"`
 	OriginConnectionHeader      string   `json:"origin_connection_header,omitempty"`
