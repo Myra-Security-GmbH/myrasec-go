@@ -41,6 +41,7 @@ func initializeMethods() {
 		getRateLimitMethods(),
 		getRedirectMethods(),
 		getSettingsMethods(),
+		getSslConfigurationMethods(),
 		getSSLMethods(),
 		getStatisticsMethods(),
 		getTagCacheSettingMethods(),
