@@ -32,6 +32,8 @@ type Settings struct {
 	MonitoringContactEMail      string   `json:"monitoring_contact_email,omitempty"`
 	MonitoringSendAlert         bool     `json:"monitoring_send_alert"`
 	MyraSSLHeader               bool     `json:"myra_ssl_header"`
+	MyraSSLCertificate          []string `json:"myra_ssl_certificate"`
+	MyraSSLCertificateKey       []string `json:"myra_ssl_certificate_key"`
 	NextUpstream                []string `json:"next_upstream,omitempty"`
 	OnlyHTTPS                   bool     `json:"only_https"`
 	OriginConnectionHeader      string   `json:"origin_connection_header,omitempty"`
@@ -85,6 +87,8 @@ type Settings struct {
 | MonitoringContactEMail | string | Email addresses, to which monitoring emails should be send. Multiple addresses are separated with a space. |
 | MonitoringSendAlert | bool | Enables / disables the upstream error reporting. |
 | MyraSSLHeader | bool | Activate the X-Myra-SSL Header, which indicates if a request was received via SSL. |
+| MyraSSLCertificate | []string | An SSL Certificate (and chain) to be used to make requests on the origin. |
+| MyraSSLCertificateKey | []string | The private key for the SSL Certificate |
 | NextUpstream | []string | Specify in which case the current upstream should be marked as "down". The values can be arbitrary combined, expect the value "off". |
 | OnlyHTTPS | bool | If activated, Myra will forward all requests to the origin using HTTPS regardless of the used protocol of the originating request. |
 | OriginConnectionHeader | string | Sets the Connection header, which is transmitted to the origin with a request. |
