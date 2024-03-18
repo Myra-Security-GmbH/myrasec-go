@@ -61,8 +61,9 @@ only contain [a-zA-Z0-9_] characters.
 to use.
 > ### Type
 > The statistic data can be requested in two different aggregation types.
->> **stats**: : Data as object containing min/max/avg/sum values.  
->> **histogram**: : Response will consist of multiple objects containing the value for every aggregation bucket.
+>> **stats**: Data as object containing min/max/avg/sum values.  
+>> **histogram**: Response will consist of multiple objects containing the value for every aggregation bucket.  
+>> **top**: Response will consist a top list of URL and the count of hits 
 
 ### StartDate
 Included start of the requested period.
@@ -80,20 +81,23 @@ Mode for selecting domains which should be used.
 ### Request data sources
 Myra distinguishes incoming requests as SSL and non-SSL depending on the protocol used by the client initiating the request. You can also retrieve information about whether the response was sent from the Myra cache or from origin system.
 
-| Data source | S | N | C | U | Description|
-|---|---|---|---|---|---|
-| `requests` | X | X | X | X | Total amount of requests handled by Myra |
-| `requests_ssl` | X |   | X | X | Amount of requests received via SSL |
-| `requests_nonssl` |   | X | X | X | Amount of requests received not via SSL |
-| `requests_cached` | X | X | X |   | Total amount of requests delivered from cache |
-| `requests_cached_ssl` | X |   | X |   | Amount of requests via SSL delivered from cache |
-| `requests_cached_nonssl` |   | X | X |   | Amount of requests via non-SSL delivered from cache |
-| `requests_uncached` | X | X |   | X | Total amount of requests passed to the origin |
-| `requests_uncached_ssl` | X |   |   | X | Total amount of requests via SSL passed to the origin |
-| `requests_uncached_nonssl` |   | X |   | X | Total amount of requests via non-SSL passed to the origin |
-| `requests_cache_hits` | X | X | X |   | Ratio of total cached requests to uncached requests in percent |
-| `requests_cache_hits_ssl` | X |   | X |   | Ratio of SSL cached requests to SSL uncached requests in percent |
-| `requests_cache_hits_nonssl` |   | X | X |   | Ratio of non-SSL cached requests to non-SSL uncached requests in percent |
+| Data source | S | N | C | U | Description | Possible Types |
+|---|---|---|---|---|---|---|
+| `requests` | X | X | X | X | Total amount of requests handled by Myra | histogram, stats |
+| `requests_ssl` | X |   | X | X | Amount of requests received via SSL | histogram, stats |
+| `requests_nonssl` |   | X | X | X | Amount of requests received not via SSL | histogram, stats |
+| `requests_cached` | X | X | X |   | Total amount of requests delivered from cache | histogram, stats |
+| `requests_cached_ssl` | X |   | X |   | Amount of requests via SSL delivered from cache | histogram, stats |
+| `requests_cached_nonssl` |   | X | X |   | Amount of requests via non-SSL delivered from cache | histogram, stats |
+| `requests_uncached` | X | X |   | X | Total amount of requests passed to the origin | histogram, stats |
+| `requests_uncached_ssl` | X |   |   | X | Total amount of requests via SSL passed to the origin | histogram, stats |
+| `requests_uncached_nonssl` |   | X |   | X | Total amount of requests via non-SSL passed to the origin | histogram, stats |
+| `requests_cache_hits` | X | X | X |   | Ratio of total cached requests to uncached requests in percent | histogram, stats |
+| `requests_cache_hits_ssl` | X |   | X |   | Ratio of SSL cached requests to SSL uncached requests in percent | histogram, stats |
+| `requests_cache_hits_nonssl` |   | X | X |   | Ratio of non-SSL cached requests to non-SSL uncached requests in percent | histogram |
+| `requests_blocked` | X | X | X | X | Total amount of blocked requests | histogram, stats |
+| `requests_blocked_hits` | X | X | X | X | Ratio of blocked requests | histogram, stats |
+| `requests_blocked_reason` | X | X | X | X | Handled requests by treatment type | histogram, stats |
 
 **S** = SSL, **N** = non-SSL, **C** = Cached, **U** = Uncached
 
@@ -106,20 +110,20 @@ Myra distinguishes incoming requests as SSL and non-SSL depending on the protoco
 ### Traffic data sources 
 Myra distinguishes transferred data as SSL and non-SSL traffic depending on the protocol used by the client initiating the request. You can also retrieve information about whether the response was sent from the Myra cache or was fetched from the origin system.
 
-| Data source | S | N | C | U | Description|
-|---|---|---|---|---|---|
-| `bytes` | X | X | X | X | Total amount of outgoing data in bytes |
-| `bytes_ssl` | X |   | X | X | Amount of data sent via SSL |
-| `bytes_nonssl` |   | X | X | X | Amount of data sent via non-SSL |
-| `bytes_cached` | X | X | X |   | Total amount of data delivered from the cache |
-| `bytes_cached_ssl` | X |   | X |   | Amount of data via SSL delivered from the cache |
-| `bytes_cached_nonssl` |   | X | X |   | Amount of data via non-SSL delivered from the cache |
-| `bytes_uncached` | X | X |   | X | Total amount of data passed through from the origin |
-| `bytes_uncached_ssl` | X |   |   | X | Amount of data passed via SSL from the origin |
-| `bytes_uncached_nonssl` |   | X |   | X | Amount of data passed via non-SSL from the origin |
-| `bytes_cache_hits` | X | X | X |   | Ratio of total bytes delivered from the cache in percent |
-| `bytes_cache_hits_ssl` | X |   | X |   | Ratio of bytes delivered via SSL from the cache in percent |
-| `bytes_cache_hits_nonssl` |   | X | X |   | Ratio of bytes delivered via non-SSL from the cache in percent |
+| Data source | S | N | C | U | Description | Possible types |
+|---|---|---|---|---|---|---|
+| `bytes` | X | X | X | X | Total amount of outgoing data in bytes | histogram, stats |
+| `bytes_ssl` | X |   | X | X | Amount of data sent via SSL | histogram, stats |
+| `bytes_nonssl` |   | X | X | X | Amount of data sent via non-SSL | histogram, stats |
+| `bytes_cached` | X | X | X |   | Total amount of data delivered from the cache | histogram, stats |
+| `bytes_cached_ssl` | X |   | X |   | Amount of data via SSL delivered from the cache | histogram, stats |
+| `bytes_cached_nonssl` |   | X | X |   | Amount of data via non-SSL delivered from the cache | histogram, stats |
+| `bytes_uncached` | X | X |   | X | Total amount of data passed through from the origin | histogram, stats |
+| `bytes_uncached_ssl` | X |   |   | X | Amount of data passed via SSL from the origin | histogram, stats | histogram, stats |
+| `bytes_uncached_nonssl` |   | X |   | X | Amount of data passed via non-SSL from the origin | histogram, stats |
+| `bytes_cache_hits` | X | X | X |   | Ratio of total bytes delivered from the cache in percent | histogram, stats |
+| `bytes_cache_hits_ssl` | X |   | X |   | Ratio of bytes delivered via SSL from the cache in percent | histogram, stats |
+| `bytes_cache_hits_nonssl` |   | X | X |   | Ratio of bytes delivered via non-SSL from the cache in percent | histogram |
 
 **S** = SSL, **N** = non-SSL, **C** = Cached, **U** = Uncached
 
@@ -132,11 +136,13 @@ Myra distinguishes transferred data as SSL and non-SSL traffic depending on the 
 ### Other
 In addition to traffic and request statistics, Myra allows you to view detailled information about geographic distribution of your visitors, the performance of your origin server and the HTTP response codes of your application.
 
-| Data source | S | N | C | U | Description|
-|---|---|---|---|---|---|
-| `upstream_performance` | X | X |   | X | Average upstream response time |
-| `response_codes` | X | X | X | X | HTTP response codes of total requests |
-| `country_codes` | X | X | X | X | Total requests by country |
+| Data source | S | N | C | U | Description | Possible types |
+|---|---|---|---|---|---|---|
+| `upstream_performance` | X | X |   | X | Average upstream response time | histogram, stats |
+| `response_codes` | X | X | X | X | HTTP response codes of total requests | histogram, stats |
+| `country_codes` | X | X | X | X | Total requests by country | histogram, stats |
+| `cache_misses` | X | X | X | X | Top urls where cache does not hit | top |
+| `url_hits` | X | X | X | X | Top hit urls | top |
 
 **S** = SSL, **N** = non-SSL, **C** = Cached, **U** = Uncached
 
