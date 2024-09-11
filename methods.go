@@ -51,6 +51,7 @@ func initializeMethods() {
 		getTagMethods(),
 		getVHostMethods(),
 		getWAFMethods(),
+		getTagInformationMethods(),
 	} {
 		for k, v := range m {
 			methods[k] = v
