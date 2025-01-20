@@ -65,6 +65,7 @@ type WAFRule struct {
 	Description   string          `json:"description"`
 	Direction     string          `json:"direction"`
 	LogIdentifier string          `json:"logIdentifier"`
+	Uuid          string          `json:"uuid,omitempty"`
 	RuleType      string          `json:"ruleType"`
 	SubDomainName string          `json:"subDomainName"`
 	Sort          int             `json:"sort"`
