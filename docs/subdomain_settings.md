@@ -91,7 +91,7 @@ type Settings struct {
 | HTTPOriginPort | int | Allows to set a port for communication with origin via HTTP. |
 | IgnoreNoCache | bool | If activated, no-cache headers (Cache-Control: [private|no-store|no-cache]) will be ignored. |
 | ImageOptimization | bool | Activate lossless optimization of JPEG and PNG images (recommended setting). |
-| IPLock | bool | Prevent accidential IP address changes if activated |
+| IPLock | bool | Prevent accidential IP address changes if activated. This setting is only available on "domain level" (general domain settings). |
 | IPv6Active | bool | Allow connections via IPv6 to your systems. IPv4 connections will be forwarded in any case. |
 | LimitAllowedHTTPMethod | []string | Not selected HTTP methods will be blocked. |
 | LimitTLSVersion | []string | Only selected TLS versions will be used. |
