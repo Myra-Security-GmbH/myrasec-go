@@ -40,58 +40,65 @@ func getSettingsMethods() map[string]APIMethod {
 
 // Settings ...
 type Settings struct {
-	AccessLog                   bool     `json:"access_log"`
-	AntibotPostFlood            bool     `json:"antibot_post_flood"`
+	AccessLog                   bool     `json:"access_log,omitempty"`
+	AntibotPostFlood            bool     `json:"antibot_post_flood,omitempty"`
 	AntibotPostFloodThreshold   int      `json:"antibot_post_flood_threshold,omitempty"`
-	AntibotProofOfWork          bool     `json:"antibot_proof_of_work"`
+	AntibotProofOfWork          bool     `json:"antibot_proof_of_work,omitempty"`
 	AntibotProofOfWorkThreshold int      `json:"antibot_proof_of_work_threshold,omitempty"`
 	BalancingMethod             string   `json:"balancing_method,omitempty"`
-	CookieName                  string   `json:"cookie_name,omitempty"`
-	BlockNotWhitelisted         bool     `json:"block_not_whitelisted"`
-	BlockTorNetwork             bool     `json:"block_tor_network"`
-	CacheEnabled                bool     `json:"cache_enabled"`
-	CacheRevalidate             bool     `json:"cache_revalidate"`
-	CDN                         bool     `json:"cdn"`
+	BlockNotWhitelisted         bool     `json:"block_not_whitelisted,omitempty"`
+	BlockTorNetwork             bool     `json:"block_tor_network,omitempty"`
+	CacheEnabled                bool     `json:"cache_enabled,omitempty"`
+	CacheRevalidate             bool     `json:"cache_revalidate,omitempty"`
+	CDN                         bool     `json:"cdn,omitempty"`
 	ClientMaxBodySize           int      `json:"client_max_body_size,omitempty"`
+	CookieName                  string   `json:"cookie_name,omitempty"`
 	DiffieHellmanExchange       int      `json:"diffie_hellman_exchange,omitempty"`
-	EnableOriginSNI             bool     `json:"enable_origin_sni"`
+	DisableForwardFor           bool     `json"disable_forwarded_for,omitempty"`
+	EnableOriginSNI             bool     `json:"enable_origin_sni,omitempty"`
+	EnforceCacheTTL             bool     `json:"enforce_cache_ttl,omitempty"`
 	ForwardedForReplacement     string   `json:"forwarded_for_replacement,omitempty"`
-	HSTS                        bool     `json:"hsts"`
-	HSTSIncludeSubdomains       bool     `json:"hsts_include_subdomains"`
+	HSTS                        bool     `json:"hsts,omitempty"`
+	HSTSIncludeSubdomains       bool     `json:"hsts_include_subdomains,omitempty"`
 	HSTSMaxAge                  int      `json:"hsts_max_age,omitempty"`
-	HSTSPreload                 bool     `json:"hsts_preload"`
+	HSTSPreload                 bool     `json:"hsts_preload,omitempty"`
 	HTTPOriginPort              int      `json:"http_origin_port,omitempty"`
-	IgnoreNoCache               bool     `json:"ignore_nocache"`
-	ImageOptimization           bool     `json:"image_optimization"`
-	IPv6Active                  bool     `json:"ipv6_active"`
+	IgnoreNoCache               bool     `json:"ignore_nocache,omitempty"`
+	ImageOptimization           bool     `json:"image_optimization,omitempty"`
+	IPLock                      bool     `json:"ip_lock,omitempty"`
+	IPv6Active                  bool     `json:"ipv6_active,omitempty"`
 	LimitAllowedHTTPMethod      []string `json:"limit_allowed_http_method,omitempty"`
 	LimitTLSVersion             []string `json:"limit_tls_version,omitempty"`
 	LogFormat                   string   `json:"log_format,omitempty"`
 	MonitoringAlertThreshold    int      `json:"monitoring_alert_threshold,omitempty"`
 	MonitoringContactEMail      string   `json:"monitoring_contact_email,omitempty"`
-	MonitoringSendAlert         bool     `json:"monitoring_send_alert"`
-	MyraSSLHeader               bool     `json:"myra_ssl_header"`
-	MyraSSLCertificate          []string `json:"myra_ssl_certificate"`
-	MyraSSLCertificateKey       []string `json:"myra_ssl_certificate_key"`
+	MonitoringSendAlert         bool     `json:"monitoring_send_alert,omitempty"`
+	MyraSSLHeader               bool     `json:"myra_ssl_header,omitempty"`
+	MyraSSLCertificate          []string `json:"myra_ssl_certificate,omitempty"`
+	MyraSSLCertificateKey       []string `json:"myra_ssl_certificate_key,omitempty"`
 	NextUpstream                []string `json:"next_upstream,omitempty"`
-	OnlyHTTPS                   bool     `json:"only_https"`
+	OnlyHTTPS                   bool     `json:"only_https,omitempty"`
 	OriginConnectionHeader      string   `json:"origin_connection_header,omitempty"`
 	ProxyCacheBypass            string   `json:"proxy_cache_bypass,omitempty"`
 	ProxyCacheStale             []string `json:"proxy_cache_stale,omitempty"`
 	ProxyConnectTimeout         int      `json:"proxy_connect_timeout,omitempty"`
+	ProxyHostHeader             *string  `json:"host_header,omitempty"`
 	ProxyReadTimeout            int      `json:"proxy_read_timeout,omitempty"`
 	RequestLimitBlock           string   `json:"request_limit_block,omitempty"`
 	RequestLimitLevel           int      `json:"request_limit_level,omitempty"`
-	RequestLimitReport          bool     `json:"request_limit_report"`
+	RequestLimitReport          bool     `json:"request_limit_report,omitempty"`
 	RequestLimitReportEMail     string   `json:"request_limit_report_email,omitempty"`
-	Rewrite                     bool     `json:"rewrite"`
+	Rewrite                     bool     `json:"rewrite,omitempty"`
 	SourceProtocol              string   `json:"source_protocol,omitempty"`
-	Spdy                        bool     `json:"spdy"`
+	Spdy                        bool     `json:"spdy,omitempty"`
+	SSLClientVerify             string   `json:"ssl_client_verify,omitempty"`
+	SSLClientCertificate        string   `json:"ssl_client_certificate,omitempty"`
+	SSLClientHeaderVerification string   `json:"ssl_client_header_verification,omitempty"`
+	SSLClientHeaderFingerprint  string   `json:"ssl_client_header_fingerprint,omitempty"`
 	SSLOriginPort               int      `json:"ssl_origin_port,omitempty"`
-	WAFEnable                   bool     `json:"waf_enable"`
+	WAFEnable                   bool     `json:"waf_enable,omitempty"`
 	WAFLevelsEnable             []string `json:"waf_levels_enable,omitempty"`
 	WAFPolicy                   string   `json:"waf_policy,omitempty"`
-	ProxyHostHeader             *string  `json:"host_header"`
 }
 
 // ListSettings returns a Setting struct containing the settings for the passed subdomain
