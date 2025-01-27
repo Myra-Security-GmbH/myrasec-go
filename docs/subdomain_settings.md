@@ -78,9 +78,9 @@ type Settings struct {
 | CacheRevalidate | bool | If enabled, expired cache items will be requested with the additional HTTP header "If-Modified-Since" and "If-None-Match" |
 | CDN | bool | Should this subdomain be used as Content Delivery Node (CDN). After enabling the CDN you will be able to create buckets and upload files using the Myra upload API. |
 | ClientMaxBodySize | int | Sets the maximum allowed size of the client request body, specified in the “Content-Length” request header field. |
-| CookieName | string |  |
+| CookieName | string | Specifies the cookie name when balancing_method is cookie_based. |
 | DiffieHellmanExchange | int | Defines the size of the Diffie-Hellman key exchange parameters in bits. Please, note that Java 6 and 7 do not support Diffie-Hellman parameters larger than 1024 bits. If your server expects to receive connections from java 6 clients and wants to enable PFS, it must provide a DHE parameter of 1024 bits |
-| DisableForwardFor | bool |  |
+| DisableForwardFor | bool | Disable the forwarded for replacement. |
 | EnableOriginSNI | bool | Enable or disable origin SNI. |
 | EnforceCacheTTL | bool | Enforce using given cache TTL settings instead of origin cache information. This will set the Cache-Control header max-age to the given TTL. |
 | ForwardedForReplacement | string | Set your own X-Forwarded-For header. |
@@ -113,7 +113,7 @@ type Settings struct {
 | RequestLimitBlock | string | If activated, the user has to solve a CAPTCHA after exceeding the configured request limit. |
 | RequestLimitLevel | int | Define how many requests are allowed from an IP per minute. If this limit is reached, the IP will be blocked. If request_limit_block is enabled, the user can solve a CAPTCHA to unblock his IP address. |
 | RequestLimitReport | bool | If activated, an email will be send containing blocked ip addresses that exceeded the configured request limit. |
-| RequestLimitReportEMail | string |  |
+| RequestLimitReportEMail | string | Email addresses, to which request limit emails should be send. Multiple addresses are separated with a space. |
 | Rewrite | bool | Enable automated JavaScript optimization. All JavaScript is collected and executed at the end of the page. This significantly decreases the DOM content loaded time. If not all JavaScript files should be collected you can set the value to "regex" and specify the regex to use while matching filenames in the option "rewrite_regex". |
 | SourceProtocol | string | Define which protocol should be used when passing a request to your servers. The value "same" will ensure that the same protocol is used as in the originating request to Myra. The "http" and "https" value will force Myra to always use the specified protocol when connecting. |
 | Spdy | bool | Activate the high performance HTTP/2 protocol. Please note that you have to enable HTTPS for Myra to get HTTP/2 enabled. |
