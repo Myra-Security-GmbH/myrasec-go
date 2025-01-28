@@ -166,8 +166,8 @@ func TestIsGeneralDomainName(t *testing.T) {
 	}
 
 	res = IsGeneralDomainName("ALL-example.com")
-	if !res {
-		t.Errorf("Expected to get [%t] for [%s] but got [%t]", true, "ALL-example.com", res)
+	if res {
+		t.Errorf("Expected to get [%t] for [%s] but got [%t]", false, "ALL-example.com", res)
 	}
 
 	res = IsGeneralDomainName("ALL:1234")
@@ -212,7 +212,7 @@ func TestExtractDomainIdFromGeneralDomainName(t *testing.T) {
 
 	id, err = ExtractDomainIdFromGeneralDomainName("ALL-1234.")
 	if err != nil {
-		t.Errorf("Expected to have a valid general domain name passed [%s]", "ALL-1234.")
+		t.Errorf("Expected to have a valid general domain name passed [%s]: [%s]", "ALL-1234.", err.Error())
 	}
 	if id == 0 {
 		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 1234, id)
@@ -220,7 +220,7 @@ func TestExtractDomainIdFromGeneralDomainName(t *testing.T) {
 
 	id, err = ExtractDomainIdFromGeneralDomainName("ALL-1234")
 	if err != nil {
-		t.Errorf("Expected to have a valid general domain name passed [%s]", "ALL-1234")
+		t.Errorf("Expected to have a valid general domain name passed [%s]: [%s]", "ALL-1234", err.Error())
 	}
 	if id == 0 {
 		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 1234, id)

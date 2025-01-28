@@ -117,8 +117,21 @@ func RemoveTrailingDot(subdomain string) string {
 
 // IsGeneralDomainName checks if the passed name starts with ALL- or ALL:
 func IsGeneralDomainName(name string) bool {
-	name = strings.ToUpper(name)
-	return strings.HasPrefix(name, "ALL-") || strings.HasPrefix(name, "ALL:")
+	name = RemoveTrailingDot(strings.ToUpper(name))
+	if strings.HasPrefix(name, "ALL:") {
+		return true
+	}
+
+	if strings.HasPrefix(name, "ALL-") {
+		parts := strings.Split(name, "ALL-")
+		if len(parts) != 2 {
+			return false
+		}
+		_, err := strconv.Atoi(parts[1])
+		return err == nil
+	}
+
+	return false
 }
 
 // ExtractDomainIdFromGeneralDomainName extracts the domainID from the general domain name annotation (ALL-1234.)
