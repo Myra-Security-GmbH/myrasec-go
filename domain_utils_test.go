@@ -166,8 +166,8 @@ func TestIsGeneralDomainName(t *testing.T) {
 	}
 
 	res = IsGeneralDomainName("ALL-example.com")
-	if !res {
-		t.Errorf("Expected to get [%t] for [%s] but got [%t]", true, "ALL-example.com", res)
+	if res {
+		t.Errorf("Expected to get [%t] for [%s] but got [%t]", false, "ALL-example.com", res)
 	}
 
 	res = IsGeneralDomainName("ALL:1234")
@@ -203,5 +203,74 @@ func TestIsGeneralDomainName(t *testing.T) {
 	res = IsGeneralDomainName("ALL")
 	if res {
 		t.Errorf("Expected to get [%t] for [%s] but got [%t]", false, "ALL", res)
+	}
+}
+
+func TestExtractDomainIdFromGeneralDomainName(t *testing.T) {
+	var id int
+	var err error
+
+	id, err = ExtractDomainIdFromGeneralDomainName("ALL-1234.")
+	if err != nil {
+		t.Errorf("Expected to have a valid general domain name passed [%s]: [%s]", "ALL-1234.", err.Error())
+	}
+	if id == 0 {
+		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 1234, id)
+	}
+
+	id, err = ExtractDomainIdFromGeneralDomainName("ALL-1234")
+	if err != nil {
+		t.Errorf("Expected to have a valid general domain name passed [%s]: [%s]", "ALL-1234", err.Error())
+	}
+	if id == 0 {
+		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 1234, id)
+	}
+
+	id, err = ExtractDomainIdFromGeneralDomainName("ALL:example.com.")
+	if err == nil {
+		t.Errorf("Expected to get an error when passing [%s]", "ALL:example.com.")
+	}
+	if id != 0 {
+		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 0, id)
+	}
+
+	id, err = ExtractDomainIdFromGeneralDomainName("ALL:example.com")
+	if err == nil {
+		t.Errorf("Expected to get an error when passing [%s]", "ALL:example.com")
+	}
+	if id != 0 {
+		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 0, id)
+	}
+
+	id, err = ExtractDomainIdFromGeneralDomainName("ALL-example.com")
+	if err == nil {
+		t.Errorf("Expected to get an error when passing [%s]", "ALL-example.com")
+	}
+	if id != 0 {
+		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 0, id)
+	}
+
+	id, err = ExtractDomainIdFromGeneralDomainName("ALL:1234")
+	if err == nil {
+		t.Errorf("Expected to get an error when passing [%s]", "ALL:1234")
+	}
+	if id != 0 {
+		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 0, id)
+	}
+
+	id, err = ExtractDomainIdFromGeneralDomainName("1234")
+	if err == nil {
+		t.Errorf("Expected to get an error when passing [%s]", "1234")
+	}
+	if id != 0 {
+		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 0, id)
+	}
+
+	id, err = ExtractDomainIdFromGeneralDomainName("example.com")
+	if err == nil {
+		t.Errorf("Expected to get an error when passing [%s]", "example.com")
+	}
+	if id != 0 {
+		t.Errorf("Expected to receive [%d] as an [id] but got [%d]", 0, id)
 	}
 }

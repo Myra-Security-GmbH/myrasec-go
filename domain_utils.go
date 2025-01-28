@@ -9,20 +9,16 @@ import (
 // FetchDomainForSubdomainName returns the Domain for the passed subdomain (name)
 func (api *API) FetchDomainForSubdomainName(subdomain string) (*Domain, error) {
 	if IsGeneralDomainName(subdomain) {
-		var parts []string
-		name := RemoveTrailingDot(subdomain)
-		if strings.HasPrefix(name, "ALL-") {
-			parts = strings.Split(name, "ALL-")
-			if len(parts) != 2 {
-				return nil, fmt.Errorf("wrong format for ALL-<DOMAIN_ID> annotation")
-			}
-			id, err := strconv.Atoi(parts[1])
+		if strings.HasPrefix(subdomain, "ALL-") {
+			id, err := ExtractDomainIdFromGeneralDomainName(subdomain)
 			if err != nil {
 				return nil, err
 			}
 			return api.GetDomain(id)
 		}
 
+		var parts []string
+		name := RemoveTrailingDot(subdomain)
 		parts = strings.Split(name, "ALL:")
 		if len(parts) != 2 {
 			return nil, fmt.Errorf("wrong format for ALL:<DOMAIN_NAME> annotation")
@@ -121,6 +117,42 @@ func RemoveTrailingDot(subdomain string) string {
 
 // IsGeneralDomainName checks if the passed name starts with ALL- or ALL:
 func IsGeneralDomainName(name string) bool {
-	name = strings.ToUpper(name)
-	return strings.HasPrefix(name, "ALL-") || strings.HasPrefix(name, "ALL:")
+	name = RemoveTrailingDot(strings.ToUpper(name))
+	if strings.HasPrefix(name, "ALL:") {
+		return true
+	}
+
+	if strings.HasPrefix(name, "ALL-") {
+		parts := strings.Split(name, "ALL-")
+		if len(parts) != 2 {
+			return false
+		}
+		_, err := strconv.Atoi(parts[1])
+		return err == nil
+	}
+
+	return false
+}
+
+// ExtractDomainIdFromGeneralDomainName extracts the domainID from the general domain name annotation (ALL-1234.)
+func ExtractDomainIdFromGeneralDomainName(generalDomainName string) (int, error) {
+	if !IsGeneralDomainName(generalDomainName) {
+		return 0, fmt.Errorf("passed generalDomainName has the wrong format")
+	}
+
+	var parts []string
+	name := RemoveTrailingDot(generalDomainName)
+	if !strings.HasPrefix(name, "ALL-") {
+		return 0, fmt.Errorf("wrong format for ALL-<DOMAIN_ID> annotation")
+	}
+
+	parts = strings.Split(name, "ALL-")
+	if len(parts) != 2 {
+		return 0, fmt.Errorf("wrong format for ALL-<DOMAIN_ID> annotation")
+	}
+	id, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
