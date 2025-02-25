@@ -53,6 +53,7 @@ func initializeMethods() {
 		getWAFMethods(),
 		getWaitingRoomMethods(),
 		getTagInformationMethods(),
+		getZoneConfigMethods(),
 	} {
 		for k, v := range m {
 			methods[k] = v
