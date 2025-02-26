@@ -10,13 +10,13 @@ func getZoneConfigMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getZoneConfigRaw": {
 			Name:               "getZoneConfigRaw",
-			Action:             "domains/%d/bind-raw",
+			Action:             "domains/%d/bind-raw/%s",
 			Method:             http.MethodGet,
 			ResponseDecodeFunc: decodeStringValue,
 		},
 		"getZoneConfigJson": {
 			Name:               "getZoneConfigJson",
-			Action:             "domains/%d/bind",
+			Action:             "domains/%d/bind/%s",
 			Method:             http.MethodGet,
 			ResponseDecodeFunc: decodeStringValue,
 		},
@@ -28,8 +28,12 @@ func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (string
 		return "", fmt.Errorf("passed action [%s] is not supported", "getZoneConfigRaw")
 	}
 
+	ipTarget, ok := params["ipTarget"]
+	if !ok {
+		ipTarget = "myra"
+	}
 	definition := methods["getZoneConfigRaw"]
-	definition.Action = fmt.Sprintf(definition.Action, domainId)
+	definition.Action = fmt.Sprintf(definition.Action, domainId, ipTarget)
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -44,8 +48,12 @@ func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (strin
 		return "", fmt.Errorf("passed action [%s] is not supported", "getZoneConfigJson")
 	}
 
+	ipTarget, ok := params["ipTarget"]
+	if !ok {
+		ipTarget = "myra"
+	}
 	definition := methods["getZoneConfigJson"]
-	definition.Action = fmt.Sprintf(definition.Action, domainId)
+	definition.Action = fmt.Sprintf(definition.Action, domainId, ipTarget)
 
 	result, err := api.call(definition, params)
 	if err != nil {

@@ -1,9 +1,17 @@
 # Bind Zone Config
+For both methods you can set the `ipTarget`, allowed values are `myra` and `origin`
+
+`myra` will create a zone config with the myra ip's, it is the default and  don't has to be set
+
+`origin` will create a zone configuration with the origin ip's
 
 ## Bind Zone Config string
 To get the bind zone config as string as it's required in the bind config file
 ```go
-zoneConfig, err := api.GetZoneConfigRaw(domainId, map[string]string)
+params := map[string]string{
+    "ipTarget": "myra"
+}
+zoneConfig, err := api.GetZoneConfigRaw(domainId, params)
 if err != nil {
     log.Fatal(err)
 }
@@ -27,7 +35,10 @@ www.example.com. 300 IN AAAA FE80::1
 ## Bind Zone Config as json
 To get the data printed to the bind zone config as json you can use this method
 ```go
-zoneConfig, err := api.GetZoneConfigJson(domainId, map[string]string)
+params := map[string]string{
+    "ipTarget": "myra"
+}
+zoneConfig, err := api.GetZoneConfigJson(domainId, params)
 if err != nil {
     log.Fatal(err)
 }
