@@ -30,7 +30,7 @@ type WaitingRoom struct {
 | `MaxConcurrent` | int | The maximum number of visitors allowed on the Origin server at the same time. As soon as this value is exceeded, each additional visitor is directed to the waiting room. |
 | `SessionTimeout` | int | Defines the duration in seconds during which an inactive session may access the Origin server. If the same session does not access the server again during this time, access for that session will be disabled. |
 | `WaitRefresh` | int | Defines the duration in seconds after which the waiting page is reloaded. If the session is not accessed again after the third reload, the session will be removed from the queue. |
-| Paths | []string | Defines a specific path within the apex domain or subdomain for which the waiting room is to be valid. The default value in the PATH field is ".". If the default value "." is used as the path, the waiting pages and settings of all waiting rooms with a specific path of the corresponding apex domain or subdomain are overwritten. |
+| `Paths` | []string | Defines a specific path within the apex domain or subdomain for which the waiting room is to be valid. The path needs to be defined as a regular expression. The default value in the PATH field is ".". If the default value "." is used as the path, the waiting pages and settings of all waiting rooms with a specific path of the corresponding apex domain or subdomain are overwritten. |
 | `Content` | string | The HTML content of the Waiting Room. |
 
 ## Content Template
@@ -42,7 +42,7 @@ Specific placeholders are used to ensure that the waiting page displays all the 
 A table with the most important placeholders can be found below:
 
 `!WAIT_REFRESH!`
-Defines the number of seconds until the page refreshes. This parameter needs to be included in the waiting page HTML as a meta tag in order for the page to reload automatically and give the user feedback about their position in the queue.  
+Defines the number of seconds until the page refreshes. This parameter needs to be included in the waiting page HTML as a meta tag in order for the page to reload automatically and give the user feedback about their position in the queue.
 
 `!CURRENT_POSITION!`
 Shows the position of the vistor in the queue.
