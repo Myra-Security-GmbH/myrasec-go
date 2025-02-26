@@ -78,10 +78,8 @@ func (api *API) ListWaitingRoomsForDomain(domainId int, params map[string]string
 	if err != nil {
 		return nil, err
 	}
-	var records []WaitingRoom
-	records = append(records, *result.(*[]WaitingRoom)...)
 
-	return records, nil
+	return *result.(*[]WaitingRoom), nil
 }
 
 // ListWaitingRoomsForSubDomain returns a slice containing all visible waiting rooms for subdomain
@@ -97,10 +95,24 @@ func (api *API) ListWaitingRoomsForSubDomain(subDomainName string, params map[st
 	if err != nil {
 		return nil, err
 	}
-	var records []WaitingRoom
-	records = append(records, *result.(*[]WaitingRoom)...)
 
-	return records, nil
+	return *result.(*[]WaitingRoom), nil
+}
+
+// GetWaitingRoom returns the waiting room
+func (api *API) GetWaitingRoom(id int) (*WaitingRoom, error) {
+	if _, ok := methods["getWaitingRoom"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "getWaitingRoom")
+	}
+
+	definition := methods["getWaitingRoom"]
+	definition.Action = fmt.Sprintf(definition.Action, id)
+
+	result, err := api.call(definition, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*WaitingRoom), nil
 }
 
 // CreateWaitingRoom creates a new waiting room
@@ -148,20 +160,4 @@ func (api *API) DeleteWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error
 		return nil, err
 	}
 	return waitingroom, nil
-}
-
-// GetWaitingRoom returns the waiting room
-func (api *API) GetWaitingRoom(id int) (*WaitingRoom, error) {
-	if _, ok := methods["getWaitingRoom"]; !ok {
-		return nil, fmt.Errorf("passed action [%s] is not supported", "getWaitingRoom")
-	}
-
-	definition := methods["getWaitingRoom"]
-	definition.Action = fmt.Sprintf(definition.Action, id)
-
-	result, err := api.call(definition, map[string]string{})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*WaitingRoom), nil
 }
