@@ -26,7 +26,7 @@ type WaitingRoom struct {
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always need to add the modified timestamp for updates and deletes. |
 | `Name` | string | Name of the Waiting Room. |
 | `VhostId` | int | ID of the VHost for the Waiting Room. |
-| `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) that the Waiting Room belongs to. This value is optional and is determined from the VHost based on its ID. |<>
+| `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) that the Waiting Room belongs to. This value is optional and is determined from the VHost based on its ID. |
 | `MaxConcurrent` | int | The maximum number of visitors allowed on the Origin server at the same time. As soon as this value is exceeded, each additional visitor is directed to the waiting room. |
 | `SessionTimeout` | int | Defines the duration in seconds during which an inactive session may access the Origin server. If the same session does not access the server again during this time, access for that session will be disabled. |
 | `WaitRefresh` | int | Defines the duration in seconds after which the waiting page is reloaded. If the session is not accessed again after the third reload, the session will be removed from the queue. |
