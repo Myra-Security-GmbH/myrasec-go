@@ -87,10 +87,7 @@ func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 		return nil, err
 	}
 
-	var domains []Domain
-	domains = append(domains, *result.(*[]Domain)...)
-
-	return domains, nil
+	return *result.(*[]Domain), nil
 }
 
 // CreateDomain creates a new domain using the MYRA API

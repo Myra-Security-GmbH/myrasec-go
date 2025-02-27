@@ -35,8 +35,5 @@ func (api *API) ListSslConfigurations() ([]SslConfiguration, error) {
 		return nil, err
 	}
 
-	var records []SslConfiguration
-	records = append(records, *result.(*[]SslConfiguration)...)
-
-	return records, nil
+	return *result.(*[]SslConfiguration), nil
 }

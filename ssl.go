@@ -109,10 +109,7 @@ func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]S
 		return nil, err
 	}
 
-	var records []SSLCertificate
-	records = append(records, *result.(*[]SSLCertificate)...)
-
-	return records, nil
+	return *result.(*[]SSLCertificate), nil
 }
 
 // CreateSSLCertificate creates a new SSL certificates on the passed domain (ID) using the MYRA API

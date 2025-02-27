@@ -63,10 +63,8 @@ func (api *API) ListRateLimits(domainId int, subDomainName string, params map[st
 	if err != nil {
 		return nil, err
 	}
-	var records []RateLimit
-	records = append(records, *result.(*[]RateLimit)...)
 
-	return records, nil
+	return *result.(*[]RateLimit), nil
 }
 
 // CreateRateLimit creates a new rate limit setting for the passed subdomain (name) using the MYRA API

@@ -115,10 +115,8 @@ func (api *API) ListWAFConditions() ([]WAFCondition, error) {
 	if err != nil {
 		return nil, err
 	}
-	var conditions []WAFCondition
-	conditions = append(conditions, *result.(*[]WAFCondition)...)
 
-	return conditions, nil
+	return *result.(*[]WAFCondition), nil
 }
 
 // ListWAFActions returns a list of available WAF actions
@@ -131,10 +129,8 @@ func (api *API) ListWAFActions() ([]WAFAction, error) {
 	if err != nil {
 		return nil, err
 	}
-	var actions []WAFAction
-	actions = append(actions, *result.(*[]WAFAction)...)
 
-	return actions, nil
+	return *result.(*[]WAFAction), nil
 }
 
 // ListWAFRules returns a list of WAF rules.
@@ -150,10 +146,8 @@ func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule,
 	if err != nil {
 		return nil, err
 	}
-	var rules []WAFRule
-	rules = append(rules, *result.(*[]WAFRule)...)
 
-	return rules, nil
+	return *result.(*[]WAFRule), nil
 }
 
 // FetchWAFRule returns a single WAF rule for the given ID
@@ -170,9 +164,7 @@ func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error)
 		return nil, err
 	}
 
-	var rules []WAFRule
-	rules = append(rules, *result.(*[]WAFRule)...)
-
+	rules := *result.(*[]WAFRule)
 	if len(rules) <= 0 {
 		return nil, fmt.Errorf("unable to fetch WAF rule for passed id [%d]", id)
 	}

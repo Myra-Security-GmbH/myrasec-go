@@ -96,10 +96,7 @@ func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorP
 		return nil, err
 	}
 
-	var records []ErrorPage
-	records = append(records, *result.(*[]ErrorPage)...)
-
-	return records, nil
+	return *result.(*[]ErrorPage), nil
 }
 
 // CreateErrorPage creates a new error page using the MYRA API

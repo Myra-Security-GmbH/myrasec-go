@@ -65,10 +65,7 @@ func (api *API) ListCacheSettings(domainId int, subDomainName string, params map
 		return nil, err
 	}
 
-	var records []CacheSetting
-	records = append(records, *result.(*[]CacheSetting)...)
-
-	return records, nil
+	return *result.(*[]CacheSetting), nil
 }
 
 // CreateCacheSetting creates a new cache setting for the passed subdomain (name) using the MYRA API

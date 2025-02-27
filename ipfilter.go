@@ -88,10 +88,7 @@ func (api *API) ListIPFilters(domainId int, subDomainName string, params map[str
 		return nil, err
 	}
 
-	var records []IPFilter
-	records = append(records, *result.(*[]IPFilter)...)
-
-	return records, nil
+	return *result.(*[]IPFilter), nil
 }
 
 // CreateIPFilter creates a new ip filter for the passed subdomain (name) using the MYRA API

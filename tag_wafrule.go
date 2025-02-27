@@ -95,10 +95,7 @@ func (api *API) ListTagWAFRules(tagId int, params map[string]string) ([]TagWAFRu
 		return nil, err
 	}
 
-	var tags []TagWAFRule
-	tags = append(tags, *result.(*[]TagWAFRule)...)
-
-	return tags, nil
+	return *result.(*[]TagWAFRule), nil
 }
 
 // CreateTagWAFRule creates a new tag using the MYRA API

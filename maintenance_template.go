@@ -60,10 +60,7 @@ func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string)
 		return nil, err
 	}
 
-	var records []MaintenanceTemplate
-	records = append(records, *result.(*[]MaintenanceTemplate)...)
-
-	return records, nil
+	return *result.(*[]MaintenanceTemplate), nil
 }
 
 // CreateMaintenanceTemplate creates a new maintenance template for the passed domain (id) using the MYRA API
