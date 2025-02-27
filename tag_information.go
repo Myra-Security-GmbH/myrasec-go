@@ -65,10 +65,7 @@ func (api *API) ListTagInformation(tagId int, params map[string]string) ([]TagIn
 		return nil, err
 	}
 
-	var records []TagInformation
-	records = append(records, *result.(*[]TagInformation)...)
-
-	return records, nil
+	return *result.(*[]TagInformation), nil
 }
 
 // ListTagInformationBySubDomainName returns a slice containing all tag information for the passed subDomainName
@@ -85,10 +82,8 @@ func (api *API) ListTagInformationBySubDomainName(subDomainName string, params m
 		return nil, err
 	}
 
-	var records []TagInformation
-	records = append(records, *result.(*[]TagInformation)...)
+	return *result.(*[]TagInformation), nil
 
-	return records, nil
 }
 
 // CreateTagInformation creates a new tag information for the passed tag (ID) using the MYRA API
