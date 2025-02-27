@@ -64,10 +64,7 @@ func (api *API) ListMaintenances(domainId int, subDomainName string, params map[
 		return nil, err
 	}
 
-	var records []Maintenance
-	records = append(records, *result.(*[]Maintenance)...)
-
-	return records, nil
+	return *result.(*[]Maintenance), nil
 }
 
 // CreateMaintenance creates a new maintenance page for the passed subdomain (name) using the MYRA API

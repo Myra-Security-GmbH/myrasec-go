@@ -90,10 +90,8 @@ func (api *API) ListRedirects(domainId int, subDomainName string, params map[str
 	if err != nil {
 		return nil, err
 	}
-	var records []Redirect
-	records = append(records, *result.(*[]Redirect)...)
 
-	return records, nil
+	return *result.(*[]Redirect), nil
 }
 
 // CreateRedirect creates a new redirect for the passed subdomain (name) using the MYRA API

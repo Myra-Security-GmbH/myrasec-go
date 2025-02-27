@@ -112,10 +112,7 @@ func (api *API) ListBuckets(domainName string) ([]Bucket, error) {
 		return nil, err
 	}
 
-	var records []Bucket
-	records = append(records, *result.(*[]Bucket)...)
-
-	return records, nil
+	return *result.(*[]Bucket), nil
 }
 
 // GetBucketStatus allows you to get a status for your newly created bucket.

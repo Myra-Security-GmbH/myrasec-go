@@ -44,8 +44,5 @@ func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
 		return nil, err
 	}
 
-	var records []IPRange
-	records = append(records, *result.(*[]IPRange)...)
-
-	return records, nil
+	return *result.(*[]IPRange), nil
 }

@@ -47,10 +47,7 @@ func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 		return nil, err
 	}
 
-	var vhosts []VHost
-	vhosts = append(vhosts, *result.(*[]VHost)...)
-
-	return vhosts, nil
+	return *result.(*[]VHost), nil
 }
 
 // ListAllSubdomainsForDomain ...

@@ -105,10 +105,7 @@ func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRec
 		return nil, err
 	}
 
-	var records []DNSRecord
-	records = append(records, *result.(*[]DNSRecord)...)
-
-	return records, nil
+	return *result.(*[]DNSRecord), nil
 }
 
 // CreateDNSRecord creates a new DNS record using the MYRA API

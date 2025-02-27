@@ -64,10 +64,7 @@ func (api *API) ListTagRateLimits(tagId int, params map[string]string) ([]TagRat
 		return nil, err
 	}
 
-	var rateLimits []TagRateLimit
-	rateLimits = append(rateLimits, *result.(*[]TagRateLimit)...)
-
-	return rateLimits, nil
+	return *result.(*[]TagRateLimit), nil
 }
 
 // CreateTagRateLimit creates a new rate limit for passed tag

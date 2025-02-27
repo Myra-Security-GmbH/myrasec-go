@@ -95,10 +95,7 @@ func (api *API) ListTags(params map[string]string) ([]Tag, error) {
 		return nil, err
 	}
 
-	var tags []Tag
-	tags = append(tags, *result.(*[]Tag)...)
-
-	return tags, nil
+	return *result.(*[]Tag), nil
 }
 
 // CreateTag creates a new tag using the MYRA API
