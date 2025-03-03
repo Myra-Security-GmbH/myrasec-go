@@ -63,3 +63,7 @@ func main() {
 - [Statistics](./docs/statistics.md)
 - [CacheClear](./docs/cacheclear.md)
 - [General Domain settings](./docs/general_domain_settings.md)
+- [WAF](./docs/waf.md)
+- [WAF Actions](./docs/waf_action.md)
+- [WAF Conditions](./docs/waf_condition.md)
+- [Waitingroom](./docs/waitingroom.md)
