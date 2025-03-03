@@ -188,8 +188,8 @@ rule := &myrasec.WAFRule{
     Sync: true,
     ProcessNext: true,
     Enabled: true,
-    Actions: []WAFAction{},
-    Contition: []WAFCondition{},
+    Actions: []myrasec.WAFAction{},
+    Contition: []myrasec.WAFCondition{},
     Id: 12
 }
 
