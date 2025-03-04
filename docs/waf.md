@@ -86,7 +86,7 @@ type WAFCondition struct {
 | `AvailablePhases` | int | This attributes determines the support for different phases (1=request, 2=response, 3=both) |
 | `Alias` | string | Display name of the condition |
 | `Category` | string | Category of the WAF confition |
-| `MatchingType` | string | Describes how the values have to match, possible values are `EXACT`, `IREGEX`, `REGEX`, `PREFIX`, `SUFFIX` |
+| `MatchingType` | string | Describes how the values have to match, possible values are `EXACT`, `IREGEX`, `REGEX`, `PREFIX`, `SUFFIX`, `NOT EXACT`, `NOT IREGEX`, `NOT REGEX`, `NOT PREFIX`, `NOT SUFFIX` |
 | `Name` | string | [Type of the condition](./waf_condition.md) |
 | `Key` | string | should be set by user in case `forceCustomValues` is `true` |
 | `Value` | string | Default value for the condition, typically empty string (has to be set by user when utilised) |
