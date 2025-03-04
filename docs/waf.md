@@ -105,9 +105,8 @@ newWAFRule := &myrasec.WAFRule{
     Sync: true,
     ProcessNext: true,
     Enabled: true,
-    Actions: []WAFAction{},
-    Contition: []WAFCondition{},
-    Id: 12
+    Actions: []*myrasec.WAFAction{},
+    Contition: []*myrasec.WAFCondition{},
 }
 
 t, err := api.CreateWAFRule(newWAFRule, domainId, "www.example.com")
@@ -188,8 +187,8 @@ rule := &myrasec.WAFRule{
     Sync: true,
     ProcessNext: true,
     Enabled: true,
-    Actions: []WAFAction{},
-    Contition: []WAFCondition{},
+    Actions: []*myrasec.WAFAction{},
+    Contition: []*myrasec.WAFCondition{},
     Id: 12
 }
 
