@@ -46,20 +46,26 @@ func getDNSRecordMethods() map[string]APIMethod {
 
 // DNSRecord ...
 type DNSRecord struct {
-	ID               int              `json:"id,omitempty"`
-	Created          *types.DateTime  `json:"created,omitempty"`
-	Modified         *types.DateTime  `json:"modified,omitempty"`
-	Name             string           `json:"name"`
-	Value            string           `json:"value"`
-	RecordType       string           `json:"recordType"`
-	AlternativeCNAME string           `json:"alternativeCname,omitempty"`
-	Comment          string           `json:"comment,omitempty"`
-	Active           bool             `json:"active"`
-	Enabled          bool             `json:"enabled"`
-	TTL              int              `json:"ttl"`
-	Priority         int              `json:"priority,omitempty"`
-	Port             int              `json:"port,omitempty"`
-	UpstreamOptions  *UpstreamOptions `json:"upstreamOptions,omitempty"`
+	ID                   int              `json:"id,omitempty"`
+	Created              *types.DateTime  `json:"created,omitempty"`
+	Modified             *types.DateTime  `json:"modified,omitempty"`
+	Name                 string           `json:"name"`
+	Value                string           `json:"value"`
+	RecordType           string           `json:"recordType"`
+	AlternativeCNAME     string           `json:"alternativeCname,omitempty"`
+	Comment              string           `json:"comment,omitempty"`
+	CAATag               string           `json:"caaTag,omitempty"`
+	Encryption           string           `json:"encryption,omitempty"`
+	HashType             string           `json:"hashType,omitempty"`
+	Active               bool             `json:"active"`
+	Enabled              bool             `json:"enabled"`
+	TTL                  int              `json:"ttl"`
+	Priority             int              `json:"priority,omitempty"`
+	Port                 int              `json:"port,omitempty"`
+	Weight               int              `json:"weight,omitempty"`
+	CAAFlags             int              `json:"caaFlags,omitempty"`
+	IdentificationNumber int              `json:"identificationNumber,omitempty"`
+	UpstreamOptions      *UpstreamOptions `json:"upstreamOptions,omitempty"`
 }
 
 // UpstreamOptions ...
