@@ -55,8 +55,6 @@ type DNSRecord struct {
 	AlternativeCNAME     string           `json:"alternativeCname,omitempty"`
 	Comment              string           `json:"comment,omitempty"`
 	CAATag               string           `json:"caaTag,omitempty"`
-	Encryption           string           `json:"encryption,omitempty"`
-	HashType             string           `json:"hashType,omitempty"`
 	Active               bool             `json:"active"`
 	Enabled              bool             `json:"enabled"`
 	TTL                  int              `json:"ttl"`
@@ -64,6 +62,8 @@ type DNSRecord struct {
 	Port                 int              `json:"port,omitempty"`
 	Weight               int              `json:"weight,omitempty"`
 	CAAFlags             int              `json:"caaFlags,omitempty"`
+	Encryption           int              `json:"encryption,omitempty"`
+	HashType             int              `json:"hashType,omitempty"`
 	IdentificationNumber int              `json:"identificationNumber,omitempty"`
 	UpstreamOptions      *UpstreamOptions `json:"upstreamOptions,omitempty"`
 }
