@@ -25,7 +25,7 @@ if err != nil {
 | Query string argument | arg | The "Query string argument" condition allows you to specify a freely definable key value pair for matching. | in | Yes |
 | Post argument | postarg | The "Post argument" condition allows you to match to a key value pair of a POST. | in | Yes |
 | Query string | querystring | Here you can match to freely definable query strings. | in | Only value |
-| Fingerprint | fingerprint | The "Fingerprint" condition allows you to define geo-blocking, AS blocking (Autonomous System), or Managed Myra fingerprint blocking. | in | Only value |
+| Fingerprint | fingerprint | The "Fingerprint" condition allows you to define geo-blocking, AS blocking (Autonomous System), or Managed Myra fingerprint blocking. | in/out | Only value |
 | Remote IP address | remote_addr | The "Remote IP address" condition allows you to match to the client IP address. This works with both IPv4 and IPv6 addresses. | in | Only value |
 | Score | score | The "Score" condition allows you to match to points assigned by the scoring rules. | in | Only value |
 | Set-Cookie header | set_cookie | The "Set-Cookie header" is used by web servers to send cookies to the browser by Nginx. | out | Only value |
