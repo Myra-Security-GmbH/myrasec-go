@@ -41,7 +41,7 @@ cachesetting := &myrasec.CacheSetting{
     Enabled:     true,
     Enforce:     false,
 }
-c, err := api.CreateTagCacheSetting(cachesetting, domainId)
+c, err := api.CreateTagCacheSetting(cachesetting, tagId)
 if err != nil {
     log.Fatal(err)
 }
@@ -53,7 +53,7 @@ The listing operation returns a list of tag cache settings for the passed tagId
 
 ### Example 
 ```go
-cachesettings, err := api.ListTagCacheSettings(domainId, map[string]string{})
+cachesettings, err := api.ListTagCacheSettings(tagId, map[string]string{})
 if err != nil {
     log.Fatal(err)
 }
@@ -72,7 +72,7 @@ cachesetting := &myrasec.CacheSetting{
     Path:      "/index.html",
 }
 
-c, err := api.UpdateTagCacheSetting(cachesetting, domainId);
+c, err := api.UpdateTagCacheSetting(cachesetting, tagId);
 if err != nil {
     log.Fatal(err)
 }
@@ -90,7 +90,7 @@ cachesetting := &myrasec.CacheSetting{
         Time: modified,
     },
 }
-c, err := api.DeleteTagCacheSetting(cachesetting, domainId);
+c, err := api.DeleteTagCacheSetting(cachesetting, tagId);
 if err != nil {
     log.Fatal(err)
 }

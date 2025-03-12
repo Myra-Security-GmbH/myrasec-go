@@ -150,4 +150,10 @@ func TestInitializeMethods(t *testing.T) {
 			t.Errorf("Expected to find [%s] in the methods variable", k)
 		}
 	}
+
+	for k := range getTagInformationMethods() {
+		if _, ok := methods[k]; !ok {
+			t.Errorf("Expected to find [%s] in the methods variable", k)
+		}
+	}
 }

@@ -16,7 +16,7 @@ type Tag struct {
 | `Created` | *types.DateTime | Created will be created by the server after creating a new Tag object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
 | `Name` | string | Identifies the tag by its name. |
-| `Type` | string | Defines the type of the tag and must be one of `CONFIG`, `WAF`, `CACHE`, `RATE_LIMIT` |
+| `Type` | string | Defines the type of the tag and must be one of `CONFIG`, `WAF`, `CACHE`, `RATE_LIMIT`, `INFORMATION` |
 | `Assignments` | []TagAssignments |
 
 ```go
