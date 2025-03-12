@@ -13,8 +13,8 @@ type TagInformation struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a cache setting it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call. |
+| `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a tag information it is necessary to add this attribute to your object. |
+| `Created` | *types.DateTime | Created will be created by the server after creating a new tag information object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. |
 | `Key` | string | An arbitrary string value |
 | `Value` | string | An arbitrary string value |
@@ -30,7 +30,7 @@ information := &myrasec.TagInformation{
     Value:   "/",
     Comment: "this is an optional comment",
 }
-i, err := api.CreateTagInformation(cachesetting, tagId)
+i, err := api.CreateTagInformation(information, tagId)
 if err != nil {
     log.Fatal(err)
 }
