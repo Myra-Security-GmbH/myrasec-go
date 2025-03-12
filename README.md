@@ -67,3 +67,4 @@ func main() {
 - [WAF Actions](./docs/waf_action.md)
 - [WAF Conditions](./docs/waf_condition.md)
 - [Waitingroom](./docs/waitingroom.md)
+- [Bind Zone Config](./docs/zone_config.md)
