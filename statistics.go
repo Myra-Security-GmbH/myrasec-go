@@ -33,7 +33,7 @@ type StatisticQuery struct {
 	DataSources         map[string]map[string]string `json:"dataSources"`
 	StartDate           *types.DateTime              `json:"startDate"`
 	EndDate             *types.DateTime              `json:"endDate"`
-	FQDN                []string                     `json:"fqdn"`
+	FQDN                []string                     `json:"fqdn,omitempty"`
 	Type                string                       `json:"type"`
 }
 
