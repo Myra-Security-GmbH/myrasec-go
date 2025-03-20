@@ -23,10 +23,10 @@ To enqueue a cache clear operation for all `*.jpg` resources in `www.example.com
 ### Example
 ```go
 domainId := 123
-cc := &myrasec.ClearCache{
+cc := &myrasec.CacheClear{
     FQDN: "www.example.com",
     Resource: "/*.jpg",
-    Recursive: true
+    Recursive: true,
 }
 cc, err := api.ClearCache(cc, domainId)
 if err != nil {
@@ -40,9 +40,9 @@ log.Println(cc)
 To enqueue a cache clear operation for the complete domain you can create the `myrasec.ClearCache` struct without the `FQDN`
 ```go
 domainId := 123
-cc := &myrasec.ClearCache{
+cc := &myrasec.CacheClear{
     Resource: "/*.jpg",
-    Recursive: true
+    Recursive: true,
 }
 cc, err := api.ClearCache(cc, domainId)
 if err != nil {
