@@ -23,9 +23,9 @@ func getZoneConfigMethods() map[string]APIMethod {
 	}
 }
 
-func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (string, error) {
+func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) ([]byte, error) {
 	if _, ok := methods["getZoneConfigRaw"]; !ok {
-		return "", fmt.Errorf("passed action [%s] is not supported", "getZoneConfigRaw")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigRaw")
 	}
 
 	ipTarget, ok := params["ipTarget"]
@@ -37,15 +37,15 @@ func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (string
 
 	result, err := api.call(definition, params)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return result.(string), nil
+	return result.([]byte), nil
 }
 
-func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (string, error) {
+func (api *API) GetZoneConfigJson(domainId int, params map[string]string) ([]byte, error) {
 	if _, ok := methods["getZoneConfigJson"]; !ok {
-		return "", fmt.Errorf("passed action [%s] is not supported", "getZoneConfigJson")
+		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigJson")
 	}
 
 	ipTarget, ok := params["ipTarget"]
@@ -57,20 +57,14 @@ func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (strin
 
 	result, err := api.call(definition, params)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return result.(string), nil
+	return result.([]byte), nil
 
 }
 
 func decodeStringValue(resp *http.Response, definition APIMethod) (interface{}, error) {
 	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	bodyString := string(body[:])
-	return bodyString, nil
+	return io.ReadAll(resp.Body)
 }
