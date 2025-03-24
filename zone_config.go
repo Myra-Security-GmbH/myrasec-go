@@ -2,23 +2,20 @@ package myrasec
 
 import (
 	"fmt"
-	"io"
 	"net/http"
 )
 
 func getZoneConfigMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getZoneConfigRaw": {
-			Name:               "getZoneConfigRaw",
-			Action:             "domains/%d/bind-raw/%s",
-			Method:             http.MethodGet,
-			ResponseDecodeFunc: decodeStringValue,
+			Name:   "getZoneConfigRaw",
+			Action: "domains/%d/bind-raw/%s",
+			Method: http.MethodGet,
 		},
 		"getZoneConfigJson": {
-			Name:               "getZoneConfigJson",
-			Action:             "domains/%d/bind/%s",
-			Method:             http.MethodGet,
-			ResponseDecodeFunc: decodeStringValue,
+			Name:   "getZoneConfigJson",
+			Action: "domains/%d/bind/%s",
+			Method: http.MethodGet,
 		},
 	}
 }
@@ -62,9 +59,4 @@ func (api *API) GetZoneConfigJson(domainId int, params map[string]string) ([]byt
 
 	return result.([]byte), nil
 
-}
-
-func decodeStringValue(resp *http.Response, definition APIMethod) (interface{}, error) {
-	defer resp.Body.Close()
-	return io.ReadAll(resp.Body)
 }
