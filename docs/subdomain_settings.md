@@ -76,7 +76,7 @@ type Settings struct {
 | BlockTorNetwork | bool | Block traffic from the TOR network. |
 | CacheEnabled | bool | Turn caching on or off. If you enable the cache, you also have to define the objects to be cached in the cache settings. |
 | CacheRevalidate | bool | If enabled, expired cache items will be requested with the additional HTTP header "If-Modified-Since" and "If-None-Match" |
-| CDN | bool | Should this subdomain be used as Content Delivery Node (CDN). After enabling the CDN you will be able to create buckets and upload files using the Myra upload API. |
+| CDN | bool | ~~Should this subdomain be used as Content Delivery Node (CDN). After enabling the CDN you will be able to create buckets and upload files using the Myra upload API.~~  **NOTE:** This setting is deprecated and has no effect anymore. |
 | ClientMaxBodySize | int | Sets the maximum allowed size of the client request body, specified in the “Content-Length” request header field. |
 | CookieName | string | Specifies the cookie name when balancing_method is cookie_based. |
 | DiffieHellmanExchange | int | Defines the size of the Diffie-Hellman key exchange parameters in bits. Please, note that Java 6 and 7 do not support Diffie-Hellman parameters larger than 1024 bits. If your server expects to receive connections from java 6 clients and wants to enable PFS, it must provide a DHE parameter of 1024 bits |
