@@ -2,25 +2,28 @@ package myrasec
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 )
 
 func getZoneConfigMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"getZoneConfigRaw": {
-			Name:   "getZoneConfigRaw",
-			Action: "domains/%d/bind-raw/%s",
-			Method: http.MethodGet,
+			Name:               "getZoneConfigRaw",
+			Action:             "domains/%d/bind-raw/%s",
+			Method:             http.MethodGet,
+			ResponseDecodeFunc: decodeStringValue,
 		},
 		"getZoneConfigJson": {
-			Name:   "getZoneConfigJson",
-			Action: "domains/%d/bind/%s",
-			Method: http.MethodGet,
+			Name:               "getZoneConfigJson",
+			Action:             "domains/%d/bind/%s",
+			Method:             http.MethodGet,
+			ResponseDecodeFunc: decodeStringValue,
 		},
 	}
 }
 
-func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) ([]byte, error) {
+func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (*string, error) {
 	if _, ok := methods["getZoneConfigRaw"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigRaw")
 	}
@@ -37,10 +40,11 @@ func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) ([]byte
 		return nil, err
 	}
 
-	return result.([]byte), nil
+	res := result.(string)
+	return &res, nil
 }
 
-func (api *API) GetZoneConfigJson(domainId int, params map[string]string) ([]byte, error) {
+func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (*string, error) {
 	if _, ok := methods["getZoneConfigJson"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigJson")
 	}
@@ -57,6 +61,17 @@ func (api *API) GetZoneConfigJson(domainId int, params map[string]string) ([]byt
 		return nil, err
 	}
 
-	return result.([]byte), nil
+	ret := result.(string)
+	return &ret, nil
+}
 
+func decodeStringValue(resp *http.Response, definition APIMethod) (interface{}, error) {
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	bodyString := string(body[:])
+	return bodyString, nil
 }
