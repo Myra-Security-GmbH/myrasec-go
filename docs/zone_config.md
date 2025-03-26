@@ -15,7 +15,7 @@ zoneConfig, err := api.GetZoneConfigRaw(domainId, params)
 if err != nil {
     log.Fatal(err)
 }
-log.Println(zoneConfig)
+log.Println(*zoneConfig)
 ```
 Response will be something like this
 ```
@@ -42,7 +42,7 @@ zoneConfig, err := api.GetZoneConfigJson(domainId, params)
 if err != nil {
     log.Fatal(err)
 }
-log.Println(zoneConfig)
+log.Println(*zoneConfig)
 ```
 
 Response will be something like this
