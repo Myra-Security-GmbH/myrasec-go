@@ -44,12 +44,12 @@ cc := &myrasec.CacheClear{
     Resource: "/*.jpg",
     Recursive: true,
 }
-cc, err := api.ClearCache(cc, domainId)
+result, err := api.ClearCache(cc, domainId)
 if err != nil {
     panic(err)
 }
 
-log.Println(cc)
+log.Println(result)
 ```
 
 
