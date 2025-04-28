@@ -118,8 +118,9 @@ func TestSetUserAgent(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	if api.UserAgent != DefaultAPIUserAgent {
-		t.Errorf("Expected default UserAgent to be [%s] but got [%s]", DefaultAPIUserAgent, api.UserAgent)
+	userAgent := fmt.Sprintf("%s-%s", DefaultAPIUserAgent, Version)
+	if api.UserAgent != userAgent {
+		t.Errorf("Expected default UserAgent to be [%s] but got [%s]", userAgent, api.UserAgent)
 	}
 
 	api.SetUserAgent("Testing")
@@ -231,8 +232,9 @@ func TestPrepareRequestGET(t *testing.T) {
 		t.Errorf("Expected request header \"Content-Type\" to be [%s] but got [%s]\n", "application/json", req.Header.Get("Content-Type"))
 	}
 
-	if req.Header.Get("User-Agent") != DefaultAPIUserAgent {
-		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", DefaultAPIUserAgent, req.Header.Get("User-Agent"))
+	userAgent := fmt.Sprintf("%s-%s", DefaultAPIUserAgent, Version)
+	if req.Header.Get("User-Agent") != userAgent {
+		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", userAgent, req.Header.Get("User-Agent"))
 	}
 
 	if req.Method != http.MethodGet {
@@ -270,8 +272,9 @@ func TestPrepareRequestPOST(t *testing.T) {
 		t.Errorf("Expected request header \"Content-Type\" to be [%s] but got [%s]\n", "application/json", req.Header.Get("Content-Type"))
 	}
 
-	if req.Header.Get("User-Agent") != DefaultAPIUserAgent {
-		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", DefaultAPIUserAgent, req.Header.Get("User-Agent"))
+	userAgent := fmt.Sprintf("%s-%s", DefaultAPIUserAgent, Version)
+	if req.Header.Get("User-Agent") != userAgent {
+		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", userAgent, req.Header.Get("User-Agent"))
 	}
 
 	if req.Method != http.MethodPost {
@@ -309,8 +312,9 @@ func TestPrepareRequestPUT(t *testing.T) {
 		t.Errorf("Expected request header \"Content-Type\" to be [%s] but got [%s]\n", "application/json", req.Header.Get("Content-Type"))
 	}
 
-	if req.Header.Get("User-Agent") != DefaultAPIUserAgent {
-		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", DefaultAPIUserAgent, req.Header.Get("User-Agent"))
+	userAgent := fmt.Sprintf("%s-%s", DefaultAPIUserAgent, Version)
+	if req.Header.Get("User-Agent") != userAgent {
+		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", userAgent, req.Header.Get("User-Agent"))
 	}
 
 	if req.Method != http.MethodPut {
@@ -348,8 +352,9 @@ func TestPrepareRequestDELETE(t *testing.T) {
 		t.Errorf("Expected request header \"Content-Type\" to be [%s] but got [%s]\n", "application/json", req.Header.Get("Content-Type"))
 	}
 
-	if req.Header.Get("User-Agent") != DefaultAPIUserAgent {
-		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", DefaultAPIUserAgent, req.Header.Get("User-Agent"))
+	userAgent := fmt.Sprintf("%s-%s", DefaultAPIUserAgent, Version)
+	if req.Header.Get("User-Agent") != userAgent {
+		t.Errorf("Expected request header \"User-Agent\" to be [%s] but got [%s]\n", userAgent, req.Header.Get("User-Agent"))
 	}
 
 	if req.Method != http.MethodDelete {
