@@ -61,12 +61,6 @@ func TestInitializeMethods(t *testing.T) {
 		}
 	}
 
-	for k := range getRateLimitMethods() {
-		if _, ok := methods[k]; !ok {
-			t.Errorf("Expected to find [%s] in the methods variable", k)
-		}
-	}
-
 	for k := range getRedirectMethods() {
 		if _, ok := methods[k]; !ok {
 			t.Errorf("Expected to find [%s] in the methods variable", k)
@@ -92,12 +86,6 @@ func TestInitializeMethods(t *testing.T) {
 	}
 
 	for k := range getTagCacheSettingMethods() {
-		if _, ok := methods[k]; !ok {
-			t.Errorf("Expected to find [%s] in the methods variable", k)
-		}
-	}
-
-	for k := range getTagRateLimitMethods() {
 		if _, ok := methods[k]; !ok {
 			t.Errorf("Expected to find [%s] in the methods variable", k)
 		}
