@@ -49,6 +49,7 @@ type CacheSetting struct {
 	Sort        int             `json:"sort,omitempty"`
 	Enabled     bool            `json:"enabled"`
 	Enforce     bool            `json:"enforce"`
+	Comment     string          `json:"comment"`
 }
 
 // ListCacheSettings returns a slice containing all visible cache settings for a subdomain

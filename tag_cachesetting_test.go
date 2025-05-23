@@ -9,8 +9,8 @@ func TestListTagCacheSettings(t *testing.T) {
 		preCacheRequest(
 			"https://apiv2.myracloud.com/tag/1/cache-settings",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
-				{"id": 1, "path": "/index.html", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": true}, 
-				{"id": 2, "path": "/index.php", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": false}
+				{"id": 1, "path": "/index.html", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": true, "comment": "this is a comment"}, 
+				{"id": 2, "path": "/index.php", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": false, "comment": ""}
 			]}`,
 			methods["listTagCacheSettings"],
 		),
@@ -42,6 +42,10 @@ func TestListTagCacheSettings(t *testing.T) {
 				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%t]", true, v.Enabled)
 			}
 
+			if v.Comment != "this is a comment" {
+				t.Errorf("Expected to get cache setting with Comment [%s] but got [%s]", "this is a comment", v.Comment)
+			}
+
 		}
 
 		if v.ID == 2 {
@@ -51,6 +55,10 @@ func TestListTagCacheSettings(t *testing.T) {
 
 			if v.Enabled != false {
 				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%t]", false, v.Enabled)
+			}
+
+			if v.Comment != "" {
+				t.Errorf("Expected to get cache setting with Comment [%s] but got [%s]", "", v.Comment)
 			}
 		}
 
