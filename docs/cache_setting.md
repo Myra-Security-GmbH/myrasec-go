@@ -12,7 +12,7 @@ type CacheSetting struct {
 	Sort        int             `json:"sort,omitempty"`
 	Enabled     bool            `json:"enabled,omitempty"`
 	Enforce     bool            `json:"enforce,omitempty"`
-    Comment     string          `json:"comment,omitempty"`
+	Comment     string          `json:"comment,omitempty"`
 }
 ```
 
