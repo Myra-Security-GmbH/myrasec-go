@@ -51,8 +51,9 @@ type Tag struct {
 	Modified     *types.DateTime `json:"modified,omitempty"`
 	Name         string          `json:"name"`
 	Type         string          `json:"type"`
-	Organization int             `json:"organization"`
 	Assignments  []TagAssignment `json:"assignments"`
+	Organization int             `json:"organization,omitempty"`
+	Sort         int             `json:"sort,omitempty"`
 }
 
 // TagAssignment ...

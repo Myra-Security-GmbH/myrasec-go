@@ -8,6 +8,8 @@ type Tag struct {
     Name         string           `json:"name"`
     Type         string           `json:"type"`
     Assignments  []TagAssignments `json:"assignments"`
+    Organization int              `json:"organization,omitempty"`
+    Sort         int               `json:"sort,omitempty"`
 }
 ```
 | Field | Type | Description|
@@ -18,6 +20,7 @@ type Tag struct {
 | `Name` | string | Identifies the tag by its name. |
 | `Type` | string | Defines the type of the tag and must be one of `CONFIG`, `WAF`, `CACHE`, `RATE_LIMIT`, `INFORMATION` |
 | `Assignments` | []TagAssignments |
+| `Sort` | int | Defines the order in which `WAF` tags are processed |
 
 ```go
 type TagAssignment struct {
@@ -106,7 +109,8 @@ tag := &myrasec.Tag{
             Type: "DOMAIN",
             Title: "example.com",
         }
-    }
+    },
+    Sort: 1
 }
 
 t, err := api.UpdateTag(tag)
