@@ -12,6 +12,7 @@ type CacheSetting struct {
 	Sort        int             `json:"sort,omitempty"`
 	Enabled     bool            `json:"enabled,omitempty"`
 	Enforce     bool            `json:"enforce,omitempty"`
+	Comment     string          `json:"comment,omitempty"`
 }
 ```
 
@@ -27,6 +28,7 @@ type CacheSetting struct {
 | `Sort` | int | The order in which the cache rules take action as long as the cache sorting is activated. |
 | `Enabled` | bool | Define wether this cache setting is enabled or not. |
 | `Enforce` | bool | Enforce cache TTL allows you to set the cache TTL (Cache Control: max-age) in the backend regardless of the response sent from your Origin. |
+| `Comment` | string | A comment to describe this cache setting. |
 
 
 ## Create
@@ -41,6 +43,7 @@ cachesetting := &myrasec.CacheSetting{
     NotFoundTTL: 3600,
     Enabled:     true,
     Enforce:     false,
+    Comment:     "Matching /",
 }
 c, err := api.CreateCacheSetting(cachesetting, domainId, "www.example.com")
 if err != nil {
