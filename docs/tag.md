@@ -9,7 +9,7 @@ type Tag struct {
     Type         string           `json:"type"`
     Assignments  []TagAssignments `json:"assignments"`
     Organization int              `json:"organization,omitempty"`
-    Sort         int               `json:"sort,omitempty"`
+    Sort         int              `json:"sort,omitempty"`
 }
 ```
 | Field | Type | Description|
