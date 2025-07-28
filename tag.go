@@ -51,9 +51,11 @@ type Tag struct {
 	Modified     *types.DateTime `json:"modified,omitempty"`
 	Name         string          `json:"name"`
 	Type         string          `json:"type"`
+	Comment      string          `json:"comment,omitempty"`
 	Assignments  []TagAssignment `json:"assignments"`
 	Organization int             `json:"organization,omitempty"`
 	Sort         int             `json:"sort,omitempty"`
+	Global       bool            `json:"global,omitempty"`
 }
 
 // TagAssignment ...
