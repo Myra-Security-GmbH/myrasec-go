@@ -27,6 +27,7 @@ var methods = map[string]APIMethod{}
 // initializeMethods ...
 func initializeMethods() {
 	for _, m := range []map[string]APIMethod{
+		getAPIKeyMethods(),
 		getBucketMethods(),
 		getCacheClearMethods(),
 		getCacheSettingMethods(),
@@ -47,6 +48,7 @@ func initializeMethods() {
 		getTagSettingsMethods(),
 		getTagWAFRuleMethods(),
 		getTagMethods(),
+		getUserMethods(),
 		getVHostMethods(),
 		getWAFMethods(),
 		getWaitingRoomMethods(),
