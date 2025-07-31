@@ -10,6 +10,7 @@ type Tag struct {
     Assignments  []TagAssignments `json:"assignments"`
     Organization int              `json:"organization,omitempty"`
     Sort         int              `json:"sort,omitempty"`
+    Global       bool            `json:"global,omitempty"`
 }
 ```
 | Field | Type | Description|
@@ -21,6 +22,7 @@ type Tag struct {
 | `Type` | string | Defines the type of the tag and must be one of `CONFIG`, `WAF`, `CACHE`, `RATE_LIMIT`, `INFORMATION` |
 | `Assignments` | []TagAssignments |
 | `Sort` | int | Defines the order in which `WAF` tags are processed |
+| `Global` | bool | Identify "global" tags. **Note:** It is not possible to edit a global tags. It is only possible to assign (sub)domains to a global tag. |
 
 ```go
 type TagAssignment struct {

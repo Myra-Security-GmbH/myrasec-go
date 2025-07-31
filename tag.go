@@ -54,6 +54,7 @@ type Tag struct {
 	Assignments  []TagAssignment `json:"assignments"`
 	Organization int             `json:"organization,omitempty"`
 	Sort         int             `json:"sort,omitempty"`
+	Global       bool            `json:"global,omitempty"`
 }
 
 // TagAssignment ...
