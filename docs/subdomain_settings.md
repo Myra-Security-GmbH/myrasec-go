@@ -54,7 +54,7 @@ type Settings struct {
 	SourceProtocol              string   `json:"source_protocol,omitempty"`
 	Spdy                        bool     `json:"spdy,omitempty"`
 	SSLClientVerify             string   `json:"ssl_client_verify,omitempty"`
-	SSLClientCertificate        string   `json:"ssl_client_certificate,omitempty"`
+	SSLClientCertificate        []string   `json:"ssl_client_certificate,omitempty"`
 	SSLClientHeaderVerification string   `json:"ssl_client_header_verification,omitempty"`
 	SSLClientHeaderFingerprint  string   `json:"ssl_client_header_fingerprint,omitempty"`
 	SSLOriginPort               int      `json:"ssl_origin_port,omitempty"`
@@ -118,7 +118,7 @@ type Settings struct {
 | SourceProtocol | string | Define which protocol should be used when passing a request to your servers. The value "same" will ensure that the same protocol is used as in the originating request to Myra. The "http" and "https" value will force Myra to always use the specified protocol when connecting. |
 | Spdy | bool | Activate the high performance HTTP/2 protocol. Please note that you have to enable HTTPS for Myra to get HTTP/2 enabled. |
 | SSLClientVerify | string | Enables verification of client certificates. |
-| SSLClientCertificate | string | Specifies a file with trusted CA certificates in the PEM format used to verify client certificates. |
+| SSLClientCertificate | []string | Specifies files with trusted CA certificates in the PEM format used to verify client certificates. |
 | SSLClientHeaderVerification | string | The name of the header, which contains the ssl verification status. |
 | SSLClientHeaderFingerprint | string | Contains the fingerprint of the certificate, the client used to authenticate itself. |
 | SSLOriginPort | int | Allows to set a port for communication with origin via SSL. |
