@@ -54,6 +54,7 @@ func TestListSettings(t *testing.T) {
 				"source_protocol": "https",
 				"spdy": true,
 				"ssl_origin_port": 443,
+				"ssl_client_certificate": [],
 				"waf_enable": true,
 				"waf_levels_enable": [],
 				"waf_policy": "allow"
