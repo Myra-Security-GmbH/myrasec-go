@@ -6,10 +6,6 @@
 
 A Go library for interacting with Myra Security API.
 
-> **Note**: This library is under active development. 
-> Upcoming changes may break existing functionality.
-> Consider this library as unstable.
-
 ## Example usage
 
 ```go
