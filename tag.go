@@ -46,13 +46,14 @@ func getTagMethods() map[string]APIMethod {
 
 // Tag ...
 type Tag struct {
-	ID          int             `json:"id,omitempty"`
-	Created     *types.DateTime `json:"created,omitempty"`
-	Modified    *types.DateTime `json:"modified,omitempty"`
-	Name        string          `json:"name"`
-	Type        string          `json:"type"`
-	Assignments []TagAssignment `json:"assignments"`
-	Sort        int             `json:"sort,omitempty"`
+	ID           int             `json:"id,omitempty"`
+	Created      *types.DateTime `json:"created,omitempty"`
+	Modified     *types.DateTime `json:"modified,omitempty"`
+	Name         string          `json:"name"`
+	Type         string          `json:"type"`
+	Assignments  []TagAssignment `json:"assignments"`
+	Sort         int             `json:"sort,omitempty"`
+	Global       bool            `json:"global,omitempty"`
 }
 
 // TagAssignment ...
