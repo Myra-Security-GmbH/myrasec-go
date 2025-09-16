@@ -37,10 +37,6 @@ func TestGetTag(t *testing.T) {
 		t.Errorf("Expected to get tag with type [%s] but got [%s]", "TypeTag", tag.Type)
 	}
 
-	if tag.Organization != 1 {
-		t.Errorf("Expected to get tag with organization id [%d] but got [%d]", 1, tag.Organization)
-	}
-
 	if len(tag.Assignments) != 1 {
 		t.Errorf("Expected to get tag with number assignments [%d] but got [%d]", 1, len(tag.Assignments))
 	}

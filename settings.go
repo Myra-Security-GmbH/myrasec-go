@@ -92,7 +92,7 @@ type Settings struct {
 	SourceProtocol              string   `json:"source_protocol,omitempty"`
 	Spdy                        bool     `json:"spdy,omitempty"`
 	SSLClientVerify             string   `json:"ssl_client_verify,omitempty"`
-	SSLClientCertificate        string   `json:"ssl_client_certificate,omitempty"`
+	SSLClientCertificate        []string `json:"ssl_client_certificate,omitempty"`
 	SSLClientHeaderVerification string   `json:"ssl_client_header_verification,omitempty"`
 	SSLClientHeaderFingerprint  string   `json:"ssl_client_header_fingerprint,omitempty"`
 	SSLOriginPort               int      `json:"ssl_origin_port,omitempty"`
