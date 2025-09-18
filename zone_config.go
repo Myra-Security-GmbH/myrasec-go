@@ -65,7 +65,7 @@ func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (*stri
 	return &ret, nil
 }
 
-func decodeStringValue(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeStringValue(resp *http.Response, definition APIMethod) (any, error) {
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)

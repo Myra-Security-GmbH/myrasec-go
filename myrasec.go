@@ -58,18 +58,18 @@ type API struct {
 
 // Response defines a response, returned by the MYRA API
 type Response struct {
-	Error         bool          `json:"error,omitempty"`
-	ViolationList []*Violation  `json:"violationList,omitempty"`
-	ErrorMessage  string        `json:"errorMessage,omitempty"`
-	WarningList   []*Warning    `json:"warningList,omitempty"`
-	TargetObject  []interface{} `json:"targetObject,omitempty"`
-	Data          []interface{} `json:"data,omitempty"`
-	List          []interface{} `json:"list,omitempty"`
-	Result        []interface{} `json:"result,omitempty"`
-	Page          int           `json:"page,omitempty"`
-	Count         int           `json:"count,omitempty"`
-	PageSize      int           `json:"pageSize,omitempty"`
-	Domain        []interface{} `json:"domain,omitempty"`
+	Error         bool         `json:"error,omitempty"`
+	ViolationList []*Violation `json:"violationList,omitempty"`
+	ErrorMessage  string       `json:"errorMessage,omitempty"`
+	WarningList   []*Warning   `json:"warningList,omitempty"`
+	TargetObject  []any        `json:"targetObject,omitempty"`
+	Data          []any        `json:"data,omitempty"`
+	List          []any        `json:"list,omitempty"`
+	Result        []any        `json:"result,omitempty"`
+	Page          int          `json:"page,omitempty"`
+	Count         int          `json:"count,omitempty"`
+	PageSize      int          `json:"pageSize,omitempty"`
+	Domain        []any        `json:"domain,omitempty"`
 }
 
 // Violation defines a violation VO, returned by the MYRA API
@@ -179,7 +179,7 @@ func (api *API) SetProxy(proxyURL string) error {
 }
 
 // call executes/sends the request to the MYRA API
-func (api *API) call(definition APIMethod, payload ...interface{}) (interface{}, error) {
+func (api *API) call(definition APIMethod, payload ...any) (any, error) {
 	req, err := api.prepareRequest(definition, payload...)
 	if err != nil {
 		return nil, err
@@ -228,7 +228,7 @@ func (api *API) call(definition APIMethod, payload ...interface{}) (interface{},
 }
 
 // sendRequest performs the concrete send-action
-func (api *API) sendRequest(definition APIMethod, payload ...interface{}) (*http.Response, error) {
+func (api *API) sendRequest(definition APIMethod, payload ...any) (*http.Response, error) {
 	var retries int
 
 	for {
@@ -238,7 +238,7 @@ func (api *API) sendRequest(definition APIMethod, payload ...interface{}) (*http
 		}
 
 		if err = api.limiter.Wait(context.Background()); err != nil {
-			return nil, fmt.Errorf(ErrorMsgRateLimitReached)
+			return nil, errors.New(ErrorMsgRateLimitReached)
 		}
 
 		sig := signature.New(api.secret, api.key, req)
@@ -273,7 +273,7 @@ func errorMessage(resp *http.Response) (*Response, error) {
 }
 
 // decodeDefaultResponse handles the default decoding of a response.
-func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeDefaultResponse(resp *http.Response, definition APIMethod) (any, error) {
 
 	if definition.Method == http.MethodDelete {
 		return nil, nil
@@ -288,7 +288,7 @@ func decodeDefaultResponse(resp *http.Response, definition APIMethod) (interface
 }
 
 // decodeSingleElementResponse decodes the response for a single element (like GetDomain or GetDNSRecord)
-func decodeSingleElementResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeSingleElementResponse(resp *http.Response, definition APIMethod) (any, error) {
 	res, err := decodeBaseResponse(resp)
 	if err != nil {
 		return nil, err
@@ -326,7 +326,7 @@ func decodeBaseResponse(resp *http.Response) (*Response, error) {
 }
 
 // prepareRequest ...
-func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*http.Request, error) {
+func (api *API) prepareRequest(definition APIMethod, payload ...any) (*http.Request, error) {
 	var err error
 	var req *http.Request
 
@@ -368,7 +368,7 @@ func (api *API) prepareRequest(definition APIMethod, payload ...interface{}) (*h
 }
 
 // prepareGETRequest handles/prepares GET requests
-func (api *API) prepareGETRequest(apiURL string, payload ...interface{}) (*http.Request, error) {
+func (api *API) prepareGETRequest(apiURL string, payload ...any) (*http.Request, error) {
 	if len(payload) <= 0 {
 		return http.NewRequest(http.MethodGet, apiURL, nil)
 	}
@@ -394,7 +394,7 @@ func (api *API) prepareGETRequest(apiURL string, payload ...interface{}) (*http.
 }
 
 // preparePOSTRequest handles/prepares POST requests
-func (api *API) preparePOSTRequest(apiURL string, payload ...interface{}) (*http.Request, error) {
+func (api *API) preparePOSTRequest(apiURL string, payload ...any) (*http.Request, error) {
 	data, err := preparePayload(payload...)
 	if err != nil {
 		return nil, err
@@ -404,7 +404,7 @@ func (api *API) preparePOSTRequest(apiURL string, payload ...interface{}) (*http
 }
 
 // preparePUTRequest handles/prepares PUT requests
-func (api *API) preparePUTRequest(apiURL string, payload ...interface{}) (*http.Request, error) {
+func (api *API) preparePUTRequest(apiURL string, payload ...any) (*http.Request, error) {
 	data, err := preparePayload(payload...)
 	if err != nil {
 		return nil, err
@@ -414,7 +414,7 @@ func (api *API) preparePUTRequest(apiURL string, payload ...interface{}) (*http.
 }
 
 // prepareDELETERequest handles/prepares DELETE requests
-func (api *API) prepareDELETERequest(apiURL string, payload ...interface{}) (*http.Request, error) {
+func (api *API) prepareDELETERequest(apiURL string, payload ...any) (*http.Request, error) {
 	data, err := preparePayload(payload...)
 	if err != nil {
 		return nil, err
@@ -424,8 +424,8 @@ func (api *API) prepareDELETERequest(apiURL string, payload ...interface{}) (*ht
 }
 
 // prepareResult prepares the response for further processing
-func prepareResult(response Response, definition APIMethod) (interface{}, error) {
-	var result interface{}
+func prepareResult(response Response, definition APIMethod) (any, error) {
+	var result any
 	if response.TargetObject != nil {
 		result = response.TargetObject[0]
 	} else if response.List != nil {
@@ -458,8 +458,8 @@ func prepareResult(response Response, definition APIMethod) (interface{}, error)
 }
 
 // prepareSingleElementResult ...
-func prepareSingleElementResult(response Response, definition APIMethod) (interface{}, error) {
-	var result interface{}
+func prepareSingleElementResult(response Response, definition APIMethod) (any, error) {
+	var result any
 	if response.Data != nil {
 		result = response.Data[0]
 	}
@@ -486,8 +486,8 @@ func prepareSingleElementResult(response Response, definition APIMethod) (interf
 }
 
 // preparePayload ...
-func preparePayload(payload ...interface{}) ([]byte, error) {
-	var pl interface{}
+func preparePayload(payload ...any) ([]byte, error) {
+	var pl any
 	pl = payload
 	if len(payload) == 1 {
 		pl = payload[0]

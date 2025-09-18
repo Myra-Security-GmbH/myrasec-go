@@ -20,7 +20,7 @@ func getSettingsMethods() map[string]APIMethod {
 			Name:               "listSettingsFull",
 			Action:             "domain/%d/%s/settings",
 			Method:             http.MethodGet,
-			Result:             map[string]interface{}{},
+			Result:             map[string]any{},
 			ResponseDecodeFunc: decodeSettingsResponseFull,
 		},
 		"updateSettings": {
@@ -33,7 +33,7 @@ func getSettingsMethods() map[string]APIMethod {
 			Name:   "updateSettingsPartial",
 			Action: "domain/%d/%s/settings",
 			Method: http.MethodPost,
-			Result: map[string]interface{}{},
+			Result: map[string]any{},
 		},
 	}
 }
@@ -119,7 +119,7 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 }
 
 // ListSettingsFull returns a Setting struct containing the full hierarchie of the settings
-func (api *API) ListSettingsFull(domainId int, subDomainName string, params map[string]string) (interface{}, error) {
+func (api *API) ListSettingsFull(domainId int, subDomainName string, params map[string]string) (any, error) {
 	if _, ok := methods["listSettingsFull"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSettings")
 	}
@@ -153,7 +153,7 @@ func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName s
 }
 
 // UpdateSettingsPartial updates the passed settings using the MYRA API
-func (api *API) UpdateSettingsPartial(settings map[string]interface{}, domainId int, subDomainName string) (interface{}, error) {
+func (api *API) UpdateSettingsPartial(settings map[string]any, domainId int, subDomainName string) (any, error) {
 	if _, ok := methods["updateSettingsPartial"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSettingsPartial")
 	}
@@ -169,7 +169,7 @@ func (api *API) UpdateSettingsPartial(settings map[string]interface{}, domainId 
 }
 
 // decodeSettingsResponse - custom decode function for settings response. Used in the ListSettings action.
-func decodeSettingsResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeSettingsResponse(resp *http.Response, definition APIMethod) (any, error) {
 	var res Settings
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
@@ -179,8 +179,8 @@ func decodeSettingsResponse(resp *http.Response, definition APIMethod) (interfac
 }
 
 // decodeSettingsResponseFull - custom decode function for full settings response. Used in the ListSettingsFull action.
-func decodeSettingsResponseFull(resp *http.Response, definition APIMethod) (interface{}, error) {
-	var res map[string]interface{}
+func decodeSettingsResponseFull(resp *http.Response, definition APIMethod) (any, error) {
+	var res map[string]any
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
 		return nil, err

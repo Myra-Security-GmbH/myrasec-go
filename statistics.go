@@ -23,8 +23,8 @@ func getStatisticsMethods() map[string]APIMethod {
 
 // Statistics struct contains the statistical data (Result)
 type Statistics struct {
-	Query  *StatisticQuery        `json:"query"`
-	Result map[string]interface{} `json:"result,omitempty"`
+	Query  *StatisticQuery `json:"query"`
+	Result map[string]any  `json:"result,omitempty"`
 }
 
 // StatisticQuery struct is used to specify the query for the statistical data
@@ -53,7 +53,7 @@ func (api *API) QueryStatistics(query *StatisticQuery) (*Statistics, error) {
 }
 
 // decodeStatisticsResponse - custom decode function for statistics response. Used in the QueryStatistics action.
-func decodeStatisticsResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeStatisticsResponse(resp *http.Response, definition APIMethod) (any, error) {
 	var res Statistics
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {

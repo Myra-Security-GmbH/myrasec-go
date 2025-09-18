@@ -68,8 +68,8 @@ func getBucketMethods() map[string]APIMethod {
 
 // bucketResponse ...
 type bucketResponse struct {
-	Error  bool        `json:"error"`
-	Result interface{} `json:"result"`
+	Error  bool `json:"error"`
+	Result any  `json:"result"`
 }
 
 // Bucket ...
@@ -214,7 +214,7 @@ func (api *API) DeleteBucket(bucket *Bucket, domainName string) (*Bucket, error)
 }
 
 // decodeTagSettingsResponse - custom decode function for bucket status response
-func decodeBucketStatusResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeBucketStatusResponse(resp *http.Response, definition APIMethod) (any, error) {
 	var res BucketStatus
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {
@@ -224,7 +224,7 @@ func decodeBucketStatusResponse(resp *http.Response, definition APIMethod) (inte
 }
 
 // decodeSingleBucketResponse - custom decode function for bucket responses as they sometimes contain an object instead of an array (result)
-func decodeSingleBucketResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeSingleBucketResponse(resp *http.Response, definition APIMethod) (any, error) {
 	var res bucketResponse
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {

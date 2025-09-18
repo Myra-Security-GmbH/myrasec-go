@@ -16,9 +16,9 @@ type APIMethod struct {
 	Name               string
 	Action             string
 	Method             string
-	Result             interface{}
+	Result             any
 	AdditionalHeaders  map[string]string
-	ResponseDecodeFunc func(resp *http.Response, definition APIMethod) (interface{}, error)
+	ResponseDecodeFunc func(resp *http.Response, definition APIMethod) (any, error)
 }
 
 // methods stores the available APIMethods
