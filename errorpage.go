@@ -153,7 +153,7 @@ func (api *API) DeleteErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 }
 
 // decodeErrorPageResponse handles an empty response as it is returned by save error codes
-func decodeErrorPageResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeErrorPageResponse(resp *http.Response, definition APIMethod) (any, error) {
 	return nil, nil
 }
 

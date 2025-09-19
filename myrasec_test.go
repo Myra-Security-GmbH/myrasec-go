@@ -13,7 +13,7 @@ import (
 // TestCache is some helper struct for using precached requests in the tests, so we don't have to perform a real API request
 type TestCache struct {
 	Req *http.Request
-	Res interface{}
+	Res any
 }
 
 // preCacheAPI will mock the data, returned by the api.call function. Like this we can test without sending real API requests.
@@ -36,7 +36,7 @@ func preCacheRequest(url string, body string, definition APIMethod) *TestCache {
 		Status: strconv.Itoa(http.StatusOK),
 		Body:   io.NopCloser(bytes.NewBufferString(body)),
 	}
-	var res interface{}
+	var res any
 	if definition.ResponseDecodeFunc != nil {
 		res, _ = definition.ResponseDecodeFunc(&resp, definition)
 	} else {
@@ -659,7 +659,7 @@ func TestPreparePayloadWithMultiplePayloads(t *testing.T) {
 		t.Errorf("Expected result to be not nil")
 	}
 
-	expected, err := json.Marshal([]interface{}{
+	expected, err := json.Marshal([]any{
 		firstPayload,
 		secondPayload,
 	})

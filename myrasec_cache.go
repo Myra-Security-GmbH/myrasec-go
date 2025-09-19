@@ -14,7 +14,7 @@ type responseCache struct {
 	Created int64
 	Expire  int64
 	Request *http.Request
-	Body    interface{}
+	Body    any
 }
 
 // isExpired checks if the cached response is expired
@@ -48,7 +48,7 @@ func (api *API) inCache(req *http.Request) bool {
 }
 
 // fromCache loads the response from the cache (if it is cached)
-func (api *API) fromCache(req *http.Request) interface{} {
+func (api *API) fromCache(req *http.Request) any {
 	if !api.inCache(req) {
 		return nil
 	}
@@ -65,7 +65,7 @@ func (api *API) fromCache(req *http.Request) interface{} {
 }
 
 // cacheResponse stores the response body in the cache
-func (api *API) cacheResponse(req *http.Request, resp interface{}) {
+func (api *API) cacheResponse(req *http.Request, resp any) {
 	if !api.caching {
 		return
 	}

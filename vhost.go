@@ -40,7 +40,6 @@ func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 	}
 
 	definition := methods["listAllSubdomains"]
-	definition.Action = fmt.Sprintf(definition.Action)
 
 	result, err := api.call(definition, params)
 	if err != nil {

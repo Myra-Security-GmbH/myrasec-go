@@ -154,7 +154,7 @@ func (api *API) RemoveFiles(fileQuery *FileQuery, domainName string) error {
 }
 
 // decodeListFilesResponse ...
-func decodeListFilesResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeListFilesResponse(resp *http.Response, definition APIMethod) (any, error) {
 	var res listFilesResponse
 	err := json.NewDecoder(resp.Body).Decode(&res)
 	if err != nil {

@@ -46,7 +46,7 @@ func (api *API) ClearCache(cacheClear *CacheClear, domainId int) (*[]CacheClear,
 }
 
 // decodeCacheClearResponse - custom decode function for cache clear responses
-func decodeCacheClearResponse(resp *http.Response, definition APIMethod) (interface{}, error) {
+func decodeCacheClearResponse(resp *http.Response, definition APIMethod) (any, error) {
 	res, err := decodeBaseResponse(resp)
 	if err != nil {
 		return nil, err
