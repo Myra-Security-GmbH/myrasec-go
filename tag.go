@@ -41,19 +41,25 @@ func getTagMethods() map[string]APIMethod {
 			Method: http.MethodDelete,
 			Result: Tag{},
 		},
+		"cloneTag": {
+			Name:   "cloneTag",
+			Action: "tags/%d",
+			Method: http.MethodPost,
+			Result: Tag{},
+		},
 	}
 }
 
 // Tag ...
 type Tag struct {
-	ID           int             `json:"id,omitempty"`
-	Created      *types.DateTime `json:"created,omitempty"`
-	Modified     *types.DateTime `json:"modified,omitempty"`
-	Name         string          `json:"name"`
-	Type         string          `json:"type"`
-	Assignments  []TagAssignment `json:"assignments"`
-	Sort         int             `json:"sort,omitempty"`
-	Global       bool            `json:"global,omitempty"`
+	ID          int             `json:"id,omitempty"`
+	Created     *types.DateTime `json:"created,omitempty"`
+	Modified    *types.DateTime `json:"modified,omitempty"`
+	Name        string          `json:"name"`
+	Type        string          `json:"type"`
+	Assignments []TagAssignment `json:"assignments"`
+	Sort        int             `json:"sort,omitempty"`
+	Global      bool            `json:"global,omitempty"`
 }
 
 // TagAssignment ...
@@ -130,7 +136,6 @@ func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
 	}
 
 	return result.(*Tag), nil
-
 }
 
 // DeleteTag deletes the passed tag using the MYRA API
@@ -148,5 +153,21 @@ func (api *API) DeleteTag(tag *Tag) (*Tag, error) {
 	}
 
 	return tag, nil
+}
 
+// CloneTag clones the passed tag using the MYRA API
+func (api *API) CloneTag(tag *Tag) (*Tag, error) {
+	if _, ok := methods["cloneTag"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "cloneTag")
+	}
+
+	definition := methods["cloneTag"]
+	definition.Action = fmt.Sprintf(definition.Action, tag.ID)
+
+	result, err := api.call(definition, tag)
+	if err != nil {
+		return nil, err
+	}
+
+	return result.(*Tag), nil
 }
