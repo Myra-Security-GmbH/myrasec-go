@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"reflect"
 	"time"
 
@@ -95,9 +96,9 @@ func New(key, secret string) (*API, error) {
 	}
 
 	api := &API{
-		BaseURL:    APIBaseURL,
-		Language:   DefaultAPILanguage,
-		UserAgent:  DefaultAPIUserAgent,
+		BaseURL:    getEnvOrDefault("MYRASEC_GO_BASE_URL", APIBaseURL),
+		Language:   getEnvOrDefault("MYRASEC_GO_LANGUAGE", DefaultAPILanguage),
+		UserAgent:  getEnvOrDefault("MYRASEC_GO_USER_AGENT", DefaultAPIUserAgent),
 		cache:      make(map[string]*responseCache),
 		caching:    false,
 		cacheTTL:   0,
@@ -508,4 +509,13 @@ func preparePayload(payload ...any) ([]byte, error) {
 	}
 
 	return data, nil
+}
+
+// returns the value of the passed environment variable (key) or - if not found - the fallback
+func getEnvOrDefault(key, fallback string) string {
+	if val, ok := os.LookupEnv(key); ok {
+		return val
+	}
+
+	return fallback
 }
