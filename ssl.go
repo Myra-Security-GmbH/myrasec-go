@@ -70,6 +70,7 @@ type SSLCertificate struct {
 	CertRefreshForced    bool              `json:"certRefreshForced"`
 	CertToRefresh        int               `json:"certToRefresh,omitempty"`
 	SslConfigurationName string            `json:"sslConfigurationName,omitempty"`
+	Managed              bool              `json:"managed"`
 }
 
 // SSLIntermediate struct ...
