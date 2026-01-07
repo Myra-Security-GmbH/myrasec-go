@@ -52,8 +52,6 @@ func main() {
 - [Tag cache setting](./docs/tag_cachesetting.md)
 - [Tag settings](./docs/tag_settings.md)
 - [Tag WAF rule](./docs/tag_wafrule.md)
-- [CDN bucket](./docs/cdn_bucket.md)
-- [CDN file](./docs/cdn_file.md)
 - [Statistics](./docs/statistics.md)
 - [CacheClear](./docs/cacheclear.md)
 - [General Domain settings](./docs/general_domain_settings.md)
