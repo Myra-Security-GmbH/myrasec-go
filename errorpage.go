@@ -48,21 +48,40 @@ func getErrorPageMethods() map[string]APIMethod {
 
 // errorPageUpdate
 type errorPageUpdate struct {
-	ID          int                     `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an error page, the ID does not help because it is not used."`
+	ID          int                     `json:"id,omitempty"`
 	PageContent string                  `json:"pageContent,omitempty"`
 	Selection   map[string]map[int]bool `json:"selection,omitempty"`
-	Created     *types.DateTime         `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new error page object. This value is only informational so it is not neccessary to add this attribute to any API call."`
-	Modified    *types.DateTime         `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updateing the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an Identifies the version of the object. To ensure that you are updateing the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format.ISO 8601 format."`
+	Created     *types.DateTime         `json:"created,omitempty"`
+	Modified    *types.DateTime         `json:"modified,omitempty"`
 }
 
-// ErrorPage
+// ErrorPage represents a custom HTML error page configuration (e.g., 404, 500).
+// Unlike other objects, it is uniquely identified by the combination of SubDomainName
+// and ErrorCode, rather than the numeric ID.
 type ErrorPage struct {
-	ID            int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an error page, the ID does not help because it is not used."`
-	Created       *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new error page object. This value is only informational so it is not neccessary to add this attribute to any API call."`
-	Modified      *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updateing the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format."`
-	ErrorCode     int             `json:"errorCode,omitempty" jsonschema:"ErrorCode represents the Http Code for this error page. The ErrorCode should never be changed, because it is used as identifier additionally with the SubDomainName."`
-	Content       string          `json:"content,omitempty" jsonschema:"The Content is the HTML code for the error page."`
-	SubDomainName string          `json:"subDomainName,omitempty" jsonschema:"The configured error page is available for this subdomain. The SubDomainName should never be changed, becuase it is used as identifier additionally with the ErrorCode."`
+	// ID is the internal system identifier for the object.
+	// This value is read-only and ignored for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"System-assigned numeric identifier. Read-only. This value is ignored during updates or deletes; use ErrorCode and SubDomainName to identify the resource instead."`
+
+	// Created indicates when the error page was created.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only. Informational only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// ErrorCode represents the HTTP Status Code (e.g., 404, 500).
+	// This value is part of the composite unique key and is immutable once created.
+	ErrorCode int `json:"errorCode,omitempty" jsonschema:"The HTTP status code (e.g., 404 or 500). Part of the composite unique key. Immutable after creation."`
+
+	// Content contains the raw HTML code to be rendered.
+	Content string `json:"content,omitempty" jsonschema:"The raw HTML content to be displayed for this error page."`
+
+	// SubDomainName is the FQDN for which this error page is configured.
+	// This value is part of the composite unique key and is immutable once created.
+	SubDomainName string `json:"subDomainName,omitempty" jsonschema:"The target subdomain FQDN (e.g., 'shop.example.com'). Part of the composite unique key. Immutable after creation."`
 }
 
 // GetErrorPage returns a single error page with/for the given identifier

@@ -38,67 +38,208 @@ func getSettingsMethods() map[string]APIMethod {
 	}
 }
 
-// Settings ...
+// Settings represents the comprehensive configuration for a domain or subdomain.
+// It controls caching, WAF, security features, and upstream balancing behavior.
 type Settings struct {
-	AccessLog                   bool     `json:"access_log,omitempty" jsonschema:"Activate separated access log. A access log from each Myra node delivering your website will be saved. You can download the access log files via sftp from custlogs.myracloud.com."`
-	AntibotPostFlood            bool     `json:"antibot_post_flood,omitempty" jsonschema:"Detection of POST floods by using a JavaScript based puzzle."`
-	AntibotPostFloodThreshold   int      `json:"antibot_post_flood_threshold,omitempty" jsonschema:"This parameter determines the frequency how often the puzzle has to be solved. The higher the value the less likely the puzzle needs to be solved."`
-	AntibotProofOfWork          bool     `json:"antibot_proof_of_work,omitempty" jsonschema:"Detection of valid clients by using a JavaScript based puzzle."`
-	AntibotProofOfWorkThreshold int      `json:"antibot_proof_of_work_threshold,omitempty" jsonschema:"This parameter determines the frequency how often the puzzle has to be solved. The higher the value the less likely the puzzle needs to be solved."`
-	BalancingMethod             string   `json:"balancing_method,omitempty" jsonschema:"Specifies with which method requests are balanced between upstream servers. The default behavior is the round-robin balancing. The value ip_hash will cause Myra to forward the same client IP always to the same upstream server. The value least_conn will cause Myra to forward the request to the upstream server with least connections"`
-	BlockNotWhitelisted         bool     `json:"block_not_whitelisted,omitempty" jsonschema:"Block all IPs which are not whitelisted in the IP filter settings."`
-	BlockTorNetwork             bool     `json:"block_tor_network,omitempty" jsonschema:"Block traffic from the TOR network."`
-	CacheEnabled                bool     `json:"cache_enabled,omitempty" jsonschema:"Turn caching on or off. If you enable the cache, you also have to define the objects to be cached in the cache settings."`
-	CacheRevalidate             bool     `json:"cache_revalidate,omitempty" jsonschema:"If enabled, expired cache items will be requested with the additional HTTP header If-Modified-Since and If-None-Match."`
-	CDN                         bool     `json:"cdn,omitempty" jsonschema:"This setting is deprecated and has no effect anymore."`
-	ClientMaxBodySize           int      `json:"client_max_body_size,omitempty" jsonschema:"Sets the maximum allowed size of the client request body, specified in the Content-Length request header field."`
-	CookieName                  string   `json:"cookie_name,omitempty" jsonschema:"Specifies the cookie name when balancing_method is cookie_based."`
-	DiffieHellmanExchange       int      `json:"diffie_hellman_exchange,omitempty" jsonschema:"Defines the size of the Diffie-Hellman key exchange parameters in bits. Please, note that Java 6 and 7 do not support Diffie-Hellman parameters larger than 1024 bits. If your server expects to receive connections from java 6 clients and wants to enable PFS, it must provide a DHE parameter of 1024 bits."`
-	DisableForwardFor           bool     `json:"disable_forwarded_for,omitempty" jsonschema:"Disable the forwarded for replacement."`
-	EnableOriginSNI             bool     `json:"enable_origin_sni,omitempty" jsonschema:"Enable or disable origin SNI."`
-	EnforceCacheTTL             bool     `json:"enforce_cache_ttl,omitempty" jsonschema:"Enforce using given cache TTL settings instead of origin cache information. This will set the Cache-Control header max-age to the given TTL."`
-	ForwardedForReplacement     string   `json:"forwarded_for_replacement,omitempty" jsonschema:"Set your own X-Forwarded-For header."`
-	HSTS                        bool     `json:"hsts,omitempty" jsonschema:"Enable HSTS protection for a domain. This will tell browsers to use secure https connections only when interacting with your domain."`
-	HSTSIncludeSubdomains       bool     `json:"hsts_include_subdomains,omitempty" jsonschema:"This will extend the HSTS protection for all subdomains."`
-	HSTSMaxAge                  int      `json:"hsts_max_age,omitempty" jsonschema:"Specified how long the HSTS header is valid before the browser has to revalidate."`
-	HSTSPreload                 bool     `json:"hsts_preload,omitempty" jsonschema:"Allow the domain to be added to the HSTS preload list used by all major browsers (https://hstspreload.appspot.com/)."`
-	HTTPOriginPort              int      `json:"http_origin_port,omitempty" jsonschema:"Allows to set a port for communication with origin via HTTP."`
-	IgnoreNoCache               bool     `json:"ignore_nocache,omitempty" jsonschema:"If activated, no-cache headers (Cache-Control: [private|no-store|no-cache]) will be ignored."`
-	ImageOptimization           bool     `json:"image_optimization,omitempty" jsonschema:"Activate lossless optimization of JPEG and PNG images (recommended setting)."`
-	IPLock                      bool     `json:"ip_lock,omitempty" jsonschema:"Prevent accidental IP address changes if activated. This setting is only available on domain level (general domain settings)."`
-	IPv6Active                  bool     `json:"ipv6_active,omitempty" jsonschema:"Allow connections via IPv6 to your systems. IPv4 connections will be forwarded in any case."`
-	LimitAllowedHTTPMethod      []string `json:"limit_allowed_http_method,omitempty" jsonschema:"Not selected HTTP methods will be blocked."`
-	LimitTLSVersion             []string `json:"limit_tls_version,omitempty" jsonschema:"Only selected TLS versions will be used."`
-	LogFormat                   string   `json:"log_format,omitempty" jsonschema:"Use a different log format."`
-	MonitoringAlertThreshold    int      `json:"monitoring_alert_threshold,omitempty" jsonschema:"Errors per minute that must occur until a report is sent."`
-	MonitoringContactEMail      string   `json:"monitoring_contact_email,omitempty" jsonschema:"Email addresses, to which monitoring emails should be send. Multiple addresses are separated with a space."`
-	MonitoringSendAlert         bool     `json:"monitoring_send_alert,omitempty" jsonschema:"Enables / disables the upstream error reporting."`
-	MyraSSLHeader               bool     `json:"myra_ssl_header,omitempty" jsonschema:"Activate the X-Myra-SSL Header, which indicates if a request was received via SSL."`
-	MyraSSLCertificate          []string `json:"myra_ssl_certificate,omitempty" jsonschema:"An SSL Certificate (and chain) to be used to make requests on the origin."`
-	MyraSSLCertificateKey       []string `json:"myra_ssl_certificate_key,omitempty" jsonschema:"The private key for the MyraSSLCertificate."`
-	NextUpstream                []string `json:"next_upstream,omitempty" jsonschema:"Specify in which case the current upstream should be marked as down. The values can be arbitrary combined, expect the value off."`
-	OnlyHTTPS                   bool     `json:"only_https,omitempty" jsonschema:"If activated, Myra will forward all requests to the origin using HTTPS regardless of the used protocol of the originating request."`
-	OriginConnectionHeader      string   `json:"origin_connection_header,omitempty" jsonschema:"Sets the Connection header, which is transmitted to the origin with a request."`
-	ProxyCacheBypass            string   `json:"proxy_cache_bypass,omitempty" jsonschema:"Defines the name of the cookie which forces Myra to deliver the response not from cache. The values of the cookie must be not empty or equal to 0 to enable bypassing."`
-	ProxyCacheStale             []string `json:"proxy_cache_stale,omitempty" jsonschema:"Determines in which cases a stale cached response can be used when an error occurs during communication with your server. The values can be arbitrary combined, expect the value off."`
-	ProxyConnectTimeout         int      `json:"proxy_connect_timeout,omitempty" jsonschema:"Defines a timeout in seconds for establishing a connection with the origin server. The timeout cannot be greater than 60 seconds."`
-	ProxyHostHeader             *string  `json:"host_header,omitempty" jsonschema:"Set your own Proxy Host header. The default value is the current subdomain."`
-	ProxyReadTimeout            int      `json:"proxy_read_timeout,omitempty" jsonschema:"Defines a timeout in seconds for reading a response from the proxied server. The timeout is set only between two successive read operations, not for the transmission of the whole response."`
-	RequestLimitBlock           string   `json:"request_limit_block,omitempty" jsonschema:"If activated, the user has to solve a CAPTCHA after exceeding the configured request limit."`
-	RequestLimitLevel           int      `json:"request_limit_level,omitempty" jsonschema:"Define how many requests are allowed from an IP per minute. If this limit is reached, the IP will be blocked. If request_limit_block is enabled, the user can solve a CAPTCHA to unblock his IP address."`
-	RequestLimitReport          bool     `json:"request_limit_report,omitempty" jsonschema:"If activated, an email will be send containing blocked ip addresses that exceeded the configured request limit."`
-	RequestLimitReportEMail     string   `json:"request_limit_report_email,omitempty" jsonschema:"Email addresses, to which request limit emails should be send. Multiple addresses are separated with a space."`
-	Rewrite                     bool     `json:"rewrite,omitempty" jsonschema:"Enable automated JavaScript optimization. All JavaScript is collected and executed at the end of the page. This significantly decreases the DOM content loaded time. If not all JavaScript files should be collected you can set the value to regex and specify the regex to use while matching filenames in the option rewrite_regex."`
-	SourceProtocol              string   `json:"source_protocol,omitempty" jsonschema:"Define which protocol should be used when passing a request to your servers. The value same will ensure that the same protocol is used as in the originating request to Myra. The http and https value will force Myra to always use the specified protocol when connecting."`
-	Spdy                        bool     `json:"spdy,omitempty" jsonschema:"Activate the high performance HTTP/2 protocol. Please note that you have to enable HTTPS for Myra to get HTTP/2 enabled."`
-	SSLClientVerify             string   `json:"ssl_client_verify,omitempty" jsonschema:"Enables verification of client certificates."`
-	SSLClientCertificate        []string `json:"ssl_client_certificate,omitempty" jsonschema:"Specifies files with trusted CA certificates in the PEM format used to verify client certificates."`
-	SSLClientHeaderVerification string   `json:"ssl_client_header_verification,omitempty" jsonschema:"The name of the header, which contains the SSL verification status."`
-	SSLClientHeaderFingerprint  string   `json:"ssl_client_header_fingerprint,omitempty" jsonschema:"Contains the fingerprint of the certificate, the client used to authenticate itself."`
-	SSLOriginPort               int      `json:"ssl_origin_port,omitempty" jsonschema:"Allows to set a port for communication with origin via SSL."`
-	WAFEnable                   bool     `json:"waf_enable,omitempty" jsonschema:"Enables or disables the Web Application Firewall."`
-	WAFLevelsEnable             []string `json:"waf_levels_enable,omitempty" jsonschema:"Level of applied Web Application Firewall rules."`
-	WAFPolicy                   string   `json:"waf_policy,omitempty" jsonschema:"Default policy for the Web Application Firewall in case of rule error."`
+	// AccessLog controls the generation of separate access logs.
+	// If enabled, logs from each edge node are aggregated and available via SFTP.
+	AccessLog bool `json:"access_log,omitempty" jsonschema:"Enables separate access logging. If true, logs are saved and downloadable via SFTP from 'custlogs.myracloud.com'."`
+
+	// AntibotPostFlood enables the detection of POST flood attacks.
+	// Uses a JavaScript-based puzzle to verify the client.
+	AntibotPostFlood bool `json:"antibot_post_flood,omitempty" jsonschema:"Enables detection of POST floods using a JavaScript Proof-of-Work puzzle."`
+
+	// AntibotPostFloodThreshold sets the trigger frequency for the POST flood puzzle.
+	// Higher values mean the puzzle is presented less frequently.
+	AntibotPostFloodThreshold int `json:"antibot_post_flood_threshold,omitempty" jsonschema:"Determines the puzzle frequency. Higher values decrease the likelihood/frequency of the puzzle challenge."`
+
+	// AntibotProofOfWork enables general bot detection via JS puzzles.
+	AntibotProofOfWork bool `json:"antibot_proof_of_work,omitempty" jsonschema:"Enables validation of legitimate clients using a JavaScript Proof-of-Work puzzle."`
+
+	// AntibotProofOfWorkThreshold sets the trigger frequency for the general PoW puzzle.
+	AntibotProofOfWorkThreshold int `json:"antibot_proof_of_work_threshold,omitempty" jsonschema:"Determines the puzzle frequency for general bot detection. Higher values decrease the likelihood/frequency of the challenge."`
+
+	// BalancingMethod defines the strategy for distributing requests to upstream servers.
+	// Valid values: 'round-robin', 'ip_hash', 'least_conn'.
+	BalancingMethod string `json:"balancing_method,omitempty" jsonschema:"The load balancing strategy. Valid values: 'round-robin' (default), 'ip_hash' (sticky IP), 'least_conn' (lowest active connections)."`
+
+	// BlockNotWhitelisted blocks all IPs not explicitly whitelisted in IP filters.
+	BlockNotWhitelisted bool `json:"block_not_whitelisted,omitempty" jsonschema:"Security toggle: If true, blocks ALL IPs that are not explicitly whitelisted in the IP Filter settings."`
+
+	// BlockTorNetwork blocks traffic originating from known Tor exit nodes.
+	BlockTorNetwork bool `json:"block_tor_network,omitempty" jsonschema:"Security toggle: If true, blocks all traffic originating from the Tor anonymity network."`
+
+	// CacheEnabled toggles the caching engine.
+	// Requires defined Cache Settings objects to function effectively.
+	CacheEnabled bool `json:"cache_enabled,omitempty" jsonschema:"Master switch for caching. If true, you must also define specific Cache Setting objects for caching to occur."`
+
+	// CacheRevalidate forces revalidation of expired cache items.
+	// Uses 'If-Modified-Since' and 'If-None-Match' headers.
+	CacheRevalidate bool `json:"cache_revalidate,omitempty" jsonschema:"If true, expired cache items are revalidated with the origin using conditional HTTP headers (If-Modified-Since/If-None-Match)."`
+
+	// CDN is a deprecated setting.
+	// It has no effect and should not be used.
+	CDN bool `json:"cdn,omitempty" jsonschema:"deprecated=true,description=Deprecated setting. Has no effect."`
+
+	// ClientMaxBodySize sets the maximum allowed size of the request body.
+	// Matches the 'Content-Length' header.
+	ClientMaxBodySize int `json:"client_max_body_size,omitempty" jsonschema:"Maximum allowed size of the client request body (in bytes). Requests exceeding this limit are rejected."`
+
+	// CookieName is the name of the cookie used for stickiness.
+	// Only used when BalancingMethod is set to 'cookie_based' (custom).
+	CookieName string `json:"cookie_name,omitempty" jsonschema:"The specific cookie name to use for session stickiness. Only relevant if balancing_method is set to 'cookie_based'."`
+
+	// DiffieHellmanExchange defines the bit size of DH parameters.
+	// Note: Java 6/7 clients do not support >1024 bits.
+	DiffieHellmanExchange int `json:"diffie_hellman_exchange,omitempty" jsonschema:"The size of Diffie-Hellman parameters in bits. Standard is 2048. Use 1024 only if legacy Java 6/7 support is required."`
+
+	// DisableForwardFor disables the automatic injection/replacement of the Forwarded-For header.
+	DisableForwardFor bool `json:"disable_forwarded_for,omitempty" jsonschema:"If true, disables the automatic replacement/injection of the 'X-Forwarded-For' header."`
+
+	// EnableOriginSNI allows SNI (Server Name Indication) when connecting to the origin.
+	EnableOriginSNI bool `json:"enable_origin_sni,omitempty" jsonschema:"Enables SNI (Server Name Indication) for upstream SSL handshakes. Required if the origin serves multiple certificates on one IP."`
+
+	// EnforceCacheTTL overrides origin cache headers with Myra settings.
+	EnforceCacheTTL bool `json:"enforce_cache_ttl,omitempty" jsonschema:"If true, ignores the origin's Cache-Control headers and enforces the TTL configured in Myra settings."`
+
+	// ForwardedForReplacement allows setting a custom name for the client IP header.
+	ForwardedForReplacement string `json:"forwarded_for_replacement,omitempty" jsonschema:"Allows defining a custom header name to transport the original client IP (replacing standard X-Forwarded-For)."`
+
+	// HSTS enables Strict-Transport-Security.
+	// Forces browsers to interact with the domain only via HTTPS.
+	HSTS bool `json:"hsts,omitempty" jsonschema:"Enables HTTP Strict Transport Security (HSTS). Forces browsers to use HTTPS only."`
+
+	// HSTSIncludeSubdomains extends HSTS protection to all subdomains.
+	HSTSIncludeSubdomains bool `json:"hsts_include_subdomains,omitempty" jsonschema:"If true, the HSTS policy applies to all subdomains as well."`
+
+	// HSTSMaxAge defines the duration (in seconds) the HSTS header is valid.
+	HSTSMaxAge int `json:"hsts_max_age,omitempty" jsonschema:"The duration (in seconds) for which the browser should remember to force HTTPS."`
+
+	// HSTSPreload allows the domain to be submitted to the global HSTS preload list.
+	HSTSPreload bool `json:"hsts_preload,omitempty" jsonschema:"If true, allows the domain to be included in the browser hardcoded HSTS preload list (requires valid HTTPS setup)."`
+
+	// HTTPOriginPort sets the port for plain HTTP upstream connections.
+	HTTPOriginPort int `json:"http_origin_port,omitempty" jsonschema:"The TCP port used to connect to the origin server via plain HTTP (usually 80)."`
+
+	// IgnoreNoCache forces caching even if the origin sends 'no-cache' headers.
+	IgnoreNoCache bool `json:"ignore_nocache,omitempty" jsonschema:"If true, the system ignores 'Cache-Control: private/no-store/no-cache' headers from the origin and caches content anyway."`
+
+	// ImageOptimization enables lossless compression for JPEG and PNGs.
+	ImageOptimization bool `json:"image_optimization,omitempty" jsonschema:"Enables automatic lossless compression/optimization of JPEG and PNG images."`
+
+	// IPLock prevents accidental IP address changes via the API/GUI.
+	// Only available at the general domain level.
+	IPLock bool `json:"ip_lock,omitempty" jsonschema:"Protective lock. If true, prevents changes to the domain's IP configuration. Only available on domain level."`
+
+	// IPv6Active enables IPv6 connectivity for the domain.
+	IPv6Active bool `json:"ipv6_active,omitempty" jsonschema:"Enables IPv6 access for clients. IPv6 traffic is translated to IPv4 if the origin is IPv4-only."`
+
+	// LimitAllowedHTTPMethod restricts the HTTP methods accepted by the edge.
+	// E.g., ["GET", "POST"].
+	LimitAllowedHTTPMethod []string `json:"limit_allowed_http_method,omitempty" jsonschema:"List of allowed HTTP methods (e.g., ['GET', 'POST']). All other methods will be blocked (405 Method Not Allowed)."`
+
+	// LimitTLSVersion restricts the allowed TLS protocol versions.
+	// E.g., ["TLSv1.2", "TLSv1.3"].
+	LimitTLSVersion []string `json:"limit_tls_version,omitempty" jsonschema:"List of allowed TLS versions (e.g., ['TLSv1.2', 'TLSv1.3']). Older versions will be rejected."`
+
+	// LogFormat specifies a custom log line format.
+	LogFormat string `json:"log_format,omitempty" jsonschema:"Defines a custom structure for log entries."`
+
+	// MonitoringAlertThreshold sets the error rate (errors/minute) that triggers an alert.
+	MonitoringAlertThreshold int `json:"monitoring_alert_threshold,omitempty" jsonschema:"The threshold of errors per minute required to trigger a monitoring email report."`
+
+	// MonitoringContactEMail is a space-separated list of alert recipients.
+	MonitoringContactEMail string `json:"monitoring_contact_email,omitempty" jsonschema:"Space-separated list of email addresses to receive monitoring alerts."`
+
+	// MonitoringSendAlert enables upstream error reporting.
+	MonitoringSendAlert bool `json:"monitoring_send_alert,omitempty" jsonschema:"Enables sending of email alerts when upstream errors exceed the defined threshold."`
+
+	// MyraSSLHeader injects 'X-Myra-SSL' to indicate a secure connection to the origin.
+	MyraSSLHeader bool `json:"myra_ssl_header,omitempty" jsonschema:"If true, adds the 'X-Myra-SSL' header to requests forwarded to the origin to indicate the client used HTTPS."`
+
+	// MyraSSLCertificate lists certificates to use for upstream authentication.
+	MyraSSLCertificate []string `json:"myra_ssl_certificate,omitempty" jsonschema:"List of SSL Certificates (PEM chain) used for client authentication against the origin server."`
+
+	// MyraSSLCertificateKey lists private keys for the upstream certificates.
+	MyraSSLCertificateKey []string `json:"myra_ssl_certificate_key,omitempty" jsonschema:"List of private keys corresponding to the MyraSSLCertificate."`
+
+	// NextUpstream defines conditions to try the next server in the pool.
+	// Values: error, timeout, invalid_header, http_500, http_502, etc. 'off' disables it.
+	NextUpstream []string `json:"next_upstream,omitempty" jsonschema:"Conditions under which the request is retried on the next upstream server. Examples: 'error', 'timeout', 'http_500'. Use 'off' to disable."`
+
+	// OnlyHTTPS forces all traffic to the origin to use HTTPS.
+	OnlyHTTPS bool `json:"only_https,omitempty" jsonschema:"If true, all requests to the origin are sent via HTTPS, even if the client connected via HTTP."`
+
+	// OriginConnectionHeader defines the 'Connection' header sent to the upstream.
+	OriginConnectionHeader string `json:"origin_connection_header,omitempty" jsonschema:"Sets the value of the 'Connection' header sent to the origin (e.g., 'keep-alive' or 'close')."`
+
+	// ProxyCacheBypass defines a cookie name that forces a cache miss.
+	ProxyCacheBypass string `json:"proxy_cache_bypass,omitempty" jsonschema:"Name of a cookie. If this cookie is present (and not 0/empty), the cache is bypassed."`
+
+	// ProxyCacheStale defines when to serve stale content on upstream errors.
+	// Values: error, timeout, updating, http_500, etc.
+	ProxyCacheStale []string `json:"proxy_cache_stale,omitempty" jsonschema:"Conditions under which expired (stale) cache content is delivered if the origin fails. Examples: 'error', 'timeout', 'updating'."`
+
+	// ProxyConnectTimeout is the timeout (seconds) for connecting to the upstream.
+	// Max: 60s.
+	ProxyConnectTimeout int `json:"proxy_connect_timeout,omitempty" jsonschema:"Timeout in seconds for establishing a TCP connection to the origin. Maximum: 60 seconds."`
+
+	// ProxyHostHeader sets a custom 'Host' header for upstream requests.
+	// Default: current subdomain.
+	ProxyHostHeader *string `json:"host_header,omitempty" jsonschema:"Overrides the 'Host' header sent to the origin. If null/empty, defaults to the request's subdomain."`
+
+	// ProxyReadTimeout is the timeout (seconds) for reading the upstream response.
+	// Applies between two successive read operations.
+	ProxyReadTimeout int `json:"proxy_read_timeout,omitempty" jsonschema:"Timeout in seconds for reading the response from the origin (between two successive read operations)."`
+
+	// RequestLimitBlock enables CAPTCHA challenges for rate-limited IPs.
+	RequestLimitBlock string `json:"request_limit_block,omitempty" jsonschema:"Controls behavior when limit is reached. If set, users must solve a CAPTCHA to unblock their IP."`
+
+	// RequestLimitLevel sets the max requests per minute per IP.
+	RequestLimitLevel int `json:"request_limit_level,omitempty" jsonschema:"Rate limit threshold: Maximum requests allowed per IP per minute. Exceeding this blocks the IP."`
+
+	// RequestLimitReport enables email reporting for rate limits.
+	RequestLimitReport bool `json:"request_limit_report,omitempty" jsonschema:"If true, sends email reports containing IPs that exceeded the request limit."`
+
+	// RequestLimitReportEMail is a space-separated list of rate-limit report recipients.
+	RequestLimitReportEMail string `json:"request_limit_report_email,omitempty" jsonschema:"Space-separated list of email addresses to receive request limit reports."`
+
+	// Rewrite enables automated JavaScript optimization (bundling/deferring).
+	Rewrite bool `json:"rewrite,omitempty" jsonschema:"Enables automatic JavaScript optimization (bundling and deferred execution) to improve page load times."`
+
+	// SourceProtocol defines the protocol scheme for upstream connections.
+	// Values: 'same' (match client), 'http', 'https'.
+	SourceProtocol string `json:"source_protocol,omitempty" jsonschema:"Protocol policy for origin connections. Valid values: 'same' (match client protocol), 'http' (force plain), 'https' (force SSL)."`
+
+	// Spdy enables HTTP/2.
+	// Note: Requires HTTPS to be active.
+	Spdy bool `json:"spdy,omitempty" jsonschema:"Enables the HTTP/2 protocol (formerly SPDY). Note: Requires active HTTPS."`
+
+	// SSLClientVerify enables mTLS client certificate verification.
+	SSLClientVerify string `json:"ssl_client_verify,omitempty" jsonschema:"Controls Mutual TLS (mTLS). Enables verification of client certificates against trusted CAs."`
+
+	// SSLClientCertificate is a list of trusted CA certificates (PEM) for mTLS.
+	SSLClientCertificate []string `json:"ssl_client_certificate,omitempty" jsonschema:"List of trusted CA certificates (PEM format) used to verify client certificates (mTLS)."`
+
+	// SSLClientHeaderVerification is the header name containing the verification result.
+	SSLClientHeaderVerification string `json:"ssl_client_header_verification,omitempty" jsonschema:"Header name that will contain the SSL verification status (e.g., 'SUCCESS', 'FAILED') forwarded to the origin."`
+
+	// SSLClientHeaderFingerprint is the header name containing the client cert fingerprint.
+	SSLClientHeaderFingerprint string `json:"ssl_client_header_fingerprint,omitempty" jsonschema:"Header name that will contain the SHA fingerprint of the client certificate."`
+
+	// SSLOriginPort sets the port for SSL upstream connections.
+	SSLOriginPort int `json:"ssl_origin_port,omitempty" jsonschema:"The TCP port used to connect to the origin server via HTTPS (usually 443)."`
+
+	// WAFEnable toggles the Web Application Firewall.
+	WAFEnable bool `json:"waf_enable,omitempty" jsonschema:"Master switch: Enables or disables the Web Application Firewall (WAF) for this domain."`
+
+	// WAFLevelsEnable selects the WAF rule sets to apply.
+	// E.g., ["wafrules_sql", "wafrules_xss"].
+	WAFLevelsEnable []string `json:"waf_levels_enable,omitempty" jsonschema:"List of active WAF rule sets (e.g., ['wafrules_sql', 'wafrules_xss'])."`
+
+	// WAFPolicy defines the default action if a rule matches.
+	// Values: 'block', 'allow', 'log'.
+	WAFPolicy string `json:"waf_policy,omitempty" jsonschema:"Default action when a WAF rule is triggered. Valid values: 'block', 'allow', 'log'."`
 }
 
 // ListSettings returns a Setting struct containing the settings for the passed subdomain

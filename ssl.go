@@ -44,39 +44,102 @@ func getSSLMethods() map[string]APIMethod {
 	}
 }
 
-// Certificate strict ...
+// Certificate serves as the base structure for SSL certificate data.
+// It contains the raw PEM data and extracted metadata like validity dates and fingerprints.
 type Certificate struct {
-	ID           int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Certificate it is necessary to add this attribute to your object."`
-	Created      *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. It will be created by the server after creating a new Certificate object. This value is only informational so it is not necessary to add this an attribute to any API call."`
-	Modified     *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. This value is always a date type with an ISO 8601 format."`
-	Subject      string          `json:"subject" jsonschema:"Shows the subject of the uploaded certificate."`
-	Algorithm    string          `json:"algorithm" jsonschema:"Contains the signature algorithm."`
-	ValidFrom    *types.DateTime `json:"validFrom" jsonschema:"Time when the certificate starts to be valid. This property is a date type with an ISO 8601 format."`
-	ValidTo      *types.DateTime `json:"validTo" jsonschema:"Time when the certificate expires. This property is a date type with an ISO 8601 format."`
-	Fingerprint  string          `json:"fingerprint" jsonschema:"Fingerprint of the certificate."`
-	SerialNumber string          `json:"serialNumber" jsonschema:"Serial number of the certificate."`
-	Cert         string          `json:"cert,omitempty" jsonschema:"Cert contains the certificate."`
+	// ID is the unique identifier for the certificate.
+	// This value is server-generated and required for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the certificate. Server-generated; required for updates and deletes, but ignored during creation."`
+
+	// Created indicates when the certificate object was added to the system.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// Subject is the Common Name (CN) or subject extracted from the certificate.
+	// Read-only; automatically parsed from the uploaded PEM data.
+	Subject string `json:"subject" jsonschema:"The Common Name (CN) extracted from the certificate. Read-only; automatically populated by the server."`
+
+	// Algorithm specifies the signature algorithm used (e.g., SHA256withRSA).
+	// Read-only; automatically parsed from the uploaded PEM data.
+	Algorithm string `json:"algorithm" jsonschema:"The signature algorithm (e.g., 'SHA256withRSA'). Read-only; automatically populated by the server."`
+
+	// ValidFrom indicates the start date of the certificate's validity period.
+	// Read-only; automatically parsed from the uploaded PEM data.
+	ValidFrom *types.DateTime `json:"validFrom" jsonschema:"The timestamp (ISO 8601) when the certificate becomes valid. Read-only; automatically populated by the server."`
+
+	// ValidTo indicates the expiration date of the certificate.
+	// Read-only; automatically parsed from the uploaded PEM data.
+	ValidTo *types.DateTime `json:"validTo" jsonschema:"The timestamp (ISO 8601) when the certificate expires. Read-only; automatically populated by the server."`
+
+	// Fingerprint is the unique hash (SHA1/SHA256) of the certificate.
+	// Read-only; automatically parsed from the uploaded PEM data.
+	Fingerprint string `json:"fingerprint" jsonschema:"The unique fingerprint hash of the certificate. Read-only; automatically populated by the server."`
+
+	// SerialNumber is the serial number assigned by the CA.
+	// Read-only; automatically parsed from the uploaded PEM data.
+	SerialNumber string `json:"serialNumber" jsonschema:"The serial number assigned by the Certificate Authority. Read-only; automatically populated by the server."`
+
+	// Cert contains the raw public certificate data in PEM format.
+	// This is the primary input field for uploading a certificate.
+	Cert string `json:"cert,omitempty" jsonschema:"The raw public certificate data in PEM format (-----BEGIN CERTIFICATE-----). Required when uploading a new certificate."`
 }
 
-// SSLCertificate struct ...
+// SSLCertificate represents a full SSL configuration object, including the private key
+// and assignments to specific subdomains. It embeds the base Certificate metadata.
 type SSLCertificate struct {
 	*Certificate
-	SubjectAlternatives  []string          `json:"subjectAlternatives" jsonschema:"Contains a list of subdomains which can be validated using this certificate. This list also contains the CN of the subject."`
-	Intermediates        []SSLIntermediate `json:"intermediates,omitempty" jsonschema:"Contains a list of intermediate certificates to be used in order to generate a chain of trust. The intermediates are filtered and sorted based on subject / issuer relationship. Uploading a partial or a completely different chain will result in an empty list."`
-	Wildcard             bool              `json:"wildcard" jsonschema:"This property shows whether the certificate is valid for multiple subdomains of a domain. The certificate needs to have a *.domain.tld subject to return true."`
-	ExtendedValidation   bool              `json:"extendedValidation" jsonschema:"True if the browser handles the certificate as extended validation. We use the OIDs from Google Chrome™ to measure the extended validation level."`
-	Subdomains           []string          `json:"subdomains,omitempty" jsonschema:"A list of subdomains assigned to this certificate."`
-	Key                  string            `json:"key,omitempty" jsonschema:"The unencrypted private key that matches your certificate."`
-	CertRefreshForced    bool              `json:"certRefreshForced" jsonschema:"Every time a certificate is refreshed with another non-matching certificate the operation is interrupted with an error. Setting certRefreshForced will ignore such errors and refresh the certificate anyway. Please use it only, if you are sure you can ignore an error when refreshing a certificate."`
-	CertToRefresh        int               `json:"certToRefresh,omitempty" jsonschema:"This property allows you to update an already existing certificate with a new one without changing IP addresses, the value has to be the ID of the cert that should be refreshed."`
-	SslConfigurationName string            `json:"sslConfigurationName,omitempty" jsonschema:"This property allows you to set a specific ssl configuration. default Myra-Global-TLS-Default, valid values are Myra-Global-TLS-Default, 2023-mozilla-intermediate, 2023-mozilla-modern."`
-	Managed              bool              `json:"managed" jsonschema:"Indicates wether this certificate is managed by Myra or not."`
+
+	// SubjectAlternatives lists all SANs (Subject Alternative Names) covered by this certificate.
+	// Read-only; automatically parsed from the uploaded PEM data.
+	SubjectAlternatives []string `json:"subjectAlternatives" jsonschema:"List of Subject Alternative Names (SANs) and the CN covered by this certificate. Read-only; automatically populated by the server."`
+
+	// Intermediates contains the chain of intermediate certificates.
+	// The system automatically sorts and filters these based on the uploaded certificate.
+	Intermediates []SSLIntermediate `json:"intermediates,omitempty" jsonschema:"List of intermediate certificates required for the chain of trust. Read-only; automatically generated/sorted by the server upon upload."`
+
+	// Wildcard indicates if the certificate is a wildcard certificate (*.domain.tld).
+	// Read-only; automatically determined from the subject.
+	Wildcard bool `json:"wildcard" jsonschema:"True if the certificate is a wildcard certificate (Subject starts with '*'). Read-only."`
+
+	// ExtendedValidation indicates if the certificate has EV status (green bar).
+	// Read-only; determined via OID matching (e.g., Google Chrome™ standards).
+	ExtendedValidation bool `json:"extendedValidation" jsonschema:"True if the certificate is detected as Extended Validation (EV). Read-only."`
+
+	// Subdomains is a list of FQDNs in the Myra system assigned to this certificate.
+	Subdomains []string `json:"subdomains,omitempty" jsonschema:"List of subdomains (FQDNs) explicitly assigned to use this certificate."`
+
+	// Key is the private key associated with the certificate in PEM format.
+	// Required for new uploads. Write-only (usually not returned in GET requests for security).
+	Key string `json:"key,omitempty" jsonschema:"The unencrypted private key in PEM format (-----BEGIN RSA PRIVATE KEY-----). Required when uploading a new certificate."`
+
+	// CertRefreshForced allows overwriting an existing certificate even if the new one matches differently.
+	// Use with caution to prevent accidental interruptions.
+	CertRefreshForced bool `json:"certRefreshForced" jsonschema:"Safety override flag. If true, forces the certificate refresh even if validation errors occur (e.g., non-matching subjects). Use with caution."`
+
+	// CertToRefresh is the ID of an existing certificate to replace/rotate.
+	// Used to update a certificate without changing assigned IP addresses.
+	CertToRefresh int `json:"certToRefresh,omitempty" jsonschema:"The ID of an existing certificate object to replace. Use this to rotate certificates while preserving IP assignments."`
+
+	// SslConfigurationName specifies the TLS protocol and cipher suite profile.
+	// Valid values: 'Myra-Global-TLS-Default', '2023-mozilla-intermediate', '2023-mozilla-modern'.
+	SslConfigurationName string `json:"sslConfigurationName,omitempty" jsonschema:"The TLS configuration profile. Valid values: 'Myra-Global-TLS-Default', '2023-mozilla-intermediate', '2023-mozilla-modern'."`
+
+	// Managed indicates if the certificate is automatically managed/renewed by the Myra platform (e.g., Let's Encrypt).
+	// Read-only.
+	Managed bool `json:"managed" jsonschema:"Indicates if this certificate is automatically managed and renewed by the Myra platform. Read-only."`
 }
 
-// SSLIntermediate struct ...
+// SSLIntermediate represents an intermediate CA certificate in the chain.
 type SSLIntermediate struct {
 	*Certificate
-	Issuer string `json:"issuer"`
+
+	// Issuer is the name of the entity that signed this intermediate certificate.
+	Issuer string `json:"issuer" jsonschema:"The name of the Issuer (CA) that signed this certificate. Read-only."`
 }
 
 // GetSSLCertificate returns a single SSL certificate with/for the given identifier

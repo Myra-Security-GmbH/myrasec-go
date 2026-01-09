@@ -37,19 +37,51 @@ func getCacheSettingMethods() map[string]APIMethod {
 	}
 }
 
-// CacheSetting ...
+// CacheSetting represents a single rule definition for caching behavior.
+// It determines how requests are matched (via path patterns) and how long
+// responses are retained (TTL).
 type CacheSetting struct {
-	ID          int             `json:"id,omitempty" jsonschema:"Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a cache setting it is necessary to add this attribute to your object."`
-	Created     *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call."`
-	Modified    *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format."`
-	Type        string          `json:"type" jsonschema:"This will tell the server how to match the given path against a request. Available options are ’prefix’, ’suffix’ and ’exact’."`
-	Path        string          `json:"path" jsonschema:"A request will be matched against this path to decide if this request is cacheable or not. It is possible to write a regexp in this attribute. It is not allowed to use start ’ˆ’ or end ’$’ regexp characters as it they are generated depending on the given type."`
-	TTL         int             `json:"ttl" jsonschema:"Time to live limits the lifespan of a cached response for the given path. This is a numeric value and is given in seconds. Special case is ’like origin server’, which uses the TTL returned by your origin server."`
-	NotFoundTTL int             `json:"notFoundTtl" jsonschema:"How long an object will be cached. Origin responses with the HTTP codes 404 will be cached."`
-	Sort        int             `json:"sort,omitempty" jsonschema:"The order in which the cache rules take action as long as the cache sorting is activated."`
-	Enabled     bool            `json:"enabled,omitempty" jsonschema:"Define wether this cache setting is enabled or not."`
-	Enforce     bool            `json:"enforce,omitempty" jsonschema:"Enforce cache TTL allows you to set the cache TTL (Cache Control: max-age) in the backend regardless of the response sent from your Origin."`
-	Comment     string          `json:"comment,omitempty" jsonschema:"A comment to describe this cache setting."`
+	// ID is the unique identifier for the cache setting.
+	// This value is server-generated and required for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the cache setting. Server-generated; required for updates and deletes, but ignored during creation."`
+
+	// Created indicates when the setting was established.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). This is a server-managed, read-only value."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// Type defines the matching strategy for the path.
+	// Valid options are "prefix", "suffix", and "exact".
+	Type string `json:"type" jsonschema:"The strategy used to match the request path. Allowed values: 'prefix', 'suffix', 'exact'."`
+
+	// Path is the pattern used to identify requests for this rule.
+	// It supports regular expressions but must not contain start ('^') or end ('$') anchors,
+	// as these are implied by the chosen Type.
+	Path string `json:"path" jsonschema:"The URI path or regex pattern to match. Note: Do not use start ('^') or end ('$') anchors, as they are automatically handled based on the selected 'type'."`
+
+	// TTL (Time To Live) defines the cache duration in seconds.
+	TTL int `json:"ttl" jsonschema:"The Time To Live (TTL) in seconds. Defines the lifespan of the cached response."`
+
+	// NotFoundTTL defines the cache duration for 404 responses.
+	NotFoundTTL int `json:"notFoundTtl" jsonschema:"The duration in seconds to cache 404 (Not Found) responses."`
+
+	// Sort controls the priority of the rule execution.
+	// Lower numbers typically indicate higher priority when sorting is active.
+	Sort int `json:"sort,omitempty" jsonschema:"The execution priority order of the cache rule."`
+
+	// Enabled determines if the rule is currently active.
+	Enabled bool `json:"enabled,omitempty" jsonschema:"Determines whether this cache setting is active."`
+
+	// Enforce overrides the Origin's Cache-Control headers.
+	// If true, the backend uses the defined TTL regardless of the Origin's instructions.
+	Enforce bool `json:"enforce,omitempty" jsonschema:"If true, overrides the Origin server's Cache-Control headers and enforces the configured TTL."`
+
+	// Comment is an optional text to describe the purpose of this rule.
+	Comment string `json:"comment,omitempty" jsonschema:"An optional comment or description for this cache setting."`
 }
 
 // ListCacheSettings returns a slice containing all visible cache settings for a subdomain

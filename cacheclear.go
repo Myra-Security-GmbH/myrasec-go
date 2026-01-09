@@ -21,11 +21,21 @@ func getCacheClearMethods() map[string]APIMethod {
 	}
 }
 
-// CacheClear ...
+// CacheClear defines the parameters for invalidating cached content.
+// It allows targeting specific resources or performing bulk purges based on
+// domain and path patterns.
 type CacheClear struct {
-	FQDN      string `json:"fqdn,omitempty" jsonschema:"The specific name of the domain or subdomain. If the attribute is not set, the whole cache of the domain will be cleared."`
-	Resource  string `json:"resource" jsonschema:"A specific path to be cache-cleared. Wildcards can be used. (The path is relative to the root of the website)."`
-	Recursive bool   `json:"recursive" jsonschema:"A boolean value to define if the cache purge should be done recursively."`
+	// FQDN specifies the Fully Qualified Domain Name (e.g., "www.example.com").
+	// If left empty, the purge operation applies to the entire domain scope.
+	FQDN string `json:"fqdn,omitempty" jsonschema:"The Fully Qualified Domain Name (e.g., 'www.example.com'). If omitted, the entire domain cache is cleared."`
+
+	// Resource indicates the relative path to invalidate.
+	// It supports wildcard characters (e.g., "*") for pattern matching.
+	Resource string `json:"resource" jsonschema:"The relative path or pattern to purge (e.g., '/images/*' or '/index.html'). Supports wildcards and is relative to the website root."`
+
+	// Recursive determines whether the purge applies to sub-directories.
+	// If true, the operation extends to all resources nested under the target path.
+	Recursive bool `json:"recursive" jsonschema:"Enables recursive purging. If true, the operation clears the target resource and all nested sub-resources."`
 }
 
 // ClearCache ...
