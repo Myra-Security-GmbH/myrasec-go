@@ -52,24 +52,24 @@ func getTagMethods() map[string]APIMethod {
 
 // Tag ...
 type Tag struct {
-	ID          int             `json:"id,omitempty"`
-	Created     *types.DateTime `json:"created,omitempty"`
-	Modified    *types.DateTime `json:"modified,omitempty"`
-	Name        string          `json:"name"`
-	Type        string          `json:"type"`
+	ID          int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Tag it is necessary to add this attribute to your object."`
+	Created     *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new Tag object. This value is informational so it is not necessary to add this attribute to any API call."`
+	Modified    *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an ISO 8601 format."`
+	Name        string          `json:"name" jsonschema:"Identifies the tag by its name."`
+	Type        string          `json:"type" jsonschema:"Defines the type of the tag and must be one of CONFIG, WAF, CACHE, RATE_LIMIT, INFORMATION ."`
 	Assignments []TagAssignment `json:"assignments"`
-	Sort        int             `json:"sort,omitempty"`
-	Global      bool            `json:"global,omitempty"`
+	Sort        int             `json:"sort,omitempty" jsonschema:"Defines the order in which WAF tags are processed."`
+	Global      bool            `json:"global,omitempty" jsonschema:"Identify global tags. It is not possible to edit a global tags. It is only possible to assign (sub)domains to a global tag."`
 }
 
 // TagAssignment ...
 type TagAssignment struct {
-	ID            int             `json:"id,omitempty"`
-	Created       *types.DateTime `json:"created,omitempty"`
-	Modified      *types.DateTime `json:"modified,omitempty"`
-	Type          string          `json:"type"`
-	Title         string          `json:"title"`
-	SubDomainName string          `json:"subDomainName"`
+	ID            int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a TagAssignment it is necessary to add this attribute to your object."`
+	Created       *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new TagAssignment object. This value is informational so it is not necessary to add this attribute to any API call."`
+	Modified      *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an ISO 8601 format."`
+	Type          string          `json:"type" jsonschema:"Defines the type of the tag assignment and must be one of DOMAIN, SUBDOMAIN ."`
+	Title         string          `json:"title" jsonschema:"Identifies the tag assignment by its domain name."`
+	SubDomainName string          `json:"subDomainName" jsonschema:"Only set on SUBDOMAIN tag assignments."`
 }
 
 // GetTag returns a single tag for the given identifier

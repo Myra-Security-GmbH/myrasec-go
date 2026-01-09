@@ -46,15 +46,15 @@ func getIPFilterMethods() map[string]APIMethod {
 
 // IPFilter ...
 type IPFilter struct {
-	ID            int             `json:"id,omitempty"`
-	Created       *types.DateTime `json:"created,omitempty"`
-	Modified      *types.DateTime `json:"modified,omitempty"`
-	ExpireDate    *types.DateTime `json:"expireDate,omitempty"`
-	Value         string          `json:"value"`
-	Type          string          `json:"type"`
-	Comment       string          `json:"comment,omitempty"`
-	Enabled       bool            `json:"enabled"`
-	SubDomainName string          `json:"subDomainName"`
+	ID            int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an IP filter it is necessary to add this attribute to your object."`
+	Created       *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call."`
+	Modified      *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format."`
+	ExpireDate    *types.DateTime `json:"expireDate,omitempty" jsonschema:"Expire date schedules the deaktivation of the IP filter. If none is set, the filter will be active until manual deactivation."`
+	Value         string          `json:"value" jsonschema:"The value of an IP filter rule can contain a single IP address or a CIDR notation. IPv4 and IPv6 are both supported. An IP filter for IPv6 can only contain a /128 subnet."`
+	Type          string          `json:"type" jsonschema:"This specifies how the IP filter is applied. Valid values are BLACKLIST, WHITELIST or WHITELIST_REQUEST_LIMITER."`
+	Comment       string          `json:"comment,omitempty" jsonschema:"A comment to describe this IP filter."`
+	Enabled       bool            `json:"enabled" jsonschema:"Enable or disable an IP filter."`
+	SubDomainName string          `json:"subDomainName" jsonschema:"Identifies the subdomain via a FQDN (Full Qualified Domain Name) where this IP filter belongs to. This value cannot be changed through the object’s attribute as it is set via URL parameter."`
 }
 
 // GetIPFilter returns a single ip filter with/for the given identifier

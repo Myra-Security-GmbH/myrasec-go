@@ -23,9 +23,9 @@ func getCacheClearMethods() map[string]APIMethod {
 
 // CacheClear ...
 type CacheClear struct {
-	FQDN      string `json:"fqdn,omitempty"`
-	Resource  string `json:"resource"`
-	Recursive bool   `json:"recursive"`
+	FQDN      string `json:"fqdn,omitempty" jsonschema:"The specific name of the domain or subdomain. If the attribute is not set, the whole cache of the domain will be cleared."`
+	Resource  string `json:"resource" jsonschema:"A specific path to be cache-cleared. Wildcards can be used. (The path is relative to the root of the website)."`
+	Recursive bool   `json:"recursive" jsonschema:"A boolean value to define if the cache purge should be done recursively."`
 }
 
 // ClearCache ...

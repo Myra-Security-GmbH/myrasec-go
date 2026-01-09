@@ -12,10 +12,10 @@ type MaintenanceTemplate struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set, while inserting a new object. To update or delete a Maintenance it is necessary to add this attribute to your object. |
+| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set, while inserting a new object. To update or delete a maintenance template it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. It will be created by the server after creating a new Maintenance object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. This value is always a date type with an `ISO 8601` format. |
-| `Name` | string | A name to identify your maintenance template |
+| `Name` | string | A name to identify your maintenance template. |
 | `Content` | string | HTML content to show as maintenance page. Please note that it is not possible to include resources from the domain you have set to maintenance mode. If your maintenance page contains images use a different domain or use inline base64 encoded images. |
 
 

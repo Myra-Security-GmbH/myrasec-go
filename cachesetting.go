@@ -39,17 +39,17 @@ func getCacheSettingMethods() map[string]APIMethod {
 
 // CacheSetting ...
 type CacheSetting struct {
-	ID          int             `json:"id,omitempty"`
-	Created     *types.DateTime `json:"created,omitempty"`
-	Modified    *types.DateTime `json:"modified,omitempty"`
-	Type        string          `json:"type"`
-	Path        string          `json:"path"`
-	TTL         int             `json:"ttl"`
-	NotFoundTTL int             `json:"notFoundTtl"`
-	Sort        int             `json:"sort,omitempty"`
-	Enabled     bool            `json:"enabled,omitempty"`
-	Enforce     bool            `json:"enforce,omitempty"`
-	Comment     string          `json:"comment,omitempty"`
+	ID          int             `json:"id,omitempty" jsonschema:"Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a cache setting it is necessary to add this attribute to your object."`
+	Created     *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call."`
+	Modified    *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format."`
+	Type        string          `json:"type" jsonschema:"This will tell the server how to match the given path against a request. Available options are ’prefix’, ’suffix’ and ’exact’."`
+	Path        string          `json:"path" jsonschema:"A request will be matched against this path to decide if this request is cacheable or not. It is possible to write a regexp in this attribute. It is not allowed to use start ’ˆ’ or end ’$’ regexp characters as it they are generated depending on the given type."`
+	TTL         int             `json:"ttl" jsonschema:"Time to live limits the lifespan of a cached response for the given path. This is a numeric value and is given in seconds. Special case is ’like origin server’, which uses the TTL returned by your origin server."`
+	NotFoundTTL int             `json:"notFoundTtl" jsonschema:"How long an object will be cached. Origin responses with the HTTP codes 404 will be cached."`
+	Sort        int             `json:"sort,omitempty" jsonschema:"The order in which the cache rules take action as long as the cache sorting is activated."`
+	Enabled     bool            `json:"enabled,omitempty" jsonschema:"Define wether this cache setting is enabled or not."`
+	Enforce     bool            `json:"enforce,omitempty" jsonschema:"Enforce cache TTL allows you to set the cache TTL (Cache Control: max-age) in the backend regardless of the response sent from your Origin."`
+	Comment     string          `json:"comment,omitempty" jsonschema:"A comment to describe this cache setting."`
 }
 
 // ListCacheSettings returns a slice containing all visible cache settings for a subdomain

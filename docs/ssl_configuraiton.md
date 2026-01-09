@@ -11,10 +11,10 @@ type SslConfiguration struct {
 
 | Field | Type | Description |
 |---|---|---|
-| `ID` | int | Identifier of that configuration |
-| `Name` | string | Unique string identifier of this configuration |
-| `Ciphers` | string | List of ciphers for this configuration |
-| `Protocols` | string | List of protocols for this configuration |
+| `ID` | int | Identifier of that configuration. |
+| `Name` | string | Unique string identifier of this configuration. |
+| `Ciphers` | string | List of ciphers for this configuration. |
+| `Protocols` | string | List of protocols for this configuration. |
 
 ## List configurations
 To get a list of all valid SSL configurations you can simply call this method:

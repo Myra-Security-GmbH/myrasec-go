@@ -1,6 +1,6 @@
 # WAF Rule
 ```go
-type Rule struct {
+type WAFRule struct {
 	ID            int             `json:"id,omitempty"`
 	Created       *types.DateTime `json:"created,omitempty"`
 	Modified      *types.DateTime `json:"modified,omitempty"`
@@ -22,20 +22,20 @@ type Rule struct {
 ```
 | Field | Type | Description |
 | --- | --- | --- |
-| `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a WAFRule it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created will be created by the server after creating a new WAFRule object. This value is informational so it is not necessary to add this attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
-| `ExpireDate` | *types.DateTime | ExpireDate describes how long a WAFRule is valid, and when it will expire |
-| `Name` | string | Identifies the tag by its name. |
-| `Description` | string | The Description will explain what the WAFRule is for |
-| `Direction` | string | The direction can be `in` or `out` |
-| `LogIdentifier` | string | A comment to identify the matching rule in the access log. |
-| `Sort` | int | Defines the sorting of WAFRules |
+| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a WAFRule it is necessary to add this attribute to your object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new WAFRule object. This value is informational so it is not necessary to add this attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
+| `ExpireDate` | *types.DateTime | ExpireDate describes how long a WAFRule is valid, and when it will expire. |
+| `Name` | string | Identifies the WAF rule by its name. |
+| `Description` | string | The Description will explain what the WAFRule is for. |
+| `Direction` | string | The direction can be `in` (for Request) or `out` (for Response). |
+| `LogIdentifier` | string | A string to identify the matching rule in the access log. |
+| `Sort` | int | Defines the sorting of WAFRules. |
 | `Sync` | bool | ... |
 | `ProcessNext` | bool | After a rule has been applied, the rule chain will be executed as determined. |
-| `Enabled` | bool | Describes if the rule is enabled or not |
-| `Actions` | *[]WAFAction | List of WAF actions |
-| `Conditions` | *[]WAFCondition | List of WAF conditions |
+| `Enabled` | bool | Describes if the rule is enabled or not. |
+| `Actions` | *[]WAFAction | List of WAF actions. |
+| `Conditions` | *[]WAFCondition | List of WAF conditions. |
 
 ```go
 type WAFAction struct {
@@ -52,15 +52,15 @@ type WAFAction struct {
 ```
 | Field | Type | Description |
 | --- | --- | --- |
-| `ID` | int | ID of the WAFAction |
-| `Created` | *types.DateTime | Created will be created by the server after creating a new WAFRule action object. This value is informational so it is not necessary to add this attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
-| `ForeceCustomValues` | bool | This attributes determines number of input fields when utilised (0=none, 1=value, 2=key+value) |
-| `AvailablePhases` | int | This attributes determines the support for different phases (1=request, 2=response, 3=both) |
-| `Name` | string | Display name of the action |
-| `Type` | string | [Type of the action](./waf_action.md) |
-| `CustomKey` | string | should be set by user in case `forceCustomValues` is `true` |
-| `Value` | string | Default value for the action, typically empty string (has to be set by user when utilised) |
+| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a WAF Action it is necessary to add this attribute to your object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new WAFRule action object. This value is informational so it is not necessary to add this attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
+| `ForeceCustomValues` | bool | This attributes determines number of input fields when utilised (0=none, 1=value, 2=key+value). |
+| `AvailablePhases` | int | This attributes determines the support for different phases (1=request, 2=response, 3=both). |
+| `Name` | string | Display name of the action. |
+| `Type` | string | [Type of the action.](./waf_action.md) |
+| `CustomKey` | string | should be set by user in case `forceCustomValues` is `true`. |
+| `Value` | string | Default value for the action, typically empty string (has to be set by user when utilised). |
 
 ```go
 type WAFCondition struct {
@@ -79,17 +79,17 @@ type WAFCondition struct {
 ```
 | Field | Type | Description |
 | --- | --- | --- |
-| `ID` | int | ID of the WAFCondition |
-| `Created` | *types.DateTime | Created will be created by the server after creating a new WAFRule condition object. This value is informational so it is not necessary to add this attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
-| `ForeceCustomValues` | bool | This attributes determines number of input fields when utilised (0=none, 1=value, 2=key+value) |
-| `AvailablePhases` | int | This attributes determines the support for different phases (1=request, 2=response, 3=both) |
-| `Alias` | string | Display name of the condition |
-| `Category` | string | Category of the WAF confition |
-| `MatchingType` | string | Describes how the values have to match, possible values are `EXACT`, `IREGEX`, `REGEX`, `PREFIX`, `SUFFIX`, `NOT EXACT`, `NOT IREGEX`, `NOT REGEX`, `NOT PREFIX`, `NOT SUFFIX` |
-| `Name` | string | [Type of the condition](./waf_condition.md) |
-| `Key` | string | should be set by user in case `forceCustomValues` is `true` |
-| `Value` | string | Default value for the condition, typically empty string (has to be set by user when utilised) |
+| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a WAF Condition it is necessary to add this attribute to your object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new WAFRule condition object. This value is informational so it is not necessary to add this attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
+| `ForeceCustomValues` | bool | This attributes determines number of input fields when utilised (0=none, 1=value, 2=key+value). |
+| `AvailablePhases` | int | This attributes determines the support for different phases (1=request, 2=response, 3=both). |
+| `Alias` | string | Display name of the condition. |
+| `Category` | string | Category of the WAF confition. |
+| `MatchingType` | string | Describes how the values have to match, possible values are `EXACT`, `IREGEX`, `REGEX`, `PREFIX`, `SUFFIX`, `NOT EXACT`, `NOT IREGEX`, `NOT REGEX`, `NOT PREFIX`, `NOT SUFFIX`. |
+| `Name` | string | [Type of the condition.](./waf_condition.md) |
+| `Key` | string | Should be set by user in case `forceCustomValues` is `true`. |
+| `Value` | string | Default value for the condition, typically empty string (has to be set by user when utilised). |
 
 ## Create
 To create a new WAFRule it is necccessary to sent a WAFRule object without the attributes "id" and "modified". Both attributes will be generated by the server and returned after a successful insert is done.

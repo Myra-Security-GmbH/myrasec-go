@@ -21,10 +21,10 @@ func getIPRangeMethods() map[string]APIMethod {
 
 // IPRange ...
 type IPRange struct {
-	ID        int             `json:"id,omitempty"`
-	Created   *types.DateTime `json:"created,omitempty"`
-	Modified  *types.DateTime `json:"modified,omitempty"`
-	Network   string          `json:"network"`
+	ID        int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object."`
+	Created   *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format."`
+	Modified  *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. This value is always a date type with an ISO 8601 format."`
+	Network   string          `json:"network" jsonschema:"The network (CIDR notation)."`
 	ValidFrom *types.DateTime `json:"validFrom,omitempty"`
 	ValidTo   *types.DateTime `json:"validTo,omitempty"`
 	Enabled   bool            `json:"enabled"`

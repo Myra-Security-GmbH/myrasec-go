@@ -21,13 +21,13 @@ type WaitingRoom struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | Id is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Waiting Room it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created will be set by the server after creating a new cache setting object. This value is only informational, so it is not necessary to add this as an attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always need to add the modified timestamp for updates and deletes. |
+| `ID` | int | ID is a unique iDentifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Waiting Room it is necessary to add this attribute to your object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be set by the server after creating a new cache setting object. This value is only informational, so it is not necessary to add this as an attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always need to add the modified timestamp for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `Name` | string | Name of the Waiting Room. |
 | `VhostId` | int | ID of the VHost for the Waiting Room. |
 | `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) that the Waiting Room belongs to. This value is optional and is determined from the VHost based on its ID. |
-| `MaxConcurrent` | int | The maximum number of visitors allowed on the Origin server at the same time. As soon as this value is exceeded, each additional visitor is directed to the waiting room. |
+| `MaxConcurrent` | int | The maximum number of visitors allowed on the Origin server at the same time. As soon as this value is exceeded, each additional visitor is directed to the Waiting Room. |
 | `SessionTimeout` | int | Defines the duration in seconds during which an inactive session may access the Origin server. If the same session does not access the server again during this time, access for that session will be disabled. |
 | `WaitRefresh` | int | Defines the duration in seconds after which the waiting page is reloaded. If the session is not accessed again after the third reload, the session will be removed from the queue. |
 | `Paths` | []string | Defines a specific path within the apex domain or subdomain for which the waiting room is to be valid. The path needs to be defined as a regular expression. The default value in the PATH field is ".". If the default value "." is used as the path, the waiting pages and settings of all waiting rooms with a specific path of the corresponding apex domain or subdomain are overwritten. |

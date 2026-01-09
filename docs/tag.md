@@ -14,13 +14,13 @@ type Tag struct {
 ```
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Tag it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created will be created by the server after creating a new Tag object. This value is informational so it is not necessary to add this attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
+| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Tag it is necessary to add this attribute to your object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new Tag object. This value is informational so it is not necessary to add this attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `Name` | string | Identifies the tag by its name. |
-| `Type` | string | Defines the type of the tag and must be one of `CONFIG`, `WAF`, `CACHE`, `RATE_LIMIT`, `INFORMATION` |
+| `Type` | string | Defines the type of the tag and must be one of `CONFIG`, `WAF`, `CACHE`, `RATE_LIMIT`, `INFORMATION`. |
 | `Assignments` | []TagAssignments |
-| `Sort` | int | Defines the order in which `WAF` tags are processed |
+| `Sort` | int | Defines the order in which `WAF` tags are processed. |
 | `Global` | bool | Identify "global" tags. **Note:** It is not possible to edit a global tags. It is only possible to assign (sub)domains to a global tag. |
 
 ```go
@@ -35,12 +35,12 @@ type TagAssignment struct {
 ```
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a TagAssignment it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created will be created by the server after creating a new TagAssignment object. This value is informational so it is not necessary to add this attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
-| `Type` | string | Defines the type of the tag assignment and must be one of `DOMAIN`, `SUBDOMAIN` |
+| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a TagAssignment it is necessary to add this attribute to your object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new TagAssignment object. This value is informational so it is not necessary to add this attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
+| `Type` | string | Defines the type of the tag assignment and must be one of `DOMAIN`, `SUBDOMAIN`. |
 | `Title` | string | Identifies the tag assignment by its domain name. |
-| `SubDomainName` | string | Only set on SUBDOMAIN tag assignments |
+| `SubDomainName` | string | Only set on `SUBDOMAIN` tag assignments. |
 
 ## Create
 To create a new tag it is neccessary to send a Tag object without the attributes "id" and "modified".

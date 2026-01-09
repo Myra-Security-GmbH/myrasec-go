@@ -48,21 +48,21 @@ func getErrorPageMethods() map[string]APIMethod {
 
 // errorPageUpdate
 type errorPageUpdate struct {
-	ID          int                     `json:"id,omitempty"`
+	ID          int                     `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an error page, the ID does not help because it is not used."`
 	PageContent string                  `json:"pageContent,omitempty"`
 	Selection   map[string]map[int]bool `json:"selection,omitempty"`
-	Created     *types.DateTime         `json:"created,omitempty"`
-	Modified    *types.DateTime         `json:"modified,omitempty"`
+	Created     *types.DateTime         `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new error page object. This value is only informational so it is not neccessary to add this attribute to any API call."`
+	Modified    *types.DateTime         `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updateing the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an Identifies the version of the object. To ensure that you are updateing the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format.ISO 8601 format."`
 }
 
 // ErrorPage
 type ErrorPage struct {
-	ID            int             `json:"id,omitempty"`
-	Created       *types.DateTime `json:"created,omitempty"`
-	Modified      *types.DateTime `json:"modified,omitempty"`
-	ErrorCode     int             `json:"errorCode,omitempty"`
-	Content       string          `json:"content,omitempty"`
-	SubDomainName string          `json:"subDomainName,omitempty"`
+	ID            int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an error page, the ID does not help because it is not used."`
+	Created       *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new error page object. This value is only informational so it is not neccessary to add this attribute to any API call."`
+	Modified      *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updateing the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format."`
+	ErrorCode     int             `json:"errorCode,omitempty" jsonschema:"ErrorCode represents the Http Code for this error page. The ErrorCode should never be changed, because it is used as identifier additionally with the SubDomainName."`
+	Content       string          `json:"content,omitempty" jsonschema:"The Content is the HTML code for the error page."`
+	SubDomainName string          `json:"subDomainName,omitempty" jsonschema:"The configured error page is available for this subdomain. The SubDomainName should never be changed, becuase it is used as identifier additionally with the ErrorCode."`
 }
 
 // GetErrorPage returns a single error page with/for the given identifier

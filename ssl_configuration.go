@@ -17,10 +17,10 @@ func getSslConfigurationMethods() map[string]APIMethod {
 }
 
 type SslConfiguration struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	Ciphers   string `json:"ciphers"`
-	Protocols string `json:"protocols"`
+	ID        int    `json:"id" jsonschema:"Identifier of that configuration."`
+	Name      string `json:"name" jsonschema:"Unique string identifier of this configuration."`
+	Ciphers   string `json:"ciphers" jsonschema:"List of ciphers for this configuration."`
+	Protocols string `json:"protocols" jsonschema:"List of protocols for this configuration."`
 }
 
 func (api *API) ListSslConfigurations() ([]SslConfiguration, error) {

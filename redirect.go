@@ -46,18 +46,18 @@ func getRedirectMethods() map[string]APIMethod {
 
 // Redirect ...
 type Redirect struct {
-	ID            int             `json:"id,omitempty"`
-	Created       *types.DateTime `json:"created,omitempty"`
-	Modified      *types.DateTime `json:"modified,omitempty"`
-	Type          string          `json:"type"`
-	SubDomainName string          `json:"subDomainName"`
-	Source        string          `json:"source"`
-	Destination   string          `json:"destination"`
-	MatchingType  string          `json:"matchingType"`
-	Comment       string          `json:"comment,omitempty"`
-	Sort          int             `json:"sort,omitempty"`
-	Enabled       bool            `json:"enabled"`
-	ExpertMode    bool            `json:"expertMode,omitempty"`
+	ID            int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a redirect it is necessary to add this attribute to your object."`
+	Created       *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new redirect object. This value is only informational so it is not necessary to add this an attribute to any API call."`
+	Modified      *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format."`
+	Type          string          `json:"type" jsonschema:"The redirect type how your customer is redirected. This can be an HTTP 301 (permanent) redirect, which is cacheable by browsers and search crawlers. Another option is an HTTP 302 (redirect) redirect which is usually not cached by browsers and crawlers. Valid options are permanent and redirect."`
+	SubDomainName string          `json:"subDomainName" jsonschema:"Identifies the subdomain via a FQDN (Full Qualified Domain Name) where this redirect belongs to. This value cannot be changed through the objects attribute as it is set via URL parameter."`
+	Source        string          `json:"source" jsonschema:"Location to match your query against, it is also possible to match against a regexp instead of hard coded locations."`
+	Destination   string          `json:"destination" jsonschema:"The destination you want your customer redirect to. This can be a valid HTTP(S) address or a relative location on your domain."`
+	MatchingType  string          `json:"matchingType" jsonschema:"The matching type allows you to change the way how the redirect is matched. This field allows three different values: prefix, suffix, and exact."`
+	Comment       string          `json:"comment,omitempty" jsonschema:"A comment to describe this redirect."`
+	Sort          int             `json:"sort,omitempty" jsonschema:"The ascending order for the redirect rules."`
+	Enabled       bool            `json:"enabled" jsonschema:"Enable or disable the redirect."`
+	ExpertMode    bool            `json:"expertMode,omitempty" jsonschema:"Disable redirect loop detection."`
 }
 
 // GetRedirect returns a single redirect with/for the given identifier

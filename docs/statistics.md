@@ -10,8 +10,8 @@ type Statistics struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `Query` | *StatisticQuery | Contains the StatisticQuery |
-| `Result` | map[string]interface | Returns the detailed custom data for the requested domain |
+| `Query` | *StatisticQuery | Contains the StatisticQuery. |
+| `Result` | map[string]interface | Returns the detailed custom data for the requested domain. |
 
 
 ```go
@@ -27,12 +27,12 @@ type StatisticQuery struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `AggregationInterval` | string | The interval for aggregating the data points |
-| `DataSources` | map[string]map[string]string | List of data sources and output type |
-| `StartDate` | *types.DateTime | Start of the aggregation interval |
-| `EndDate` | *types.DateTime | End of the aggregation interval |
-| `FQDN` | []string | A list of FQDN |
-| `Type` | string | Mode for selecting domains which should be used |
+| `AggregationInterval` | string | The interval for aggregating the data points. |
+| `DataSources` | map[string]map[string]string | List of data sources and output type. |
+| `StartDate` | *types.DateTime | Start of the aggregation interval. |
+| `EndDate` | *types.DateTime | End of the aggregation interval. |
+| `FQDN` | []string | A list of FQDN. |
+| `Type` | string | Mode for selecting domains which should be used. |
 
 ### AggregationInterval
 The statistics can be requested in various aggregation intervals. The requested data will be split into buckets of the given date interval. This applies only to data requested as histogram. The supported intervals are: "5m", "hour", "day", and "week".

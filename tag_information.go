@@ -8,12 +8,12 @@ import (
 )
 
 type TagInformation struct {
-	ID       int             `json:"id,omitempty"`
-	Created  *types.DateTime `json:"created,omitempty"`
-	Modified *types.DateTime `json:"modified,omitempty"`
-	Key      string          `json:"key"`
-	Value    string          `json:"value"`
-	Comment  string          `json:"comment,omitempty"`
+	ID       int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a tag information it is necessary to add this attribute to your object."`
+	Created  *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new tag information object. This value is only informational so it is not necessary to add this an attribute to any API call."`
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format."`
+	Key      string          `json:"key" jsonschema:"An arbitrary string value."`
+	Value    string          `json:"value" jsonschema:"An arbitrary string value."`
+	Comment  string          `json:"comment,omitempty" jsonschema:"A comment to describe this tag information."`
 }
 
 func getTagInformationMethods() map[string]APIMethod {

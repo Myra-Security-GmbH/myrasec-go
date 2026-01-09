@@ -39,11 +39,11 @@ func getMaintenanceTemplateMethods() map[string]APIMethod {
 
 // MaintenanceTemplate ...
 type MaintenanceTemplate struct {
-	ID       int             `json:"id,omitempty"`
-	Created  *types.DateTime `json:"created,omitempty"`
-	Modified *types.DateTime `json:"modified,omitempty"`
-	Name     string          `json:"name"`
-	Content  string          `json:"content"`
+	ID       int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set, while inserting a new object. To update or delete a maintenance template it is necessary to add this attribute to your object."`
+	Created  *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. It will be created by the server after creating a new Maintenance object. This value is only informational so it is not necessary to add this an attribute to any API call."`
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. This value is always a date type with an ISO 8601 format."`
+	Name     string          `json:"name" jsonschema:"A name to identify your maintenance template."`
+	Content  string          `json:"content" jsonschema:"HTML content to show as maintenance page. Please note that it is not possible to include resources from the domain you have set to maintenance mode. If your maintenance page contains images use a different domain or use inline base64 encoded images."`
 }
 
 // ListMaintenanceTemplates returns a slice containing all maintenance templates for a domain
