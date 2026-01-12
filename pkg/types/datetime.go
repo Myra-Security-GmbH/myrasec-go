@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"strings"
 	"time"
+
+	"github.com/invopop/jsonschema"
 )
 
 // DateTime ...
@@ -36,6 +38,14 @@ func (dt *DateTime) UnmarshalJSON(b []byte) error {
 	dt.Time = t
 
 	return err
+}
+
+func (d DateTime) JSONSchema() *jsonschema.Schema {
+	return &jsonschema.Schema{
+		Type:        "string",
+		Format:      "date-time",
+		Description: "ISO 8601 formatted date string.",
+	}
 }
 
 // ToUnixDate ...
