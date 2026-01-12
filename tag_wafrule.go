@@ -44,24 +44,65 @@ func getTagWAFRuleMethods() map[string]APIMethod {
 	}
 }
 
-// TagWAFRule ...
+// TagWAFRule represents a Web Application Firewall rule linked to a specific Tag.
+// It allows applying WAF logic (conditions and actions) to all domains associated with that tag.
 type TagWAFRule struct {
-	ID            int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a TagWAFRule it is necessary to add this attribute to your object."`
-	Created       *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new TagWAFRule object. This value is informational so it is not necessary to add this attribute to any API call."`
-	Modified      *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an ISO 8601 format."`
-	ExpireDate    *types.DateTime `json:"expireDate,omitempty" jsonschema:"ExpireDate describes how long a TagWAFRule is valid, and when it will expire."`
-	Name          string          `json:"name" jsonschema:"Identifies the TagWAFRule by its name."`
-	Description   string          `json:"description" jsonschema:"The Description will explain what the TagWAFRule is for."`
-	Direction     string          `json:"direction" jsonschema:"The direction can be in (for Request) or out (for Response)."`
-	LogIdentifier string          `json:"logIdentifier" jsonschema:"A string to identify the matching rule in the access log."`
-	Uuid          string          `json:"uuid,omitempty"`
-	Sort          int             `json:"sort" jsonschema:"Defines the sorting of TagWAFRules."`
-	Sync          bool            `json:"sync"`
-	ProcessNext   bool            `json:"processNext" jsonschema:"After a rule has been applied, the rule chain will be executed as determined."`
-	Enabled       bool            `json:"enabled" jsonschema:"Describes if the rule is enabled or not."`
-	Actions       []*WAFAction    `json:"actions" jsonschema:"List of WAF actions."`
-	Conditions    []*WAFCondition `json:"conditions" jsonschema:"List of WAF conditions."`
-	TagId         int             `json:"tagId" jsonschema:"The related TagId."`
+	// ID is the unique identifier for the WAF rule.
+	// This value is server-generated and required for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the rule. Server-generated; required for updates and deletes, but ignored during creation."`
+
+	// Created indicates when the rule was added.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// ExpireDate defines when this rule automatically becomes invalid.
+	// If nil, the rule never expires.
+	ExpireDate *types.DateTime `json:"expireDate,omitempty" jsonschema:"The timestamp (ISO 8601) when this rule expires. If null, the rule remains valid indefinitely."`
+
+	// Name is a unique label for the rule.
+	Name string `json:"name" jsonschema:"A descriptive name to identify the WAF rule."`
+
+	// Description provides further details about the rule's purpose.
+	Description string `json:"description" jsonschema:"A detailed description explaining the purpose of this WAF rule."`
+
+	// Direction specifies whether the rule applies to incoming requests or outgoing responses.
+	// Valid values: 'in', 'out'.
+	Direction string `json:"direction" jsonschema:"The traffic direction to inspect. Valid values: 'in' (incoming request) or 'out' (outgoing response)."`
+
+	// LogIdentifier is a custom tag string used to find matches in the access logs.
+	LogIdentifier string `json:"logIdentifier" jsonschema:"A custom string identifier used to tag and find rule matches in the access logs."`
+
+	// UUID is a system-assigned unique identifier string.
+	// Read-only.
+	Uuid string `json:"uuid,omitempty" jsonschema:"System-assigned unique string identifier (UUID). Read-only."`
+
+	// Sort defines the execution order of rules.
+	// Lower numbers are processed first.
+	Sort int `json:"sort" jsonschema:"The execution order/priority. Lower numbers are processed first."`
+
+	// Sync indicates if the rule is synchronized to the edge nodes.
+	Sync bool `json:"sync" jsonschema:"Indicates synchronization status with edge nodes."`
+
+	// ProcessNext controls the rule chain execution flow.
+	// If true, subsequent rules are evaluated even if this rule matches.
+	ProcessNext bool `json:"processNext" jsonschema:"Flow control: If true, the system continues to process the next rule in the chain after a match. If false, processing stops here."`
+
+	// Enabled controls whether the rule is currently active.
+	Enabled bool `json:"enabled" jsonschema:"Indicates if the WAF rule is currently active (enabled) or ignored."`
+
+	// Actions defines what happens when the conditions are met.
+	Actions []*WAFAction `json:"actions" jsonschema:"List of actions to execute when the rule conditions are met (e.g., Block, Log, Allow)."`
+
+	// Conditions defines the logical checks (e.g., IP match, Header match) required to trigger the rule.
+	Conditions []*WAFCondition `json:"conditions" jsonschema:"List of logical conditions that must be satisfied for the rule to trigger."`
+
+	// TagId is the ID of the Tag this rule belongs to.
+	TagId int `json:"tagId" jsonschema:"The ID of the parent Tag to which this WAF rule is attached."`
 }
 
 // GetTagWAFRule returns a single tag for the given identifier

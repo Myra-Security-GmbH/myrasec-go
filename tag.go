@@ -50,26 +50,66 @@ func getTagMethods() map[string]APIMethod {
 	}
 }
 
-// Tag ...
+// Tag represents a logical grouping container for configuration settings.
+// Tags can be applied to domains or subdomains to enforce shared rules (e.g., WAF, Cache).
 type Tag struct {
-	ID          int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Tag it is necessary to add this attribute to your object."`
-	Created     *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new Tag object. This value is informational so it is not necessary to add this attribute to any API call."`
-	Modified    *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an ISO 8601 format."`
-	Name        string          `json:"name" jsonschema:"Identifies the tag by its name."`
-	Type        string          `json:"type" jsonschema:"Defines the type of the tag and must be one of CONFIG, WAF, CACHE, RATE_LIMIT, INFORMATION ."`
-	Assignments []TagAssignment `json:"assignments"`
-	Sort        int             `json:"sort,omitempty" jsonschema:"Defines the order in which WAF tags are processed."`
-	Global      bool            `json:"global,omitempty" jsonschema:"Identify global tags. It is not possible to edit a global tags. It is only possible to assign (sub)domains to a global tag."`
+	// ID is the unique identifier for the tag.
+	// This value is server-generated and required for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the tag. Server-generated; required for updates and deletes, but ignored during creation."`
+
+	// Created indicates when the tag was created.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// Name is the display label for the tag.
+	Name string `json:"name" jsonschema:"The unique name of the tag used for identification."`
+
+	// Type defines the functional category of the tag.
+	// Valid values are: CONFIG, WAF, CACHE, RATE_LIMIT, INFORMATION.
+	Type string `json:"type" jsonschema:"The category/type of the tag. Valid values: 'CONFIG', 'WAF', 'CACHE', 'RATE_LIMIT', 'INFORMATION'."`
+
+	// Assignments lists the domains or subdomains linked to this tag.
+	Assignments []TagAssignment `json:"assignments" jsonschema:"List of resources (domains/subdomains) assigned to this tag."`
+
+	// Sort defines the processing order priority.
+	// Specifically relevant for WAF tags to determine rule execution order.
+	Sort int `json:"sort,omitempty" jsonschema:"Priority/Sorting order. Crucial for 'WAF' tags to determine the execution order of rules."`
+
+	// Global indicates if the tag is a system-wide predefined tag.
+	// Global tags cannot be renamed or modified; only assignments can be changed.
+	Global bool `json:"global,omitempty" jsonschema:"If true, this is a system-managed global tag. The tag definition (Name, Type) is read-only/immutable. You can only modify the 'assignments' list."`
 }
 
-// TagAssignment ...
+// TagAssignment represents the link between a Tag and a specific resource (Domain or Subdomain).
 type TagAssignment struct {
-	ID            int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a TagAssignment it is necessary to add this attribute to your object."`
-	Created       *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new TagAssignment object. This value is informational so it is not necessary to add this attribute to any API call."`
-	Modified      *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an ISO 8601 format."`
-	Type          string          `json:"type" jsonschema:"Defines the type of the tag assignment and must be one of DOMAIN, SUBDOMAIN ."`
-	Title         string          `json:"title" jsonschema:"Identifies the tag assignment by its domain name."`
-	SubDomainName string          `json:"subDomainName" jsonschema:"Only set on SUBDOMAIN tag assignments."`
+	// ID is the unique identifier for the assignment.
+	// This value is server-generated and required for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the assignment. Server-generated; required for updates and deletes, but ignored during creation."`
+
+	// Created indicates when the assignment was created.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// Type defines the scope of the assignment.
+	// Valid values are: DOMAIN, SUBDOMAIN.
+	Type string `json:"type" jsonschema:"The scope of the assignment. Valid values: 'DOMAIN', 'SUBDOMAIN'."`
+
+	// Title is the identifier of the assigned resource (usually the domain name).
+	Title string `json:"title" jsonschema:"The identifier of the assigned resource (e.g., the Domain Name)."`
+
+	// SubDomainName specifies the target subdomain.
+	// Only required if Type is set to SUBDOMAIN.
+	SubDomainName string `json:"subDomainName" jsonschema:"The specific subdomain FQDN. Required if 'type' is set to 'SUBDOMAIN'."`
 }
 
 // GetTag returns a single tag for the given identifier

@@ -19,11 +19,25 @@ func getUserMethods() map[string]APIMethod {
 	}
 }
 
+// User represents a registered account holder in the system.
+// It contains the authentication identity (Login) and metadata.
 type User struct {
-	ID       int             `json:"id,omitempty" jsonschema:"ID is an unique identifier for an object. This value is always a number type."`
-	Created  *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be created by the server after creating a new User object."`
-	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an ISO 8601 format."`
-	Login    string          `json:"login,omitempty" jsonschema:"The login name that is the same as the email address."`
+	// ID is the unique identifier for the user.
+	// This value is server-generated and read-only.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the user. Server-generated and read-only. Ignored during creation."`
+
+	// Created indicates when the user was created.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// Login is the unique username for the account.
+	// This must be a valid email address.
+	Login string `json:"login,omitempty" jsonschema:"The user's login name. Must be a valid email address (format: user@example.com)."`
 }
 
 // Me returns the active user information

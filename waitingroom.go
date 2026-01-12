@@ -50,19 +50,51 @@ func getWaitingRoomMethods() map[string]APIMethod {
 	}
 }
 
-// WaitingRoom ...
+// WaitingRoom represents a virtual queue system for high-traffic scenarios.
+// It limits the number of concurrent users allowed on the origin server to prevent overloads.
 type WaitingRoom struct {
-	ID             int             `json:"id,omitempty" jsonschema:"ID is a unique iDentifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Waiting Room it is necessary to add this attribute to your object."`
-	Created        *types.DateTime `json:"created,omitempty" jsonschema:"Created is a date type attribute with an ISO 8601 format. Created will be set by the server after creating a new cache setting object. This value is only informational, so it is not necessary to add this as an attribute to any API call."`
-	Modified       *types.DateTime `json:"modified,omitempty" jsonschema:"Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always need to add the modified timestamp for updates and deletes. This value is always a date type with an ISO 8601 format."`
-	Name           string          `json:"name" jsonschema:"Name of the Waiting Room."`
-	VhostId        int             `json:"vhostId" jsonschema:"ID of the VHost for the Waiting Room."`
-	SubDomainName  string          `json:"subDomainName" jsonschema:"Identifies the subdomain via a FQDN (Full Qualified Domain Name) that the Waiting Room belongs to. This value is optional and is determined from the VHost based on its ID."`
-	MaxConcurrent  int             `json:"maxConcurrent" jsonschema:"The maximum number of visitors allowed on the Origin server at the same time. As soon as this value is exceeded, each additional visitor is directed to the Waiting Room."`
-	SessionTimeout int             `json:"sessionTimeout" jsonschema:"Defines the duration in seconds during which an inactive session may access the Origin server. If the same session does not access the server again during this time, access for that session will be disabled."`
-	WaitRefresh    int             `json:"waitRefresh" jsonschema:"Defines the duration in seconds after which the waiting page is reloaded. If the session is not accessed again after the third reload, the session will be removed from the queue."`
-	Paths          []string        `json:"paths" jsonschema:"Defines a specific path within the apex domain or subdomain for which the waiting room is to be valid. The path needs to be defined as a regular expression. The default value in the PATH field is . . If the default value . is used as the path, the waiting pages and settings of all waiting rooms with a specific path of the corresponding apex domain or subdomain are overwritten."`
-	Content        string          `json:"content" jsonschema:"The HTML content of the Waiting Room."`
+	// ID is the unique identifier for the waiting room configuration.
+	// This value is server-generated and required for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the waiting room. Server-generated; required for updates and deletes, but ignored during creation."`
+
+	// Created indicates when the waiting room was configured.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// Name is a descriptive label for the waiting room.
+	Name string `json:"name" jsonschema:"A descriptive name for this waiting room configuration."`
+
+	// VhostId is the identifier of the Virtual Host this waiting room protects.
+	VhostId int `json:"vhostId" jsonschema:"The unique identifier of the target VHost (Virtual Host)."`
+
+	// SubDomainName is the FQDN associated with the VHost.
+	// Optional: If omitted, it is determined automatically from the VhostId.
+	SubDomainName string `json:"subDomainName" jsonschema:"The FQDN (Fully Qualified Domain Name) the waiting room belongs to. Optional; if not provided, it is inferred from the 'vhostId'."`
+
+	// MaxConcurrent sets the limit of simultaneous users allowed on the origin.
+	// Exceeding this limit triggers the waiting room for new visitors.
+	MaxConcurrent int `json:"maxConcurrent" jsonschema:"The maximum number of concurrent active users allowed on the origin. Once exceeded, new visitors are redirected to the waiting room."`
+
+	// SessionTimeout defines the idle timeout for active users.
+	// If a user is inactive for this period, they lose their spot.
+	SessionTimeout int `json:"sessionTimeout" jsonschema:"Idle timeout in seconds. If an active session does not access the server within this time, access is revoked."`
+
+	// WaitRefresh defines the auto-reload interval for the waiting page.
+	// Logic: If the session is not accessed after the 3rd reload, it is removed from the queue.
+	WaitRefresh int `json:"waitRefresh" jsonschema:"The auto-reload interval in seconds for the waiting page. Note: If the client does not poll/reload, the session is removed from the queue after 3 intervals."`
+
+	// Paths defines the URL patterns covered by this waiting room.
+	// Expects Regex. Default is "." (match all).
+	// Warning: "." overrides specific path settings on the same domain.
+	Paths []string `json:"paths" jsonschema:"List of URL paths (Regular Expressions) to protect. Default: '.' (matches everything). Warning: Using '.' overwrites/takes precedence over other specific path rules for this domain."`
+
+	// Content contains the HTML code displayed to users in the queue.
+	Content string `json:"content" jsonschema:"The raw HTML content displayed to visitors while they are in the waiting queue."`
 }
 
 // ListWaitingRoomsForDomain returns a slice containing all visible waiting rooms for domain
