@@ -54,12 +54,12 @@ type Domain struct {
 
 	// Created indicates when the domain was added to the system.
 	// This is a server-managed, read-only value in ISO 8601 format.
-	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"type=string,format=date-time,description=The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
 
 	// Modified serves as a version identifier for optimistic locking.
 	// It records the last update time in ISO 8601 format. This field is required
 	// for update and delete operations to ensure data consistency.
-	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"type=string,format=date-time,description=The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
 
 	// Name is the Fully Qualified Domain Name (FQDN).
 	// This value is immutable once created.
