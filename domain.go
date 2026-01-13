@@ -44,17 +44,44 @@ func getDomainMethods() map[string]APIMethod {
 	}
 }
 
-// Domain ...
+// Domain represents a website or zone managed by the Myra platform.
+// It acts as the root object for all configuration settings, DNS records,
+// and cache rules associated with a specific FQDN.
 type Domain struct {
-	ID          int             `json:"id,omitempty"`
-	Created     *types.DateTime `json:"created,omitempty"`
-	Modified    *types.DateTime `json:"modified,omitempty"`
-	Name        string          `json:"name"`
-	AutoUpdate  bool            `json:"autoUpdate"`
-	AutoDNS     bool            `json:"autoDns"`
-	Paused      bool            `json:"paused"`
-	PausedUntil *types.DateTime `json:"pausedUntil,omitempty"`
-	Reversed    bool            `json:"reversed"`
+	// ID is the unique identifier for the domain.
+	// This value is server-generated and required for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the domain. Server-generated; required for updates and deletes, but ignored during creation."`
+
+	// Created indicates when the domain was added to the system.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// Name is the Fully Qualified Domain Name (FQDN).
+	// This value is immutable once created.
+	Name string `json:"name" jsonschema:"The Fully Qualified Domain Name (FQDN) (e.g., 'example.com'). Immutable after creation. To correct a typo, the domain must be deleted and recreated."`
+
+	// AutoUpdate controls the immediate deployment of configuration changes.
+	// If false, changes are saved to the database but not propagated to the edge/WAF
+	// until re-enabled. Useful for performing atomic batch updates.
+	AutoUpdate bool `json:"autoUpdate" jsonschema:"Controls deployment of config changes. If false, changes are saved only to the database and NOT deployed to the edge network until re-enabled. Use this for atomic batch updates."`
+
+	// AutoDNS triggers an automatic DNS record import during creation.
+	// Note: This relies on external DNS queries and may result in an incomplete list.
+	AutoDNS bool `json:"autoDns" jsonschema:"If true during creation, the system attempts to scan and import existing DNS records. Note: Results may be incomplete depending on the DNS provider."`
+
+	// Paused indicates if the WAF/Protection is currently suspended for this domain.
+	Paused bool `json:"paused" jsonschema:"Indicates if the Myra protection/WAF is currently suspended (paused) for this domain."`
+
+	// PausedUntil specifies the scheduled date for automatic reactivation of protection.
+	PausedUntil *types.DateTime `json:"pausedUntil,omitempty" jsonschema:"The timestamp (ISO 8601) when protection will be automatically reactivated. Only relevant if 'paused' is true."`
+
+	// Reversed indicates if the domain is reversed.
+	Reversed bool `json:"reversed" jsonschema:"Indicates whether the domain is reversed (boolean flag)."`
 }
 
 // GetDomain returns a single domain with/for the given identifier

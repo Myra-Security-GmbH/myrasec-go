@@ -55,14 +55,33 @@ type errorPageUpdate struct {
 	Modified    *types.DateTime         `json:"modified,omitempty"`
 }
 
-// ErrorPage
+// ErrorPage represents a custom HTML error page configuration (e.g., 404, 500).
+// Unlike other objects, it is uniquely identified by the combination of SubDomainName
+// and ErrorCode, rather than the numeric ID.
 type ErrorPage struct {
-	ID            int             `json:"id,omitempty"`
-	Created       *types.DateTime `json:"created,omitempty"`
-	Modified      *types.DateTime `json:"modified,omitempty"`
-	ErrorCode     int             `json:"errorCode,omitempty"`
-	Content       string          `json:"content,omitempty"`
-	SubDomainName string          `json:"subDomainName,omitempty"`
+	// ID is the internal system identifier for the object.
+	// This value is read-only and ignored for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"System-assigned numeric identifier. Read-only. This value is ignored during updates or deletes; use ErrorCode and SubDomainName to identify the resource instead."`
+
+	// Created indicates when the error page was created.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only. Informational only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// ErrorCode represents the HTTP Status Code (e.g., 404, 500).
+	// This value is part of the composite unique key and is immutable once created.
+	ErrorCode int `json:"errorCode,omitempty" jsonschema:"The HTTP status code (e.g., 404 or 500). Part of the composite unique key. Immutable after creation."`
+
+	// Content contains the raw HTML code to be rendered.
+	Content string `json:"content,omitempty" jsonschema:"The raw HTML content to be displayed for this error page."`
+
+	// SubDomainName is the FQDN for which this error page is configured.
+	// This value is part of the composite unique key and is immutable once created.
+	SubDomainName string `json:"subDomainName,omitempty" jsonschema:"The target subdomain FQDN (e.g., 'shop.example.com'). Part of the composite unique key. Immutable after creation."`
 }
 
 // GetErrorPage returns a single error page with/for the given identifier

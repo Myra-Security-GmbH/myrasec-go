@@ -7,13 +7,31 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
+// TagInformation represents a key-value label attached to a resource.
 type TagInformation struct {
-	ID       int             `json:"id,omitempty"`
-	Created  *types.DateTime `json:"created,omitempty"`
-	Modified *types.DateTime `json:"modified,omitempty"`
-	Key      string          `json:"key"`
-	Value    string          `json:"value"`
-	Comment  string          `json:"comment,omitempty"`
+	// ID is the unique identifier for the tag assignment.
+	// This value is server-generated and required for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the tag. Server-generated; required for updates and deletes, but ignored during creation."`
+
+	// Created indicates when the tag was added.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// Key is the identifier or category name for the tag.
+	// Example: "Environment" or "Project".
+	Key string `json:"key" jsonschema:"The key portion of the tag pair (e.g., 'Environment')."`
+
+	// Value is the specific content associated with the tag key.
+	// Example: "Production" or "Marketing-Campaign".
+	Value string `json:"value" jsonschema:"The value portion of the tag pair (e.g., 'Production')."`
+
+	// Comment provides a descriptive note for this tag information key-value pair.
+	Comment string `json:"comment,omitempty" jsonschema:"A descriptive comment or note regarding this specific tag information key-value pair."`
 }
 
 func getTagInformationMethods() map[string]APIMethod {

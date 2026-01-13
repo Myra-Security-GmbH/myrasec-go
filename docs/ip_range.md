@@ -15,10 +15,10 @@ type IPRange struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | Id is an unique identifier for an object. |
-| `Created` | *types.DateTime | Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. |
-| `Network` | string | The nework (CIDR notation) |
+| `ID` | int | ID is an unique identifier for an object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. |
+| `Modified` | *types.DateTime | Identifies the version of the object. This value is always a date type with an `ISO 8601` format. |
+| `Network` | string | The network (CIDR notation). |
 | `ValidFrom` | *types.DateTime | |
 | `ValidTo` | *types.DateTime | |
 | `Enabled` | bool | |

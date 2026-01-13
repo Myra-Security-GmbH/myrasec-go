@@ -17,8 +17,8 @@ type Certificate struct {
 
 | Field | Type | Description |  
 |---|---|---|  
-| `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a DnsRecord it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. It will be created by the server after creating a new DnsRecord object. This value is only informational so it is not necessary to add this an attribute to any API call. |
+| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Certificate it is necessary to add this attribute to your object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. It will be created by the server after creating a new Certificate object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. This value is always a date type with an `ISO 8601` format. |  
 | `Subject` | string | Shows the subject of the uploaded certificate. |  
 | `Algorithm` | string | Contains the signature algorithm. |  
@@ -41,6 +41,7 @@ type SSLCertificate struct {
 	CertRefreshForced    bool              `json:"certRefreshForced,omitempty"`
 	CertToRefresh        int               `json:"certToRefresh,omitempty"`
 	SslConfigurationName string            `json:"sslConfigurationName,omitempty"`
+    Managed              bool              `json:"managed"`
 }
 ```
 
@@ -53,8 +54,9 @@ type SSLCertificate struct {
 | `Subdomains` | []string | A list of subdomains assigned to this certificate. |  
 | `Key` | string | The unencrypted private key that matches your certificate. |  
 | `CertRefreshForced` | bool | Every time a certificate is refreshed with another non-matching certificate the operation is interrupted with an error. Setting certRefreshForced will ignore such errors and refresh the certificate anyway. Please use it only, if you are sure you can ignore an error when refreshing a certificate. |  
-| `CertToRefresh` | int | This property allows you to update an already existing certificate with a new one without changing IP addresses, the value has to be the ID of the cert that should be refreshed |
-| `SslConfigurationName` | string | This property allows you to set a specific ssl configuration. default `Myra-Global-TLS-Default`, valid values are `Myra-Global-TLS-Default`, `2023-mozilla-intermediate`, `2023-mozilla-modern`
+| `CertToRefresh` | int | This property allows you to update an already existing certificate with a new one without changing IP addresses, the value has to be the ID of the cert that should be refreshed. |
+| `SslConfigurationName` | string | This property allows you to set a specific ssl configuration. default `Myra-Global-TLS-Default`, valid values are `Myra-Global-TLS-Default`, `2023-mozilla-intermediate`, `2023-mozilla-modern`. |
+| `Managed` | bool | Indicates wether this certificate is managed by Myra or not. |
 
 
 ```go

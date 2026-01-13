@@ -71,21 +71,21 @@ type Settings struct {
 | AntibotPostFloodThreshold | int | This parameter determines the frequency how often the puzzle has to be solved. The higher the value the less likely the puzzle needs to be solved. |
 | AntibotProofOfWork | bool | Detection of valid clients by using a JavaScript based puzzle. |
 | AntibotProofOfWorkThreshold | int | This parameter determines the frequency how often the puzzle has to be solved. The higher the value the less likely the puzzle needs to be solved. |
-| BalancingMethod | string | Specifies with which method requests are balanced between upstream servers. The default behavior is the round-robin balancing. The value ip_hash will cause Myra to forward the same client IP always to the same upstream server. The value least_conn will cause Myra to forward the request to the upstream server with least connections |
-| BlockNotWhitelisted | bool | Block all IPs which are not whitelisted in the IP filter settings |
+| BalancingMethod | string | Specifies with which method requests are balanced between upstream servers. The default behavior is the round-robin balancing. The value ip_hash will cause Myra to forward the same client IP always to the same upstream server. The value least_conn will cause Myra to forward the request to the upstream server with least connections. |
+| BlockNotWhitelisted | bool | Block all IPs which are not whitelisted in the IP filter settings. |
 | BlockTorNetwork | bool | Block traffic from the TOR network. |
 | CacheEnabled | bool | Turn caching on or off. If you enable the cache, you also have to define the objects to be cached in the cache settings. |
-| CacheRevalidate | bool | If enabled, expired cache items will be requested with the additional HTTP header "If-Modified-Since" and "If-None-Match" |
+| CacheRevalidate | bool | If enabled, expired cache items will be requested with the additional HTTP header "If-Modified-Since" and "If-None-Match". |
 | CDN | bool | ~~Should this subdomain be used as Content Delivery Node (CDN). After enabling the CDN you will be able to create buckets and upload files using the Myra upload API.~~ **NOTE:** This setting is deprecated and has no effect anymore. |
 | ClientMaxBodySize | int | Sets the maximum allowed size of the client request body, specified in the “Content-Length” request header field. |
 | CookieName | string | Specifies the cookie name when balancing_method is cookie_based. |
-| DiffieHellmanExchange | int | Defines the size of the Diffie-Hellman key exchange parameters in bits. Please, note that Java 6 and 7 do not support Diffie-Hellman parameters larger than 1024 bits. If your server expects to receive connections from java 6 clients and wants to enable PFS, it must provide a DHE parameter of 1024 bits |
+| DiffieHellmanExchange | int | Defines the size of the Diffie-Hellman key exchange parameters in bits. Please, note that Java 6 and 7 do not support Diffie-Hellman parameters larger than 1024 bits. If your server expects to receive connections from java 6 clients and wants to enable PFS, it must provide a DHE parameter of 1024 bits. |
 | DisableForwardFor | bool | Disable the forwarded for replacement. |
 | EnableOriginSNI | bool | Enable or disable origin SNI. |
 | EnforceCacheTTL | bool | Enforce using given cache TTL settings instead of origin cache information. This will set the Cache-Control header max-age to the given TTL. |
 | ForwardedForReplacement | string | Set your own X-Forwarded-For header. |
 | HSTS | bool | Enable HSTS protection for a domain. This will tell browsers to use secure https connections only when interacting with your domain. |
-| HSTSIncludeSubdomains | bool | This will extend the HSTS protection for all subdomains |
+| HSTSIncludeSubdomains | bool | This will extend the HSTS protection for all subdomains. |
 | HSTSMaxAge | int | Specified how long the HSTS header is valid before the browser has to revalidate. |
 | HSTSPreload | bool | Allow the domain to be added to the HSTS preload list used by all major browsers (https://hstspreload.appspot.com/). |
 | HTTPOriginPort | int | Allows to set a port for communication with origin via HTTP. |
@@ -101,7 +101,7 @@ type Settings struct {
 | MonitoringSendAlert | bool | Enables / disables the upstream error reporting. |
 | MyraSSLHeader | bool | Activate the X-Myra-SSL Header, which indicates if a request was received via SSL. |
 | MyraSSLCertificate | []string | An SSL Certificate (and chain) to be used to make requests on the origin. |
-| MyraSSLCertificateKey | []string | The private key for the SSL Certificate |
+| MyraSSLCertificateKey | []string | The private key for the MyraSSLCertificate. |
 | NextUpstream | []string | Specify in which case the current upstream should be marked as "down". The values can be arbitrary combined, expect the value "off". |
 | OnlyHTTPS | bool | If activated, Myra will forward all requests to the origin using HTTPS regardless of the used protocol of the originating request. |
 | OriginConnectionHeader | string | Sets the Connection header, which is transmitted to the origin with a request. |
@@ -119,11 +119,11 @@ type Settings struct {
 | Spdy | bool | Activate the high performance HTTP/2 protocol. Please note that you have to enable HTTPS for Myra to get HTTP/2 enabled. |
 | SSLClientVerify | string | Enables verification of client certificates. |
 | SSLClientCertificate | []string | Specifies files with trusted CA certificates in the PEM format used to verify client certificates. |
-| SSLClientHeaderVerification | string | The name of the header, which contains the ssl verification status. |
+| SSLClientHeaderVerification | string | The name of the header, which contains the SSL verification status. |
 | SSLClientHeaderFingerprint | string | Contains the fingerprint of the certificate, the client used to authenticate itself. |
 | SSLOriginPort | int | Allows to set a port for communication with origin via SSL. |
-| WAFEnable | bool | Enables / disables the Web Application Firewall. |
-| WAFLevelsEnable | []string | Level of applied WAF rules. |
+| WAFEnable | bool | Enables or disables the Web Application Firewall. |
+| WAFLevelsEnable | []string | Level of applied Web Application Firewall rules. |
 | WAFPolicy | string | Default policy for the Web Application Firewall in case of rule error. |
 
 

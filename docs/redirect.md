@@ -19,17 +19,18 @@ type Redirect struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a redirect it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. |
+| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a redirect it is necessary to add this attribute to your object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new redirect object. This value is only informational so it is not necessary to add this an attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `Type` | string | The redirect type how your customer is redirected. This can be an HTTP 301 (permanent) redirect, which is cacheable by browsers and search crawlers. Another option is an HTTP 302 (redirect) redirect which is usually not cached by browsers and crawlers. Valid options are ’permanent’ and ’redirect’. |
-| `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) where this redirect belongs to. This value cannot be changed through the object’s attribute as it is set via URL parameter. |
-| `Source` | string | Location to match your query against, it is also possible to match against a regexp instead of hard coded locations |
+| `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) where this redirect belongs to. This value cannot be changed through the objects attribute as it is set via URL parameter. |
+| `Source` | string | Location to match your query against, it is also possible to match against a regexp instead of hard coded locations. |
 | `Destination` | string | The destination you want your customer redirect to. This can be a valid HTTP(S) address or a relative location on your domain. |
 | `Comment` | string | A comment to describe this redirect. |
 | `MatchingType` | string | The matching type allows you to change the way how the redirect is matched. This field allows three different values: ’prefix’, ’suffix’, and ’exact’. |
 | `Sort` | int | The ascending order for the redirect rules. |
-| `Enabled` | bool | Disable redirect loop detection. |
+| `Enabled` | bool | Enable or disable the redirect. |
+| `ExpertMode` | bool | Disable redirect loop detection. |
 
 
 ## Create

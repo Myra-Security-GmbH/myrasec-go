@@ -11,9 +11,9 @@ type APIKey struct {
 ```
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | Id is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Domain it is necessary to add this attribute to your object. |
-| `Created` | *types.DateTime | Created will be created by the server after creating a new API key object. This value is informational so it is not necessary to add this attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. |
+| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new API key object. This value is informational so it is not necessary to add this attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format.|
 | `Name` | string | An arbitrary name of the API key. |
 | `Key` | string | The API key. |
 | `Secret` | string | The secret part of the API key. **NOTE: This value is visible only once, when creating a new API key. This information can't be accessed at a later point again.**  |

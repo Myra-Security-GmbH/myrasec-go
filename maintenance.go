@@ -37,17 +37,44 @@ func getMaintenanceMethods() map[string]APIMethod {
 	}
 }
 
-// Maintenance ...
+// Maintenance represents a scheduled maintenance window for a specific domain (FQDN).
+// It controls when the maintenance page is displayed to visitors.
 type Maintenance struct {
-	ID          int             `json:"id,omitempty"`
-	Created     *types.DateTime `json:"created,omitempty"`
-	Modified    *types.DateTime `json:"modified,omitempty"`
-	Start       *types.DateTime `json:"start,omitempty"`
-	End         *types.DateTime `json:"end,omitempty"`
-	Active      bool            `json:"active"`
-	Content     string          `json:"content"`
-	ContentFrom string          `json:"contentFrom,omitempty"`
-	FQDN        string          `json:"fqdn"`
+	// ID is the unique identifier for the maintenance entry.
+	// This value is server-generated and required for update and delete operations.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the maintenance entry. Server-generated; required for updates and deletes, but ignored during creation."`
+
+	// Created indicates when the maintenance entry was created.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
+
+	// Start specifies when the maintenance window begins.
+	// If nil, the maintenance starts immediately.
+	Start *types.DateTime `json:"start,omitempty" jsonschema:"The start timestamp (ISO 8601). If null, maintenance starts immediately. Must be earlier than 'End'."`
+
+	// End specifies when the maintenance window finishes.
+	// Must be later than Start.
+	End *types.DateTime `json:"end,omitempty" jsonschema:"The end timestamp (ISO 8601). Must be later than 'Start'."`
+
+	// Active indicates if the maintenance mode is currently live.
+	// This is a computed read-only value based on Start and End.
+	Active bool `json:"active" jsonschema:"Read-only status flag indicating if maintenance is currently active. Do not set this directly; adjust 'start' and 'end' to control activation."`
+
+	// Content contains the HTML code for the maintenance page.
+	// Note: Avoid linking to resources on the maintenance domain itself.
+	Content string `json:"content" jsonschema:"The raw HTML content. Important: Do not link to resources (images/CSS) hosted on the domain being put into maintenance. Use external domains or inline Base64 encoding for assets."`
+
+	// ContentFrom allows copying content from another existing maintenance page.
+	// If specified, the system copies the HTML from the referenced FQDN.
+	ContentFrom string `json:"contentFrom,omitempty" jsonschema:"Optional: A valid FQDN to copy maintenance content from. If set, the content is copied from the referenced domain's existing maintenance page."`
+
+	// FQDN is the fully qualified domain name this maintenance applies to.
+	FQDN string `json:"fqdn" jsonschema:"The Fully Qualified Domain Name (FQDN) to apply maintenance mode to (e.g., 'www.example.com')."`
 }
 
 // ListMaintenances returns a slice containing all maintenance pages for a subdomain

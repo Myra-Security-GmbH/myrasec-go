@@ -30,13 +30,32 @@ func getAPIKeyMethods() map[string]APIMethod {
 	}
 }
 
+// APIKey represents an authentication credential used to access the API.
+// It encapsulates the public identifier, the private secret, and metadata
+// regarding the lifecycle of the key.
 type APIKey struct {
-	ID       int             `json:"id,omitempty"`
-	Created  *types.DateTime `json:"created,omitempty"`
-	Modified *types.DateTime `json:"modified,omitempty"`
-	Name     string          `json:"name,omitempty"`
-	Key      string          `json:"key,omitempty"`
-	Secret   string          `json:"secret,omitempty"`
+	// ID is the unique identifier for the API key.
+	// This value is server-generated and cannot be set during creation.
+	ID int `json:"id,omitempty" jsonschema:"The unique identifier for the API key. This value is server-generated and cannot be set during creation."`
+
+	// Created indicates the timestamp when the API key was generated.
+	// This is a server-managed, read-only value in ISO 8601 format.
+	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp indicating when the API key was generated (ISO 8601 format). This is a server-managed, read-only value."`
+
+	// Modified serves as a version identifier for optimistic locking.
+	// It records the last update time in ISO 8601 format. This field is required
+	// for update and delete operations to ensure data consistency.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format), serving as a version identifier. This field is required for updates and deletes to ensure data consistency."`
+
+	// Name is an arbitrary, user-defined label for the API key.
+	Name string `json:"name,omitempty" jsonschema:"An arbitrary, user-defined label for the API key."`
+
+	// Key is the public token part of the credential.
+	Key string `json:"key,omitempty" jsonschema:"The public token string of the API key."`
+
+	// Secret is the private portion of the credential.
+	// Note: This value is returned only once upon creation and cannot be retrieved later.
+	Secret string `json:"secret,omitempty" jsonschema:"The private secret of the API key. Visible only once upon creation; it cannot be retrieved later."`
 }
 
 // ListApiKeys returns a slice containing all available API keys
