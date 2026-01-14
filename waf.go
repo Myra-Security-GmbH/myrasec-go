@@ -194,11 +194,11 @@ type WAFCondition struct {
 
 	// ForceCustomValues indicates input requirements for this condition type.
 	// 0=none, 1=value, 2=key+value. Read-only metadata.
-	ForceCustomValues bool `json:"forceCustomValues" jsonschema:"readOnly=true,description=Metadata indicating input requirements: 0=none, 1=value, 2=key+value. Read-only."`
+	ForceCustomValues bool `json:"forceCustomValues" jsonschema:"Metadata indicating input requirements: 0=none, 1=value, 2=key+value. Read-only."`
 
 	// AvailablePhases indicates in which request phases this condition is valid.
 	// 1=request, 2=response, 3=both. Read-only metadata.
-	AvailablePhases int `json:"availablePhases" jsonschema:"readOnly=true,description=Metadata indicating valid phases: 1=request, 2=response, 3=both. Read-only."`
+	AvailablePhases int `json:"availablePhases" jsonschema:"Metadata indicating valid phases: 1=request, 2=response, 3=both. Read-only."`
 }
 
 // ListWAFConditions returns a list of available WAF conditions
