@@ -63,7 +63,11 @@ func TestNew(t *testing.T) {
 	}
 
 	if api.secret != secret {
-		t.Errorf("Expected key to be [%s] but got [%s]\n", key, api.key)
+		t.Errorf("Expected secret to be [%s] but got [%s]\n", secret, api.secret)
+	}
+
+	if api.token != "" {
+		t.Errorf("Expected token to be [%s] but got [%s]\n", "", api.token)
 	}
 }
 
@@ -105,6 +109,40 @@ func TestNewWithEmptyParams(t *testing.T) {
 	}
 
 	if err.Error() != "missing API credentials" {
+		t.Errorf("Expected error message to be [%s] but got [%s]", "missing API credentials", err.Error())
+	}
+}
+
+func TestNewWithToken(t *testing.T) {
+	token := "abc123"
+
+	api, err := NewWithToken(token)
+	if err != nil {
+		t.Error("Unexpected error")
+	}
+
+	if api.token != token {
+		t.Errorf("Expected token to be [%s] but got [%s]\n", token, api.token)
+	}
+
+	if api.key != "" {
+		t.Errorf("Expected key to be [%s] but got [%s]\n", "", api.key)
+	}
+
+	if api.secret != "" {
+		t.Errorf("Expected secret to be [%s] but got [%s]\n", "", api.secret)
+	}
+}
+
+func TestNewWithTokenWithEmptyParams(t *testing.T) {
+	token := ""
+
+	_, err := NewWithToken(token)
+	if err == nil {
+		t.Error("Passing an empty token should fail")
+	}
+
+	if err.Error() != "missing API token" {
 		t.Errorf("Expected error message to be [%s] but got [%s]", "missing API credentials", err.Error())
 	}
 }
