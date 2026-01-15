@@ -47,6 +47,7 @@ type API struct {
 	UserAgent  string
 	key        string
 	secret     string
+	token      string
 	cache      map[string]*responseCache
 	caching    bool
 	cacheTTL   int
@@ -95,7 +96,19 @@ func New(key, secret string) (*API, error) {
 		return nil, errors.New("missing API credentials")
 	}
 
-	api := &API{
+	return buildApi(key, secret, ""), nil
+}
+
+func NewWithToken(token string) (*API, error) {
+	if token == "" {
+		return nil, errors.New("missing API token")
+	}
+
+	return buildApi("", "", token), nil
+}
+
+func buildApi(key, secret, token string) *API {
+	return &API{
 		BaseURL:    getEnvOrDefault("MYRASEC_GO_BASE_URL", APIBaseURL),
 		Language:   getEnvOrDefault("MYRASEC_GO_LANGUAGE", DefaultAPILanguage),
 		UserAgent:  getEnvOrDefault("MYRASEC_GO_USER_AGENT", DefaultAPIUserAgent),
@@ -104,13 +117,13 @@ func New(key, secret string) (*API, error) {
 		cacheTTL:   0,
 		key:        key,
 		secret:     secret,
+		token:      token,
 		headers:    make(http.Header),
 		client:     http.DefaultClient,
 		limiter:    rate.NewLimiter(rate.Limit(5), 1), //5rps = 300req/min
 		maxRetries: DefaultRetryCount,
 		retrySleep: DefaultRetrySleep,
 	}
-	return api, nil
 }
 
 // EnableCaching enables the caching of the response. Note: Only GET requests are cached.
@@ -242,11 +255,24 @@ func (api *API) sendRequest(definition APIMethod, payload ...any) (*http.Respons
 			return nil, errors.New(ErrorMsgRateLimitReached)
 		}
 
-		sig := signature.New(api.secret, api.key, req)
+		var request *http.Request
 
-		request, err := sig.Append()
-		if err != nil {
-			return nil, err
+		if api.key != "" && api.secret != "" {
+			sig := signature.New(api.secret, api.key, req)
+
+			request, err = sig.Append()
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if api.token != "" {
+			req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", api.token))
+			request = req
+		}
+
+		if request == nil {
+			return nil, errors.New("Problem creating the request. Check API credentials")
 		}
 
 		resp, err := api.client.Do(request)
