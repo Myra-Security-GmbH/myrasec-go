@@ -142,7 +142,7 @@ func TestNewWithTokenWithEmptyParams(t *testing.T) {
 		t.Error("Passing an empty token should fail")
 	}
 
-	if err.Error() != "missing API credentials" {
+	if err.Error() != "missing API token" {
 		t.Errorf("Expected error message to be [%s] but got [%s]", "missing API credentials", err.Error())
 	}
 }
