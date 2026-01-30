@@ -1,6 +1,6 @@
 # Setup myrasec-go
 
-To be able to access the Myra API using the myrasec-go lib, you need a API Key and API Secret. You can create this on your own after accessing your own user page in the user management.
+To be able to access the Myra API using the myrasec-go lib, you need a API Key and API Secret or an API token. You can create this on your own after accessing your own user page in the user management.
 
 ## Setup example
 ```go
@@ -9,6 +9,15 @@ if err != nil {
     log.Fatal(err)
 }
 ```
+
+Using the API token for authentication:
+```go
+api, err := myrasec.NewWithToken(os.Getenv("MYRA_API_TOKEN"))
+if err != nil {
+    log.Fatal(err)
+}
+```
+
 
 ## List 100 domains example
 ```go
