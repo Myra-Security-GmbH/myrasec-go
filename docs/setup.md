@@ -18,7 +18,6 @@ if err != nil {
 }
 ```
 
-
 ## List 100 domains example
 ```go
 package main
