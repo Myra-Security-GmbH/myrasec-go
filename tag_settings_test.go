@@ -74,10 +74,6 @@ func TestListTagSettings(t *testing.T) {
 		t.Errorf("Expected to get Setting with CacheRevalidate [%t] but got [%t]", false, settings.CacheRevalidate)
 	}
 
-	if settings.CDN != true {
-		t.Errorf("Expected to get Setting with CDN [%t] but got [%t]", true, settings.CDN)
-	}
-
 	if settings.EnableOriginSNI != false {
 		t.Errorf("Expected to get Setting with EnableOriginSNI [%t] but got [%t]", false, settings.EnableOriginSNI)
 	}

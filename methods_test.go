@@ -121,18 +121,6 @@ func TestInitializeMethods(t *testing.T) {
 		}
 	}
 
-	for k := range getBucketMethods() {
-		if _, ok := methods[k]; !ok {
-			t.Errorf("Expected to find [%s] in the methods variable", k)
-		}
-	}
-
-	for k := range getFileMethods() {
-		if _, ok := methods[k]; !ok {
-			t.Errorf("Expected to find [%s] in the methods variable", k)
-		}
-	}
-
 	for k := range getWaitingRoomMethods() {
 		if _, ok := methods[k]; !ok {
 			t.Errorf("Expected to find [%s] in the methods variable", k)

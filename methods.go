@@ -28,13 +28,11 @@ var methods = map[string]APIMethod{}
 func initializeMethods() {
 	for _, m := range []map[string]APIMethod{
 		getAPIKeyMethods(),
-		getBucketMethods(),
 		getCacheClearMethods(),
 		getCacheSettingMethods(),
 		getDNSRecordMethods(),
 		getDomainMethods(),
 		getErrorPageMethods(),
-		getFileMethods(),
 		getIPFilterMethods(),
 		getIPRangeMethods(),
 		getMaintenanceMethods(),

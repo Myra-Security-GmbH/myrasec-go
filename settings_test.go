@@ -19,7 +19,6 @@ func TestListSettings(t *testing.T) {
 				"block_tor_network": false,
 				"cache_enabled": true,
 				"cache_revalidate": false,
-				"cdn": true,
 				"client_max_body_size": 10,
 				"diffie_hellman_exchange": 2048,
 				"enable_origin_sni": false,
@@ -109,10 +108,6 @@ func TestListSettings(t *testing.T) {
 
 	if settings.CacheRevalidate != false {
 		t.Errorf("Expected to get Setting with CacheRevalidate [%t] but got [%t]", false, settings.CacheRevalidate)
-	}
-
-	if settings.CDN != true {
-		t.Errorf("Expected to get Setting with CDN [%t] but got [%t]", true, settings.CDN)
 	}
 
 	if settings.ClientMaxBodySize != 10 {
