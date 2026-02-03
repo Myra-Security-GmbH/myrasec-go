@@ -20,6 +20,8 @@ import (
 
 func main() {
 	api, err := myrasec.New(os.Getenv("MYRA_API_KEY"), os.Getenv("MYRA_API_SECRET"))
+	// Alternatively you can use the API token for authentication, too
+	// api, err := myrasec.NewWithToken(os.Getenv("MYRA_API_TOKEN"))
 	if err != nil {
 		log.Fatal(err)
 	}
