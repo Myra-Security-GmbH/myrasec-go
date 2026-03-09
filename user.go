@@ -52,5 +52,9 @@ func (api *API) Me() (*User, error) {
 		return nil, err
 	}
 
-	return result.(*User), nil
+	res, ok := result.(*User)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }

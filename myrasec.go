@@ -409,7 +409,10 @@ func (api *API) prepareGETRequest(apiURL string, payload ...any) (*http.Request,
 		return nil, err
 	}
 
-	queryMap := payload[0].(map[string]string)
+	queryMap, ok := payload[0].(map[string]string)
+	if !ok {
+		return nil, fmt.Errorf("GET request payload must be map[string]string, got %T", payload[0])
+	}
 	params := baseURL.Query()
 	for k, v := range queryMap {
 		params.Add(k, v)
@@ -454,6 +457,9 @@ func (api *API) prepareDELETERequest(apiURL string, payload ...any) (*http.Reque
 func prepareResult(response Response, definition APIMethod) (any, error) {
 	var result any
 	if response.TargetObject != nil {
+		if len(response.TargetObject) == 0 {
+			return nil, fmt.Errorf("empty TargetObject in API response")
+		}
 		result = response.TargetObject[0]
 	} else if response.List != nil {
 		result = response.List
@@ -461,6 +467,9 @@ func prepareResult(response Response, definition APIMethod) (any, error) {
 		if definition.Method == http.MethodGet {
 			result = response.Data
 		} else {
+			if len(response.Data) == 0 {
+				return nil, fmt.Errorf("empty Data in API response")
+			}
 			result = response.Data[0]
 		}
 	} else if response.Result != nil {
@@ -479,21 +488,18 @@ func prepareResult(response Response, definition APIMethod) (any, error) {
 	decoder := json.NewDecoder(bytes.NewReader(tmp))
 	retValue := reflect.New(reflect.TypeOf(definition.Result))
 	res := retValue.Interface()
-	decoder.Decode(res)
+	err = decoder.Decode(res)
 
 	return res, err
 }
 
 // prepareSingleElementResult ...
 func prepareSingleElementResult(response Response, definition APIMethod) (any, error) {
-	var result any
-	if response.Data != nil {
-		result = response.Data[0]
-	}
-
-	if result == nil {
+	if len(response.Data) == 0 {
 		return nil, fmt.Errorf("unable to detect element in API response")
 	}
+
+	result := response.Data[0]
 
 	tmp, err := json.Marshal(result)
 	if err != nil {
@@ -507,7 +513,7 @@ func prepareSingleElementResult(response Response, definition APIMethod) (any, e
 	decoder := json.NewDecoder(bytes.NewReader(tmp))
 	retValue := reflect.New(reflect.TypeOf(definition.Result))
 	res := retValue.Interface()
-	decoder.Decode(res)
+	err = decoder.Decode(res)
 
 	return res, err
 }

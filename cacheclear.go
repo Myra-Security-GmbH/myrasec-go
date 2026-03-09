@@ -52,7 +52,11 @@ func (api *API) ClearCache(cacheClear *CacheClear, domainId int) (*[]CacheClear,
 		return nil, err
 	}
 
-	return result.(*[]CacheClear), nil
+	res, ok := result.(*[]CacheClear)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // decodeCacheClearResponse - custom decode function for cache clear responses
@@ -75,7 +79,7 @@ func decodeCacheClearResponse(resp *http.Response, definition APIMethod) (any, e
 	decoder := json.NewDecoder(bytes.NewReader(tmp))
 	retValue := reflect.New(reflect.TypeOf(definition.Result))
 	returnResult := retValue.Interface()
-	decoder.Decode(returnResult)
+	err = decoder.Decode(returnResult)
 
 	return returnResult, err
 }

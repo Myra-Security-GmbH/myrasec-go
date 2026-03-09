@@ -98,7 +98,11 @@ func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
 		return nil, err
 	}
 
-	return result.(*ErrorPage), nil
+	res, ok := result.(*ErrorPage)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // ListErrorPages returns a slice containing all error pages
@@ -115,7 +119,11 @@ func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorP
 		return nil, err
 	}
 
-	return *result.(*[]ErrorPage), nil
+	res, ok := result.(*[]ErrorPage)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateErrorPage creates a new error page using the MYRA API

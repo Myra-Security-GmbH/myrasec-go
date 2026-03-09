@@ -98,7 +98,11 @@ func (api *API) GetDomain(id int) (*Domain, error) {
 		return nil, err
 	}
 
-	return result.(*Domain), nil
+	res, ok := result.(*Domain)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // ListDomains returns a slice containing all visible domains
@@ -114,7 +118,11 @@ func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 		return nil, err
 	}
 
-	return *result.(*[]Domain), nil
+	res, ok := result.(*[]Domain)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateDomain creates a new domain using the MYRA API
@@ -129,7 +137,11 @@ func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Domain), nil
+	res, ok := result.(*Domain)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateDomain updates the passed domain using the MYRA API
@@ -145,7 +157,11 @@ func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Domain), nil
+	res, ok := result.(*Domain)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteDomain deletes the passed domain using the MYRA API

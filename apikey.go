@@ -77,7 +77,11 @@ func (api *API) ListApiKeys(params map[string]string) ([]APIKey, error) {
 		return nil, err
 	}
 
-	return *result.(*[]APIKey), nil
+	res, ok := result.(*[]APIKey)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateApiKey creates a new API key using the MYRA API
@@ -99,7 +103,11 @@ func (api *API) CreateApiKey(apikey *APIKey) (*APIKey, error) {
 		return nil, err
 	}
 
-	return result.(*APIKey), nil
+	res, ok := result.(*APIKey)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteApiKey deletes the passed API key using the MYRA API

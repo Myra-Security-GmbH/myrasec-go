@@ -47,5 +47,9 @@ func (api *API) ListSslConfigurations() ([]SslConfiguration, error) {
 		return nil, err
 	}
 
-	return *result.(*[]SslConfiguration), nil
+	res, ok := result.(*[]SslConfiguration)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }

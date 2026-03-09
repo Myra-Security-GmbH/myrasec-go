@@ -75,7 +75,11 @@ func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string)
 		return nil, err
 	}
 
-	return *result.(*[]MaintenanceTemplate), nil
+	res, ok := result.(*[]MaintenanceTemplate)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateMaintenanceTemplate creates a new maintenance template for the passed domain (id) using the MYRA API
@@ -91,7 +95,11 @@ func (api *API) CreateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 	if err != nil {
 		return nil, err
 	}
-	return result.(*MaintenanceTemplate), nil
+	res, ok := result.(*MaintenanceTemplate)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateMaintenanceTemplate updates the passed maintenance template using the MYRA API
@@ -107,7 +115,11 @@ func (api *API) UpdateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 	if err != nil {
 		return nil, err
 	}
-	return result.(*MaintenanceTemplate), nil
+	res, ok := result.(*MaintenanceTemplate)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteMaintenanceTemplate deletes the passed maintenance template using the MYRA API

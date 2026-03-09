@@ -111,7 +111,11 @@ func (api *API) ListWaitingRoomsForDomain(domainId int, params map[string]string
 		return nil, err
 	}
 
-	return *result.(*[]WaitingRoom), nil
+	res, ok := result.(*[]WaitingRoom)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // ListWaitingRoomsForSubDomain returns a slice containing all visible waiting rooms for subdomain
@@ -128,7 +132,11 @@ func (api *API) ListWaitingRoomsForSubDomain(subDomainName string, params map[st
 		return nil, err
 	}
 
-	return *result.(*[]WaitingRoom), nil
+	res, ok := result.(*[]WaitingRoom)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // GetWaitingRoom returns the waiting room
@@ -144,7 +152,11 @@ func (api *API) GetWaitingRoom(id int) (*WaitingRoom, error) {
 	if err != nil {
 		return nil, err
 	}
-	return result.(*WaitingRoom), nil
+	res, ok := result.(*WaitingRoom)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // CreateWaitingRoom creates a new waiting room
@@ -159,7 +171,11 @@ func (api *API) CreateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error
 	if err != nil {
 		return nil, err
 	}
-	return result.(*WaitingRoom), nil
+	res, ok := result.(*WaitingRoom)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateWaitingRoom updates the waiting room
@@ -175,7 +191,11 @@ func (api *API) UpdateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error
 	if err != nil {
 		return nil, err
 	}
-	return result.(*WaitingRoom), nil
+	res, ok := result.(*WaitingRoom)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteWaitingRoom updates the waiting room

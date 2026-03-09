@@ -156,7 +156,11 @@ func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error)
 		return nil, err
 	}
 
-	return result.(*SSLCertificate), nil
+	res, ok := result.(*SSLCertificate)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // ListSSLCertificates returns a slice containing all visible SSL certificates for a domain
@@ -173,7 +177,11 @@ func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]S
 		return nil, err
 	}
 
-	return *result.(*[]SSLCertificate), nil
+	res, ok := result.(*[]SSLCertificate)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateSSLCertificate creates a new SSL certificates on the passed domain (ID) using the MYRA API
@@ -189,7 +197,11 @@ func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SSLCertificate), nil
+	res, ok := result.(*SSLCertificate)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateSSLCertificate updates the passed SSL certificate using the MYRA API
@@ -205,7 +217,11 @@ func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SSLCertificate), nil
+	res, ok := result.(*SSLCertificate)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteSSLCertificate "deletes" the passed SSL certificate by removing the assigned subdomains from the certificate using the MYRA API
@@ -223,5 +239,9 @@ func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	if err != nil {
 		return nil, err
 	}
-	return result.(*SSLCertificate), nil
+	res, ok := result.(*SSLCertificate)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }

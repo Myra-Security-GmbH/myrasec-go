@@ -256,7 +256,11 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 		return nil, err
 	}
 
-	return result.(*Settings), nil
+	res, ok := result.(*Settings)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // ListSettingsFull returns a Setting struct containing the full hierarchie of the settings
@@ -290,7 +294,11 @@ func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName s
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Settings), nil
+	res, ok := result.(*Settings)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateSettingsPartial updates the passed settings using the MYRA API

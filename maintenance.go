@@ -91,7 +91,11 @@ func (api *API) ListMaintenances(domainId int, subDomainName string, params map[
 		return nil, err
 	}
 
-	return *result.(*[]Maintenance), nil
+	res, ok := result.(*[]Maintenance)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateMaintenance creates a new maintenance page for the passed subdomain (name) using the MYRA API
@@ -107,7 +111,11 @@ func (api *API) CreateMaintenance(maintenance *Maintenance, domainId int, subDom
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Maintenance), nil
+	res, ok := result.(*Maintenance)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateMaintenance updates the passed maintenance page using the MYRA API
@@ -123,7 +131,11 @@ func (api *API) UpdateMaintenance(maintenance *Maintenance, domainId int, subDom
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Maintenance), nil
+	res, ok := result.(*Maintenance)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteMaintenance deletes the passed maintenance page using the MYRA API

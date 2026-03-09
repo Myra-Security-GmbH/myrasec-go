@@ -97,7 +97,11 @@ func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilt
 		return nil, err
 	}
 
-	return result.(*IPFilter), nil
+	res, ok := result.(*IPFilter)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // ListIPFilters returns a slice containing all visible ip filters for a subdomain
@@ -114,7 +118,11 @@ func (api *API) ListIPFilters(domainId int, subDomainName string, params map[str
 		return nil, err
 	}
 
-	return *result.(*[]IPFilter), nil
+	res, ok := result.(*[]IPFilter)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateIPFilter creates a new ip filter for the passed subdomain (name) using the MYRA API
@@ -130,7 +138,11 @@ func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName str
 	if err != nil {
 		return nil, err
 	}
-	return result.(*IPFilter), nil
+	res, ok := result.(*IPFilter)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateIPFilter updates the passed ip filter using the MYRA API
@@ -146,7 +158,11 @@ func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName str
 	if err != nil {
 		return nil, err
 	}
-	return result.(*IPFilter), nil
+	res, ok := result.(*IPFilter)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteIPFilter deletes the passed ip filter using the MYRA API

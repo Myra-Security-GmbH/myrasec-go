@@ -57,7 +57,11 @@ func (api *API) ListTagSettings(tagId int) (*Settings, error) {
 		return nil, err
 	}
 
-	return result.(*Settings), nil
+	res, ok := result.(*Settings)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 func (api *API) ListTagSettingsMap(tagId int) (any, error) {
@@ -88,7 +92,11 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Settings), nil
+	res, ok := result.(*Settings)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 
 }
 

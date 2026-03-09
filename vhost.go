@@ -62,7 +62,11 @@ func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 		return nil, err
 	}
 
-	return *result.(*[]VHost), nil
+	res, ok := result.(*[]VHost)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // ListAllSubdomainsForDomain ...
@@ -79,8 +83,13 @@ func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]strin
 		return nil, err
 	}
 
+	res, ok := result.(*[]VHost)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+
 	var vhosts []VHost
-	vhosts = append(vhosts, *result.(*[]VHost)...)
+	vhosts = append(vhosts, *res...)
 
 	return vhosts, nil
 }

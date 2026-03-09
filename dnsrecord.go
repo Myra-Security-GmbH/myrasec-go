@@ -169,7 +169,11 @@ func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
 		return nil, err
 	}
 
-	return result.(*DNSRecord), nil
+	res, ok := result.(*DNSRecord)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // ListDNSRecords returns a slice containing all visible DNS records for a domain
@@ -186,7 +190,11 @@ func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRec
 		return nil, err
 	}
 
-	return *result.(*[]DNSRecord), nil
+	res, ok := result.(*[]DNSRecord)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateDNSRecord creates a new DNS record using the MYRA API
@@ -202,7 +210,11 @@ func (api *API) CreateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DNSRecord), nil
+	res, ok := result.(*DNSRecord)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateDNSRecord updates the passed DNS record using the MYRA API
@@ -218,7 +230,11 @@ func (api *API) UpdateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DNSRecord), nil
+	res, ok := result.(*DNSRecord)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteDNSRecord deletes the passed DNS record using the MYRA API

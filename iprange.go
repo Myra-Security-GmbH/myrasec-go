@@ -66,5 +66,9 @@ func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
 		return nil, err
 	}
 
-	return *result.(*[]IPRange), nil
+	res, ok := result.(*[]IPRange)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
