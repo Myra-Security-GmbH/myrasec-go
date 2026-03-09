@@ -98,7 +98,11 @@ func (api *API) ListCacheSettings(domainId int, subDomainName string, params map
 		return nil, err
 	}
 
-	return *result.(*[]CacheSetting), nil
+	res, ok := result.(*[]CacheSetting)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateCacheSetting creates a new cache setting for the passed subdomain (name) using the MYRA API
@@ -114,7 +118,11 @@ func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomai
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CacheSetting), nil
+	res, ok := result.(*CacheSetting)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateCacheSetting updates the passed cache setting using the MYRA API
@@ -130,7 +138,11 @@ func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomai
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CacheSetting), nil
+	res, ok := result.(*CacheSetting)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteCacheSetting deletes the passed cache setting using the MYRA API

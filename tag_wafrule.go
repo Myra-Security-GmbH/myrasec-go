@@ -119,7 +119,11 @@ func (api *API) GetTagWAFRule(tagId int, ruleId int) (*TagWAFRule, error) {
 		return nil, err
 	}
 
-	return result.(*TagWAFRule), nil
+	res, ok := result.(*TagWAFRule)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // ListTagWAFRules returns a slice containing all visible tags
@@ -136,7 +140,11 @@ func (api *API) ListTagWAFRules(tagId int, params map[string]string) ([]TagWAFRu
 		return nil, err
 	}
 
-	return *result.(*[]TagWAFRule), nil
+	res, ok := result.(*[]TagWAFRule)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateTagWAFRule creates a new tag using the MYRA API
@@ -153,7 +161,11 @@ func (api *API) CreateTagWAFRule(rule *TagWAFRule, tagId int) (*TagWAFRule, erro
 		return nil, err
 	}
 
-	return result.(*TagWAFRule), nil
+	res, ok := result.(*TagWAFRule)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateTagWAFRule updates the passed tag using the MYRA API
@@ -170,7 +182,11 @@ func (api *API) UpdateTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
 		return nil, err
 	}
 
-	return result.(*TagWAFRule), nil
+	res, ok := result.(*TagWAFRule)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteTagWAFRule deletes the passed tag using the MYRA API

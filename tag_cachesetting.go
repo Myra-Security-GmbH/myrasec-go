@@ -49,7 +49,11 @@ func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]Cac
 		return nil, err
 	}
 
-	return *result.(*[]CacheSetting), nil
+	res, ok := result.(*[]CacheSetting)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateTagCacheSetting creates a new cache setting for the passed subdomain (name) using the MYRA API
@@ -65,7 +69,11 @@ func (api *API) CreateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CacheSetting), nil
+	res, ok := result.(*CacheSetting)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateTagCacheSetting updates the passed cache setting using the MYRA API
@@ -81,7 +89,11 @@ func (api *API) UpdateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CacheSetting), nil
+	res, ok := result.(*CacheSetting)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteTagCacheSetting deletes the passed cache setting using the MYRA API

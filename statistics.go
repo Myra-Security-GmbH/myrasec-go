@@ -71,7 +71,11 @@ func (api *API) QueryStatistics(query *StatisticQuery) (*Statistics, error) {
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Statistics), nil
+	res, ok := result.(*Statistics)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // decodeStatisticsResponse - custom decode function for statistics response. Used in the QueryStatistics action.

@@ -126,7 +126,11 @@ func (api *API) GetTag(id int) (*Tag, error) {
 		return nil, err
 	}
 
-	return result.(*Tag), nil
+	res, ok := result.(*Tag)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // ListTags returns a slice containing all visible tags
@@ -142,7 +146,11 @@ func (api *API) ListTags(params map[string]string) ([]Tag, error) {
 		return nil, err
 	}
 
-	return *result.(*[]Tag), nil
+	res, ok := result.(*[]Tag)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateTag creates a new tag using the MYRA API
@@ -158,7 +166,11 @@ func (api *API) CreateTag(tag *Tag) (*Tag, error) {
 		return nil, err
 	}
 
-	return result.(*Tag), nil
+	res, ok := result.(*Tag)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateTag updates the passed tag using the MYRA API
@@ -175,7 +187,11 @@ func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
 		return nil, err
 	}
 
-	return result.(*Tag), nil
+	res, ok := result.(*Tag)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteTag deletes the passed tag using the MYRA API
@@ -209,5 +225,9 @@ func (api *API) CloneTag(tag *Tag) (*Tag, error) {
 		return nil, err
 	}
 
-	return result.(*Tag), nil
+	res, ok := result.(*Tag)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }

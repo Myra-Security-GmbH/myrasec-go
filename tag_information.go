@@ -83,7 +83,11 @@ func (api *API) ListTagInformation(tagId int, params map[string]string) ([]TagIn
 		return nil, err
 	}
 
-	return *result.(*[]TagInformation), nil
+	res, ok := result.(*[]TagInformation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // ListTagInformationBySubDomainName returns a slice containing all tag information for the passed subDomainName
@@ -100,7 +104,11 @@ func (api *API) ListTagInformationBySubDomainName(subDomainName string, params m
 		return nil, err
 	}
 
-	return *result.(*[]TagInformation), nil
+	res, ok := result.(*[]TagInformation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 
 }
 
@@ -117,7 +125,11 @@ func (api *API) CreateTagInformation(information *TagInformation, tagId int) (*T
 	if err != nil {
 		return nil, err
 	}
-	return result.(*TagInformation), nil
+	res, ok := result.(*TagInformation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateTagInformation updates the passed tag information using the MYRA API
@@ -133,7 +145,11 @@ func (api *API) UpdateTagInformation(information *TagInformation, tagId int) (*T
 	if err != nil {
 		return nil, err
 	}
-	return result.(*TagInformation), nil
+	res, ok := result.(*TagInformation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteTagInformation deletes the passed tag information using the MYRA API

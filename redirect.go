@@ -109,7 +109,11 @@ func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redire
 		return nil, err
 	}
 
-	return result.(*Redirect), nil
+	res, ok := result.(*Redirect)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // ListRedirects returns a slice containing all visible redirects for a subdomain
@@ -126,7 +130,11 @@ func (api *API) ListRedirects(domainId int, subDomainName string, params map[str
 		return nil, err
 	}
 
-	return *result.(*[]Redirect), nil
+	res, ok := result.(*[]Redirect)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // CreateRedirect creates a new redirect for the passed subdomain (name) using the MYRA API
@@ -142,7 +150,11 @@ func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName s
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Redirect), nil
+	res, ok := result.(*Redirect)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateRedirect updates the passed redirect using the MYRA API
@@ -158,7 +170,11 @@ func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName s
 	if err != nil {
 		return nil, err
 	}
-	return result.(*Redirect), nil
+	res, ok := result.(*Redirect)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteRedirect deletes the passed redirect using the MYRA API

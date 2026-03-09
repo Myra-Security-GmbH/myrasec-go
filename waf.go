@@ -212,7 +212,11 @@ func (api *API) ListWAFConditions() ([]WAFCondition, error) {
 		return nil, err
 	}
 
-	return *result.(*[]WAFCondition), nil
+	res, ok := result.(*[]WAFCondition)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // ListWAFActions returns a list of available WAF actions
@@ -226,7 +230,11 @@ func (api *API) ListWAFActions() ([]WAFAction, error) {
 		return nil, err
 	}
 
-	return *result.(*[]WAFAction), nil
+	res, ok := result.(*[]WAFAction)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // ListWAFRules returns a list of WAF rules.
@@ -243,7 +251,11 @@ func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule,
 		return nil, err
 	}
 
-	return *result.(*[]WAFRule), nil
+	res, ok := result.(*[]WAFRule)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }
 
 // FetchWAFRule returns a single WAF rule for the given ID
@@ -260,7 +272,11 @@ func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error)
 		return nil, err
 	}
 
-	rules := *result.(*[]WAFRule)
+	rulesPtr, ok := result.(*[]WAFRule)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	rules := *rulesPtr
 	if len(rules) <= 0 {
 		return nil, fmt.Errorf("unable to fetch WAF rule for passed id [%d]", id)
 	}
@@ -281,7 +297,11 @@ func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*WAFRule), nil
+	res, ok := result.(*WAFRule)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // UpdateWAFRule updates the passed WAF rule
@@ -297,7 +317,11 @@ func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 	if err != nil {
 		return nil, err
 	}
-	return result.(*WAFRule), nil
+	res, ok := result.(*WAFRule)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
 
 // DeleteWAFRule deletes the passed WAF rule
