@@ -48,6 +48,18 @@ func TestIntInSlice(t *testing.T) {
 	}
 }
 
+func TestBoolPtr(t *testing.T) {
+	resultTrue := BoolPtr(true)
+	if resultTrue == nil || *resultTrue != true {
+		t.Errorf("Expected BoolPtr(true) to return pointer to true")
+	}
+
+	resultFalse := BoolPtr(false)
+	if resultFalse == nil || *resultFalse != false {
+		t.Errorf("Expected BoolPtr(false) to return pointer to false")
+	}
+}
+
 func TestBuildSHA256(t *testing.T) {
 	var result string
 
