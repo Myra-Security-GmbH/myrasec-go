@@ -70,20 +70,20 @@ func TestListSettings(t *testing.T) {
 		t.Errorf("Expected not to get an error but got [%s]", err.Error())
 	}
 
-	if settings.AccessLog != true {
-		t.Errorf("Expected to get Setting with AccessLog [%t] but got [%t]", true, settings.AccessLog)
+	if settings.AccessLog == nil || *settings.AccessLog != true {
+		t.Errorf("Expected to get Setting with AccessLog [%t] but got [%v]", true, settings.AccessLog)
 	}
 
-	if settings.AntibotPostFlood != true {
-		t.Errorf("Expected to get Setting with AntibotPostFlood [%t] but got [%t]", true, settings.AntibotPostFlood)
+	if settings.AntibotPostFlood == nil || *settings.AntibotPostFlood != true {
+		t.Errorf("Expected to get Setting with AntibotPostFlood [%t] but got [%v]", true, settings.AntibotPostFlood)
 	}
 
 	if settings.AntibotPostFloodThreshold != 10 {
 		t.Errorf("Expected to get Setting with AntibotPostFloodThreshold [%d] but got [%d]", 10, settings.AntibotPostFloodThreshold)
 	}
 
-	if settings.AntibotProofOfWork != true {
-		t.Errorf("Expected to get Setting with AntibotProofOfWork [%t] but got [%t]", true, settings.AntibotProofOfWork)
+	if settings.AntibotProofOfWork == nil || *settings.AntibotProofOfWork != true {
+		t.Errorf("Expected to get Setting with AntibotProofOfWork [%t] but got [%v]", true, settings.AntibotProofOfWork)
 	}
 
 	if settings.AntibotProofOfWorkThreshold != 10 {
@@ -94,20 +94,20 @@ func TestListSettings(t *testing.T) {
 		t.Errorf("Expected to get Setting with BalancingMethod [%s] but got [%s]", "round_robin", settings.BalancingMethod)
 	}
 
-	if settings.BlockNotWhitelisted != false {
-		t.Errorf("Expected to get Setting with BlockNotWhitelisted [%t] but got [%t]", false, settings.BlockNotWhitelisted)
+	if settings.BlockNotWhitelisted == nil || *settings.BlockNotWhitelisted != false {
+		t.Errorf("Expected to get Setting with BlockNotWhitelisted [%t] but got [%v]", false, settings.BlockNotWhitelisted)
 	}
 
-	if settings.BlockTorNetwork != false {
-		t.Errorf("Expected to get Setting with BlockTorNetwork [%t] but got [%t]", false, settings.BlockTorNetwork)
+	if settings.BlockTorNetwork == nil || *settings.BlockTorNetwork != false {
+		t.Errorf("Expected to get Setting with BlockTorNetwork [%t] but got [%v]", false, settings.BlockTorNetwork)
 	}
 
-	if settings.CacheEnabled != true {
-		t.Errorf("Expected to get Setting CacheEnabled [%t] but got [%t]with ", true, settings.CacheEnabled)
+	if settings.CacheEnabled == nil || *settings.CacheEnabled != true {
+		t.Errorf("Expected to get Setting CacheEnabled [%t] but got [%v]", true, settings.CacheEnabled)
 	}
 
-	if settings.CacheRevalidate != false {
-		t.Errorf("Expected to get Setting with CacheRevalidate [%t] but got [%t]", false, settings.CacheRevalidate)
+	if settings.CacheRevalidate == nil || *settings.CacheRevalidate != false {
+		t.Errorf("Expected to get Setting with CacheRevalidate [%t] but got [%v]", false, settings.CacheRevalidate)
 	}
 
 	if settings.ClientMaxBodySize != 10 {
@@ -118,44 +118,44 @@ func TestListSettings(t *testing.T) {
 		t.Errorf("Expected to get Setting with DiffieHellmanExchange [%d] but got [%d]", 2048, settings.DiffieHellmanExchange)
 	}
 
-	if settings.EnableOriginSNI != false {
-		t.Errorf("Expected to get Setting with EnableOriginSNI [%t] but got [%t]", false, settings.EnableOriginSNI)
+	if settings.EnableOriginSNI == nil || *settings.EnableOriginSNI != false {
+		t.Errorf("Expected to get Setting with EnableOriginSNI [%t] but got [%v]", false, settings.EnableOriginSNI)
 	}
 
 	if settings.ForwardedForReplacement != "" {
 		t.Errorf("Expected to get Setting with ForwardedForReplacement [%s] but got [%s]", "", settings.ForwardedForReplacement)
 	}
 
-	if settings.HSTS != false {
-		t.Errorf("Expected to get Setting with HSTS [%t] but got [%t]", false, settings.HSTS)
+	if settings.HSTS == nil || *settings.HSTS != false {
+		t.Errorf("Expected to get Setting with HSTS [%t] but got [%v]", false, settings.HSTS)
 	}
 
-	if settings.HSTSIncludeSubdomains != false {
-		t.Errorf("Expected to get Setting with HSTSIncludeSubdomains [%t] but got [%t]", false, settings.HSTSIncludeSubdomains)
+	if settings.HSTSIncludeSubdomains == nil || *settings.HSTSIncludeSubdomains != false {
+		t.Errorf("Expected to get Setting with HSTSIncludeSubdomains [%t] but got [%v]", false, settings.HSTSIncludeSubdomains)
 	}
 
 	if settings.HSTSMaxAge != 10 {
 		t.Errorf("Expected to get Setting with HSTSMaxAge [%d] but got [%d]", 10, settings.HSTSMaxAge)
 	}
 
-	if settings.HSTSPreload != false {
-		t.Errorf("Expected to get Setting with HSTSPreload [%t] but got [%t]", false, settings.HSTSPreload)
+	if settings.HSTSPreload == nil || *settings.HSTSPreload != false {
+		t.Errorf("Expected to get Setting with HSTSPreload [%t] but got [%v]", false, settings.HSTSPreload)
 	}
 
 	if settings.HTTPOriginPort != 80 {
 		t.Errorf("Expected to get Setting with HTTPOriginPort [%d] but got [%d]", 80, settings.HTTPOriginPort)
 	}
 
-	if settings.IgnoreNoCache != false {
-		t.Errorf("Expected to get Setting with IgnoreNoCache [%t] but got [%t]", false, settings.IgnoreNoCache)
+	if settings.IgnoreNoCache == nil || *settings.IgnoreNoCache != false {
+		t.Errorf("Expected to get Setting with IgnoreNoCache [%t] but got [%v]", false, settings.IgnoreNoCache)
 	}
 
-	if settings.ImageOptimization != false {
-		t.Errorf("Expected to get Setting with ImageOptimization [%t] but got [%t]", false, settings.ImageOptimization)
+	if settings.ImageOptimization == nil || *settings.ImageOptimization != false {
+		t.Errorf("Expected to get Setting with ImageOptimization [%t] but got [%v]", false, settings.ImageOptimization)
 	}
 
-	if settings.IPv6Active != true {
-		t.Errorf("Expected to get Setting with IPv6Active [%t] but got [%t]", true, settings.IPv6Active)
+	if settings.IPv6Active == nil || *settings.IPv6Active != true {
+		t.Errorf("Expected to get Setting with IPv6Active [%t] but got [%v]", true, settings.IPv6Active)
 	}
 
 	if settings.LogFormat != "" {
@@ -170,16 +170,16 @@ func TestListSettings(t *testing.T) {
 		t.Errorf("Expected to get Setting with MonitoringContactEMail [%s] but got [%s]", "test@example.com", settings.MonitoringContactEMail)
 	}
 
-	if settings.MonitoringSendAlert != true {
-		t.Errorf("Expected to get Setting with MonitoringSendAlert [%t] but got [%t]", true, settings.MonitoringSendAlert)
+	if settings.MonitoringSendAlert == nil || *settings.MonitoringSendAlert != true {
+		t.Errorf("Expected to get Setting with MonitoringSendAlert [%t] but got [%v]", true, settings.MonitoringSendAlert)
 	}
 
-	if settings.MyraSSLHeader != true {
-		t.Errorf("Expected to get Setting with MyraSSLHeader [%t] but got [%t]", true, settings.MyraSSLHeader)
+	if settings.MyraSSLHeader == nil || *settings.MyraSSLHeader != true {
+		t.Errorf("Expected to get Setting with MyraSSLHeader [%t] but got [%v]", true, settings.MyraSSLHeader)
 	}
 
-	if settings.OnlyHTTPS != true {
-		t.Errorf("Expected to get Setting with OnlyHTTPS [%t] but got [%t]", true, settings.OnlyHTTPS)
+	if settings.OnlyHTTPS == nil || *settings.OnlyHTTPS != true {
+		t.Errorf("Expected to get Setting with OnlyHTTPS [%t] but got [%v]", true, settings.OnlyHTTPS)
 	}
 
 	if settings.OriginConnectionHeader != "" {
@@ -206,32 +206,32 @@ func TestListSettings(t *testing.T) {
 		t.Errorf("Expected to get Setting with RequestLimitLevel [%d] but got [%d]", 10, settings.RequestLimitLevel)
 	}
 
-	if settings.RequestLimitReport != false {
-		t.Errorf("Expected to get Setting with RequestLimitReport [%t] but got [%t]", false, settings.RequestLimitReport)
+	if settings.RequestLimitReport == nil || *settings.RequestLimitReport != false {
+		t.Errorf("Expected to get Setting with RequestLimitReport [%t] but got [%v]", false, settings.RequestLimitReport)
 	}
 
 	if settings.RequestLimitReportEMail != "" {
 		t.Errorf("Expected to get Setting with RequestLimitReportEMail [%s] but got [%s]", "", settings.RequestLimitReportEMail)
 	}
 
-	if settings.Rewrite != false {
-		t.Errorf("Expected to get Setting with Rewrite [%t] but got [%t]", false, settings.Rewrite)
+	if settings.Rewrite == nil || *settings.Rewrite != false {
+		t.Errorf("Expected to get Setting with Rewrite [%t] but got [%v]", false, settings.Rewrite)
 	}
 
 	if settings.SourceProtocol != "https" {
 		t.Errorf("Expected to get Setting with SourceProtocol [%s] but got [%s]", "https", settings.SourceProtocol)
 	}
 
-	if settings.Spdy != true {
-		t.Errorf("Expected to get Setting with Spdy [%t] but got [%t]", true, settings.Spdy)
+	if settings.Spdy == nil || *settings.Spdy != true {
+		t.Errorf("Expected to get Setting with Spdy [%t] but got [%v]", true, settings.Spdy)
 	}
 
 	if settings.SSLOriginPort != 443 {
 		t.Errorf("Expected to get Setting with SSLOriginPort [%d] but got [%d]", 443, settings.SSLOriginPort)
 	}
 
-	if settings.WAFEnable != true {
-		t.Errorf("Expected to get Setting with WAFEnable [%t] but got [%t]", true, settings.WAFEnable)
+	if settings.WAFEnable == nil || *settings.WAFEnable != true {
+		t.Errorf("Expected to get Setting with WAFEnable [%t] but got [%v]", true, settings.WAFEnable)
 	}
 
 	if settings.WAFPolicy != "allow" {
