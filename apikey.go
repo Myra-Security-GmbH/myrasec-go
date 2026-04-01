@@ -31,7 +31,7 @@ func getAPIKeyMethods() map[string]APIMethod {
 }
 
 // APIKey represents an authentication credential used to access the API.
-// It encapsulates the public identifier, the private secret, and metadata
+// It encapsulates the public identifier, the private secret and metadata
 // regarding the lifecycle of the key.
 type APIKey struct {
 	// ID is the unique identifier for the API key.

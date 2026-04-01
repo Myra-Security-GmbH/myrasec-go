@@ -198,7 +198,7 @@ func (api *API) UpdateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error
 	return res, nil
 }
 
-// DeleteWaitingRoom updates the waiting room
+// DeleteWaitingRoom deletes the passed waiting room using the MYRA API
 func (api *API) DeleteWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error) {
 	if _, ok := methods["deleteWaitingRoom"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteWaitingRoom")

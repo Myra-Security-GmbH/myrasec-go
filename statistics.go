@@ -33,7 +33,7 @@ type Statistics struct {
 }
 
 // StatisticQuery defines the criteria for fetching statistical data.
-// It specifies the time range, target domains, and specific metrics (data sources) to retrieve.
+// It specifies the time range, target domains and specific metrics (data sources) to retrieve.
 type StatisticQuery struct {
 	// AggregationInterval defines the time granularity for histogram data.
 	// Only relevant if the data source type is 'histogram'.

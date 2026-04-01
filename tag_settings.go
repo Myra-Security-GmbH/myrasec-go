@@ -38,7 +38,7 @@ func getTagSettingsMethods() map[string]APIMethod {
 	}
 }
 
-// tagSettingsResponse ...
+// tagSettingsResponse wraps the Settings struct for tag settings API responses.
 type tagSettingsResponse struct {
 	Settings Settings `json:"settings"`
 }

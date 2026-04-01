@@ -174,7 +174,7 @@ type WAFCondition struct {
 	Name string `json:"name" jsonschema:"The type of the condition (e.g., 'url', 'ip', 'user_agent')."`
 
 	// MatchingType defines the comparison operator.
-	// Valid values: EXACT, IREGEX, REGEX, PREFIX, SUFFIX, and their NOT variants.
+	// Valid values: EXACT, IREGEX, REGEX, PREFIX, SUFFIX and their NOT variants.
 	MatchingType string `json:"matchingType" jsonschema:"The comparison operator. Valid values: 'EXACT', 'IREGEX' (case-insensitive regex), 'REGEX', 'PREFIX', 'SUFFIX', 'NOT EXACT', 'NOT IREGEX', 'NOT REGEX', 'NOT PREFIX', 'NOT SUFFIX'."`
 
 	// Key specifies the target of the check (e.g., the specific header name).

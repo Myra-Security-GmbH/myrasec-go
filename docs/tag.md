@@ -7,7 +7,7 @@ type Tag struct {
     Modified     *types.DateTime  `json:"modified,omitempty"`
     Name         string           `json:"name"`
     Type         string           `json:"type"`
-    Assignments  []TagAssignments `json:"assignments"`
+    Assignments  []TagAssignment `json:"assignments"`
     Sort         int              `json:"sort,omitempty"`
     Global       bool             `json:"global,omitempty"`
 }
@@ -19,7 +19,7 @@ type Tag struct {
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `Name` | string | Identifies the tag by its name. |
 | `Type` | string | Defines the type of the tag and must be one of `CONFIG`, `WAF`, `CACHE`, `RATE_LIMIT`, `INFORMATION`. |
-| `Assignments` | []TagAssignments |
+| `Assignments` | []TagAssignment | List of domains/subdomains assigned to this tag. |
 | `Sort` | int | Defines the order in which `WAF` tags are processed. |
 | `Global` | bool | Identify "global" tags. **Note:** It is not possible to edit a global tags. It is only possible to assign (sub)domains to a global tag. |
 

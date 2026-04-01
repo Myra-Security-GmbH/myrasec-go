@@ -27,7 +27,7 @@ type Redirect struct {
 | `Source` | string | Location to match your query against, it is also possible to match against a regexp instead of hard coded locations. |
 | `Destination` | string | The destination you want your customer redirect to. This can be a valid HTTP(S) address or a relative location on your domain. |
 | `Comment` | string | A comment to describe this redirect. |
-| `MatchingType` | string | The matching type allows you to change the way how the redirect is matched. This field allows three different values: ’prefix’, ’suffix’, and ’exact’. |
+| `MatchingType` | string | The matching type allows you to change the way how the redirect is matched. This field allows three different values: ‘prefix’, ‘suffix’ and ‘exact’. |
 | `Sort` | int | The ascending order for the redirect rules. |
 | `Enabled` | bool | Enable or disable the redirect. |
 | `ExpertMode` | bool | Disable redirect loop detection. |

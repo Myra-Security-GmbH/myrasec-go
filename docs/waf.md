@@ -9,6 +9,7 @@ type WAFRule struct {
 	Description   string          `json:"description"`
 	Direction     string          `json:"direction"`
 	LogIdentifier string          `json:"logIdentifier"`
+	Uuid          string          `json:"uuid,omitempty"`
 	RuleType      string          `json:"ruleType"`
 	SubDomainName string          `json:"subDomainName"`
 	Sort          int             `json:"sort"`
@@ -25,17 +26,21 @@ type WAFRule struct {
 | `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a WAFRule it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new WAFRule object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
-| `ExpireDate` | *types.DateTime | ExpireDate describes how long a WAFRule is valid, and when it will expire. |
+| `ExpireDate` | *types.DateTime | ExpireDate describes how long a WAFRule is valid and when it will expire. |
 | `Name` | string | Identifies the WAF rule by its name. |
 | `Description` | string | The Description will explain what the WAFRule is for. |
 | `Direction` | string | The direction can be `in` (for Request) or `out` (for Response). |
 | `LogIdentifier` | string | A string to identify the matching rule in the access log. |
+| `Uuid` | string | System-assigned unique string identifier (UUID). Read-only. |
+| `RuleType` | string | The type classification of the rule (e.g., 'custom_rule'). |
+| `SubDomainName` | string | The FQDN of the subdomain this rule belongs to. Immutable; usually inferred from the URL parameter. |
 | `Sort` | int | Defines the sorting of WAFRules. |
-| `Sync` | bool | ... |
+| `Sync` | bool | Indicates synchronization status with edge nodes. |
+| `Template` | bool | If true, this rule is a template and not directly applied to traffic. |
 | `ProcessNext` | bool | After a rule has been applied, the rule chain will be executed as determined. |
 | `Enabled` | bool | Describes if the rule is enabled or not. |
-| `Actions` | *[]WAFAction | List of WAF actions. |
-| `Conditions` | *[]WAFCondition | List of WAF conditions. |
+| `Actions` | []*WAFAction | List of WAF actions. |
+| `Conditions` | []*WAFCondition | List of WAF conditions. |
 
 ```go
 type WAFAction struct {
@@ -106,7 +111,7 @@ newWAFRule := &myrasec.WAFRule{
     ProcessNext: true,
     Enabled: true,
     Actions: []*myrasec.WAFAction{},
-    Contition: []*myrasec.WAFCondition{},
+    Conditions: []*myrasec.WAFCondition{},
 }
 
 t, err := api.CreateWAFRule(newWAFRule, domainId, "www.example.com")
@@ -188,8 +193,7 @@ rule := &myrasec.WAFRule{
     ProcessNext: true,
     Enabled: true,
     Actions: []*myrasec.WAFAction{},
-    Contition: []*myrasec.WAFCondition{},
-    Id: 12
+    Conditions: []*myrasec.WAFCondition{},
 }
 
 updated, err := api.UpdateWAFRule(rule, domainId, "www.example.com")

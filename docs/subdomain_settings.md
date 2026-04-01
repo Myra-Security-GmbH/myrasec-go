@@ -16,13 +16,13 @@ type Settings struct {
 	ClientMaxBodySize           int      `json:"client_max_body_size,omitempty"`
 	CookieName                  string   `json:"cookie_name,omitempty"`
 	DiffieHellmanExchange       int      `json:"diffie_hellman_exchange,omitempty"`
-	DisableForwardFor           bool     `json"disable_forwarded_for,omitempty"`
+	DisableForwardFor           bool     `json:"disable_forwarded_for,omitempty"`
 	EnableOriginSNI             bool     `json:"enable_origin_sni,omitempty"`
 	EnforceCacheTTL             bool     `json:"enforce_cache_ttl,omitempty"`
 	ForwardedForReplacement     string   `json:"forwarded_for_replacement,omitempty"`
 	HSTS                        bool     `json:"hsts,omitempty"`
 	HSTSIncludeSubdomains       bool     `json:"hsts_include_subdomains,omitempty"`
-	HSTSMaxAge                  int      `json:"hsts_max_age,omitempty,omitempty"`
+	HSTSMaxAge                  int      `json:"hsts_max_age,omitempty"`
 	HSTSPreload                 bool     `json:"hsts_preload,omitempty"`
 	HTTPOriginPort              int      `json:"http_origin_port,omitempty"`
 	IgnoreNoCache               bool     `json:"ignore_nocache,omitempty"`

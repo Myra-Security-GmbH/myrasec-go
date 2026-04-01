@@ -69,7 +69,7 @@ type DNSRecord struct {
 	Value string `json:"value" jsonschema:"The record content, such as an IP address, domain name, or text value."`
 
 	// RecordType specifies the DNS resource record type.
-	// Valid values include A, AAAA, MX, CNAME, TXT, NS, SRV, PTR, and DS.
+	// Valid values include A, AAAA, MX, CNAME, TXT, NS, SRV, PTR and DS.
 	RecordType string `json:"recordType" jsonschema:"The DNS record type. Allowed values: 'A', 'AAAA', 'MX', 'CNAME', 'TXT', 'NS', 'SRV', 'PTR', 'DS'. Note: PTR is only valid for .arpa domains."`
 
 	// AlternativeCNAME indicates an alias pointing to this record.
