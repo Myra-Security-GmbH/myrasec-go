@@ -1,8 +1,18 @@
 package myrasec
 
 import (
+	"fmt"
 	"testing"
 )
+
+// boolPtrStr formats a *bool for test error messages: "nil", "true", or "false".
+// Without it, %v on a non-nil *bool prints the memory address.
+func boolPtrStr(b *bool) string {
+	if b == nil {
+		return "nil"
+	}
+	return fmt.Sprintf("%t", *b)
+}
 
 func TestIntInSlice(t *testing.T) {
 	var result bool
@@ -45,6 +55,18 @@ func TestIntInSlice(t *testing.T) {
 	result = intInSlice(0, []int{0})
 	if !result {
 		t.Errorf("Expected to find the passed needle in the haystack")
+	}
+}
+
+func TestBoolPtr(t *testing.T) {
+	resultTrue := BoolPtr(true)
+	if resultTrue == nil || *resultTrue != true {
+		t.Errorf("Expected BoolPtr(true) to return pointer to true")
+	}
+
+	resultFalse := BoolPtr(false)
+	if resultFalse == nil || *resultFalse != false {
+		t.Errorf("Expected BoolPtr(false) to return pointer to false")
 	}
 }
 
