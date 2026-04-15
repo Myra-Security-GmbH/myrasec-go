@@ -163,7 +163,7 @@ func (api *API) SetLanguage(language string) error {
 	return nil
 }
 
-// SetMaxRetries sets the maxRetries value in the API struct. In case of a non-successfull request, it will try (in total) n times.
+// SetMaxRetries sets the maxRetries value in the API struct. In case of a non-successful request, it will try (in total) n times.
 func (api *API) SetMaxRetries(n int) {
 	api.maxRetries = n
 }
@@ -273,7 +273,7 @@ func (api *API) sendRequest(definition APIMethod, payload ...any) (*http.Respons
 		}
 
 		if request == nil {
-			return nil, errors.New("Problem creating the request. Check API credentials")
+			return nil, errors.New("problem creating the request. Check API credentials")
 		}
 
 		resp, err := api.client.Do(request)

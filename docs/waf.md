@@ -35,7 +35,7 @@ type WAFRule struct {
 | `RuleType` | string | The type classification of the rule (e.g., 'custom_rule'). |
 | `SubDomainName` | string | The FQDN of the subdomain this rule belongs to. Immutable; usually inferred from the URL parameter. |
 | `Sort` | int | Defines the sorting of WAFRules. |
-| `Sync` | bool | Indicates synchronization status with edge nodes. |
+| `Sync` | bool | If true, the rule will be propagated to the edge nodes after create/update. Typically set to true. |
 | `Template` | bool | If true, this rule is a template and not directly applied to traffic. |
 | `ProcessNext` | bool | After a rule has been applied, the rule chain will be executed as determined. |
 | `Enabled` | bool | Describes if the rule is enabled or not. |

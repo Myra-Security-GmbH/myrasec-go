@@ -32,11 +32,11 @@ type TagWAFRule struct {
 | `LogIdentifier` | string | A string to identify the matching rule in the access log. |
 | `Uuid` | string | System-assigned unique string identifier (UUID). Read-only. |
 | `Sort` | int | Defines the sorting of TagWAFRules. |
-| `Sync` | bool | Indicates synchronization status with edge nodes. |
+| `Sync` | bool | If true, the rule will be propagated to the edge nodes after create/update. Typically set to true. |
 | `ProcessNext` | bool | After a rule has been applied, the rule chain will be executed as determined. |
 | `Enabled` | bool | Describes if the rule is enabled or not. |
-| `Actions` | []WAFAction | List of WAF actions. |
-| `Conditions` | []WAFCondition | List of WAF conditions. |
+| `Actions` | []*WAFAction | List of WAF actions. |
+| `Conditions` | []*WAFCondition | List of WAF conditions. |
 | `TagId` | int | The related TagId. |
 
 ## Create
