@@ -79,7 +79,8 @@ type Settings struct {
 
 	// CDN is a deprecated setting.
 	// It has no effect and should not be used.
-	CDN *bool `json:"cdn,omitempty" jsonschema:"Deprecated setting. Has no effect."`
+	// Kept as plain bool to avoid breaking consumers on a field that does nothing.
+	CDN bool `json:"cdn,omitempty" jsonschema:"Deprecated setting. Has no effect."`
 
 	// ClientMaxBodySize sets the maximum allowed size of the request body.
 	// Matches the 'Content-Length' header.
