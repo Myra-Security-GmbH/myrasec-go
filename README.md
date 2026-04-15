@@ -65,3 +65,6 @@ func main() {
 - [Waitingroom](./docs/waitingroom.md)
 - [Bind Zone Config](./docs/zone_config.md)
 - [API Key](./docs//apikey.md)
+- [User](./docs/user.md)
+- [User Group](./docs/usergroup.md)
+- [Permission](./docs/permission.md)
