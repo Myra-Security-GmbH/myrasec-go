@@ -6,12 +6,12 @@ import (
 	"time"
 )
 
-// DateTime ...
+// DateTime wraps time.Time with custom JSON marshaling for ISO 8601 timestamps.
 type DateTime struct {
 	time.Time
 }
 
-// DateTimeNow ...
+// DateTimeNow returns a DateTime set to the current time.
 func DateTimeNow() *DateTime {
 	ret := &DateTime{}
 	ret.Time = time.Now()
@@ -19,12 +19,12 @@ func DateTimeNow() *DateTime {
 	return ret
 }
 
-// MarshalJSON ...
+// MarshalJSON serializes the DateTime to an ISO 8601 JSON string.
 func (dt *DateTime) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dt.Format("2006-01-02T15:04:05Z0700"))
 }
 
-// UnmarshalJSON ...
+// UnmarshalJSON parses an ISO 8601 JSON string into the DateTime.
 func (dt *DateTime) UnmarshalJSON(b []byte) error {
 	date := strings.Trim(string(b), "\"")
 
@@ -38,7 +38,7 @@ func (dt *DateTime) UnmarshalJSON(b []byte) error {
 	return err
 }
 
-// ToUnixDate ...
+// ToUnixDate formats the DateTime as a human-readable date string.
 func (dt *DateTime) ToUnixDate() string {
 	format := "_2. Jan 2006 "
 

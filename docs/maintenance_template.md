@@ -39,7 +39,7 @@ The listing operation returns a list of maintenance templates for the passed dom
 
 ### Example
 ```go
-templates, err := api.ListMaintenanceTemplatess(domainId, nil)
+templates, err := api.ListMaintenanceTemplates(domainId, nil)
 if err != nil {
 	log.Fatal(err)
 }
@@ -65,7 +65,7 @@ template := &myrasec.MaintenanceTemplate{
 	Modified: &types.DateTime{
 		Time: modified,
 	},
-	FQDN:    "Default maintenance page (updated)",
+	Name:    "Default maintenance page (updated)",
 	Content: "<DOCTYPE html><html><head><title>Maintenance</title></head><body><h1>Maintenance</h1></body></html>",
 }
 

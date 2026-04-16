@@ -18,23 +18,23 @@ import (
 )
 
 const (
-	// APIBaseURL ...
+	// APIBaseURL is the base URL template for the MYRA API.
 	APIBaseURL = "https://apiv2.myracloud.com/%s"
-	// DefaultAPILanguage ...
+	// DefaultAPILanguage is the default language for API responses.
 	DefaultAPILanguage = "en"
-	// DefaultAPIUserAgent ...
+	// DefaultAPIUserAgent is the default User-Agent header sent with API requests.
 	DefaultAPIUserAgent = "myrasec-go"
-	// DefaultCachingTTL ...
+	// DefaultCachingTTL is the default cache time-to-live in seconds.
 	DefaultCachingTTL = 10
-	// DefaultRetryCount ...
+	// DefaultRetryCount is the default number of total attempts for a request.
 	DefaultRetryCount = 1
-	// DefaultRetrySleep ...
+	// DefaultRetrySleep is the default sleep duration in seconds between retries.
 	DefaultRetrySleep = 0
-	// ErrorMsgRateLimitReached ...
+	// ErrorMsgRateLimitReached is the error message returned when the rate limiter blocks a request.
 	ErrorMsgRateLimitReached = "rate limit reached - too many requests"
 )
 
-// APILanguages ...
+// APILanguages defines the supported languages for API responses.
 var APILanguages = map[string]bool{
 	"en": true,
 	"de": true,
@@ -99,6 +99,7 @@ func New(key, secret string) (*API, error) {
 	return buildApi(key, secret, ""), nil
 }
 
+// NewWithToken returns a new MYRA API Client using API token authentication.
 func NewWithToken(token string) (*API, error) {
 	if token == "" {
 		return nil, errors.New("missing API token")
@@ -162,7 +163,7 @@ func (api *API) SetLanguage(language string) error {
 	return nil
 }
 
-// SetMaxRetries sets the maxRetries value in the API struct. In case of a non-successfull request, it will try (in total) n times.
+// SetMaxRetries sets the maxRetries value in the API struct. In case of a non-successful request, it will try (in total) n times.
 func (api *API) SetMaxRetries(n int) {
 	api.maxRetries = n
 }
@@ -272,7 +273,7 @@ func (api *API) sendRequest(definition APIMethod, payload ...any) (*http.Respons
 		}
 
 		if request == nil {
-			return nil, errors.New("Problem creating the request. Check API credentials")
+			return nil, errors.New("problem creating the request. Check API credentials")
 		}
 
 		resp, err := api.client.Do(request)
@@ -352,7 +353,7 @@ func decodeBaseResponse(resp *http.Response) (*Response, error) {
 	return &res, nil
 }
 
-// prepareRequest ...
+// prepareRequest builds an HTTP request from the given API method definition and payload.
 func (api *API) prepareRequest(definition APIMethod, payload ...any) (*http.Request, error) {
 	var err error
 	var req *http.Request
@@ -493,7 +494,7 @@ func prepareResult(response Response, definition APIMethod) (any, error) {
 	return res, err
 }
 
-// prepareSingleElementResult ...
+// prepareSingleElementResult extracts and decodes a single element from the API response.
 func prepareSingleElementResult(response Response, definition APIMethod) (any, error) {
 	if len(response.Data) == 0 {
 		return nil, fmt.Errorf("unable to detect element in API response")
@@ -518,7 +519,7 @@ func prepareSingleElementResult(response Response, definition APIMethod) (any, e
 	return res, err
 }
 
-// preparePayload ...
+// preparePayload serializes the given payload to JSON bytes for use in HTTP request bodies.
 func preparePayload(payload ...any) ([]byte, error) {
 	var pl any
 	pl = payload

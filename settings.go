@@ -39,7 +39,7 @@ func getSettingsMethods() map[string]APIMethod {
 }
 
 // Settings represents the comprehensive configuration for a domain or subdomain.
-// It controls caching, WAF, security features, and upstream balancing behavior.
+// It controls caching, WAF, security features and upstream balancing behavior.
 type Settings struct {
 	// AccessLog controls the generation of separate access logs.
 	// If enabled, logs from each edge node are aggregated and available via SFTP.

@@ -1,7 +1,7 @@
 # TagWAFRule
 
 ```go
-type TagWafRule struct {
+type TagWAFRule struct {
     ID            int             `json:"id,omitempty"`
     Created       *types.DateTime `json:"created,omitempty"`
     Modified      *types.DateTime `json:"modified,omitempty"`
@@ -10,6 +10,7 @@ type TagWafRule struct {
     Description   string          `json:"description"`
     Direction     string          `json:"direction"`
     LogIdentifier string          `json:"logIdentifier"`
+    Uuid          string          `json:"uuid,omitempty"`
     Sort          int             `json:"sort"`
     Sync          bool            `json:"sync"`
     ProcessNext   bool            `json:"processNext"`
@@ -24,17 +25,18 @@ type TagWafRule struct {
 | `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a TagWAFRule it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new TagWAFRule object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
-| `ExpireDate` | *types.DateTime | ExpireDate describes how long a TagWAFRule is valid, and when it will expire. |
+| `ExpireDate` | *types.DateTime | ExpireDate describes how long a TagWAFRule is valid and when it will expire. |
 | `Name` | string | Identifies the TagWAFRule by its name. |
 | `Description` | string | The Description will explain what the TagWAFRule is for. |
 | `Direction` | string | The direction can be 'in' (for Request) or 'out' (for Response). |
 | `LogIdentifier` | string | A string to identify the matching rule in the access log. |
+| `Uuid` | string | System-assigned unique string identifier (UUID). Read-only. |
 | `Sort` | int | Defines the sorting of TagWAFRules. |
-| `Sync` | bool | ... |
+| `Sync` | bool | If true, the rule will be propagated to the edge nodes after create/update. Typically set to true. |
 | `ProcessNext` | bool | After a rule has been applied, the rule chain will be executed as determined. |
 | `Enabled` | bool | Describes if the rule is enabled or not. |
-| `Actions` | []WAFAction | List of WAF actions. |
-| `Conditions` | []WAFCondition | List of WAF conditions. |
+| `Actions` | []*WAFAction | List of WAF actions. |
+| `Conditions` | []*WAFCondition | List of WAF conditions. |
 | `TagId` | int | The related TagId. |
 
 ## Create
@@ -51,8 +53,8 @@ newTagWAFRule := &myrasec.TagWAFRule{
     Sync: true,
     ProcessNext: true,
     Enabled: true,
-    Actions: []WAFAction{},
-    Contition: []WAFCondition{},
+    Actions: []*myrasec.WAFAction{},
+    Conditions: []*myrasec.WAFCondition{},
     TagId: 12
 }
 
@@ -100,8 +102,8 @@ rule := &myrasec.TagWAFRule{
     Sync: true,
     ProcessNext: true,
     Enabled: true,
-    Actions: []WAFAction{},
-    Contition: []WAFCondition{},
+    Actions: []*myrasec.WAFAction{},
+    Conditions: []*myrasec.WAFCondition{},
     TagId: 12
 }
 

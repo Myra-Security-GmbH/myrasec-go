@@ -24,7 +24,7 @@ type APIMethod struct {
 // methods stores the available APIMethods
 var methods = map[string]APIMethod{}
 
-// initializeMethods ...
+// initializeMethods populates the methods registry with all available API method definitions.
 func initializeMethods() {
 	for _, m := range []map[string]APIMethod{
 		getAPIKeyMethods(),

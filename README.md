@@ -64,4 +64,6 @@ func main() {
 - [WAF Conditions](./docs/waf_condition.md)
 - [Waitingroom](./docs/waitingroom.md)
 - [Bind Zone Config](./docs/zone_config.md)
-- [API Key](./docs//apikey.md)
+- [API Key](./docs/apikey.md)
+- [User](./docs/user.md)
+- [VHost](./docs/vhost.md)

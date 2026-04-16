@@ -69,7 +69,7 @@ type IPFilter struct {
 	Value string `json:"value" jsonschema:"The IP address or CIDR notation (e.g., '1.2.3.4' or '10.0.0.0/24'). Supports IPv4 and IPv6. Note: IPv6 is limited to /128 subnets."`
 
 	// Type defines the action to take when the filter matches.
-	// Valid values are BLACKLIST, WHITELIST, or WHITELIST_REQUEST_LIMITER.
+	// Valid values are BLACKLIST, WHITELIST or WHITELIST_REQUEST_LIMITER.
 	Type string `json:"type" jsonschema:"The action type for the filter. Valid values: 'BLACKLIST', 'WHITELIST', 'WHITELIST_REQUEST_LIMITER'."`
 
 	// Comment provides a descriptive note for the filter rule.
