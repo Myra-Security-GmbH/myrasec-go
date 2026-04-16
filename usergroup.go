@@ -71,7 +71,7 @@ func getUserGroupMethods() map[string]APIMethod {
 			Name:   "removeUserFromGroup",
 			Action: "user/group/%d/users/%d",
 			Method: http.MethodDelete,
-			Result: UserGroup{},
+			Result: User{},
 		},
 	}
 }
@@ -256,7 +256,7 @@ func (api *API) ListUsersFromGroup(groupID int, params map[string]string) ([]Use
 }
 
 // AddUserToGroup assigns a user to the given group with the role specified in role.
-func (api *API) AddUserToGroup(groupID int, role *GroupRole) (*GroupRole, error) {
+func (api *API) AddUserToGroup(role *GroupRole, groupID int) (*GroupRole, error) {
 	if _, ok := methods["addUserToGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "addUserToGroup")
 	}

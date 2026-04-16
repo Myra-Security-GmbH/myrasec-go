@@ -3,7 +3,6 @@ package myrasec
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -228,7 +227,7 @@ func (api *API) ListUserPermissions(userID int, params map[string]string) ([]Obj
 }
 
 // AddUserPermission grants the given permission to the user with the given userID.
-func (api *API) AddUserPermission(userID int, permission *ObjectPermission) (*ObjectPermission, error) {
+func (api *API) AddUserPermission(permission *ObjectPermission, userID int) (*ObjectPermission, error) {
 	if _, ok := methods["addUserPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "addUserPermission")
 	}
@@ -289,7 +288,7 @@ func (api *API) ListUserGroupPermissions(groupID int, params map[string]string) 
 
 // AddUserGroupPermission grants the given permission to the user group with the
 // given groupID.
-func (api *API) AddUserGroupPermission(groupID int, permission *ObjectPermission) (*ObjectPermission, error) {
+func (api *API) AddUserGroupPermission(permission *ObjectPermission, groupID int) (*ObjectPermission, error) {
 	if _, ok := methods["addUserGroupPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "addUserGroupPermission")
 	}
@@ -342,11 +341,15 @@ func decodePermissionCheckResponse(resp *http.Response, definition APIMethod) (a
 	}
 
 	if raw.Error {
-		return nil, decodeAPIError(raw.ErrorMessage, raw.ViolationList)
+		return nil, formatAPIError(raw.ErrorMessage, raw.ViolationList)
 	}
 
 	if definition.Result == nil {
 		return raw.Data, nil
+	}
+
+	if len(raw.Data) == 0 {
+		return nil, fmt.Errorf("empty data in API response")
 	}
 
 	retValue := reflect.New(reflect.TypeOf(definition.Result))
@@ -355,19 +358,4 @@ func decodePermissionCheckResponse(resp *http.Response, definition APIMethod) (a
 		return nil, err
 	}
 	return res, nil
-}
-
-// decodeAPIError builds an error compatible with decodeBaseResponse's formatting.
-func decodeAPIError(errorMessage string, violations []*Violation) error {
-	var msg string
-	for _, v := range violations {
-		msg += fmt.Sprintf("%s: %s\n", v.Path, v.Message)
-	}
-	if errorMessage != "" {
-		msg += fmt.Sprintf("%s\n", errorMessage)
-	}
-	if msg == "" {
-		msg = "The API returned an error."
-	}
-	return errors.New(msg)
 }

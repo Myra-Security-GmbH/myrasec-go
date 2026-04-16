@@ -334,23 +334,25 @@ func decodeBaseResponse(resp *http.Response) (*Response, error) {
 	}
 
 	if res.Error {
-		var errorMsg string
-		for _, e := range res.ViolationList {
-			errorMsg += fmt.Sprintf("%s: %s\n", e.Path, e.Message)
-		}
-
-		if res.ErrorMessage != "" {
-			errorMsg += fmt.Sprintf("%s\n", res.ErrorMessage)
-		}
-
-		if errorMsg == "" {
-			errorMsg = "The API returned an error."
-		}
-
-		return nil, errors.New(errorMsg)
+		return nil, formatAPIError(res.ErrorMessage, res.ViolationList)
 	}
 
 	return &res, nil
+}
+
+// formatAPIError builds an error from an API error response's errorMessage and violationList.
+func formatAPIError(errorMessage string, violations []*Violation) error {
+	var msg string
+	for _, v := range violations {
+		msg += fmt.Sprintf("%s: %s\n", v.Path, v.Message)
+	}
+	if errorMessage != "" {
+		msg += fmt.Sprintf("%s\n", errorMessage)
+	}
+	if msg == "" {
+		msg = "The API returned an error."
+	}
+	return errors.New(msg)
 }
 
 // prepareRequest builds an HTTP request from the given API method definition and payload.

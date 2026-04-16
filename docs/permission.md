@@ -118,7 +118,7 @@ permission := &myrasec.ObjectPermission{
     ObjectInstance: 12345,
 }
 
-p, err := api.AddUserPermission(userId, permission)
+p, err := api.AddUserPermission(permission, userId)
 if err != nil {
     log.Fatal(err)
 }
@@ -157,7 +157,7 @@ permission := &myrasec.ObjectPermission{
     ObjectInstance: 12345,
 }
 
-p, err := api.AddUserGroupPermission(groupId, permission)
+p, err := api.AddUserGroupPermission(permission, groupId)
 if err != nil {
     log.Fatal(err)
 }

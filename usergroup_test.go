@@ -125,3 +125,87 @@ func TestListUsersFromGroup(t *testing.T) {
 		t.Errorf("Expected first user Admin flag to be true")
 	}
 }
+
+func TestCreateUserGroup(t *testing.T) {
+	api, err := setupPreCachedAPI([]*TestCache{
+		preCacheRequest(
+			"https://apiv2.myracloud.com/user/groups",
+			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+				{"id":55,"name":"new-group","type":"USER"}
+			]}`,
+			methods["createUserGroup"],
+		),
+	})
+	if err != nil {
+		t.Error("Unexpected error.")
+	}
+
+	group, err := api.CreateUserGroup(&UserGroup{Name: "new-group", Type: UserGroupTypeUser})
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if group.ID != 55 {
+		t.Errorf("Expected group ID to be [%d] but got [%d]", 55, group.ID)
+	}
+
+	if group.Name != "new-group" {
+		t.Errorf("Expected group name to be [%s] but got [%s]", "new-group", group.Name)
+	}
+}
+
+func TestUpdateUserGroup(t *testing.T) {
+	api, err := setupPreCachedAPI([]*TestCache{
+		preCacheRequest(
+			"https://apiv2.myracloud.com/user/groups/55",
+			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+				{"id":55,"name":"renamed","type":"USER"}
+			]}`,
+			methods["updateUserGroup"],
+		),
+	})
+	if err != nil {
+		t.Error("Unexpected error.")
+	}
+
+	group, err := api.UpdateUserGroup(&UserGroup{ID: 55, Name: "renamed", Type: UserGroupTypeUser})
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if group.Name != "renamed" {
+		t.Errorf("Expected group name to be [%s] but got [%s]", "renamed", group.Name)
+	}
+}
+
+func TestAddUserToGroup(t *testing.T) {
+	api, err := setupPreCachedAPI([]*TestCache{
+		preCacheRequest(
+			"https://apiv2.myracloud.com/user/group/7/users",
+			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+				{"id":9001,"userId":100,"role":"USER"}
+			]}`,
+			methods["addUserToGroup"],
+		),
+	})
+	if err != nil {
+		t.Error("Unexpected error.")
+	}
+
+	role, err := api.AddUserToGroup(&GroupRole{UserID: 100, Role: GroupRoleUser}, 7)
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if role.ID != 9001 {
+		t.Errorf("Expected role assignment ID to be [%d] but got [%d]", 9001, role.ID)
+	}
+
+	if role.UserID != 100 {
+		t.Errorf("Expected UserID to be [%d] but got [%d]", 100, role.UserID)
+	}
+
+	if role.Role != GroupRoleUser {
+		t.Errorf("Expected Role to be [%s] but got [%s]", GroupRoleUser, role.Role)
+	}
+}

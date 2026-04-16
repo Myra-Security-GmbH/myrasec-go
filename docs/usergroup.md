@@ -156,7 +156,7 @@ role := &myrasec.GroupRole{
     Role:   myrasec.GroupRoleUser,
 }
 
-r, err := api.AddUserToGroup(groupId, role)
+r, err := api.AddUserToGroup(role, groupId)
 if err != nil {
     log.Fatal(err)
 }

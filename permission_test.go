@@ -13,8 +13,8 @@ func TestListMyPermissions(t *testing.T) {
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/permissions",
 			`{"error":false,"violationList":[],"warningList":[],"data":[
-				{"objectType":"ObjectPermissionVO","id":1,"action":"READ","objectType":"Domain","objectPermissionType":"USER"},
-				{"objectType":"ObjectPermissionVO","id":2,"action":"EDIT","objectType":"Domain","objectPermissionType":"GROUP","objectInstance":99}
+				{"id":1,"action":"READ","objectType":"Domain","objectPermissionType":"USER"},
+				{"id":2,"action":"EDIT","objectType":"Domain","objectPermissionType":"GROUP","objectInstance":99}
 			],"page":1,"count":2,"pageSize":50}`,
 			methods["listMyPermissions"],
 		),
@@ -50,7 +50,7 @@ func TestListUserPermissions(t *testing.T) {
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/12/permissions",
 			`{"error":false,"violationList":[],"warningList":[],"data":[
-				{"objectType":"ObjectPermissionVO","id":5,"action":"READ","objectType":"Domain","objectPermissionType":"USER"}
+				{"id":5,"action":"READ","objectType":"Domain","objectPermissionType":"USER"}
 			],"page":1,"count":1,"pageSize":50}`,
 			methods["listUserPermissions"],
 		),
@@ -78,7 +78,7 @@ func TestListUserGroupPermissions(t *testing.T) {
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/group/3/permissions",
 			`{"error":false,"violationList":[],"warningList":[],"data":[
-				{"objectType":"ObjectPermissionVO","id":11,"action":"ADMIN","objectType":"UserGroup","objectPermissionType":"GROUP","scopes":[1,2,3]}
+				{"id":11,"action":"ADMIN","objectType":"UserGroup","objectPermissionType":"GROUP","scopes":[1,2,3]}
 			],"page":1,"count":1,"pageSize":50}`,
 			methods["listUserGroupPermissions"],
 		),
@@ -168,5 +168,95 @@ func TestDecodePermissionCheckResponseInvalidBody(t *testing.T) {
 	_, err := decodePermissionCheckResponse(&resp, methods["checkMyPermission"])
 	if err == nil {
 		t.Error("Expected to get an error but got nil")
+	}
+}
+
+func TestAddUserPermission(t *testing.T) {
+	api, err := setupPreCachedAPI([]*TestCache{
+		preCacheRequest(
+			"https://apiv2.myracloud.com/user/12/permissions",
+			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+				{"id":77,"action":"READ","objectType":"Domain","objectPermissionType":"USER","objectInstance":12345}
+			]}`,
+			methods["addUserPermission"],
+		),
+	})
+	if err != nil {
+		t.Error("Unexpected error.")
+	}
+
+	p, err := api.AddUserPermission(&ObjectPermission{
+		Action:               PermissionActionRead,
+		ObjectType:           "Domain",
+		ObjectPermissionType: PermissionTypeUser,
+		ObjectInstance:       12345,
+	}, 12)
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if p.ID != 77 {
+		t.Errorf("Expected permission ID to be [%d] but got [%d]", 77, p.ID)
+	}
+
+	if p.ObjectInstance != 12345 {
+		t.Errorf("Expected ObjectInstance to be [%d] but got [%d]", 12345, p.ObjectInstance)
+	}
+}
+
+func TestCheckMyPermission(t *testing.T) {
+	api, err := setupPreCachedAPI([]*TestCache{
+		preCacheRequest(
+			"https://apiv2.myracloud.com/user/permissions/check",
+			`{"error":false,"data":{"isAuthorized":true}}`,
+			methods["checkMyPermission"],
+		),
+	})
+	if err != nil {
+		t.Error("Unexpected error.")
+	}
+
+	result, err := api.CheckMyPermission(&ObjectPermission{
+		Action:     PermissionActionEdit,
+		ObjectType: "Domain",
+	})
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if !result.IsAuthorized {
+		t.Error("Expected IsAuthorized to be true")
+	}
+}
+
+func TestAddUserGroupPermission(t *testing.T) {
+	api, err := setupPreCachedAPI([]*TestCache{
+		preCacheRequest(
+			"https://apiv2.myracloud.com/user/group/3/permissions",
+			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+				{"id":88,"action":"EDIT","objectType":"Domain","objectPermissionType":"GROUP"}
+			]}`,
+			methods["addUserGroupPermission"],
+		),
+	})
+	if err != nil {
+		t.Error("Unexpected error.")
+	}
+
+	p, err := api.AddUserGroupPermission(&ObjectPermission{
+		Action:               PermissionActionEdit,
+		ObjectType:           "Domain",
+		ObjectPermissionType: PermissionTypeGroup,
+	}, 3)
+	if err != nil {
+		t.Errorf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if p.ID != 88 {
+		t.Errorf("Expected permission ID to be [%d] but got [%d]", 88, p.ID)
+	}
+
+	if p.Action != PermissionActionEdit {
+		t.Errorf("Expected Action to be [%s] but got [%s]", PermissionActionEdit, p.Action)
 	}
 }
