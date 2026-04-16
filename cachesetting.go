@@ -55,7 +55,7 @@ type CacheSetting struct {
 	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
 
 	// Type defines the matching strategy for the path.
-	// Valid options are "prefix", "suffix", and "exact".
+	// Valid options are "prefix", "suffix" and "exact".
 	Type string `json:"type" jsonschema:"The strategy used to match the request path. Allowed values: 'prefix', 'suffix', 'exact'."`
 
 	// Path is the pattern used to identify requests for this rule.

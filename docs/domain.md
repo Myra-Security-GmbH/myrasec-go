@@ -10,6 +10,7 @@ type Domain struct {
 	AutoDNS     bool            `json:"autoDns"`
 	Paused      bool            `json:"paused"`
 	PausedUntil *types.DateTime `json:"pausedUntil,omitempty"`
+	Reversed    bool            `json:"reversed"`
 }
 ```
 | Field | Type | Description|
@@ -22,6 +23,7 @@ type Domain struct {
 | `AutoDNS` | bool | If AutoDNS flag is set while creating a new domain Myra tries to get a list of subDomains for this domain. Depending on your DNS provider configuration this may fail or return a incomplete list. For best results Myra recomments to use the subDomain API to create DNS records. |
 | `Paused` | bool | Shows if the domain is currently in pause mode. |
 | `PausedUntil` | *types.DateTime | Shows the date when Myra protection will be reactivated automatically. |
+| `Reversed` | bool | Indicates whether the domain is reversed. |
 
 
 ## Create
@@ -42,7 +44,7 @@ if err != nil {
 
 
 ## List
-The listing operation returns a list of domains. The list contains domains for the account you are accessing the API with, and also all foreign domains you are allowed to manage.
+The listing operation returns a list of domains. The list contains domains for the account you are accessing the API with and also all foreign domains you are allowed to manage.
 
 ### Example
 ```go

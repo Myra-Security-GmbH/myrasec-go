@@ -49,7 +49,7 @@ type VHost struct {
 	Paused bool `json:"paused" jsonschema:"Indicates if the VHost is currently paused. If true, traffic processing is suspended."`
 }
 
-// ListAllSubdomains ...
+// ListAllSubdomains returns a list of all subdomains (VHosts) across all domains.
 func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 	if _, ok := methods["listAllSubdomains"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listAllSubdomains")
@@ -69,7 +69,7 @@ func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 	return *res, nil
 }
 
-// ListAllSubdomainsForDomain ...
+// ListAllSubdomainsForDomain returns a list of subdomains (VHosts) for the given domain ID.
 func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]string) ([]VHost, error) {
 	if _, ok := methods["listSubdomainsForDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSubdomainsForDomain")

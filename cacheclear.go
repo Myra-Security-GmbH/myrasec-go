@@ -38,7 +38,7 @@ type CacheClear struct {
 	Recursive bool `json:"recursive" jsonschema:"Enables recursive purging. If true, the operation clears the target resource and all nested sub-resources."`
 }
 
-// ClearCache ...
+// ClearCache triggers a cache clear operation for the given domain.
 func (api *API) ClearCache(cacheClear *CacheClear, domainId int) (*[]CacheClear, error) {
 	if _, ok := methods["clearCache"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "clearCache")

@@ -39,22 +39,22 @@ func getSettingsMethods() map[string]APIMethod {
 }
 
 // Settings represents the comprehensive configuration for a domain or subdomain.
-// It controls caching, WAF, security features, and upstream balancing behavior.
+// It controls caching, WAF, security features and upstream balancing behavior.
 type Settings struct {
 	// AccessLog controls the generation of separate access logs.
 	// If enabled, logs from each edge node are aggregated and available via SFTP.
-	AccessLog bool `json:"access_log,omitempty" jsonschema:"Enables separate access logging. If true, logs are saved and downloadable via SFTP from 'custlogs.myracloud.com'."`
+	AccessLog *bool `json:"access_log,omitempty" jsonschema:"Enables separate access logging. If true, logs are saved and downloadable via SFTP from 'custlogs.myracloud.com'."`
 
 	// AntibotPostFlood enables the detection of POST flood attacks.
 	// Uses a JavaScript-based puzzle to verify the client.
-	AntibotPostFlood bool `json:"antibot_post_flood,omitempty" jsonschema:"Enables detection of POST floods using a JavaScript Proof-of-Work puzzle."`
+	AntibotPostFlood *bool `json:"antibot_post_flood,omitempty" jsonschema:"Enables detection of POST floods using a JavaScript Proof-of-Work puzzle."`
 
 	// AntibotPostFloodThreshold sets the trigger frequency for the POST flood puzzle.
 	// Higher values mean the puzzle is presented less frequently.
 	AntibotPostFloodThreshold int `json:"antibot_post_flood_threshold,omitempty" jsonschema:"Determines the puzzle frequency. Higher values decrease the likelihood/frequency of the puzzle challenge."`
 
 	// AntibotProofOfWork enables general bot detection via JS puzzles.
-	AntibotProofOfWork bool `json:"antibot_proof_of_work,omitempty" jsonschema:"Enables validation of legitimate clients using a JavaScript Proof-of-Work puzzle."`
+	AntibotProofOfWork *bool `json:"antibot_proof_of_work,omitempty" jsonschema:"Enables validation of legitimate clients using a JavaScript Proof-of-Work puzzle."`
 
 	// AntibotProofOfWorkThreshold sets the trigger frequency for the general PoW puzzle.
 	AntibotProofOfWorkThreshold int `json:"antibot_proof_of_work_threshold,omitempty" jsonschema:"Determines the puzzle frequency for general bot detection. Higher values decrease the likelihood/frequency of the challenge."`
@@ -64,21 +64,22 @@ type Settings struct {
 	BalancingMethod string `json:"balancing_method,omitempty" jsonschema:"The load balancing strategy. Valid values: 'round-robin' (default), 'ip_hash' (sticky IP), 'least_conn' (lowest active connections)."`
 
 	// BlockNotWhitelisted blocks all IPs not explicitly whitelisted in IP filters.
-	BlockNotWhitelisted bool `json:"block_not_whitelisted,omitempty" jsonschema:"Security toggle: If true, blocks ALL IPs that are not explicitly whitelisted in the IP Filter settings."`
+	BlockNotWhitelisted *bool `json:"block_not_whitelisted,omitempty" jsonschema:"Security toggle: If true, blocks ALL IPs that are not explicitly whitelisted in the IP Filter settings."`
 
 	// BlockTorNetwork blocks traffic originating from known Tor exit nodes.
-	BlockTorNetwork bool `json:"block_tor_network,omitempty" jsonschema:"Security toggle: If true, blocks all traffic originating from the Tor anonymity network."`
+	BlockTorNetwork *bool `json:"block_tor_network,omitempty" jsonschema:"Security toggle: If true, blocks all traffic originating from the Tor anonymity network."`
 
 	// CacheEnabled toggles the caching engine.
 	// Requires defined Cache Settings objects to function effectively.
-	CacheEnabled bool `json:"cache_enabled,omitempty" jsonschema:"Master switch for caching. If true, you must also define specific Cache Setting objects for caching to occur."`
+	CacheEnabled *bool `json:"cache_enabled,omitempty" jsonschema:"Master switch for caching. If true, you must also define specific Cache Setting objects for caching to occur."`
 
 	// CacheRevalidate forces revalidation of expired cache items.
 	// Uses 'If-Modified-Since' and 'If-None-Match' headers.
-	CacheRevalidate bool `json:"cache_revalidate,omitempty" jsonschema:"If true, expired cache items are revalidated with the origin using conditional HTTP headers (If-Modified-Since/If-None-Match)."`
+	CacheRevalidate *bool `json:"cache_revalidate,omitempty" jsonschema:"If true, expired cache items are revalidated with the origin using conditional HTTP headers (If-Modified-Since/If-None-Match)."`
 
 	// CDN is a deprecated setting.
 	// It has no effect and should not be used.
+	// Kept as plain bool to avoid breaking consumers on a field that does nothing.
 	CDN bool `json:"cdn,omitempty" jsonschema:"Deprecated setting. Has no effect."`
 
 	// ClientMaxBodySize sets the maximum allowed size of the request body.
@@ -94,45 +95,45 @@ type Settings struct {
 	DiffieHellmanExchange int `json:"diffie_hellman_exchange,omitempty" jsonschema:"The size of Diffie-Hellman parameters in bits. Standard is 2048. Use 1024 only if legacy Java 6/7 support is required."`
 
 	// DisableForwardFor disables the automatic injection/replacement of the Forwarded-For header.
-	DisableForwardFor bool `json:"disable_forwarded_for,omitempty" jsonschema:"If true, disables the automatic replacement/injection of the 'X-Forwarded-For' header."`
+	DisableForwardFor *bool `json:"disable_forwarded_for,omitempty" jsonschema:"If true, disables the automatic replacement/injection of the 'X-Forwarded-For' header."`
 
 	// EnableOriginSNI allows SNI (Server Name Indication) when connecting to the origin.
-	EnableOriginSNI bool `json:"enable_origin_sni,omitempty" jsonschema:"Enables SNI (Server Name Indication) for upstream SSL handshakes. Required if the origin serves multiple certificates on one IP."`
+	EnableOriginSNI *bool `json:"enable_origin_sni,omitempty" jsonschema:"Enables SNI (Server Name Indication) for upstream SSL handshakes. Required if the origin serves multiple certificates on one IP."`
 
 	// EnforceCacheTTL overrides origin cache headers with Myra settings.
-	EnforceCacheTTL bool `json:"enforce_cache_ttl,omitempty" jsonschema:"If true, ignores the origin's Cache-Control headers and enforces the TTL configured in Myra settings."`
+	EnforceCacheTTL *bool `json:"enforce_cache_ttl,omitempty" jsonschema:"If true, ignores the origin's Cache-Control headers and enforces the TTL configured in Myra settings."`
 
 	// ForwardedForReplacement allows setting a custom name for the client IP header.
 	ForwardedForReplacement string `json:"forwarded_for_replacement,omitempty" jsonschema:"Allows defining a custom header name to transport the original client IP (replacing standard X-Forwarded-For)."`
 
 	// HSTS enables Strict-Transport-Security.
 	// Forces browsers to interact with the domain only via HTTPS.
-	HSTS bool `json:"hsts,omitempty" jsonschema:"Enables HTTP Strict Transport Security (HSTS). Forces browsers to use HTTPS only."`
+	HSTS *bool `json:"hsts,omitempty" jsonschema:"Enables HTTP Strict Transport Security (HSTS). Forces browsers to use HTTPS only."`
 
 	// HSTSIncludeSubdomains extends HSTS protection to all subdomains.
-	HSTSIncludeSubdomains bool `json:"hsts_include_subdomains,omitempty" jsonschema:"If true, the HSTS policy applies to all subdomains as well."`
+	HSTSIncludeSubdomains *bool `json:"hsts_include_subdomains,omitempty" jsonschema:"If true, the HSTS policy applies to all subdomains as well."`
 
 	// HSTSMaxAge defines the duration (in seconds) the HSTS header is valid.
 	HSTSMaxAge int `json:"hsts_max_age,omitempty" jsonschema:"The duration (in seconds) for which the browser should remember to force HTTPS."`
 
 	// HSTSPreload allows the domain to be submitted to the global HSTS preload list.
-	HSTSPreload bool `json:"hsts_preload,omitempty" jsonschema:"If true, allows the domain to be included in the browser hardcoded HSTS preload list (requires valid HTTPS setup)."`
+	HSTSPreload *bool `json:"hsts_preload,omitempty" jsonschema:"If true, allows the domain to be included in the browser hardcoded HSTS preload list (requires valid HTTPS setup)."`
 
 	// HTTPOriginPort sets the port for plain HTTP upstream connections.
 	HTTPOriginPort int `json:"http_origin_port,omitempty" jsonschema:"The TCP port used to connect to the origin server via plain HTTP (usually 80)."`
 
 	// IgnoreNoCache forces caching even if the origin sends 'no-cache' headers.
-	IgnoreNoCache bool `json:"ignore_nocache,omitempty" jsonschema:"If true, the system ignores 'Cache-Control: private/no-store/no-cache' headers from the origin and caches content anyway."`
+	IgnoreNoCache *bool `json:"ignore_nocache,omitempty" jsonschema:"If true, the system ignores 'Cache-Control: private/no-store/no-cache' headers from the origin and caches content anyway."`
 
 	// ImageOptimization enables lossless compression for JPEG and PNGs.
-	ImageOptimization bool `json:"image_optimization,omitempty" jsonschema:"Enables automatic lossless compression/optimization of JPEG and PNG images."`
+	ImageOptimization *bool `json:"image_optimization,omitempty" jsonschema:"Enables automatic lossless compression/optimization of JPEG and PNG images."`
 
 	// IPLock prevents accidental IP address changes via the API/GUI.
 	// Only available at the general domain level.
-	IPLock bool `json:"ip_lock,omitempty" jsonschema:"Protective lock. If true, prevents changes to the domain's IP configuration. Only available on domain level."`
+	IPLock *bool `json:"ip_lock,omitempty" jsonschema:"Protective lock. If true, prevents changes to the domain's IP configuration. Only available on domain level."`
 
 	// IPv6Active enables IPv6 connectivity for the domain.
-	IPv6Active bool `json:"ipv6_active,omitempty" jsonschema:"Enables IPv6 access for clients. IPv6 traffic is translated to IPv4 if the origin is IPv4-only."`
+	IPv6Active *bool `json:"ipv6_active,omitempty" jsonschema:"Enables IPv6 access for clients. IPv6 traffic is translated to IPv4 if the origin is IPv4-only."`
 
 	// LimitAllowedHTTPMethod restricts the HTTP methods accepted by the edge.
 	// E.g., ["GET", "POST"].
@@ -152,10 +153,10 @@ type Settings struct {
 	MonitoringContactEMail string `json:"monitoring_contact_email,omitempty" jsonschema:"Space-separated list of email addresses to receive monitoring alerts."`
 
 	// MonitoringSendAlert enables upstream error reporting.
-	MonitoringSendAlert bool `json:"monitoring_send_alert,omitempty" jsonschema:"Enables sending of email alerts when upstream errors exceed the defined threshold."`
+	MonitoringSendAlert *bool `json:"monitoring_send_alert,omitempty" jsonschema:"Enables sending of email alerts when upstream errors exceed the defined threshold."`
 
 	// MyraSSLHeader injects 'X-Myra-SSL' to indicate a secure connection to the origin.
-	MyraSSLHeader bool `json:"myra_ssl_header,omitempty" jsonschema:"If true, adds the 'X-Myra-SSL' header to requests forwarded to the origin to indicate the client used HTTPS."`
+	MyraSSLHeader *bool `json:"myra_ssl_header,omitempty" jsonschema:"If true, adds the 'X-Myra-SSL' header to requests forwarded to the origin to indicate the client used HTTPS."`
 
 	// MyraSSLCertificate lists certificates to use for upstream authentication.
 	MyraSSLCertificate []string `json:"myra_ssl_certificate,omitempty" jsonschema:"List of SSL Certificates (PEM chain) used for client authentication against the origin server."`
@@ -168,7 +169,7 @@ type Settings struct {
 	NextUpstream []string `json:"next_upstream,omitempty" jsonschema:"Conditions under which the request is retried on the next upstream server. Examples: 'error', 'timeout', 'http_500'. Use 'off' to disable."`
 
 	// OnlyHTTPS forces all traffic to the origin to use HTTPS.
-	OnlyHTTPS bool `json:"only_https,omitempty" jsonschema:"If true, all requests to the origin are sent via HTTPS, even if the client connected via HTTP."`
+	OnlyHTTPS *bool `json:"only_https,omitempty" jsonschema:"If true, all requests to the origin are sent via HTTPS, even if the client connected via HTTP."`
 
 	// OriginConnectionHeader defines the 'Connection' header sent to the upstream.
 	OriginConnectionHeader string `json:"origin_connection_header,omitempty" jsonschema:"Sets the value of the 'Connection' header sent to the origin (e.g., 'keep-alive' or 'close')."`
@@ -199,13 +200,13 @@ type Settings struct {
 	RequestLimitLevel int `json:"request_limit_level,omitempty" jsonschema:"Rate limit threshold: Maximum requests allowed per IP per minute. Exceeding this blocks the IP."`
 
 	// RequestLimitReport enables email reporting for rate limits.
-	RequestLimitReport bool `json:"request_limit_report,omitempty" jsonschema:"If true, sends email reports containing IPs that exceeded the request limit."`
+	RequestLimitReport *bool `json:"request_limit_report,omitempty" jsonschema:"If true, sends email reports containing IPs that exceeded the request limit."`
 
 	// RequestLimitReportEMail is a space-separated list of rate-limit report recipients.
 	RequestLimitReportEMail string `json:"request_limit_report_email,omitempty" jsonschema:"Space-separated list of email addresses to receive request limit reports."`
 
 	// Rewrite enables automated JavaScript optimization (bundling/deferring).
-	Rewrite bool `json:"rewrite,omitempty" jsonschema:"Enables automatic JavaScript optimization (bundling and deferred execution) to improve page load times."`
+	Rewrite *bool `json:"rewrite,omitempty" jsonschema:"Enables automatic JavaScript optimization (bundling and deferred execution) to improve page load times."`
 
 	// SourceProtocol defines the protocol scheme for upstream connections.
 	// Values: 'same' (match client), 'http', 'https'.
@@ -213,7 +214,7 @@ type Settings struct {
 
 	// Spdy enables HTTP/2.
 	// Note: Requires HTTPS to be active.
-	Spdy bool `json:"spdy,omitempty" jsonschema:"Enables the HTTP/2 protocol (formerly SPDY). Note: Requires active HTTPS."`
+	Spdy *bool `json:"spdy,omitempty" jsonschema:"Enables the HTTP/2 protocol (formerly SPDY). Note: Requires active HTTPS."`
 
 	// SSLClientVerify enables mTLS client certificate verification.
 	SSLClientVerify string `json:"ssl_client_verify,omitempty" jsonschema:"Controls Mutual TLS (mTLS). Enables verification of client certificates against trusted CAs."`
@@ -231,7 +232,7 @@ type Settings struct {
 	SSLOriginPort int `json:"ssl_origin_port,omitempty" jsonschema:"The TCP port used to connect to the origin server via HTTPS (usually 443)."`
 
 	// WAFEnable toggles the Web Application Firewall.
-	WAFEnable bool `json:"waf_enable,omitempty" jsonschema:"Master switch: Enables or disables the Web Application Firewall (WAF) for this domain."`
+	WAFEnable *bool `json:"waf_enable,omitempty" jsonschema:"Master switch: Enables or disables the Web Application Firewall (WAF) for this domain."`
 
 	// WAFLevelsEnable selects the WAF rule sets to apply.
 	// E.g., ["wafrules_sql", "wafrules_xss"].

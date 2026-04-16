@@ -69,7 +69,7 @@ type Redirect struct {
 	SubDomainName string `json:"subDomainName" jsonschema:"The FQDN of the subdomain this redirect belongs to. Immutable; usually inferred from the URL parameter or set once during creation."`
 
 	// Source is the incoming path or pattern to match against.
-	// Depending on MatchingType, this can be an exact path, prefix, or suffix.
+	// Depending on MatchingType, this can be an exact path, prefix or suffix.
 	Source string `json:"source" jsonschema:"The source path or pattern to match against the incoming request URI."`
 
 	// Destination is the target URL where the user will be sent.
@@ -77,7 +77,7 @@ type Redirect struct {
 	Destination string `json:"destination" jsonschema:"The target location. Can be a full URL (e.g., 'https://example.com') or a relative path (e.g., '/contact')."`
 
 	// MatchingType defines how the Source field is interpreted.
-	// Valid values are 'prefix', 'suffix', and 'exact'.
+	// Valid values are 'prefix', 'suffix' and 'exact'.
 	MatchingType string `json:"matchingType" jsonschema:"Defines the matching strategy. Valid values: 'prefix' (starts with), 'suffix' (ends with), 'exact' (precise match)."`
 
 	// Comment provides a descriptive note for the redirect rule.

@@ -1,5 +1,5 @@
 # Statistics
-The statistics API lets you fetch statistical data of your domains like requests, traffic, performance, or health.
+The statistics API lets you fetch statistical data of your domains like requests, traffic, performance or health.
 
 ```go
 type Statistics struct {
@@ -35,7 +35,7 @@ type StatisticQuery struct {
 | `Type` | string | Mode for selecting domains which should be used. |
 
 ### AggregationInterval
-The statistics can be requested in various aggregation intervals. The requested data will be split into buckets of the given date interval. This applies only to data requested as histogram. The supported intervals are: "5m", "hour", "day", and "week".
+The statistics can be requested in various aggregation intervals. The requested data will be split into buckets of the given date interval. This applies only to data requested as histogram. The supported intervals are: "5m", "hour", "day" and "week".
 
 ### DataSources
 With the statistics API, you can query various information about request types and how they were handled.

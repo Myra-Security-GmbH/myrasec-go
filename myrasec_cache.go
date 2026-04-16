@@ -8,7 +8,7 @@ import (
 
 var mutex = &sync.Mutex{}
 
-// responseCache ...
+// responseCache holds a cached HTTP response with expiration metadata.
 type responseCache struct {
 	Key     string
 	Created int64
@@ -95,12 +95,12 @@ func (api *API) RemoveFromCache(s string) {
 	mutex.Unlock()
 }
 
-// PruneCache
+// PruneCache removes all entries from the response cache.
 func (api *API) PruneCache() {
 	api.cache = make(map[string]*responseCache)
 }
 
-// BuildCacheKey
+// BuildCacheKey generates a SHA256 hash from the request URL to use as a cache key.
 func BuildCacheKey(req *http.Request) string {
 	return BuildSHA256(req.URL.String())
 }
