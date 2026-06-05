@@ -116,6 +116,10 @@ type DNSRecord struct {
 	// IdentificationNumber is the Key Tag for DS records.
 	IdentificationNumber int `json:"identificationNumber,omitempty" jsonschema:"The Key Tag (ID) for DS records."`
 
+	// Endpoints lists the Myra IP addresses serving this record, keyed by IP version ("ipv4"/"ipv6").
+	// This is a read-only, server-generated value returned for A, AAAA and CNAME records.
+	Endpoints map[string][]string `json:"endpoints,omitempty" jsonschema:"The Myra IP addresses serving this record, keyed by IP version ('ipv4'/'ipv6'). Read-only, server-generated; returned for A, AAAA and CNAME records."`
+
 	// UpstreamOptions configures load balancing behavior for the origin.
 	UpstreamOptions *UpstreamOptions `json:"upstreamOptions,omitempty" jsonschema:"Configuration for load balancing and origin behavior (failover, weights) for this record."`
 }
