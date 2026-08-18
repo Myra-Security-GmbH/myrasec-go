@@ -344,6 +344,12 @@ func decodeBaseResponse(resp *http.Response) (*Response, error) {
 func formatAPIError(errorMessage string, violations []*Violation) error {
 	var msg string
 	for _, v := range violations {
+		// Global violations (e.g. "Wrong format for provided dates!") carry no
+		// property path; do not prefix them with a bare colon.
+		if v.Path == "" {
+			msg += fmt.Sprintf("%s\n", v.Message)
+			continue
+		}
 		msg += fmt.Sprintf("%s: %s\n", v.Path, v.Message)
 	}
 	if errorMessage != "" {
