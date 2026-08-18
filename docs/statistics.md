@@ -35,7 +35,7 @@ type StatisticQuery struct {
 | `Type` | string | Mode for selecting domains which should be used. |
 
 ### AggregationInterval
-The statistics can be requested in various aggregation intervals. The requested data will be split into buckets of the given date interval. This applies only to data requested as histogram. The supported intervals are: "5m", "hour", "day" and "week".
+The statistics can be requested in various aggregation intervals. The requested data will be split into buckets of the given date interval. This applies only to data requested as histogram. The supported intervals are: "2m", "hour", "day" (default when omitted), "week", "month" and "year".
 
 ### DataSources
 With the statistics API, you can query various information about request types and how they were handled.
@@ -69,14 +69,18 @@ to use.
 Included start of the requested period.
 
 ### EndDate
-Included end of the requested period.
+Included end of the requested period. The API accepts at most 7952399 seconds (about 92 days) between `StartDate` and `EndDate`.
 
 ### FQDN
-Contains a list of FQDN for which statistics should be generated. Note that you can also use *`ALL:fqdn.de`* as domain name to include data for all subdomains. This value is only used if the `Type` is set to ’fqdn’.
+Contains a list of FQDN (at most 150) for which statistics should be generated. Note that you can also use *`ALL:fqdn.de`* as domain name to include data for all subdomains. Be aware that the API resets the FQDN list when it expands such an entry: every FQDN listed *before* an `ALL:` entry is discarded without an error, so put an `ALL:` entry first and use at most one per query. The result is aggregated over all listed FQDNs (there is no per-FQDN breakdown; run one query per FQDN to compare them). This value is only used if the `Type` is set to ’fqdn’.
 
 ### Type
-Mode for selecting domains which should be used.  
-**fqdn**: Process the FQDN list given in `FQDN`
+Mode for selecting domains which should be used. Omitted = `fqdn`.  
+**fqdn**: Process the FQDN list given in `FQDN`  
+**all**: All domains the authenticated user can access, subdomains included (`FQDN` is ignored)  
+**own**: All domains owned by the authenticated user, subdomains included  
+**foreign**: All domains assigned to the authenticated user, subdomains included  
+The three domain-list modes are rejected by the API when they expand to more than 150 domains.
 
 ### Request data sources
 Myra distinguishes incoming requests as SSL and non-SSL depending on the protocol used by the client initiating the request. You can also retrieve information about whether the response was sent from the Myra cache or from origin system.
@@ -206,6 +210,10 @@ query := &myrasec.StatisticQuery{
 
 statistics, err := api.QueryStatistics(query)
 if err != nil {
+    // Validation failures reported by the API (unknown or denied FQDN, too
+    // many FQDNs, malformed dates, invalid interval or type) are returned
+    // here with their violations. An unknown data source or type is an
+    // internal error on the API side and comes back as an HTTP 500.
     log.Fatal(err)
 }
 
