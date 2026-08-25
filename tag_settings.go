@@ -97,7 +97,6 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return res, nil
-
 }
 
 // UpdateTagSettings updates the passed settings using the MYRA API
@@ -114,7 +113,6 @@ func (api *API) UpdateTagSettingsPartial(settings map[string]any, tagId int) (an
 		return nil, err
 	}
 	return result, nil
-
 }
 
 // decodeTagSettingsResponse - custom decode function for tag settings response. Used in the ListTagSettings action.

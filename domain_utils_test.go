@@ -149,7 +149,6 @@ func TestRemoveTrailingDot(t *testing.T) {
 	if name != "" {
 		t.Errorf("Expected to get [%s] for [%s] but got [%s]", "", "..", name)
 	}
-
 }
 
 func TestIsGeneralDomainName(t *testing.T) {

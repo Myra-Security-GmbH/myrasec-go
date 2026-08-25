@@ -5,7 +5,6 @@ import (
 )
 
 func TestListAllSubdomains(t *testing.T) {
-
 	api, err := setupPreCachedAPI([]*TestCache{
 		preCacheRequest(
 			"https://apiv2.myracloud.com/subdomains",
@@ -85,7 +84,6 @@ func TestListAllSubdomains(t *testing.T) {
 			}
 		}
 	}
-
 }
 
 func TestListAllSubdomainsForDomain(t *testing.T) {
@@ -149,5 +147,4 @@ func TestListAllSubdomainsForDomain(t *testing.T) {
 			}
 		}
 	}
-
 }

@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"maps"
 	"net/http"
 )
 
@@ -55,8 +56,6 @@ func initializeMethods() {
 		getTagInformationMethods(),
 		getZoneConfigMethods(),
 	} {
-		for k, v := range m {
-			methods[k] = v
-		}
+		maps.Copy(methods, m)
 	}
 }

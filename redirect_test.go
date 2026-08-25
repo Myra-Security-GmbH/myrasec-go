@@ -58,11 +58,9 @@ func TestGetRedirect(t *testing.T) {
 	if redirect.Sort != 0 {
 		t.Errorf("Expected to get Redirect with sort [%d] but got [%d]", 0, redirect.Sort)
 	}
-
 }
 
 func TestListRedirects(t *testing.T) {
-
 	api, err := setupPreCachedAPI([]*TestCache{
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/redirects/www.example.com",

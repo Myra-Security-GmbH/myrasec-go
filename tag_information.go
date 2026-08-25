@@ -109,7 +109,6 @@ func (api *API) ListTagInformationBySubDomainName(subDomainName string, params m
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return *res, nil
-
 }
 
 // CreateTagInformation creates a new tag information for the passed tag (ID) using the MYRA API

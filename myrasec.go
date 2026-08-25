@@ -307,7 +307,6 @@ func errorMessage(resp *http.Response) (*Response, error) {
 
 // decodeDefaultResponse handles the default decoding of a response.
 func decodeDefaultResponse(resp *http.Response, definition APIMethod) (any, error) {
-
 	if definition.Method == http.MethodDelete {
 		return nil, nil
 	}

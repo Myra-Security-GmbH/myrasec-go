@@ -132,5 +132,4 @@ func TestListIPFilters(t *testing.T) {
 			}
 		}
 	}
-
 }

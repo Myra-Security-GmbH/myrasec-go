@@ -692,7 +692,6 @@ func TestPreparePayloadWithStructPayload(t *testing.T) {
 }
 
 func TestPreparePayloadWithMultiplePayloads(t *testing.T) {
-
 	firstPayload := &Domain{Name: "example.com"}
 	secondPayload := map[string]string{
 		"test": "me",
@@ -721,7 +720,6 @@ func TestPreparePayloadWithMultiplePayloads(t *testing.T) {
 }
 
 func TestPreparePayloadWithNilPayload(t *testing.T) {
-
 	current, err := preparePayload(nil)
 	if err != nil {
 		t.Errorf("Unexpected error preparing a valid payload")
@@ -834,7 +832,6 @@ func TestErrorMessageWithErrorInResponse(t *testing.T) {
 	if err.Error() != "test: this is a test message.\n" {
 		t.Errorf("Expected to get error message [%s] but got [%s]", "test: this is a test message.", err.Error())
 	}
-
 }
 
 func TestErrorMessageWithoutError(t *testing.T) {
@@ -933,7 +930,6 @@ func TestDecodeSingleElementResponse(t *testing.T) {
 		Result:             Domain{},
 		ResponseDecodeFunc: decodeSingleElementResponse,
 	})
-
 	if err != nil {
 		t.Errorf("Expected not to get an error but got [%s]", err.Error())
 	}
@@ -1009,5 +1005,4 @@ func TestDecodeBaseResponseWithCorruptBody(t *testing.T) {
 	if err == nil {
 		t.Errorf("Expected to get an error")
 	}
-
 }
