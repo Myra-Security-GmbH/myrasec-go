@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -118,10 +119,53 @@ type DNSRecord struct {
 
 	// Endpoints lists the Myra IP addresses serving this record, keyed by IP version ("ipv4"/"ipv6").
 	// This is a read-only, server-generated value returned for A, AAAA and CNAME records.
-	Endpoints map[string][]string `json:"endpoints,omitempty" jsonschema:"The Myra IP addresses serving this record, keyed by IP version ('ipv4'/'ipv6'). Read-only, server-generated; returned for A, AAAA and CNAME records."`
+	Endpoints DNSRecordEndpoints `json:"endpoints,omitempty" jsonschema:"The Myra IP addresses serving this record, keyed by IP version ('ipv4'/'ipv6'). Read-only, server-generated; returned for A, AAAA and CNAME records."`
 
 	// UpstreamOptions configures load balancing behavior for the origin.
 	UpstreamOptions *UpstreamOptions `json:"upstreamOptions,omitempty" jsonschema:"Configuration for load balancing and origin behavior (failover, weights) for this record."`
+}
+
+// DNSRecordEndpoints maps an IP version ("ipv4"/"ipv6") to the Myra IP addresses
+// serving a DNS record.
+type DNSRecordEndpoints map[string][]string
+
+// UnmarshalJSON decodes the endpoints attribute of a DNS record.
+//
+// The API serializes the attribute as a JSON object, but sends an empty JSON array
+// instead of an empty object when a record has no endpoints - for example for TXT
+// records or in the response to a create request. Both shapes are accepted. Every
+// representation of "no endpoints" ([], {} and null) decodes to a nil map, so a nil
+// check is enough to test for an empty result.
+func (e *DNSRecordEndpoints) UnmarshalJSON(data []byte) error {
+	if len(data) > 0 && data[0] == '[' {
+		var elements []json.RawMessage
+		if err := json.Unmarshal(data, &elements); err != nil {
+			return err
+		}
+
+		if len(elements) > 0 {
+			return fmt.Errorf("unexpected non-empty array for DNS record endpoints: %s", data)
+		}
+
+		*e = nil
+
+		return nil
+	}
+
+	var endpoints map[string][]string
+	if err := json.Unmarshal(data, &endpoints); err != nil {
+		return err
+	}
+
+	if len(endpoints) == 0 {
+		*e = nil
+
+		return nil
+	}
+
+	*e = endpoints
+
+	return nil
 }
 
 // UpstreamOptions controls the load balancing and failover behavior
