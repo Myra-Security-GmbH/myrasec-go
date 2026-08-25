@@ -121,7 +121,7 @@ func buildApi(key, secret, token string) *API {
 		token:      token,
 		headers:    make(http.Header),
 		client:     http.DefaultClient,
-		limiter:    rate.NewLimiter(rate.Limit(5), 1), //5rps = 300req/min
+		limiter:    rate.NewLimiter(rate.Limit(5), 1), // 5rps = 300req/min
 		maxRetries: DefaultRetryCount,
 		retrySleep: DefaultRetrySleep,
 	}
@@ -191,6 +191,11 @@ func (api *API) SetProxy(proxyURL string) error {
 	api.client.Transport = transport
 
 	return nil
+}
+
+// SetHTTPClient sets the HTTP client used by the api client.
+func (api *API) SetHTTPClient(client *http.Client) {
+	api.client = client
 }
 
 // call executes/sends the request to the MYRA API
