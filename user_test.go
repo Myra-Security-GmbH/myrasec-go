@@ -62,3 +62,59 @@ func TestMe(t *testing.T) {
 		t.Errorf("Expected root group role GroupID to be [%d] but got [%d]", 1, user.RootGroupRoles[0].GroupID)
 	}
 }
+
+// TestMeWithAgentAsString covers MAP-1838: the API serializes the user's agent flag
+// as a string ("" or "1") instead of a JSON boolean, which made every Me() call fail
+// while decoding the response. The fixture of TestMe never carried the field, and
+// preCacheRequest drops decoding errors, so the failure only showed against the
+// live API.
+func TestMeWithAgentAsString(t *testing.T) {
+	tests := []struct {
+		name     string
+		agent    string
+		expected bool
+	}{
+		{name: "empty string is not an agent", agent: `""`, expected: false},
+		{name: "1 is an agent", agent: `"1"`, expected: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cache, err := preCacheRequestWithError(
+				"https://apiv2.myracloud.com/user/me",
+				`{"error":false, "violationList":[], "warningList":[], "data":[
+					{"objectType":"UserExtendedVO", "id": 12345, "login":"test@example.com", "firstname":"Test", "lastname":"User",
+						"organizationId": 50, "organizationName": "Example Corp",
+						"active": true, "locked": false, "deleted": false, "agent": `+tt.agent+`,
+						"tfaEnabled": true, "tfaRequired": false, "admin": true}
+				]}`,
+				methods["me"],
+			)
+			if err != nil {
+				t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+			}
+
+			api, err := setupPreCachedAPI([]*TestCache{cache})
+			if err != nil {
+				t.Error("Unexpected error.")
+			}
+
+			user, err := api.Me()
+			if err != nil {
+				t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+			}
+
+			if bool(user.Agent) != tt.expected {
+				t.Errorf("Expected user.Agent to be [%v] but got [%v]", tt.expected, user.Agent)
+			}
+
+			if user.Login != "test@example.com" || user.Firstname != "Test" || user.OrganizationName != "Example Corp" {
+				t.Errorf("Expected the rest of the user to decode, got login [%s] firstname [%s] organization [%s]", user.Login, user.Firstname, user.OrganizationName)
+			}
+
+			if !user.Admin || !user.TfaEnabled {
+				t.Error("Expected user.Admin and user.TfaEnabled to be true")
+			}
+		})
+	}
+}

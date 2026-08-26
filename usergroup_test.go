@@ -209,3 +209,42 @@ func TestAddUserToGroup(t *testing.T) {
 		t.Errorf("Expected Role to be [%s] but got [%s]", GroupRoleUser, role.Role)
 	}
 }
+
+// TestListUsersFromGroupWithAgentAsString covers MAP-1838: the group members listing
+// returns the same user representation as /user/me, with the agent flag encoded as a
+// string, so it failed to decode the same way.
+func TestListUsersFromGroupWithAgentAsString(t *testing.T) {
+	cache, err := preCacheRequestWithError(
+		"https://apiv2.myracloud.com/user/group/7/users",
+		`{"error":false,"violationList":[],"warningList":[],"data":[
+			{"objectType":"UserVO","id":100,"login":"alice@example.com","firstname":"Alice","active":true,"agent":"1","admin":true},
+			{"objectType":"UserVO","id":101,"login":"bob@example.com","firstname":"Bob","active":true,"agent":""}
+		],"page":1,"count":2,"pageSize":50}`,
+		methods["listUsersFromGroup"],
+	)
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	api, err := setupPreCachedAPI([]*TestCache{cache})
+	if err != nil {
+		t.Error("Unexpected error.")
+	}
+
+	users, err := api.ListUsersFromGroup(7, nil)
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if len(users) != 2 {
+		t.Fatalf("Expected to get [%d] users but got [%d]", 2, len(users))
+	}
+
+	if !users[0].Agent {
+		t.Errorf("Expected user [%s] to be an agent", users[0].Login)
+	}
+
+	if users[1].Agent {
+		t.Errorf("Expected user [%s] not to be an agent", users[1].Login)
+	}
+}
