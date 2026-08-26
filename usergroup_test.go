@@ -3,7 +3,7 @@ package myrasec
 import "testing"
 
 func TestListUserGroups(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/groups",
 			`{"error":false,"violationList":[],"warningList":[],"data":[
@@ -12,9 +12,9 @@ func TestListUserGroups(t *testing.T) {
 				]},
 				{"objectType":"GroupVO","id":3,"name":"another","type":"USER","membersCount":0}
 			],"page":1,"count":2,"pageSize":50}`,
-			methods["listUserGroups"],
+			"listUserGroups",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -54,15 +54,15 @@ func TestListUserGroups(t *testing.T) {
 }
 
 func TestGetUserGroup(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/groups/42",
 			`{"error":false,"violationList":[],"warningList":[],"data":[
 				{"objectType":"GroupVO","id":42,"name":"engineering","type":"USER","membersCount":7,"roles":["ADMINISTRATOR"]}
 			]}`,
-			methods["getUserGroup"],
+			"getUserGroup",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -86,16 +86,16 @@ func TestGetUserGroup(t *testing.T) {
 }
 
 func TestListUsersFromGroup(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/group/7/users",
 			`{"error":false,"violationList":[],"warningList":[],"data":[
 				{"objectType":"UserVO","id":100,"login":"alice@example.com","email":"alice@example.com","firstname":"Alice","lastname":"Example","organizationId":50,"organizationName":"Example Corp","active":true,"agent":false,"admin":true},
 				{"objectType":"UserVO","id":101,"login":"bob@example.com","firstname":"Bob","active":true}
 			],"page":1,"count":2,"pageSize":50}`,
-			methods["listUsersFromGroup"],
+			"listUsersFromGroup",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -127,15 +127,15 @@ func TestListUsersFromGroup(t *testing.T) {
 }
 
 func TestCreateUserGroup(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/groups",
 			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":55,"name":"new-group","type":"USER"}
 			]}`,
-			methods["createUserGroup"],
+			"createUserGroup",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -155,15 +155,15 @@ func TestCreateUserGroup(t *testing.T) {
 }
 
 func TestUpdateUserGroup(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/groups/55",
 			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":55,"name":"renamed","type":"USER"}
 			]}`,
-			methods["updateUserGroup"],
+			"updateUserGroup",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -179,15 +179,15 @@ func TestUpdateUserGroup(t *testing.T) {
 }
 
 func TestAddUserToGroup(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/group/7/users",
 			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":9001,"userId":100,"role":"USER"}
 			]}`,
-			methods["addUserToGroup"],
+			"addUserToGroup",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -214,19 +214,14 @@ func TestAddUserToGroup(t *testing.T) {
 // returns the same user representation as /user/me, with the agent flag encoded as a
 // string, so it failed to decode the same way.
 func TestListUsersFromGroupWithAgentAsString(t *testing.T) {
-	cache, err := preCacheRequestWithError(
+	api, err := setupPreCachedAPI(preCacheRequest(
 		"https://apiv2.myracloud.com/user/group/7/users",
 		`{"error":false,"violationList":[],"warningList":[],"data":[
 			{"objectType":"UserVO","id":100,"login":"alice@example.com","firstname":"Alice","active":true,"agent":"1","admin":true},
 			{"objectType":"UserVO","id":101,"login":"bob@example.com","firstname":"Bob","active":true,"agent":""}
 		],"page":1,"count":2,"pageSize":50}`,
-		methods["listUsersFromGroup"],
-	)
-	if err != nil {
-		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
-	}
-
-	api, err := setupPreCachedAPI([]*TestCache{cache})
+		"listUsersFromGroup",
+	))
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

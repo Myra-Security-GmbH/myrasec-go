@@ -85,11 +85,11 @@ type IPFilter struct {
 
 // GetIPFilter returns a single ip filter with/for the given identifier
 func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilter, error) {
-	if _, ok := methods["getIPFilter"]; !ok {
+	if _, ok := api.methods["getIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getIPFilter")
 	}
 
-	definition := methods["getIPFilter"]
+	definition := api.methods["getIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, id)
 
 	result, err := api.call(definition, map[string]string{})
@@ -106,11 +106,11 @@ func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilt
 
 // ListIPFilters returns a slice containing all visible ip filters for a subdomain
 func (api *API) ListIPFilters(domainId int, subDomainName string, params map[string]string) ([]IPFilter, error) {
-	if _, ok := methods["listIPFilters"]; !ok {
+	if _, ok := api.methods["listIPFilters"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listIPFilters")
 	}
 
-	definition := methods["listIPFilters"]
+	definition := api.methods["listIPFilters"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, params)
@@ -127,11 +127,11 @@ func (api *API) ListIPFilters(domainId int, subDomainName string, params map[str
 
 // CreateIPFilter creates a new ip filter for the passed subdomain (name) using the MYRA API
 func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
-	if _, ok := methods["createIPFilter"]; !ok {
+	if _, ok := api.methods["createIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createIPFilter")
 	}
 
-	definition := methods["createIPFilter"]
+	definition := api.methods["createIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, filter)
@@ -147,11 +147,11 @@ func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName str
 
 // UpdateIPFilter updates the passed ip filter using the MYRA API
 func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
-	if _, ok := methods["updateIPFilter"]; !ok {
+	if _, ok := api.methods["updateIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateIPFilter")
 	}
 
-	definition := methods["updateIPFilter"]
+	definition := api.methods["updateIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, filter.ID)
 
 	result, err := api.call(definition, filter)
@@ -167,11 +167,11 @@ func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName str
 
 // DeleteIPFilter deletes the passed ip filter using the MYRA API
 func (api *API) DeleteIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
-	if _, ok := methods["deleteIPFilter"]; !ok {
+	if _, ok := api.methods["deleteIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteIPFilter")
 	}
 
-	definition := methods["deleteIPFilter"]
+	definition := api.methods["deleteIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, filter.ID)
 
 	_, err := api.call(definition, filter)

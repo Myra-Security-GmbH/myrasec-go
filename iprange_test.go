@@ -5,7 +5,7 @@ import (
 )
 
 func TestListIPRanges(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/ip-ranges",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
@@ -13,9 +13,9 @@ func TestListIPRanges(t *testing.T) {
 				{"id": 2, "network": "192.168.0.0/16", "validFrom": "2022-01-01T00:00:00+0200", "validTo": null}, 
 				{"id": 3, "network": "dead::beef/128", "validFrom": "2022-01-01T00:00:00+0200", "validTo": "2022-12-31T00:00:00+0200"}
 			]}`,
-			methods["listIPRanges"],
+			"listIPRanges",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

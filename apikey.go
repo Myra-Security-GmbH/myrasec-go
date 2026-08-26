@@ -7,6 +7,7 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
+// getAPIKeyMethods returns API key related API calls.
 func getAPIKeyMethods() map[string]APIMethod {
 	return map[string]APIMethod{
 		"listApiKeys": {
@@ -60,7 +61,7 @@ type APIKey struct {
 
 // ListApiKeys returns a slice containing all available API keys
 func (api *API) ListApiKeys(params map[string]string) ([]APIKey, error) {
-	if _, ok := methods["listApiKeys"]; !ok {
+	if _, ok := api.methods["listApiKeys"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listApiKeys")
 	}
 
@@ -69,7 +70,7 @@ func (api *API) ListApiKeys(params map[string]string) ([]APIKey, error) {
 		return nil, err
 	}
 
-	definition := methods["listApiKeys"]
+	definition := api.methods["listApiKeys"]
 	definition.Action = fmt.Sprintf(definition.Action, user.ID)
 
 	result, err := api.call(definition, params)
@@ -86,7 +87,7 @@ func (api *API) ListApiKeys(params map[string]string) ([]APIKey, error) {
 
 // CreateApiKey creates a new API key using the MYRA API
 func (api *API) CreateApiKey(apikey *APIKey) (*APIKey, error) {
-	if _, ok := methods["createApiKey"]; !ok {
+	if _, ok := api.methods["createApiKey"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createApiKey")
 	}
 
@@ -95,7 +96,7 @@ func (api *API) CreateApiKey(apikey *APIKey) (*APIKey, error) {
 		return nil, err
 	}
 
-	definition := methods["createApiKey"]
+	definition := api.methods["createApiKey"]
 	definition.Action = fmt.Sprintf(definition.Action, user.ID)
 
 	result, err := api.call(definition, apikey)
@@ -112,7 +113,7 @@ func (api *API) CreateApiKey(apikey *APIKey) (*APIKey, error) {
 
 // DeleteApiKey deletes the passed API key using the MYRA API
 func (api *API) DeleteApiKey(apikey *APIKey) (*APIKey, error) {
-	if _, ok := methods["deleteApiKey"]; !ok {
+	if _, ok := api.methods["deleteApiKey"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteApiKey")
 	}
 
@@ -121,7 +122,7 @@ func (api *API) DeleteApiKey(apikey *APIKey) (*APIKey, error) {
 		return nil, err
 	}
 
-	definition := methods["deleteApiKey"]
+	definition := api.methods["deleteApiKey"]
 	definition.Action = fmt.Sprintf(definition.Action, user.ID, apikey.ID)
 
 	_, err = api.call(definition, apikey)

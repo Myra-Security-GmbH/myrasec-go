@@ -86,11 +86,11 @@ type ErrorPage struct {
 
 // GetErrorPage returns a single error page with/for the given identifier
 func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
-	if _, ok := methods["getErrorPage"]; !ok {
+	if _, ok := api.methods["getErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getErrorPage")
 	}
 
-	definition := methods["getErrorPage"]
+	definition := api.methods["getErrorPage"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, pageId)
 
 	result, err := api.call(definition, map[string]string{})
@@ -107,11 +107,11 @@ func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
 
 // ListErrorPages returns a slice containing all error pages
 func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorPage, error) {
-	if _, ok := methods["listErrorPages"]; !ok {
+	if _, ok := api.methods["listErrorPages"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listErrorPages")
 	}
 
-	definition := methods["listErrorPages"]
+	definition := api.methods["listErrorPages"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	result, err := api.call(definition, params)
@@ -128,11 +128,11 @@ func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorP
 
 // CreateErrorPage creates a new error page using the MYRA API
 func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
-	if _, ok := methods["createErrorPage"]; !ok {
+	if _, ok := api.methods["createErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createErrorPage")
 	}
 
-	definition := methods["createErrorPage"]
+	definition := api.methods["createErrorPage"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	errorPageUpdate := convertErrorPageToErrorPageUpdate(errorPage)
@@ -146,11 +146,11 @@ func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 
 // UpdateErrorPage updates the passed error page using the MYRA API
 func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
-	if _, ok := methods["updateErrorPage"]; !ok {
+	if _, ok := api.methods["updateErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateErrorPage")
 	}
 
-	definition := methods["updateErrorPage"]
+	definition := api.methods["updateErrorPage"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	errorPageUpdate := convertErrorPageToErrorPageUpdate(errorPage)
@@ -164,11 +164,11 @@ func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 
 // DeleteErrorPage deletes the passed error page using the MYRA API
 func (api *API) DeleteErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
-	if _, ok := methods["deleteErrorPage"]; !ok {
+	if _, ok := api.methods["deleteErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteErrorPage")
 	}
 
-	definition := methods["deleteErrorPage"]
+	definition := api.methods["deleteErrorPage"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	errorPageUpdate := convertErrorPageToErrorPageUpdate(errorPage)

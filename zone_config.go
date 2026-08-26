@@ -24,7 +24,7 @@ func getZoneConfigMethods() map[string]APIMethod {
 }
 
 func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (*string, error) {
-	if _, ok := methods["getZoneConfigRaw"]; !ok {
+	if _, ok := api.methods["getZoneConfigRaw"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigRaw")
 	}
 
@@ -32,7 +32,7 @@ func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (*strin
 	if !ok {
 		ipTarget = "myra"
 	}
-	definition := methods["getZoneConfigRaw"]
+	definition := api.methods["getZoneConfigRaw"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, ipTarget)
 
 	result, err := api.call(definition, params)
@@ -45,7 +45,7 @@ func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (*strin
 }
 
 func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (*string, error) {
-	if _, ok := methods["getZoneConfigJson"]; !ok {
+	if _, ok := api.methods["getZoneConfigJson"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigJson")
 	}
 
@@ -53,7 +53,7 @@ func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (*stri
 	if !ok {
 		ipTarget = "myra"
 	}
-	definition := methods["getZoneConfigJson"]
+	definition := api.methods["getZoneConfigJson"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, ipTarget)
 
 	result, err := api.call(definition, params)

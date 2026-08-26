@@ -5,16 +5,16 @@ import (
 )
 
 func TestListTagCacheSettings(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/tag/1/cache-settings",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
 				{"id": 1, "path": "/index.html", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": true, "comment": "this is a comment"}, 
 				{"id": 2, "path": "/index.php", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": false, "comment": ""}
 			]}`,
-			methods["listTagCacheSettings"],
+			"listTagCacheSettings",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

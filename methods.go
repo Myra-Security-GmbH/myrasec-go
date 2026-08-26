@@ -22,11 +22,10 @@ type APIMethod struct {
 	ResponseDecodeFunc func(resp *http.Response, definition APIMethod) (any, error)
 }
 
-// methods stores the available APIMethods
-var methods = map[string]APIMethod{}
-
 // initializeMethods populates the methods registry with all available API method definitions.
-func initializeMethods() {
+func initializeMethods() map[string]APIMethod {
+	methods := map[string]APIMethod{}
+
 	for _, m := range []map[string]APIMethod{
 		getAPIKeyMethods(),
 		getCacheClearMethods(),
@@ -58,4 +57,6 @@ func initializeMethods() {
 	} {
 		maps.Copy(methods, m)
 	}
+
+	return methods
 }

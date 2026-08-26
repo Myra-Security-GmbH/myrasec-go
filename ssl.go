@@ -144,11 +144,11 @@ type SSLIntermediate struct {
 
 // GetSSLCertificate returns a single SSL certificate with/for the given identifier
 func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error) {
-	if _, ok := methods["getSSLCertificate"]; !ok {
+	if _, ok := api.methods["getSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getSSLCertificate")
 	}
 
-	definition := methods["getSSLCertificate"]
+	definition := api.methods["getSSLCertificate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, id)
 
 	result, err := api.call(definition, map[string]string{})
@@ -165,11 +165,11 @@ func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error)
 
 // ListSSLCertificates returns a slice containing all visible SSL certificates for a domain
 func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]SSLCertificate, error) {
-	if _, ok := methods["listSSLCertificates"]; !ok {
+	if _, ok := api.methods["listSSLCertificates"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSSLCertificates")
 	}
 
-	definition := methods["listSSLCertificates"]
+	definition := api.methods["listSSLCertificates"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	result, err := api.call(definition, params)
@@ -186,11 +186,11 @@ func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]S
 
 // CreateSSLCertificate creates a new SSL certificates on the passed domain (ID) using the MYRA API
 func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
-	if _, ok := methods["createSSLCertificate"]; !ok {
+	if _, ok := api.methods["createSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createSSLCertificate")
 	}
 
-	definition := methods["createSSLCertificate"]
+	definition := api.methods["createSSLCertificate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	result, err := api.call(definition, cert)
@@ -206,11 +206,11 @@ func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 
 // UpdateSSLCertificate updates the passed SSL certificate using the MYRA API
 func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
-	if _, ok := methods["updateSSLCertificate"]; !ok {
+	if _, ok := api.methods["updateSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSSLCertificate")
 	}
 
-	definition := methods["updateSSLCertificate"]
+	definition := api.methods["updateSSLCertificate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, cert.ID)
 
 	result, err := api.call(definition, cert)
@@ -226,11 +226,11 @@ func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 
 // DeleteSSLCertificate "deletes" the passed SSL certificate by removing the assigned subdomains from the certificate using the MYRA API
 func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
-	if _, ok := methods["deleteSSLCertificate"]; !ok {
+	if _, ok := api.methods["deleteSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteSSLCertificate")
 	}
 
-	definition := methods["deleteSSLCertificate"]
+	definition := api.methods["deleteSSLCertificate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, cert.ID)
 
 	cert.Subdomains = []string{}

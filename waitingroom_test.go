@@ -5,15 +5,15 @@ import (
 )
 
 func TestListWaitingRooms(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/waiting-rooms?domainId=1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"objectType":"WaitingRoomVO","name":"test name","maxConcurrent":300,"sessionTimeout":200,"waitRefresh":100,"paths":["test-path"],"subDomainName":"www.example.com","vhostId":1,"id":1,"modified":"2025-01-14T11:15:09+0100","created":"2025-01-14T11:15:09+0100"}
 			]}`,
-			methods["listWaitingRoomsForDomain"],
+			"listWaitingRoomsForDomain",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

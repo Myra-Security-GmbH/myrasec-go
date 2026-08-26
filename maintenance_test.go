@@ -6,15 +6,15 @@ import (
 )
 
 func TestListMaintenances(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/www.example.com/maintenances",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "fqdn": "www.example.com", "start": "2022-06-10T00:00:00+0200", "end": "2022-06-10T06:00:00+0200", "content":"<!DOCTYPE html><html><head><title>Maintenance</title></head><body><h1>Maintenance</h1></body></html>"}
 			]}`,
-			methods["listMaintenances"],
+			"listMaintenances",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

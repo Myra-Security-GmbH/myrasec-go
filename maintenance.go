@@ -79,11 +79,11 @@ type Maintenance struct {
 
 // ListMaintenances returns a slice containing all maintenance pages for a subdomain
 func (api *API) ListMaintenances(domainId int, subDomainName string, params map[string]string) ([]Maintenance, error) {
-	if _, ok := methods["listMaintenances"]; !ok {
+	if _, ok := api.methods["listMaintenances"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listMaintenances")
 	}
 
-	definition := methods["listMaintenances"]
+	definition := api.methods["listMaintenances"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, params)
@@ -100,11 +100,11 @@ func (api *API) ListMaintenances(domainId int, subDomainName string, params map[
 
 // CreateMaintenance creates a new maintenance page for the passed subdomain (name) using the MYRA API
 func (api *API) CreateMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
-	if _, ok := methods["createMaintenance"]; !ok {
+	if _, ok := api.methods["createMaintenance"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createMaintenance")
 	}
 
-	definition := methods["createMaintenance"]
+	definition := api.methods["createMaintenance"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, maintenance)
@@ -120,11 +120,11 @@ func (api *API) CreateMaintenance(maintenance *Maintenance, domainId int, subDom
 
 // UpdateMaintenance updates the passed maintenance page using the MYRA API
 func (api *API) UpdateMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
-	if _, ok := methods["updateMaintenance"]; !ok {
+	if _, ok := api.methods["updateMaintenance"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateMaintenance")
 	}
 
-	definition := methods["updateMaintenance"]
+	definition := api.methods["updateMaintenance"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, maintenance.ID)
 
 	result, err := api.call(definition, maintenance)
@@ -140,11 +140,11 @@ func (api *API) UpdateMaintenance(maintenance *Maintenance, domainId int, subDom
 
 // DeleteMaintenance deletes the passed maintenance page using the MYRA API
 func (api *API) DeleteMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
-	if _, ok := methods["deleteMaintenance"]; !ok {
+	if _, ok := api.methods["deleteMaintenance"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteMaintenance")
 	}
 
-	definition := methods["deleteMaintenance"]
+	definition := api.methods["deleteMaintenance"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, maintenance.ID)
 
 	_, err := api.call(definition, maintenance)

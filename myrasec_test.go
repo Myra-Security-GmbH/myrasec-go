@@ -18,46 +18,49 @@ type TestCache struct {
 }
 
 // preCacheAPI will mock the data, returned by the api.call function. Like this we can test without sending real API requests.
-func setupPreCachedAPI(mocks []*TestCache) (*API, error) {
+func setupPreCachedAPI(opts ...func(api *API) error) (*API, error) {
 	api, _ := New("abc123", "123abc")
 	api.EnableCaching()
 	api.SetCachingTTL(120)
 
-	for _, c := range mocks {
-		api.cacheResponse(c.Req, c.Res)
+	for _, c := range opts {
+		err := c(api)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return api, nil
 }
 
-// preCacheRequest builds a request/response for the passed url and body ans stores it in the cache.
-// Decoding errors are ignored, use preCacheRequestWithError to assert on them.
-func preCacheRequest(url string, body string, definition APIMethod) *TestCache {
-	cache, _ := preCacheRequestWithError(url, body, definition)
+// preCacheRequest builds a request/response for the passed url and body and stores it in the cache.
+func preCacheRequest(url string, body string, name string) func(api *API) error {
+	return func(api *API) error {
+		definition := api.methods[name]
 
-	return cache
-}
+		req, _ := http.NewRequest(http.MethodGet, url, nil)
 
-// preCacheRequestWithError behaves like preCacheRequest but returns the error that occurred
-// while decoding the passed body into the result type of the definition.
-func preCacheRequestWithError(url string, body string, definition APIMethod) (*TestCache, error) {
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	resp := http.Response{
-		Status: strconv.Itoa(http.StatusOK),
-		Body:   io.NopCloser(bytes.NewBufferString(body)),
+		resp := http.Response{
+			Status: strconv.Itoa(http.StatusOK),
+			Body:   io.NopCloser(bytes.NewBufferString(body)),
+		}
+
+		var res any
+		var err error
+
+		if definition.ResponseDecodeFunc != nil {
+			res, err = definition.ResponseDecodeFunc(&resp, definition)
+		} else {
+			res, err = decodeDefaultResponse(&resp, definition)
+		}
+		if err != nil {
+			return err
+		}
+
+		api.cacheResponse(req, res)
+
+		return nil
 	}
-	var res any
-	var err error
-	if definition.ResponseDecodeFunc != nil {
-		res, err = definition.ResponseDecodeFunc(&resp, definition)
-	} else {
-		res, err = decodeDefaultResponse(&resp, definition)
-	}
-
-	return &TestCache{
-		Req: req,
-		Res: res,
-	}, err
 }
 
 func TestNew(t *testing.T) {

@@ -164,11 +164,11 @@ type PermissionCheckResult struct {
 // ListMyPermissions returns the permissions of the currently authenticated user.
 // Supported query parameters include "language", "actions" and "objects".
 func (api *API) ListMyPermissions(params map[string]string) ([]ObjectPermission, error) {
-	if _, ok := methods["listMyPermissions"]; !ok {
+	if _, ok := api.methods["listMyPermissions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listMyPermissions")
 	}
 
-	definition := methods["listMyPermissions"]
+	definition := api.methods["listMyPermissions"]
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -186,11 +186,11 @@ func (api *API) ListMyPermissions(params map[string]string) ([]ObjectPermission,
 // perform the action described by the passed permission template on the
 // referenced object type / instance.
 func (api *API) CheckMyPermission(permission *ObjectPermission) (*PermissionCheckResult, error) {
-	if _, ok := methods["checkMyPermission"]; !ok {
+	if _, ok := api.methods["checkMyPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "checkMyPermission")
 	}
 
-	definition := methods["checkMyPermission"]
+	definition := api.methods["checkMyPermission"]
 
 	result, err := api.call(definition, permission)
 	if err != nil {
@@ -207,11 +207,11 @@ func (api *API) CheckMyPermission(permission *ObjectPermission) (*PermissionChec
 // ListUserPermissions returns all permissions assigned to the user with the
 // given userID.
 func (api *API) ListUserPermissions(userID int, params map[string]string) ([]ObjectPermission, error) {
-	if _, ok := methods["listUserPermissions"]; !ok {
+	if _, ok := api.methods["listUserPermissions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listUserPermissions")
 	}
 
-	definition := methods["listUserPermissions"]
+	definition := api.methods["listUserPermissions"]
 	definition.Action = fmt.Sprintf(definition.Action, userID)
 
 	result, err := api.call(definition, params)
@@ -228,11 +228,11 @@ func (api *API) ListUserPermissions(userID int, params map[string]string) ([]Obj
 
 // AddUserPermission grants the given permission to the user with the given userID.
 func (api *API) AddUserPermission(permission *ObjectPermission, userID int) (*ObjectPermission, error) {
-	if _, ok := methods["addUserPermission"]; !ok {
+	if _, ok := api.methods["addUserPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "addUserPermission")
 	}
 
-	definition := methods["addUserPermission"]
+	definition := api.methods["addUserPermission"]
 	definition.Action = fmt.Sprintf(definition.Action, userID)
 
 	result, err := api.call(definition, permission)
@@ -250,11 +250,11 @@ func (api *API) AddUserPermission(permission *ObjectPermission, userID int) (*Ob
 // RemoveUserPermission revokes the passed permission from the user identified
 // by userID.
 func (api *API) RemoveUserPermission(permission *ObjectPermission, userID int) (*ObjectPermission, error) {
-	if _, ok := methods["removeUserPermission"]; !ok {
+	if _, ok := api.methods["removeUserPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "removeUserPermission")
 	}
 
-	definition := methods["removeUserPermission"]
+	definition := api.methods["removeUserPermission"]
 	definition.Action = fmt.Sprintf(definition.Action, userID, permission.ID)
 
 	_, err := api.call(definition, permission)
@@ -267,11 +267,11 @@ func (api *API) RemoveUserPermission(permission *ObjectPermission, userID int) (
 // ListUserGroupPermissions returns all permissions attached to the user group
 // with the given groupID.
 func (api *API) ListUserGroupPermissions(groupID int, params map[string]string) ([]ObjectPermission, error) {
-	if _, ok := methods["listUserGroupPermissions"]; !ok {
+	if _, ok := api.methods["listUserGroupPermissions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listUserGroupPermissions")
 	}
 
-	definition := methods["listUserGroupPermissions"]
+	definition := api.methods["listUserGroupPermissions"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID)
 
 	result, err := api.call(definition, params)
@@ -289,11 +289,11 @@ func (api *API) ListUserGroupPermissions(groupID int, params map[string]string) 
 // AddUserGroupPermission grants the given permission to the user group with the
 // given groupID.
 func (api *API) AddUserGroupPermission(permission *ObjectPermission, groupID int) (*ObjectPermission, error) {
-	if _, ok := methods["addUserGroupPermission"]; !ok {
+	if _, ok := api.methods["addUserGroupPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "addUserGroupPermission")
 	}
 
-	definition := methods["addUserGroupPermission"]
+	definition := api.methods["addUserGroupPermission"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID)
 
 	result, err := api.call(definition, permission)
@@ -311,11 +311,11 @@ func (api *API) AddUserGroupPermission(permission *ObjectPermission, groupID int
 // RemoveUserGroupPermission revokes the passed permission from the user group
 // identified by groupID.
 func (api *API) RemoveUserGroupPermission(permission *ObjectPermission, groupID int) (*ObjectPermission, error) {
-	if _, ok := methods["removeUserGroupPermission"]; !ok {
+	if _, ok := api.methods["removeUserGroupPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "removeUserGroupPermission")
 	}
 
-	definition := methods["removeUserGroupPermission"]
+	definition := api.methods["removeUserGroupPermission"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID, permission.ID)
 
 	_, err := api.call(definition, permission)

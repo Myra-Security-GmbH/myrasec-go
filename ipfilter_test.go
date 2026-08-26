@@ -5,15 +5,15 @@ import (
 )
 
 func TestGetIPFilter(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/ip-filters/www.example.com/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "value": "127.0.0.1/32", "type": "WHITELIST", "expireDate": null, "enabled": true}
 			]}`,
-			methods["getIPFilter"],
+			"getIPFilter",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -45,7 +45,7 @@ func TestGetIPFilter(t *testing.T) {
 }
 
 func TestListIPFilters(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/ip-filters/www.example.com",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
@@ -53,9 +53,9 @@ func TestListIPFilters(t *testing.T) {
 				{"id": 2, "value": "dead::beef/128", "type": "BLACKLIST", "expireDate": "2022-06-10T22:00:00+0200", "enabled": true}, 
 				{"id": 3, "value": "192.168.178.0/24", "type": "WHITELIST", "expireDate": null, "enabled": false}
 			]}`,
-			methods["listIPFilters"],
+			"listIPFilters",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

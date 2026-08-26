@@ -3,6 +3,8 @@ package myrasec
 import "testing"
 
 func TestInitializeMethods(t *testing.T) {
+	methods := initializeMethods()
+
 	if len(methods) <= 0 {
 		t.Error("Expected to have some APIMethods defined in the methods variable")
 	}

@@ -51,11 +51,11 @@ type VHost struct {
 
 // ListAllSubdomains returns a list of all subdomains (VHosts) across all domains.
 func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
-	if _, ok := methods["listAllSubdomains"]; !ok {
+	if _, ok := api.methods["listAllSubdomains"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listAllSubdomains")
 	}
 
-	definition := methods["listAllSubdomains"]
+	definition := api.methods["listAllSubdomains"]
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -71,11 +71,11 @@ func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 
 // ListAllSubdomainsForDomain returns a list of subdomains (VHosts) for the given domain ID.
 func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]string) ([]VHost, error) {
-	if _, ok := methods["listSubdomainsForDomain"]; !ok {
+	if _, ok := api.methods["listSubdomainsForDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSubdomainsForDomain")
 	}
 
-	definition := methods["listSubdomainsForDomain"]
+	definition := api.methods["listSubdomainsForDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	result, err := api.call(definition, params)

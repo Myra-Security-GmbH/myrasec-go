@@ -97,11 +97,11 @@ type Redirect struct {
 
 // GetRedirect returns a single redirect with/for the given identifier
 func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redirect, error) {
-	if _, ok := methods["getRedirect"]; !ok {
+	if _, ok := api.methods["getRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getRedirect")
 	}
 
-	definition := methods["getRedirect"]
+	definition := api.methods["getRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, id)
 
 	result, err := api.call(definition, map[string]string{})
@@ -118,11 +118,11 @@ func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redire
 
 // ListRedirects returns a slice containing all visible redirects for a subdomain
 func (api *API) ListRedirects(domainId int, subDomainName string, params map[string]string) ([]Redirect, error) {
-	if _, ok := methods["listRedirects"]; !ok {
+	if _, ok := api.methods["listRedirects"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listRedirects")
 	}
 
-	definition := methods["listRedirects"]
+	definition := api.methods["listRedirects"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, params)
@@ -139,11 +139,11 @@ func (api *API) ListRedirects(domainId int, subDomainName string, params map[str
 
 // CreateRedirect creates a new redirect for the passed subdomain (name) using the MYRA API
 func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
-	if _, ok := methods["createRedirect"]; !ok {
+	if _, ok := api.methods["createRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createRedirect")
 	}
 
-	definition := methods["createRedirect"]
+	definition := api.methods["createRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, redirect)
@@ -159,11 +159,11 @@ func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName s
 
 // UpdateRedirect updates the passed redirect using the MYRA API
 func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
-	if _, ok := methods["updateRedirect"]; !ok {
+	if _, ok := api.methods["updateRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateRedirect")
 	}
 
-	definition := methods["updateRedirect"]
+	definition := api.methods["updateRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, redirect.ID)
 
 	result, err := api.call(definition, redirect)
@@ -179,11 +179,11 @@ func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName s
 
 // DeleteRedirect deletes the passed redirect using the MYRA API
 func (api *API) DeleteRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
-	if _, ok := methods["deleteRedirect"]; !ok {
+	if _, ok := api.methods["deleteRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteRedirect")
 	}
 
-	definition := methods["deleteRedirect"]
+	definition := api.methods["deleteRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, redirect.ID)
 
 	_, err := api.call(definition, redirect)

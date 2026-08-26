@@ -42,9 +42,10 @@ var APILanguages = map[string]bool{
 
 // API holds the configuration for the current API client.
 type API struct {
-	BaseURL    string
-	Language   string
-	UserAgent  string
+	BaseURL   string
+	Language  string
+	UserAgent string
+
 	key        string
 	secret     string
 	token      string
@@ -56,6 +57,8 @@ type API struct {
 	limiter    *rate.Limiter
 	maxRetries int
 	retrySleep int
+
+	methods map[string]APIMethod
 }
 
 // Response defines a response, returned by the MYRA API
@@ -84,10 +87,6 @@ type Violation struct {
 type Warning struct {
 	Path    string `json:"path,omitempty"`
 	Message string `json:"message,omitempty"`
-}
-
-func init() {
-	initializeMethods()
 }
 
 // New returns a new MYRA API Client
@@ -124,6 +123,7 @@ func buildApi(key, secret, token string) *API {
 		limiter:    rate.NewLimiter(rate.Limit(5), 1), // 5rps = 300req/min
 		maxRetries: DefaultRetryCount,
 		retrySleep: DefaultRetrySleep,
+		methods:    initializeMethods(),
 	}
 }
 

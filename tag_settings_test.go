@@ -5,7 +5,7 @@ import (
 )
 
 func TestListTagSettings(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/tag/1/settings",
 			`{
@@ -36,9 +36,9 @@ func TestListTagSettings(t *testing.T) {
 					"waf_enable": true
 				}
 			}`,
-			methods["listTagSettings"],
+			"listTagSettings",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

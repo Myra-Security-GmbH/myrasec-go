@@ -9,16 +9,16 @@ import (
 )
 
 func TestListMyPermissions(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/permissions",
 			`{"error":false,"violationList":[],"warningList":[],"data":[
 				{"id":1,"action":"READ","objectType":"Domain","objectPermissionType":"USER"},
 				{"id":2,"action":"EDIT","objectType":"Domain","objectPermissionType":"GROUP","objectInstance":99}
 			],"page":1,"count":2,"pageSize":50}`,
-			methods["listMyPermissions"],
+			"listMyPermissions",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -46,15 +46,15 @@ func TestListMyPermissions(t *testing.T) {
 }
 
 func TestListUserPermissions(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/12/permissions",
 			`{"error":false,"violationList":[],"warningList":[],"data":[
 				{"id":5,"action":"READ","objectType":"Domain","objectPermissionType":"USER"}
 			],"page":1,"count":1,"pageSize":50}`,
-			methods["listUserPermissions"],
+			"listUserPermissions",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -74,15 +74,15 @@ func TestListUserPermissions(t *testing.T) {
 }
 
 func TestListUserGroupPermissions(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/group/3/permissions",
 			`{"error":false,"violationList":[],"warningList":[],"data":[
 				{"id":11,"action":"ADMIN","objectType":"UserGroup","objectPermissionType":"GROUP","scopes":[1,2,3]}
 			],"page":1,"count":1,"pageSize":50}`,
-			methods["listUserGroupPermissions"],
+			"listUserGroupPermissions",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -106,6 +106,8 @@ func TestListUserGroupPermissions(t *testing.T) {
 }
 
 func TestDecodePermissionCheckResponseAuthorized(t *testing.T) {
+	methods := initializeMethods()
+
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
 		Body:   io.NopCloser(bytes.NewBufferString(`{"error":false,"data":{"isAuthorized":true}}`)),
@@ -127,6 +129,8 @@ func TestDecodePermissionCheckResponseAuthorized(t *testing.T) {
 }
 
 func TestDecodePermissionCheckResponseUnauthorized(t *testing.T) {
+	methods := initializeMethods()
+
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
 		Body:   io.NopCloser(bytes.NewBufferString(`{"error":false,"data":{"isAuthorized":false}}`)),
@@ -148,6 +152,8 @@ func TestDecodePermissionCheckResponseUnauthorized(t *testing.T) {
 }
 
 func TestDecodePermissionCheckResponseError(t *testing.T) {
+	methods := initializeMethods()
+
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusBadRequest),
 		Body:   io.NopCloser(bytes.NewBufferString(`{"error":true,"violationList":[{"propertypath":"action","message":"invalid action"}]}`)),
@@ -160,6 +166,8 @@ func TestDecodePermissionCheckResponseError(t *testing.T) {
 }
 
 func TestDecodePermissionCheckResponseInvalidBody(t *testing.T) {
+	methods := initializeMethods()
+
 	resp := http.Response{
 		Status: strconv.Itoa(http.StatusOK),
 		Body:   io.NopCloser(bytes.NewBufferString(`{"this will not work": func(){}}`)),
@@ -172,15 +180,15 @@ func TestDecodePermissionCheckResponseInvalidBody(t *testing.T) {
 }
 
 func TestAddUserPermission(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/12/permissions",
 			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":77,"action":"READ","objectType":"Domain","objectPermissionType":"USER","objectInstance":12345}
 			]}`,
-			methods["addUserPermission"],
+			"addUserPermission",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -205,13 +213,13 @@ func TestAddUserPermission(t *testing.T) {
 }
 
 func TestCheckMyPermission(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/permissions/check",
 			`{"error":false,"data":{"isAuthorized":true}}`,
-			methods["checkMyPermission"],
+			"checkMyPermission",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -230,15 +238,15 @@ func TestCheckMyPermission(t *testing.T) {
 }
 
 func TestAddUserGroupPermission(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/group/3/permissions",
 			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":88,"action":"EDIT","objectType":"Domain","objectPermissionType":"GROUP"}
 			]}`,
-			methods["addUserGroupPermission"],
+			"addUserGroupPermission",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

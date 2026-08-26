@@ -6,15 +6,15 @@ import (
 )
 
 func TestGetSSLCertificate(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/ssl/certificates/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "subjectAlternatives": ["example.com","*.example.com"], "intermediates": [], "wildcard": true, "extendedValidation": false, "subdomains": ["example.com", "www.example.com"], "validFrom": "2022-01-01T00:00:00+0200", "validTo": "2022-01-31T00:00:00+0200", "algorithm": "RSA-SHA256", "subject": "CN=example.com", "fingerprint": "11:22:33:44:55:66:77:88:99:00", "serialNumber": "00"}
 			]}`,
-			methods["getSSLCertificate"],
+			"getSSLCertificate",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -74,15 +74,15 @@ func TestGetSSLCertificate(t *testing.T) {
 }
 
 func TestListSSLCertificates(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/ssl/certificates",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "subjectAlternatives": ["example.com","*.example.com"], "intermediates": [], "wildcard": true, "extendedValidation": false, "subdomains": ["example.com", "www.example.com"], "validFrom": "2022-01-01T00:00:00+0200", "validTo": "2022-01-31T00:00:00+0200", "algorithm": "RSA-SHA256", "subject": "CN=example.com", "fingerprint": "11:22:33:44:55:66:77:88:99:00", "serialNumber": "00"}
 			]}`,
-			methods["listSSLCertificates"],
+			"listSSLCertificates",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

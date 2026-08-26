@@ -114,11 +114,11 @@ type TagAssignment struct {
 
 // GetTag returns a single tag for the given identifier
 func (api *API) GetTag(id int) (*Tag, error) {
-	if _, ok := methods["getTag"]; !ok {
+	if _, ok := api.methods["getTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getTag")
 	}
 
-	definition := methods["getTag"]
+	definition := api.methods["getTag"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
 	result, err := api.call(definition, map[string]string{})
@@ -135,11 +135,11 @@ func (api *API) GetTag(id int) (*Tag, error) {
 
 // ListTags returns a slice containing all visible tags
 func (api *API) ListTags(params map[string]string) ([]Tag, error) {
-	if _, ok := methods["listTags"]; !ok {
+	if _, ok := api.methods["listTags"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTags")
 	}
 
-	definition := methods["listTags"]
+	definition := api.methods["listTags"]
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -155,11 +155,11 @@ func (api *API) ListTags(params map[string]string) ([]Tag, error) {
 
 // CreateTag creates a new tag using the MYRA API
 func (api *API) CreateTag(tag *Tag) (*Tag, error) {
-	if _, ok := methods["createTag"]; !ok {
+	if _, ok := api.methods["createTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTag")
 	}
 
-	definition := methods["createTag"]
+	definition := api.methods["createTag"]
 
 	result, err := api.call(definition, tag)
 	if err != nil {
@@ -175,11 +175,11 @@ func (api *API) CreateTag(tag *Tag) (*Tag, error) {
 
 // UpdateTag updates the passed tag using the MYRA API
 func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
-	if _, ok := methods["updateTag"]; !ok {
+	if _, ok := api.methods["updateTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTag")
 	}
 
-	definition := methods["updateTag"]
+	definition := api.methods["updateTag"]
 	definition.Action = fmt.Sprintf(definition.Action, tag.ID)
 
 	result, err := api.call(definition, tag)
@@ -196,11 +196,11 @@ func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
 
 // DeleteTag deletes the passed tag using the MYRA API
 func (api *API) DeleteTag(tag *Tag) (*Tag, error) {
-	if _, ok := methods["deleteTag"]; !ok {
+	if _, ok := api.methods["deleteTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTag")
 	}
 
-	definition := methods["deleteTag"]
+	definition := api.methods["deleteTag"]
 	definition.Action = fmt.Sprintf(definition.Action, tag.ID)
 
 	_, err := api.call(definition, tag)
@@ -213,11 +213,11 @@ func (api *API) DeleteTag(tag *Tag) (*Tag, error) {
 
 // CloneTag clones the passed tag using the MYRA API
 func (api *API) CloneTag(tag *Tag) (*Tag, error) {
-	if _, ok := methods["cloneTag"]; !ok {
+	if _, ok := api.methods["cloneTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "cloneTag")
 	}
 
-	definition := methods["cloneTag"]
+	definition := api.methods["cloneTag"]
 	definition.Action = fmt.Sprintf(definition.Action, tag.ID)
 
 	result, err := api.call(definition, tag)

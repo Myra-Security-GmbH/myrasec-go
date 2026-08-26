@@ -5,7 +5,7 @@ import (
 )
 
 func TestFetchWAFRule(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/waf-rules/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
@@ -19,9 +19,9 @@ func TestFetchWAFRule(t *testing.T) {
 					"expireDate": null
 				}
 			]}`,
-			methods["fetchWAFRule"],
+			"fetchWAFRule",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -105,7 +105,7 @@ func TestFetchWAFRule(t *testing.T) {
 }
 
 func TestListWAFRules(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/waf-rules",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
@@ -119,9 +119,9 @@ func TestListWAFRules(t *testing.T) {
 					"expireDate": null
 				}
 			]}`,
-			methods["listWAFRules"],
+			"listWAFRules",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -208,19 +208,19 @@ func TestListWAFRules(t *testing.T) {
 }
 
 func TestListWAFActions(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/waf/actions",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
-				{"availablePhases": 1, "forceCustomValues": 0, "name": "Allow", "type": "allow"},
-				{"availablePhases": 1, "forceCustomValues": 0, "name": "Block", "type": "block"},
-				{"availablePhases": 3, "forceCustomValues": 2, "name": "Add header", "type": "add_header"}
+				{"availablePhases": 1, "forceCustomValues": false, "name": "Allow", "type": "allow"},
+				{"availablePhases": 1, "forceCustomValues": false, "name": "Block", "type": "block"},
+				{"availablePhases": 3, "forceCustomValues": false, "name": "Add header", "type": "add_header"}
 			]}`,
-			methods["listWAFActions"],
+			"listWAFActions",
 		),
-	})
+	)
 	if err != nil {
-		t.Error("Unexpected error.")
+		t.Errorf("Unexpected error: %v", err)
 	}
 
 	actions, err := api.ListWAFActions()
@@ -273,7 +273,7 @@ func TestListWAFActions(t *testing.T) {
 }
 
 func TestListWAFConditions(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/waf/conditions",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
@@ -281,9 +281,9 @@ func TestListWAFConditions(t *testing.T) {
 				{"alias": "Host header", "availablePhases": 1, "category": "HEADER", "forceCustomValues": false, "name": "host", "value": ""},
 				{"alias": "User-Agent header", "availablePhases": 1, "category": "HEADER", "forceCustomValues": false, "name": "user_agent", "value": ""}
 			]}`,
-			methods["listWAFConditions"],
+			"listWAFConditions",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
