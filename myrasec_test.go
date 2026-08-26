@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"testing"
+	"time"
 )
 
 // TestCache is some helper struct for using precached requests in the tests, so we don't have to perform a real API request
@@ -246,6 +247,34 @@ func TestSetProxy(t *testing.T) {
 	err = api.SetProxy(":invalid")
 	if err == nil {
 		t.Error("Expected to get an error as the passed URL is not valid")
+	}
+}
+
+func TestSetHTTPClient(t *testing.T) {
+	key := "abc123"
+	secret := "123abc"
+
+	api, err := New(key, secret)
+	if err != nil {
+		t.Error("Unexpected error")
+	}
+
+	if api.client.Timeout != 30*time.Second {
+		t.Error("Expected to not have the default timeout.")
+	}
+
+	err = api.SetHTTPClient(&http.Client{Timeout: 1 * time.Second})
+	if err != nil {
+		t.Errorf("Expected not to get an error but got %v", err)
+	}
+
+	if api.client.Timeout != 1*time.Second {
+		t.Error("Expected to have a timeout set by default.")
+	}
+
+	err = api.SetHTTPClient(nil)
+	if err == nil {
+		t.Error("Expected to get an error as HTTP client is nil")
 	}
 }
 
