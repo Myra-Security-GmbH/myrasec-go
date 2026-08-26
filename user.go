@@ -64,7 +64,9 @@ type User struct {
 	Deleted bool `json:"deleted,omitempty" jsonschema:"Indicates whether the user has been soft-deleted."`
 
 	// Agent indicates whether the user has agent privileges.
-	Agent bool `json:"agent,omitempty" jsonschema:"Indicates whether the user has agent (support staff) privileges."`
+	// The API sends this flag as a string ("" or "1") instead of a JSON boolean,
+	// which types.Bool decodes; see its documentation.
+	Agent types.Bool `json:"agent,omitempty" jsonschema:"Indicates whether the user has agent (support staff) privileges."`
 
 	// TfaEnabled indicates whether two-factor authentication is currently active for this user.
 	TfaEnabled bool `json:"tfaEnabled,omitempty" jsonschema:"Indicates whether two-factor authentication is currently active for this user."`

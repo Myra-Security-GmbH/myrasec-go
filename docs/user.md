@@ -14,7 +14,7 @@ type User struct {
     Active             bool            `json:"active,omitempty"`
     Locked             bool            `json:"locked,omitempty"`
     Deleted            bool            `json:"deleted,omitempty"`
-    Agent              bool            `json:"agent,omitempty"`
+    Agent              types.Bool      `json:"agent,omitempty"`
     TfaEnabled         bool            `json:"tfaEnabled,omitempty"`
     TfaRequired        bool            `json:"tfaRequired,omitempty"`
     IsIndirectCustomer bool            `json:"isIndirectCustomer,omitempty"`
@@ -38,7 +38,7 @@ type User struct {
 | `Active` | bool | Indicates whether the user account is currently enabled. |
 | `Locked` | bool | Indicates whether the user account is locked (e.g. after failed login attempts). |
 | `Deleted` | bool | Indicates whether the user has been soft-deleted. |
-| `Agent` | bool | Indicates whether the user has agent (support staff) privileges. |
+| `Agent` | types.Bool | Indicates whether the user has agent (support staff) privileges. The API sends this flag as a string, see below. |
 | `TfaEnabled` | bool | Indicates whether two-factor authentication is currently active for this user. |
 | `TfaRequired` | bool | Indicates whether two-factor authentication is required for this user. |
 | `IsIndirectCustomer` | bool | Indicates whether the user belongs to an indirect-customer organization. |
@@ -46,6 +46,12 @@ type User struct {
 | `RootAdmin` | bool | Indicates whether the user is a root administrator with platform-wide access. |
 | `Roles` | []UserRole | The user's role assignments across all groups they are a member of. |
 | `RootGroupRoles` | []UserRole | The user's role assignments restricted to root (top-level) groups. |
+
+```go
+type Bool bool
+```
+
+`types.Bool` is a `bool` and can be used as such (`if user.Agent { ... }`, or `bool(user.Agent)` where a plain `bool` is required). It only differs in the way it is decoded: the API sends the agent flag as a string (`""` for false, `"1"` for true) instead of a JSON boolean. Both encodings are accepted, as are `null` and the numbers `0` and `1`; anything else is a decoding error. The flag marshals as a plain JSON boolean.
 
 ```go
 type UserRole struct {
