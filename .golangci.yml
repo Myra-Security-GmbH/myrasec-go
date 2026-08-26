@@ -4,7 +4,6 @@ linters:
   enable:
     - bodyclose
     - gosec
-    - govet
     - misspell
     - modernize
     - unconvert
