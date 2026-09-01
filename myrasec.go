@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"reflect"
+	"sync"
 	"time"
 
 	"golang.org/x/time/rate"
@@ -46,12 +47,15 @@ type API struct {
 	Language  string
 	UserAgent string
 
-	key        string
-	secret     string
-	token      string
-	cache      map[string]*responseCache
-	caching    bool
-	cacheTTL   int
+	key    string
+	secret string
+	token  string
+
+	cache    map[string]*responseCache
+	muCache  *sync.Mutex
+	caching  bool
+	cacheTTL int
+
 	headers    http.Header
 	client     *http.Client
 	limiter    *rate.Limiter
@@ -112,12 +116,13 @@ func buildApi(key, secret, token string) *API {
 		BaseURL:    getEnvOrDefault("MYRASEC_GO_BASE_URL", APIBaseURL),
 		Language:   getEnvOrDefault("MYRASEC_GO_LANGUAGE", DefaultAPILanguage),
 		UserAgent:  getEnvOrDefault("MYRASEC_GO_USER_AGENT", DefaultAPIUserAgent),
-		cache:      make(map[string]*responseCache),
-		caching:    false,
-		cacheTTL:   0,
 		key:        key,
 		secret:     secret,
 		token:      token,
+		cache:      make(map[string]*responseCache),
+		muCache:    &sync.Mutex{},
+		caching:    false,
+		cacheTTL:   0,
 		headers:    make(http.Header),
 		client:     &http.Client{Timeout: 30 * time.Second},
 		limiter:    rate.NewLimiter(rate.Limit(5), 1), // 5rps = 300req/min
