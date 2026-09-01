@@ -37,11 +37,11 @@ func getTagCacheSettingMethods() map[string]APIMethod {
 
 // ListTagCacheSettings returns a slice containing all visible cache settings for a subdomain
 func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]CacheSetting, error) {
-	if _, ok := methods["listTagCacheSettings"]; !ok {
+	if _, ok := api.methods["listTagCacheSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagCacheSettings")
 	}
 
-	definition := methods["listTagCacheSettings"]
+	definition := api.methods["listTagCacheSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
 	result, err := api.call(definition, params)
@@ -58,11 +58,11 @@ func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]Cac
 
 // CreateTagCacheSetting creates a new cache setting for the passed subdomain (name) using the MYRA API
 func (api *API) CreateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
-	if _, ok := methods["createTagCacheSetting"]; !ok {
+	if _, ok := api.methods["createTagCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagCacheSetting")
 	}
 
-	definition := methods["createTagCacheSetting"]
+	definition := api.methods["createTagCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
 	result, err := api.call(definition, setting)
@@ -78,11 +78,11 @@ func (api *API) CreateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 
 // UpdateTagCacheSetting updates the passed cache setting using the MYRA API
 func (api *API) UpdateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
-	if _, ok := methods["updateTagCacheSetting"]; !ok {
+	if _, ok := api.methods["updateTagCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagCacheSetting")
 	}
 
-	definition := methods["updateTagCacheSetting"]
+	definition := api.methods["updateTagCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId, setting.ID)
 
 	result, err := api.call(definition, setting)
@@ -98,11 +98,11 @@ func (api *API) UpdateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 
 // DeleteTagCacheSetting deletes the passed cache setting using the MYRA API
 func (api *API) DeleteTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
-	if _, ok := methods["deleteTagCacheSetting"]; !ok {
+	if _, ok := api.methods["deleteTagCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTagCacheSetting")
 	}
 
-	definition := methods["deleteTagCacheSetting"]
+	definition := api.methods["deleteTagCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId, setting.ID)
 
 	_, err := api.call(definition, setting)

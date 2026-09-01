@@ -5,22 +5,22 @@ import (
 )
 
 func TestFetchDomainForSubdomainName(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domains/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "name": "example.com"}
 			]}`,
-			methods["getDomain"],
+			"getDomain",
 		),
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domains?search=example.com",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "name": "example.com"}
 			]}`,
-			methods["listDomains"],
+			"listDomains",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -49,15 +49,15 @@ func TestFetchDomainForSubdomainName(t *testing.T) {
 }
 
 func TestFetchDomain(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domains?search=example.com",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "name": "example.com"}
 			]}`,
-			methods["listDomains"],
+			"listDomains",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

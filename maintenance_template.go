@@ -63,11 +63,11 @@ type MaintenanceTemplate struct {
 
 // ListMaintenanceTemplates returns a slice containing all maintenance templates for a domain
 func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string) ([]MaintenanceTemplate, error) {
-	if _, ok := methods["listMaintenanceTemplates"]; !ok {
+	if _, ok := api.methods["listMaintenanceTemplates"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listMaintenanceTemplates")
 	}
 
-	definition := methods["listMaintenanceTemplates"]
+	definition := api.methods["listMaintenanceTemplates"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	result, err := api.call(definition, params)
@@ -84,11 +84,11 @@ func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string)
 
 // CreateMaintenanceTemplate creates a new maintenance template for the passed domain (id) using the MYRA API
 func (api *API) CreateMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
-	if _, ok := methods["createMaintenanceTemplate"]; !ok {
+	if _, ok := api.methods["createMaintenanceTemplate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createMaintenanceTemplate")
 	}
 
-	definition := methods["createMaintenanceTemplate"]
+	definition := api.methods["createMaintenanceTemplate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	result, err := api.call(definition, template)
@@ -104,11 +104,11 @@ func (api *API) CreateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 
 // UpdateMaintenanceTemplate updates the passed maintenance template using the MYRA API
 func (api *API) UpdateMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
-	if _, ok := methods["updateMaintenanceTemplate"]; !ok {
+	if _, ok := api.methods["updateMaintenanceTemplate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateMaintenanceTemplate")
 	}
 
-	definition := methods["updateMaintenanceTemplate"]
+	definition := api.methods["updateMaintenanceTemplate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, template.ID)
 
 	result, err := api.call(definition, template)
@@ -124,11 +124,11 @@ func (api *API) UpdateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 
 // DeleteMaintenanceTemplate deletes the passed maintenance template using the MYRA API
 func (api *API) DeleteMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
-	if _, ok := methods["deleteMaintenanceTemplate"]; !ok {
+	if _, ok := api.methods["deleteMaintenanceTemplate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteMaintenanceTemplate")
 	}
 
-	definition := methods["deleteMaintenanceTemplate"]
+	definition := api.methods["deleteMaintenanceTemplate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, template.ID)
 
 	_, err := api.call(definition, template)

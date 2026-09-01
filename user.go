@@ -113,11 +113,11 @@ type UserRole struct {
 
 // Me returns the active user information
 func (api *API) Me() (*User, error) {
-	if _, ok := methods["me"]; !ok {
+	if _, ok := api.methods["me"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "me")
 	}
 
-	definition := methods["me"]
+	definition := api.methods["me"]
 	result, err := api.call(definition, map[string]string{})
 	if err != nil {
 		return nil, err

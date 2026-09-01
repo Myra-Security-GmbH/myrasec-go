@@ -3,7 +3,7 @@ package myrasec
 import "testing"
 
 func TestMe(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/me",
 			`{"error":false, "violationList":[], "warningList":[], "data":[
@@ -18,9 +18,9 @@ func TestMe(t *testing.T) {
 					]
 				}
 			]}`,
-			methods["me"],
+			"me",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -80,7 +80,7 @@ func TestMeWithAgentAsString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cache, err := preCacheRequestWithError(
+			api, err := setupPreCachedAPI(preCacheRequest(
 				"https://apiv2.myracloud.com/user/me",
 				`{"error":false, "violationList":[], "warningList":[], "data":[
 					{"objectType":"UserExtendedVO", "id": 12345, "login":"test@example.com", "firstname":"Test", "lastname":"User",
@@ -88,13 +88,8 @@ func TestMeWithAgentAsString(t *testing.T) {
 						"active": true, "locked": false, "deleted": false, "agent": `+tt.agent+`,
 						"tfaEnabled": true, "tfaRequired": false, "admin": true}
 				]}`,
-				methods["me"],
-			)
-			if err != nil {
-				t.Fatalf("Expected not to get an error but got [%s]", err.Error())
-			}
-
-			api, err := setupPreCachedAPI([]*TestCache{cache})
+				"me",
+			))
 			if err != nil {
 				t.Error("Unexpected error.")
 			}

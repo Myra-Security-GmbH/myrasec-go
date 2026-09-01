@@ -8,15 +8,15 @@ import (
 )
 
 func TestGetDNSRecord(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/dns-records/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 1, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}
 			]}`,
-			methods["getDNSRecord"],
+			"getDNSRecord",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -72,16 +72,16 @@ func TestGetDNSRecord(t *testing.T) {
 }
 
 func TestListDNSRecords(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/dns-records",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
 				{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 1, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}, 
 				{"id": 2, "name": "example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 2, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}
 			]}`,
-			methods["listDNSRecords"],
+			"listDNSRecords",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -100,18 +100,13 @@ func TestListDNSRecords(t *testing.T) {
 // with "endpoints": [] (an empty JSON array) instead of an empty JSON object, which made
 // every CreateDNSRecord call fail while decoding the response.
 func TestCreateDNSRecordWithEmptyEndpoints(t *testing.T) {
-	cache, err := preCacheRequestWithError(
+	api, err := setupPreCachedAPI(preCacheRequest(
 		"https://apiv2.myracloud.com/domain/1/dns-records",
 		`{"error": false, "violationList": [], "warningList": [], "data": [
 			{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "endpoints": []}
 		]}`,
-		methods["createDNSRecord"],
-	)
-	if err != nil {
-		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
-	}
-
-	api, err := setupPreCachedAPI([]*TestCache{cache})
+		"createDNSRecord",
+	))
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -133,19 +128,14 @@ func TestCreateDNSRecordWithEmptyEndpoints(t *testing.T) {
 // TestListDNSRecordsWithEndpoints covers SB-2970: a list response mixes records that carry
 // endpoints as a JSON object with records that carry them as an empty JSON array.
 func TestListDNSRecordsWithEndpoints(t *testing.T) {
-	cache, err := preCacheRequestWithError(
+	api, err := setupPreCachedAPI(preCacheRequest(
 		"https://apiv2.myracloud.com/domain/1/dns-records",
 		`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
 			{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "endpoints": {"ipv4": ["127.0.0.1", "127.0.0.2"], "ipv6": ["::1"]}},
 			{"id": 2, "name": "example.com.", "value": "some text", "ttl": 300, "recordType": "TXT", "endpoints": []}
 		]}`,
-		methods["listDNSRecords"],
-	)
-	if err != nil {
-		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
-	}
-
-	api, err := setupPreCachedAPI([]*TestCache{cache})
+		"listDNSRecords",
+	))
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"reflect"
+	"sync"
 	"time"
 
 	"golang.org/x/time/rate"
@@ -42,20 +43,26 @@ var APILanguages = map[string]bool{
 
 // API holds the configuration for the current API client.
 type API struct {
-	BaseURL    string
-	Language   string
-	UserAgent  string
-	key        string
-	secret     string
-	token      string
-	cache      map[string]*responseCache
-	caching    bool
-	cacheTTL   int
+	BaseURL   string
+	Language  string
+	UserAgent string
+
+	key    string
+	secret string
+	token  string
+
+	cache    map[string]*responseCache
+	muCache  *sync.Mutex
+	caching  bool
+	cacheTTL int
+
 	headers    http.Header
 	client     *http.Client
 	limiter    *rate.Limiter
 	maxRetries int
 	retrySleep int
+
+	methods map[string]APIMethod
 }
 
 // Response defines a response, returned by the MYRA API
@@ -86,10 +93,6 @@ type Warning struct {
 	Message string `json:"message,omitempty"`
 }
 
-func init() {
-	initializeMethods()
-}
-
 // New returns a new MYRA API Client
 func New(key, secret string) (*API, error) {
 	if key == "" || secret == "" {
@@ -113,17 +116,19 @@ func buildApi(key, secret, token string) *API {
 		BaseURL:    getEnvOrDefault("MYRASEC_GO_BASE_URL", APIBaseURL),
 		Language:   getEnvOrDefault("MYRASEC_GO_LANGUAGE", DefaultAPILanguage),
 		UserAgent:  getEnvOrDefault("MYRASEC_GO_USER_AGENT", DefaultAPIUserAgent),
-		cache:      make(map[string]*responseCache),
-		caching:    false,
-		cacheTTL:   0,
 		key:        key,
 		secret:     secret,
 		token:      token,
+		cache:      make(map[string]*responseCache),
+		muCache:    &sync.Mutex{},
+		caching:    false,
+		cacheTTL:   0,
 		headers:    make(http.Header),
 		client:     &http.Client{Timeout: 30 * time.Second},
 		limiter:    rate.NewLimiter(rate.Limit(5), 1), // 5rps = 300req/min
 		maxRetries: DefaultRetryCount,
 		retrySleep: DefaultRetrySleep,
+		methods:    initializeMethods(),
 	}
 }
 

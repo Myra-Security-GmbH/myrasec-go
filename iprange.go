@@ -55,11 +55,11 @@ type IPRange struct {
 
 // ListIPRanges returns a slice containing all ip ranges
 func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
-	if _, ok := methods["listIPRanges"]; !ok {
+	if _, ok := api.methods["listIPRanges"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listIPRanges")
 	}
 
-	definition := methods["listIPRanges"]
+	definition := api.methods["listIPRanges"]
 
 	result, err := api.call(definition, params)
 	if err != nil {

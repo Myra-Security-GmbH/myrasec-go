@@ -5,7 +5,7 @@ import (
 )
 
 func TestListAllSubdomains(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/subdomains",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
@@ -13,9 +13,9 @@ func TestListAllSubdomains(t *testing.T) {
 				{"id": 2, "label": "example.com", "value": "example.com.", "domainName": "example.com", "access": true, "paused": false},
 				{"id": 3, "label": "www.myrasecurity.com", "value": "www.myrasecurity.com.", "domainName": "myrasecurity.com", "access": true, "paused": false}
 			]}`,
-			methods["listAllSubdomains"],
+			"listAllSubdomains",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -87,16 +87,16 @@ func TestListAllSubdomains(t *testing.T) {
 }
 
 func TestListAllSubdomainsForDomain(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/subdomains",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
 				{"id": 1, "label": "www.example.com", "value": "www.example.com.", "domainName": "example.com", "access": true, "paused": false},
 				{"id": 2, "label": "example.com", "value": "example.com.", "domainName": "example.com", "access": true, "paused": false}
 			]}`,
-			methods["listSubdomainsForDomain"],
+			"listSubdomainsForDomain",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

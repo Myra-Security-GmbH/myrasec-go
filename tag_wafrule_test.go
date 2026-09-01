@@ -5,7 +5,7 @@ import (
 )
 
 func TestGetTagWAFRule(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/tag/1/waf-rules/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
@@ -19,9 +19,9 @@ func TestGetTagWAFRule(t *testing.T) {
 					"expireDate": null, "tagId": 1
 				}
 			]}`,
-			methods["getTagWAFRule"],
+			"getTagWAFRule",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -101,7 +101,7 @@ func TestGetTagWAFRule(t *testing.T) {
 }
 
 func TestListTagWAFRules(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/tag/1/waf-rules",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
@@ -115,9 +115,9 @@ func TestListTagWAFRules(t *testing.T) {
 					"expireDate": null
 				}
 			]}`,
-			methods["listTagWAFRules"],
+			"listTagWAFRules",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

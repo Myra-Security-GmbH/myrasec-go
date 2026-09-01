@@ -6,15 +6,15 @@ import (
 )
 
 func TestGetErrorPage(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/errorpages/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "errorCode": 500, "content": "<!DOCTYPE html><html><head><title>Error 500</title></head><body><h1>HTTP 500 error</h1></body></html>", "subDomainName": "www.example.com"}
 			]}`,
-			methods["getErrorPage"],
+			"getErrorPage",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error")
 	}
@@ -38,16 +38,16 @@ func TestGetErrorPage(t *testing.T) {
 }
 
 func TestListErrorPages(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/errorpages",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
 				{"id": 1, "errorCode": 500, "content": "<!DOCTYPE html><html><head><title>Error 500</title></head><body><h1>HTTP 500 error</h1></body></html>", "subDomainName": "www.example.com"}, 
 				{"id": 2, "errorCode": 404, "content": "<!DOCTYPE html><html><head><title>Error 404</title></head><body><h1>HTTP 404 error</h1></body></html>", "subDomainName": "test.example.com"}
 			]}`,
-			methods["listErrorPages"],
+			"listErrorPages",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error")
 	}

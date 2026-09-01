@@ -45,11 +45,11 @@ type tagSettingsResponse struct {
 
 // ListTagSettings returns a Setting struct containing the settings for the passed tag
 func (api *API) ListTagSettings(tagId int) (*Settings, error) {
-	if _, ok := methods["listTagSettings"]; !ok {
+	if _, ok := api.methods["listTagSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagSettings")
 	}
 
-	definition := methods["listTagSettings"]
+	definition := api.methods["listTagSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
 	result, err := api.call(definition, map[string]string{})
@@ -65,11 +65,11 @@ func (api *API) ListTagSettings(tagId int) (*Settings, error) {
 }
 
 func (api *API) ListTagSettingsMap(tagId int) (any, error) {
-	if _, ok := methods["listTagSettingsMap"]; !ok {
+	if _, ok := api.methods["listTagSettingsMap"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagSettingsMap")
 	}
 
-	definition := methods["listTagSettingsMap"]
+	definition := api.methods["listTagSettingsMap"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
 	result, err := api.call(definition, map[string]string{})
@@ -81,11 +81,11 @@ func (api *API) ListTagSettingsMap(tagId int) (any, error) {
 
 // UpdateTagSettings updates the passed settings using the MYRA API
 func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, error) {
-	if _, ok := methods["updateTagSettings"]; !ok {
+	if _, ok := api.methods["updateTagSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagSettings")
 	}
 
-	definition := methods["updateTagSettings"]
+	definition := api.methods["updateTagSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
 	result, err := api.call(definition, settings)
@@ -101,11 +101,11 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 
 // UpdateTagSettings updates the passed settings using the MYRA API
 func (api *API) UpdateTagSettingsPartial(settings map[string]any, tagId int) (any, error) {
-	if _, ok := methods["updateTagSettingsPartial"]; !ok {
+	if _, ok := api.methods["updateTagSettingsPartial"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagSettingsPartial")
 	}
 
-	definition := methods["updateTagSettingsPartial"]
+	definition := api.methods["updateTagSettingsPartial"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
 	result, err := api.call(definition, settings)

@@ -12,7 +12,9 @@ import (
 	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
-func TestDecodeStatisticsResponse(t *testing.T) {
+func Test_decodeStatisticsResponse(t *testing.T) {
+	methods := initializeMethods()
+
 	body := `{"query": {"startDate": "2026-08-01T00:00:00+0200", "endDate": "2026-08-08T00:00:00+0200", "type": "fqdn", "fqdn": ["www.example.com"], "dataSources": {"traffic": {"source": "bytes", "type": "stats"}}, "aggregationInterval": "day"},
 		"result": {"traffic": {"min": 0, "max": 10, "avg": 5, "sum": 4096}}}`
 	resp := &http.Response{Body: io.NopCloser(strings.NewReader(body))}
@@ -34,7 +36,9 @@ func TestDecodeStatisticsResponse(t *testing.T) {
 	}
 }
 
-func TestDecodeStatisticsResponseShapes(t *testing.T) {
+func Test_decodeStatisticsResponse_shapes(t *testing.T) {
+	methods := initializeMethods()
+
 	// The API serializes an empty PHP array as [] and may omit query or result;
 	// none of these is an error.
 	cases := map[string]string{
@@ -62,7 +66,9 @@ func TestDecodeStatisticsResponseShapes(t *testing.T) {
 	}
 }
 
-func TestDecodeStatisticsResponseErrorEnvelope(t *testing.T) {
+func Test_decodeStatisticsResponseErrorEnvelope(t *testing.T) {
+	methods := initializeMethods()
+
 	// The API answers validation failures with HTTP 200 and error: true. The
 	// violation list carries the message; a global violation has no path.
 	body := `{"error": true, "violationList": [{"propertyPath": "query.fqdn", "message": "statisticQueryTypeAndFqdn.object.denied"}, {"propertyPath": "", "message": "Wrong format for provided dates!"}], "data": [{}]}`

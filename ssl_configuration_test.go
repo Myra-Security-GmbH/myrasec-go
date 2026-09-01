@@ -3,7 +3,7 @@ package myrasec
 import "testing"
 
 func TestListSslConfigurations(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/ssl-configurations",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
@@ -26,9 +26,9 @@ func TestListSslConfigurations(t *testing.T) {
 					"protocols": "TLSv1.3"
 				}
 			]}`,
-			methods["listSSLConfigurations"],
+			"listSSLConfigurations",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

@@ -2,11 +2,8 @@ package myrasec
 
 import (
 	"net/http"
-	"sync"
 	"time"
 )
-
-var mutex = &sync.Mutex{}
 
 // responseCache holds a cached HTTP response with expiration metadata.
 type responseCache struct {
@@ -26,9 +23,9 @@ func (c *responseCache) isExpired() bool {
 func (api *API) inCache(req *http.Request) bool {
 	s := BuildCacheKey(req)
 
-	mutex.Lock()
+	api.muCache.Lock()
 	c, ok := api.cache[s]
-	mutex.Unlock()
+	api.muCache.Unlock()
 
 	if !ok {
 		return false
@@ -54,8 +51,8 @@ func (api *API) fromCache(req *http.Request) any {
 	}
 
 	s := BuildCacheKey(req)
-	mutex.Lock()
-	defer mutex.Unlock()
+	api.muCache.Lock()
+	defer api.muCache.Unlock()
 
 	if c, ok := api.cache[s]; ok {
 		return c.Body
@@ -71,8 +68,8 @@ func (api *API) cacheResponse(req *http.Request, resp any) {
 	}
 
 	s := BuildCacheKey(req)
-	mutex.Lock()
-	defer mutex.Unlock()
+	api.muCache.Lock()
+	defer api.muCache.Unlock()
 
 	api.cache[s] = &responseCache{
 		Key:     s,
@@ -90,9 +87,9 @@ func isCachable(req *http.Request) bool {
 
 // RemoveFromCache removes a single element from the cache
 func (api *API) RemoveFromCache(s string) {
-	mutex.Lock()
+	api.muCache.Lock()
 	delete(api.cache, s)
-	mutex.Unlock()
+	api.muCache.Unlock()
 }
 
 // PruneCache removes all entries from the response cache.

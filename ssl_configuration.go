@@ -36,11 +36,11 @@ type SslConfiguration struct {
 }
 
 func (api *API) ListSslConfigurations() ([]SslConfiguration, error) {
-	if _, ok := methods["listSSLConfigurations"]; !ok {
+	if _, ok := api.methods["listSSLConfigurations"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSSLConfigurations")
 	}
 
-	definition := methods["listSSLConfigurations"]
+	definition := api.methods["listSSLConfigurations"]
 
 	result, err := api.call(definition)
 	if err != nil {

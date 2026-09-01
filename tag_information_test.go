@@ -5,7 +5,7 @@ import (
 )
 
 func TestListTagInformation(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/tags/1/information",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
@@ -13,9 +13,9 @@ func TestListTagInformation(t *testing.T) {
 				{"id": 2, "key": "key2", "value": "value2", "comment": "comment2"}, 
 				{"id": 3, "key": "key3", "value": "value3", "comment": "comment3"}
 			]}`,
-			methods["listTagInformation"],
+			"listTagInformation",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

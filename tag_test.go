@@ -5,7 +5,7 @@ import (
 )
 
 func TestGetTag(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/tags/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
@@ -13,9 +13,9 @@ func TestGetTag(t *testing.T) {
 					{"id": 1, "type": "DOMAIN", "title": "example.com"}
 				]}
 			]}`,
-			methods["getTag"],
+			"getTag",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -43,7 +43,7 @@ func TestGetTag(t *testing.T) {
 }
 
 func TestListTags(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/tags",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
@@ -57,9 +57,9 @@ func TestListTags(t *testing.T) {
 					{"id": 1, "type": "DOMAIN", "title": "example.com"}
 				]}
 			]}`,
-			methods["listTags"],
+			"listTags",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

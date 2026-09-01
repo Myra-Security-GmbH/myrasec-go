@@ -40,11 +40,11 @@ type CacheClear struct {
 
 // ClearCache triggers a cache clear operation for the given domain.
 func (api *API) ClearCache(cacheClear *CacheClear, domainId int) (*[]CacheClear, error) {
-	if _, ok := methods["clearCache"]; !ok {
+	if _, ok := api.methods["clearCache"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "clearCache")
 	}
 
-	definition := methods["clearCache"]
+	definition := api.methods["clearCache"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	result, err := api.call(definition, cacheClear)

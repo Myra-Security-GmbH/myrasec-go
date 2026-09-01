@@ -71,11 +71,11 @@ func getTagInformationMethods() map[string]APIMethod {
 
 // ListTagInformation returns a slice containing all tag information for the passed tag (ID)
 func (api *API) ListTagInformation(tagId int, params map[string]string) ([]TagInformation, error) {
-	if _, ok := methods["listTagInformation"]; !ok {
+	if _, ok := api.methods["listTagInformation"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagInformation")
 	}
 
-	definition := methods["listTagInformation"]
+	definition := api.methods["listTagInformation"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
 	result, err := api.call(definition, params)
@@ -92,11 +92,11 @@ func (api *API) ListTagInformation(tagId int, params map[string]string) ([]TagIn
 
 // ListTagInformationBySubDomainName returns a slice containing all tag information for the passed subDomainName
 func (api *API) ListTagInformationBySubDomainName(subDomainName string, params map[string]string) ([]TagInformation, error) {
-	if _, ok := methods["listTagInformationBySubDomainName"]; !ok {
+	if _, ok := api.methods["listTagInformationBySubDomainName"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagInformationBySubDomainName")
 	}
 
-	definition := methods["listTagInformationBySubDomainName"]
+	definition := api.methods["listTagInformationBySubDomainName"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 
 	result, err := api.call(definition, params)
@@ -113,11 +113,11 @@ func (api *API) ListTagInformationBySubDomainName(subDomainName string, params m
 
 // CreateTagInformation creates a new tag information for the passed tag (ID) using the MYRA API
 func (api *API) CreateTagInformation(information *TagInformation, tagId int) (*TagInformation, error) {
-	if _, ok := methods["createTagInformation"]; !ok {
+	if _, ok := api.methods["createTagInformation"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagInformation")
 	}
 
-	definition := methods["createTagInformation"]
+	definition := api.methods["createTagInformation"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
 	result, err := api.call(definition, information)
@@ -133,11 +133,11 @@ func (api *API) CreateTagInformation(information *TagInformation, tagId int) (*T
 
 // UpdateTagInformation updates the passed tag information using the MYRA API
 func (api *API) UpdateTagInformation(information *TagInformation, tagId int) (*TagInformation, error) {
-	if _, ok := methods["updateTagInformation"]; !ok {
+	if _, ok := api.methods["updateTagInformation"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagInformation")
 	}
 
-	definition := methods["updateTagInformation"]
+	definition := api.methods["updateTagInformation"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId, information.ID)
 
 	result, err := api.call(definition, information)
@@ -153,11 +153,11 @@ func (api *API) UpdateTagInformation(information *TagInformation, tagId int) (*T
 
 // DeleteTagInformation deletes the passed tag information using the MYRA API
 func (api *API) DeleteTagInformation(information *TagInformation, tagId int) (*TagInformation, error) {
-	if _, ok := methods["deleteTagInformation"]; !ok {
+	if _, ok := api.methods["deleteTagInformation"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTagInformation")
 	}
 
-	definition := methods["deleteTagInformation"]
+	definition := api.methods["deleteTagInformation"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId, information.ID)
 
 	_, err := api.call(definition, information)

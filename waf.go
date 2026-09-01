@@ -203,11 +203,11 @@ type WAFCondition struct {
 
 // ListWAFConditions returns a list of available WAF conditions
 func (api *API) ListWAFConditions() ([]WAFCondition, error) {
-	if _, ok := methods["listWAFConditions"]; !ok {
+	if _, ok := api.methods["listWAFConditions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFConditions")
 	}
 
-	result, err := api.call(methods["listWAFConditions"])
+	result, err := api.call(api.methods["listWAFConditions"])
 	if err != nil {
 		return nil, err
 	}
@@ -221,11 +221,11 @@ func (api *API) ListWAFConditions() ([]WAFCondition, error) {
 
 // ListWAFActions returns a list of available WAF actions
 func (api *API) ListWAFActions() ([]WAFAction, error) {
-	if _, ok := methods["listWAFActions"]; !ok {
+	if _, ok := api.methods["listWAFActions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFActions")
 	}
 
-	result, err := api.call(methods["listWAFActions"])
+	result, err := api.call(api.methods["listWAFActions"])
 	if err != nil {
 		return nil, err
 	}
@@ -239,11 +239,11 @@ func (api *API) ListWAFActions() ([]WAFAction, error) {
 
 // ListWAFRules returns a list of WAF rules.
 func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule, error) {
-	if _, ok := methods["listWAFRules"]; !ok {
+	if _, ok := api.methods["listWAFRules"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFRules")
 	}
 
-	definition := methods["listWAFRules"]
+	definition := api.methods["listWAFRules"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	result, err := api.call(definition, params)
@@ -260,11 +260,11 @@ func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule,
 
 // FetchWAFRule returns a single WAF rule for the given ID
 func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error) {
-	if _, ok := methods["fetchWAFRule"]; !ok {
+	if _, ok := api.methods["fetchWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "fetchWAFRule")
 	}
 
-	definition := methods["fetchWAFRule"]
+	definition := api.methods["fetchWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
 	result, err := api.call(definition, params)
@@ -286,11 +286,11 @@ func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error)
 
 // CreateWAFRule creates a new WAF rule
 func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
-	if _, ok := methods["createWAFRule"]; !ok {
+	if _, ok := api.methods["createWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createWAFRule")
 	}
 
-	definition := methods["createWAFRule"]
+	definition := api.methods["createWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	result, err := api.call(definition, rule)
@@ -306,11 +306,11 @@ func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 
 // UpdateWAFRule updates the passed WAF rule
 func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
-	if _, ok := methods["updateWAFRule"]; !ok {
+	if _, ok := api.methods["updateWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateWAFRule")
 	}
 
-	definition := methods["updateWAFRule"]
+	definition := api.methods["updateWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, rule.ID)
 
 	result, err := api.call(definition, rule)
@@ -326,11 +326,11 @@ func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 
 // DeleteWAFRule deletes the passed WAF rule
 func (api *API) DeleteWAFRule(rule *WAFRule) (*WAFRule, error) {
-	if _, ok := methods["deleteWAFRule"]; !ok {
+	if _, ok := api.methods["deleteWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteWAFRule")
 	}
 
-	definition := methods["deleteWAFRule"]
+	definition := api.methods["deleteWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, rule.ID)
 
 	_, err := api.call(definition, rule)

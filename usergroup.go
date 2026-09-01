@@ -136,11 +136,11 @@ type GroupRole struct {
 // ListUserGroups returns all user groups visible to the authenticated user.
 // Pass query parameters such as "page", "pageSize" or "role" via the params map.
 func (api *API) ListUserGroups(params map[string]string) ([]UserGroup, error) {
-	if _, ok := methods["listUserGroups"]; !ok {
+	if _, ok := api.methods["listUserGroups"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listUserGroups")
 	}
 
-	definition := methods["listUserGroups"]
+	definition := api.methods["listUserGroups"]
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -156,11 +156,11 @@ func (api *API) ListUserGroups(params map[string]string) ([]UserGroup, error) {
 
 // GetUserGroup returns the user group identified by the given id.
 func (api *API) GetUserGroup(id int) (*UserGroup, error) {
-	if _, ok := methods["getUserGroup"]; !ok {
+	if _, ok := api.methods["getUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getUserGroup")
 	}
 
-	definition := methods["getUserGroup"]
+	definition := api.methods["getUserGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
 	result, err := api.call(definition, map[string]string{})
@@ -177,11 +177,11 @@ func (api *API) GetUserGroup(id int) (*UserGroup, error) {
 
 // CreateUserGroup creates a new user group using the MYRA API.
 func (api *API) CreateUserGroup(group *UserGroup) (*UserGroup, error) {
-	if _, ok := methods["createUserGroup"]; !ok {
+	if _, ok := api.methods["createUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createUserGroup")
 	}
 
-	definition := methods["createUserGroup"]
+	definition := api.methods["createUserGroup"]
 
 	result, err := api.call(definition, group)
 	if err != nil {
@@ -197,11 +197,11 @@ func (api *API) CreateUserGroup(group *UserGroup) (*UserGroup, error) {
 
 // UpdateUserGroup updates the passed user group using the MYRA API.
 func (api *API) UpdateUserGroup(group *UserGroup) (*UserGroup, error) {
-	if _, ok := methods["updateUserGroup"]; !ok {
+	if _, ok := api.methods["updateUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateUserGroup")
 	}
 
-	definition := methods["updateUserGroup"]
+	definition := api.methods["updateUserGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, group.ID)
 
 	result, err := api.call(definition, group)
@@ -218,11 +218,11 @@ func (api *API) UpdateUserGroup(group *UserGroup) (*UserGroup, error) {
 
 // DeleteUserGroup deletes the passed user group using the MYRA API.
 func (api *API) DeleteUserGroup(group *UserGroup) (*UserGroup, error) {
-	if _, ok := methods["deleteUserGroup"]; !ok {
+	if _, ok := api.methods["deleteUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteUserGroup")
 	}
 
-	definition := methods["deleteUserGroup"]
+	definition := api.methods["deleteUserGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, group.ID)
 
 	_, err := api.call(definition, group)
@@ -236,11 +236,11 @@ func (api *API) DeleteUserGroup(group *UserGroup) (*UserGroup, error) {
 // Supported query parameters include "search", "page", "pageSize", "language",
 // "includeRoles" and "sort".
 func (api *API) ListUsersFromGroup(groupID int, params map[string]string) ([]User, error) {
-	if _, ok := methods["listUsersFromGroup"]; !ok {
+	if _, ok := api.methods["listUsersFromGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listUsersFromGroup")
 	}
 
-	definition := methods["listUsersFromGroup"]
+	definition := api.methods["listUsersFromGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID)
 
 	result, err := api.call(definition, params)
@@ -257,11 +257,11 @@ func (api *API) ListUsersFromGroup(groupID int, params map[string]string) ([]Use
 
 // AddUserToGroup assigns a user to the given group with the role specified in role.
 func (api *API) AddUserToGroup(role *GroupRole, groupID int) (*GroupRole, error) {
-	if _, ok := methods["addUserToGroup"]; !ok {
+	if _, ok := api.methods["addUserToGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "addUserToGroup")
 	}
 
-	definition := methods["addUserToGroup"]
+	definition := api.methods["addUserToGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID)
 
 	result, err := api.call(definition, role)
@@ -278,11 +278,11 @@ func (api *API) AddUserToGroup(role *GroupRole, groupID int) (*GroupRole, error)
 
 // RemoveUserFromGroup removes the passed user from the group identified by groupID.
 func (api *API) RemoveUserFromGroup(user *User, groupID int) (*User, error) {
-	if _, ok := methods["removeUserFromGroup"]; !ok {
+	if _, ok := api.methods["removeUserFromGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "removeUserFromGroup")
 	}
 
-	definition := methods["removeUserFromGroup"]
+	definition := api.methods["removeUserFromGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID, user.ID)
 
 	_, err := api.call(definition, user)

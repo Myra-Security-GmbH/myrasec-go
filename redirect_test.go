@@ -5,15 +5,15 @@ import (
 )
 
 func TestGetRedirect(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/redirects/www.example.com/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
 				{"id": 1, "source": "/from", "destination": "/to", "type": "redirect", "subDomainName": "www.example.com", "matchingType": "exact", "sort": 0, "expertMode": false, "enabled": true}
 			]}`,
-			methods["getRedirect"],
+			"getRedirect",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}
@@ -61,16 +61,16 @@ func TestGetRedirect(t *testing.T) {
 }
 
 func TestListRedirects(t *testing.T) {
-	api, err := setupPreCachedAPI([]*TestCache{
+	api, err := setupPreCachedAPI(
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/redirects/www.example.com",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
 				{"id": 1, "source": "/from", "destination": "/to", "type": "redirect", "subDomainName": "www.example.com", "matchingType": "exact", "sort": 0, "expertMode": false, "enabled": true},
 		 		{"id": 2, "source": "/index.html", "destination": "/index.php", "type": "permanent", "subDomainName": "www.example.com", "matchingType": "prefix", "sort": 1, "expertMode": false, "enabled": false}
 			]}`,
-			methods["listRedirects"],
+			"listRedirects",
 		),
-	})
+	)
 	if err != nil {
 		t.Error("Unexpected error.")
 	}

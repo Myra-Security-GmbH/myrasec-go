@@ -68,11 +68,11 @@ type StatisticQuery struct {
 
 // QueryStatistics function is used to fetch statistical data
 func (api *API) QueryStatistics(query *StatisticQuery) (*Statistics, error) {
-	if _, ok := methods["queryStatistics"]; !ok {
+	if _, ok := api.methods["queryStatistics"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "queryStatistics")
 	}
 
-	definition := methods["queryStatistics"]
+	definition := api.methods["queryStatistics"]
 
 	result, err := api.call(definition, &Statistics{Query: query})
 	if err != nil {

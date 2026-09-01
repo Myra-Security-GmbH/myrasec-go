@@ -86,11 +86,11 @@ type Domain struct {
 
 // GetDomain returns a single domain with/for the given identifier
 func (api *API) GetDomain(id int) (*Domain, error) {
-	if _, ok := methods["getDomain"]; !ok {
+	if _, ok := api.methods["getDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getDomain")
 	}
 
-	definition := methods["getDomain"]
+	definition := api.methods["getDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
 	result, err := api.call(definition, map[string]string{})
@@ -107,11 +107,11 @@ func (api *API) GetDomain(id int) (*Domain, error) {
 
 // ListDomains returns a slice containing all visible domains
 func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
-	if _, ok := methods["listDomains"]; !ok {
+	if _, ok := api.methods["listDomains"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listDomains")
 	}
 
-	definition := methods["listDomains"]
+	definition := api.methods["listDomains"]
 
 	result, err := api.call(definition, params)
 	if err != nil {
@@ -127,11 +127,11 @@ func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 
 // CreateDomain creates a new domain using the MYRA API
 func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
-	if _, ok := methods["createDomain"]; !ok {
+	if _, ok := api.methods["createDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createDomain")
 	}
 
-	definition := methods["createDomain"]
+	definition := api.methods["createDomain"]
 
 	result, err := api.call(definition, domain)
 	if err != nil {
@@ -146,11 +146,11 @@ func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
 
 // UpdateDomain updates the passed domain using the MYRA API
 func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
-	if _, ok := methods["updateDomain"]; !ok {
+	if _, ok := api.methods["updateDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateDomain")
 	}
 
-	definition := methods["updateDomain"]
+	definition := api.methods["updateDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, domain.ID)
 
 	result, err := api.call(definition, domain)
@@ -166,11 +166,11 @@ func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
 
 // DeleteDomain deletes the passed domain using the MYRA API
 func (api *API) DeleteDomain(domain *Domain) (*Domain, error) {
-	if _, ok := methods["deleteDomain"]; !ok {
+	if _, ok := api.methods["deleteDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteDomain")
 	}
 
-	definition := methods["deleteDomain"]
+	definition := api.methods["deleteDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, domain.ID)
 
 	_, err := api.call(definition, domain)
