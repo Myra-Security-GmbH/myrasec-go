@@ -43,7 +43,6 @@ func TestUnmarshalJSON(t *testing.T) {
 	if dt.Format("2006-01-02") != "2022-06-08" {
 		t.Errorf("Expected to get a date like [%s] but got [%s]", "2022-06-08", dt.Format("2006-01-02"))
 	}
-
 }
 
 func TestParseDate(t *testing.T) {
@@ -69,5 +68,4 @@ func TestToUinxDate(t *testing.T) {
 	if formatted != expected {
 		t.Errorf("Expected to get a date like [%s] but got [%s]", expected, formatted)
 	}
-
 }

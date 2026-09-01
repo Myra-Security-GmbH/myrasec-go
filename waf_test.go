@@ -102,7 +102,6 @@ func TestFetchWAFRule(t *testing.T) {
 			t.Errorf("Expected to get WAF rule with Condition Value [%s] but got [%s]", "test", c.Value)
 		}
 	}
-
 }
 
 func TestListWAFRules(t *testing.T) {
@@ -271,7 +270,6 @@ func TestListWAFActions(t *testing.T) {
 		}
 
 	}
-
 }
 
 func TestListWAFConditions(t *testing.T) {

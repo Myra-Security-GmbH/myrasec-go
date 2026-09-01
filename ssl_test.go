@@ -71,7 +71,6 @@ func TestGetSSLCertificate(t *testing.T) {
 	if cert.Subject != "CN=example.com" {
 		t.Errorf("Expected to get SSL Cert with Subject [%s] but got [%s]", "CN=example.com", cert.Subject)
 	}
-
 }
 
 func TestListSSLCertificates(t *testing.T) {

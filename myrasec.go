@@ -120,8 +120,8 @@ func buildApi(key, secret, token string) *API {
 		secret:     secret,
 		token:      token,
 		headers:    make(http.Header),
-		client:     http.DefaultClient,
-		limiter:    rate.NewLimiter(rate.Limit(5), 1), //5rps = 300req/min
+		client:     &http.Client{Timeout: 30 * time.Second},
+		limiter:    rate.NewLimiter(rate.Limit(5), 1), // 5rps = 300req/min
 		maxRetries: DefaultRetryCount,
 		retrySleep: DefaultRetrySleep,
 	}
@@ -174,21 +174,45 @@ func (api *API) SetRetrySleep(n int) {
 }
 
 // SetProxy allows to set a custom proxyURL for the api client.
+// Must be used after SetHTTPClient when SetHTTPClient is used.
 func (api *API) SetProxy(proxyURL string) error {
 	if proxyURL == "" {
 		api.client.Transport = nil
 		return nil
 	}
 
-	purl, err := url.Parse(proxyURL)
-	if err != nil {
-		return fmt.Errorf("error setting proxy url [\"%s\"] is not a valid url: %s", proxyURL, err.Error())
+	transport := &http.Transport{}
+	if api.client.Transport != nil {
+		var ok bool
+
+		t, ok := api.client.Transport.(*http.Transport)
+		if !ok {
+			return fmt.Errorf("the client transport is not an http.Transport: %T", api.client.Transport)
+		}
+
+		transport = t.Clone()
 	}
 
-	transport := &http.Transport{}
+	purl, err := url.Parse(proxyURL)
+	if err != nil {
+		return fmt.Errorf("error setting proxy url [%q] is not a valid url: %v", proxyURL, err)
+	}
+
 	transport.Proxy = http.ProxyURL(purl)
 
 	api.client.Transport = transport
+
+	return nil
+}
+
+// SetHTTPClient sets the HTTP client used by the api client.
+// Must be used before SetProxy if SetProxy is used.
+func (api *API) SetHTTPClient(client *http.Client) error {
+	if client == nil {
+		return errors.New("nil http client")
+	}
+
+	api.client = client
 
 	return nil
 }
@@ -302,7 +326,6 @@ func errorMessage(resp *http.Response) (*Response, error) {
 
 // decodeDefaultResponse handles the default decoding of a response.
 func decodeDefaultResponse(resp *http.Response, definition APIMethod) (any, error) {
-
 	if definition.Method == http.MethodDelete {
 		return nil, nil
 	}

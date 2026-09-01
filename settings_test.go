@@ -247,5 +247,4 @@ func TestListSettings(t *testing.T) {
 	if settings.WAFPolicy != "allow" {
 		t.Errorf("Expected to get Setting with WAFPolicy [%s] but got [%s]", "allow", settings.WAFPolicy)
 	}
-
 }

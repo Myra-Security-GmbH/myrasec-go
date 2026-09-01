@@ -102,7 +102,6 @@ func TestCacheResponse(t *testing.T) {
 	if len(api.cache) != 1 {
 		t.Errorf("Expected to have one single element in the cache but got %d", len(api.cache))
 	}
-
 }
 
 func TestIsCachable(t *testing.T) {
@@ -127,7 +126,6 @@ func TestIsCachable(t *testing.T) {
 	if isCachable(req) {
 		t.Errorf("Expected the request not to be cachable as it is [%s]", req.Method)
 	}
-
 }
 
 func TestRemoveFromCache(t *testing.T) {
@@ -148,7 +146,6 @@ func TestRemoveFromCache(t *testing.T) {
 	if len(api.cache) != 0 {
 		t.Errorf("Expected not to have any element in the cache")
 	}
-
 }
 
 func TestPruneCache(t *testing.T) {

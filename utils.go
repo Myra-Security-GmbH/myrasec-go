@@ -3,16 +3,12 @@ package myrasec
 import (
 	"crypto/sha256"
 	"fmt"
+	"slices"
 )
 
 // IntInSlice checks if the haystack []int slice contains the passed needle int
 func intInSlice(needle int, haystack []int) bool {
-	for _, a := range haystack {
-		if a == needle {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(haystack, needle)
 }
 
 // BoolPtr returns a pointer to the passed bool value.

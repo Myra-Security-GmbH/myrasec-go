@@ -72,7 +72,6 @@ func (api *API) FetchDomainForSubdomainName(subdomain string) (*Domain, error) {
 
 // FetchDomain returns the Domain for the passed domain (name)
 func (api *API) FetchDomain(domain string) (*Domain, error) {
-
 	maxRetries := 2
 	retries := 0
 	for {
