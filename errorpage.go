@@ -136,8 +136,12 @@ func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	errorPageUpdate := convertErrorPageToErrorPageUpdate(errorPage)
-	_, err := api.call(definition, errorPageUpdate)
+	res, err := api.call(definition, errorPageUpdate)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := enrichErrorPageIdentity(errorPage, res); err != nil {
 		return nil, err
 	}
 
@@ -154,8 +158,12 @@ func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	errorPageUpdate := convertErrorPageToErrorPageUpdate(errorPage)
-	_, err := api.call(definition, errorPageUpdate)
+	res, err := api.call(definition, errorPageUpdate)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := enrichErrorPageIdentity(errorPage, res); err != nil {
 		return nil, err
 	}
 
@@ -179,9 +187,49 @@ func (api *API) DeleteErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	return errorPage, nil
 }
 
-// decodeErrorPageResponse handles an empty response as it is returned by save error codes
+// decodeErrorPageResponse decodes the save (create/update) response of an error page.
+// A server carrying the companion change echoes the persisted page(s) in the "data"
+// envelope, so the first element is decoded into an *ErrorPage (carrying the
+// server-assigned id, created and modified).
+//
+// A server without that change answers with an empty data array ({"data": []}); in
+// that case a nil result is returned so the caller keeps the object it sent. The save
+// endpoint is a bulk operation, but this client only ever selects a single
+// subdomain/errorCode pair, so the response holds at most one element.
 func decodeErrorPageResponse(resp *http.Response, definition APIMethod) (any, error) {
-	return nil, nil
+	res, err := decodeBaseResponse(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	if res == nil || len(res.Data) == 0 {
+		return nil, nil
+	}
+
+	return prepareSingleElementResult(*res, definition)
+}
+
+// enrichErrorPageIdentity copies the server-assigned identity fields (id, created,
+// modified) from a decoded save response onto the error page the caller sent, leaving
+// the caller's content/subdomain/code intact. When the save response was empty (res is
+// nil, e.g. a server without the companion change), the caller's object is left
+// unchanged. An unexpected result type is reported as an error, matching the rest of
+// the package.
+func enrichErrorPageIdentity(errorPage *ErrorPage, res any) error {
+	if res == nil {
+		return nil
+	}
+
+	created, ok := res.(*ErrorPage)
+	if !ok {
+		return fmt.Errorf("unexpected result type %T", res)
+	}
+
+	errorPage.ID = created.ID
+	errorPage.Created = created.Created
+	errorPage.Modified = created.Modified
+
+	return nil
 }
 
 // convertErrorPageToErrorPageUpdate
