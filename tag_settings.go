@@ -72,6 +72,7 @@ func (api *API) ListTagSettings(tagId int) (*Settings, error) {
 	return api.ListTagSettingsContext(context.Background(), tagId)
 }
 
+// ListTagSettingsMapContext returns the settings of the passed tag (ID) as a generic map instead of a Settings struct
 func (api *API) ListTagSettingsMapContext(ctx context.Context, tagId int) (any, error) {
 	if _, ok := api.methods["listTagSettingsMap"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagSettingsMap")
@@ -121,7 +122,7 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 	return api.UpdateTagSettingsContext(context.Background(), settings, tagId)
 }
 
-// UpdateTagSettings updates the passed settings using the MYRA API
+// UpdateTagSettingsPartialContext updates the passed settings of the tag (ID) using the MYRA API
 func (api *API) UpdateTagSettingsPartialContext(ctx context.Context, settings map[string]any, tagId int) (any, error) {
 	if _, ok := api.methods["updateTagSettingsPartial"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagSettingsPartial")

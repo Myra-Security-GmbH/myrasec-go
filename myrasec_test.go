@@ -39,7 +39,7 @@ func preCacheRequest(url string, body string, name string) func(api *API) error 
 	return func(api *API) error {
 		definition := api.methods[name]
 
-		req, _ := http.NewRequest(http.MethodGet, url, nil)
+		req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 
 		resp := http.Response{
 			Status: strconv.Itoa(http.StatusOK),

@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"net/http"
 	"testing"
 	"time"
@@ -11,7 +12,6 @@ func TestIsExpired(t *testing.T) {
 		Key:     "1",
 		Created: time.Now().Unix(),
 		Expire:  time.Now().Unix() - 1,
-		Request: nil,
 		Body:    nil,
 	}
 
@@ -23,7 +23,6 @@ func TestIsExpired(t *testing.T) {
 		Key:     "1",
 		Created: time.Now().Unix(),
 		Expire:  time.Now().Add(time.Second * 1).Unix(),
-		Request: nil,
 		Body:    nil,
 	}
 
@@ -36,7 +35,7 @@ func TestInCache(t *testing.T) {
 	api, _ := New("abc123", "123abc")
 	api.EnableCaching()
 
-	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
 
 	if api.inCache(req) {
 		t.Errorf("Expected not to find the passed request in the cache")
@@ -61,7 +60,7 @@ func TestFromCache(t *testing.T) {
 	api, _ := New("abc123", "123abc")
 	api.EnableCaching()
 
-	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
 	api.cacheResponse(req, "CONTENT")
 
 	v := api.fromCache(req)
@@ -89,7 +88,7 @@ func TestFromCache(t *testing.T) {
 func TestCacheResponse(t *testing.T) {
 	api, _ := New("abc123", "123abc")
 
-	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
 	api.cacheResponse(req, "CONTENT")
 
 	if len(api.cache) > 0 {
@@ -107,22 +106,22 @@ func TestCacheResponse(t *testing.T) {
 func TestIsCachable(t *testing.T) {
 	var req *http.Request
 
-	req, _ = http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	req, _ = http.NewRequestWithContext(context.Background(), http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
 	if !isCachable(req) {
 		t.Errorf("Expected the request to be cachable as it is [%s]", req.Method)
 	}
 
-	req, _ = http.NewRequest(http.MethodDelete, "https://apiv2.myracloud.com/domains", nil)
+	req, _ = http.NewRequestWithContext(context.Background(), http.MethodDelete, "https://apiv2.myracloud.com/domains", nil)
 	if isCachable(req) {
 		t.Errorf("Expected the request not to be cachable as it is [%s]", req.Method)
 	}
 
-	req, _ = http.NewRequest(http.MethodPost, "https://apiv2.myracloud.com/domains", nil)
+	req, _ = http.NewRequestWithContext(context.Background(), http.MethodPost, "https://apiv2.myracloud.com/domains", nil)
 	if isCachable(req) {
 		t.Errorf("Expected the request not to be cachable as it is [%s]", req.Method)
 	}
 
-	req, _ = http.NewRequest(http.MethodPut, "https://apiv2.myracloud.com/domains", nil)
+	req, _ = http.NewRequestWithContext(context.Background(), http.MethodPut, "https://apiv2.myracloud.com/domains", nil)
 	if isCachable(req) {
 		t.Errorf("Expected the request not to be cachable as it is [%s]", req.Method)
 	}
@@ -132,7 +131,7 @@ func TestRemoveFromCache(t *testing.T) {
 	api, _ := New("abc123", "123abc")
 	api.EnableCaching()
 
-	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
 	api.cacheResponse(req, "CONTENT")
 
 	if len(api.cache) != 1 {
@@ -152,7 +151,7 @@ func TestPruneCache(t *testing.T) {
 	api, _ := New("abc123", "123abc")
 	api.EnableCaching()
 
-	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
 	api.cacheResponse(req, "CONTENT")
 
 	if len(api.cache) != 1 {
@@ -170,7 +169,7 @@ func TestBuildCacheKey(t *testing.T) {
 	api, _ := New("abc123", "123abc")
 	api.EnableCaching()
 
-	req, _ := http.NewRequest(http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "https://apiv2.myracloud.com/domains", nil)
 	sha := BuildSHA256(req.URL.String())
 	key := BuildCacheKey(req)
 

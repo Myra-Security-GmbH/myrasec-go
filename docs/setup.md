@@ -50,7 +50,7 @@ func main() {
 ```
 
 ## Cancellation and timeouts
-Every function that sends a request has a variant with the suffix `Context` that takes a `context.Context` as its first parameter, for example `ListDomainsContext(ctx, params)`. The context bounds the whole call: the wait for the client side rate limiter, the HTTP request and the sleep between retries. When the context is cancelled or its deadline passes, the function returns `context.Canceled` or `context.DeadlineExceeded` (check with `errors.Is`) and no further request is sent.
+Every function that sends a request has a variant with the suffix `Context` that takes a `context.Context` as its first parameter, for example `ListDomainsContext(ctx, params)`. The context bounds the whole call: the wait for the client side rate limiter, the HTTP request and the sleep between retries. When the context is cancelled or its deadline passes, the function returns `context.Canceled` or `context.DeadlineExceeded` (check with `errors.Is`) and no further request is sent. A deadline that is shorter than the wait the client side rate limiter needs for the next request fails immediately with `context.DeadlineExceeded` as well, the message names the rate limit as the cause. Independent of the context, the HTTP client times out after 30 seconds per request; use `SetHTTPClient` to change that.
 
 ```go
 ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

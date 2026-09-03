@@ -299,6 +299,11 @@ func (api *API) SetHTTPClient(client *http.Client) error {
 // call executes/sends the request to the MYRA API. The ctx bounds the rate limiter wait,
 // the retry sleep and the HTTP request itself.
 func (api *API) call(ctx context.Context, definition APIMethod, payload ...any) (any, error) {
+	// A cancelled or expired context fails before anything else, including a cache hit.
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	req, err := api.prepareRequest(ctx, definition, payload...)
 	if err != nil {
 		return nil, err
@@ -352,14 +357,15 @@ func (api *API) sendRequest(ctx context.Context, definition APIMethod, payload .
 			return nil, err
 		}
 
-		// A cancelled or expired context is reported as such. The limiter also fails when
-		// the wait for the next token would exceed the deadline of the context.
+		// A cancelled or expired context is reported as such. The limiter also fails without
+		// waiting when the wait for the next token would exceed the deadline of the context;
+		// that is a deadline error as well, the message names the cause.
 		if err = api.limiter.Wait(ctx); err != nil {
 			if ctx.Err() != nil {
 				return nil, ctx.Err()
 			}
 
-			return nil, errors.New(ErrorMsgRateLimitReached)
+			return nil, fmt.Errorf("%s: %w", ErrorMsgRateLimitReached, context.DeadlineExceeded)
 		}
 
 		var request *http.Request

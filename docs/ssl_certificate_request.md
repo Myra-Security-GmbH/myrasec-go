@@ -301,7 +301,11 @@ for {
         log.Printf("waiting for CNAME %s -> %s", checks["www.example.com"].ChallengeName, checks["www.example.com"].ExpectedCName)
     }
 
-    time.Sleep(time.Minute)
+    select {
+    case <-ctx.Done():
+        log.Fatal(ctx.Err())
+    case <-time.After(time.Minute):
+    }
 }
 ```
 
@@ -332,7 +336,7 @@ if err != nil {
     log.Fatal(err)
 }
 
-// Poll GetSSLCertificateRequest as in the Let's Encrypt example. Once the status is
+// Poll GetSSLCertificateRequestContext as in the Let's Encrypt example. Once the status is
 // CREATED, the certificates issued with the credentials are listed on the credentials.
 certs, err := api.ListSSLProviderCertificatesContext(ctx, credentials.ID, nil)
 if err != nil {

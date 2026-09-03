@@ -24,6 +24,7 @@ func getZoneConfigMethods() map[string]APIMethod {
 	}
 }
 
+// GetZoneConfigRawContext returns the BIND zone configuration of the passed domain (ID) as a string
 func (api *API) GetZoneConfigRawContext(ctx context.Context, domainId int, params map[string]string) (*string, error) {
 	if _, ok := api.methods["getZoneConfigRaw"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigRaw")
@@ -52,6 +53,7 @@ func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (*strin
 	return api.GetZoneConfigRawContext(context.Background(), domainId, params)
 }
 
+// GetZoneConfigJsonContext returns the BIND zone configuration of the passed domain (ID) as JSON
 func (api *API) GetZoneConfigJsonContext(ctx context.Context, domainId int, params map[string]string) (*string, error) {
 	if _, ok := api.methods["getZoneConfigJson"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigJson")

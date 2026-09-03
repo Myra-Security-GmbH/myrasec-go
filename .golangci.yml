@@ -7,6 +7,7 @@ linters:
     - gochecknoinits
     - misspell
     - modernize
+    - noctx
     - unconvert
   exclusions:
     presets:

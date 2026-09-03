@@ -88,3 +88,20 @@ func newTestAPI(t *testing.T, routes map[string]testResponse) (*API, *testReques
 
 	return api, recorded
 }
+
+// newTestAPIWithHandler starts an HTTP test server with the passed handler and returns an
+// API client pointed at it. Use it when a test needs stateful or side-effecting responses.
+func newTestAPIWithHandler(t *testing.T, handler http.HandlerFunc) *API {
+	t.Helper()
+
+	server := httptest.NewServer(handler)
+	t.Cleanup(server.Close)
+
+	api, err := NewWithToken("token")
+	if err != nil {
+		t.Fatalf("Unexpected error creating the API client: %v", err)
+	}
+	api.BaseURL = server.URL + "/%s"
+
+	return api
+}
