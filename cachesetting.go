@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -84,8 +85,8 @@ type CacheSetting struct {
 	Comment string `json:"comment,omitempty" jsonschema:"An optional comment or description for this cache setting."`
 }
 
-// ListCacheSettings returns a slice containing all visible cache settings for a subdomain
-func (api *API) ListCacheSettings(domainId int, subDomainName string, params map[string]string) ([]CacheSetting, error) {
+// ListCacheSettingsContext returns a slice containing all visible cache settings for a subdomain
+func (api *API) ListCacheSettingsContext(ctx context.Context, domainId int, subDomainName string, params map[string]string) ([]CacheSetting, error) {
 	if _, ok := api.methods["listCacheSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listCacheSettings")
 	}
@@ -93,7 +94,7 @@ func (api *API) ListCacheSettings(domainId int, subDomainName string, params map
 	definition := api.methods["listCacheSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -105,8 +106,15 @@ func (api *API) ListCacheSettings(domainId int, subDomainName string, params map
 	return *res, nil
 }
 
-// CreateCacheSetting creates a new cache setting for the passed subdomain (name) using the MYRA API
-func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
+// ListCacheSettings is equivalent to ListCacheSettingsContext with context.Background().
+//
+// Deprecated: use ListCacheSettingsContext.
+func (api *API) ListCacheSettings(domainId int, subDomainName string, params map[string]string) ([]CacheSetting, error) {
+	return api.ListCacheSettingsContext(context.Background(), domainId, subDomainName, params)
+}
+
+// CreateCacheSettingContext creates a new cache setting for the passed subdomain (name) using the MYRA API
+func (api *API) CreateCacheSettingContext(ctx context.Context, setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := api.methods["createCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createCacheSetting")
 	}
@@ -114,7 +122,7 @@ func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomai
 	definition := api.methods["createCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, setting)
+	result, err := api.call(ctx, definition, setting)
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +133,15 @@ func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomai
 	return res, nil
 }
 
-// UpdateCacheSetting updates the passed cache setting using the MYRA API
-func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
+// CreateCacheSetting is equivalent to CreateCacheSettingContext with context.Background().
+//
+// Deprecated: use CreateCacheSettingContext.
+func (api *API) CreateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
+	return api.CreateCacheSettingContext(context.Background(), setting, domainId, subDomainName)
+}
+
+// UpdateCacheSettingContext updates the passed cache setting using the MYRA API
+func (api *API) UpdateCacheSettingContext(ctx context.Context, setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := api.methods["updateCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateCacheSetting")
 	}
@@ -134,7 +149,7 @@ func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomai
 	definition := api.methods["updateCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, setting.ID)
 
-	result, err := api.call(definition, setting)
+	result, err := api.call(ctx, definition, setting)
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +160,15 @@ func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomai
 	return res, nil
 }
 
-// DeleteCacheSetting deletes the passed cache setting using the MYRA API
-func (api *API) DeleteCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
+// UpdateCacheSetting is equivalent to UpdateCacheSettingContext with context.Background().
+//
+// Deprecated: use UpdateCacheSettingContext.
+func (api *API) UpdateCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
+	return api.UpdateCacheSettingContext(context.Background(), setting, domainId, subDomainName)
+}
+
+// DeleteCacheSettingContext deletes the passed cache setting using the MYRA API
+func (api *API) DeleteCacheSettingContext(ctx context.Context, setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
 	if _, ok := api.methods["deleteCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteCacheSetting")
 	}
@@ -154,9 +176,16 @@ func (api *API) DeleteCacheSetting(setting *CacheSetting, domainId int, subDomai
 	definition := api.methods["deleteCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, setting.ID)
 
-	_, err := api.call(definition, setting)
+	_, err := api.call(ctx, definition, setting)
 	if err != nil {
 		return nil, err
 	}
 	return setting, nil
+}
+
+// DeleteCacheSetting is equivalent to DeleteCacheSettingContext with context.Background().
+//
+// Deprecated: use DeleteCacheSettingContext.
+func (api *API) DeleteCacheSetting(setting *CacheSetting, domainId int, subDomainName string) (*CacheSetting, error) {
+	return api.DeleteCacheSettingContext(context.Background(), setting, domainId, subDomainName)
 }

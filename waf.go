@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -201,13 +202,13 @@ type WAFCondition struct {
 	AvailablePhases int `json:"availablePhases" jsonschema:"Metadata indicating valid phases: 1=request, 2=response, 3=both. Read-only."`
 }
 
-// ListWAFConditions returns a list of available WAF conditions
-func (api *API) ListWAFConditions() ([]WAFCondition, error) {
+// ListWAFConditionsContext returns a list of available WAF conditions
+func (api *API) ListWAFConditionsContext(ctx context.Context) ([]WAFCondition, error) {
 	if _, ok := api.methods["listWAFConditions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFConditions")
 	}
 
-	result, err := api.call(api.methods["listWAFConditions"])
+	result, err := api.call(ctx, api.methods["listWAFConditions"])
 	if err != nil {
 		return nil, err
 	}
@@ -219,13 +220,20 @@ func (api *API) ListWAFConditions() ([]WAFCondition, error) {
 	return *res, nil
 }
 
-// ListWAFActions returns a list of available WAF actions
-func (api *API) ListWAFActions() ([]WAFAction, error) {
+// ListWAFConditions is equivalent to ListWAFConditionsContext with context.Background().
+//
+// Deprecated: use ListWAFConditionsContext.
+func (api *API) ListWAFConditions() ([]WAFCondition, error) {
+	return api.ListWAFConditionsContext(context.Background())
+}
+
+// ListWAFActionsContext returns a list of available WAF actions
+func (api *API) ListWAFActionsContext(ctx context.Context) ([]WAFAction, error) {
 	if _, ok := api.methods["listWAFActions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFActions")
 	}
 
-	result, err := api.call(api.methods["listWAFActions"])
+	result, err := api.call(ctx, api.methods["listWAFActions"])
 	if err != nil {
 		return nil, err
 	}
@@ -237,8 +245,15 @@ func (api *API) ListWAFActions() ([]WAFAction, error) {
 	return *res, nil
 }
 
-// ListWAFRules returns a list of WAF rules.
-func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule, error) {
+// ListWAFActions is equivalent to ListWAFActionsContext with context.Background().
+//
+// Deprecated: use ListWAFActionsContext.
+func (api *API) ListWAFActions() ([]WAFAction, error) {
+	return api.ListWAFActionsContext(context.Background())
+}
+
+// ListWAFRulesContext returns a list of WAF rules.
+func (api *API) ListWAFRulesContext(ctx context.Context, domainId int, params map[string]string) ([]WAFRule, error) {
 	if _, ok := api.methods["listWAFRules"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWAFRules")
 	}
@@ -246,7 +261,7 @@ func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule,
 	definition := api.methods["listWAFRules"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -258,8 +273,15 @@ func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule,
 	return *res, nil
 }
 
-// FetchWAFRule returns a single WAF rule for the given ID
-func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error) {
+// ListWAFRules is equivalent to ListWAFRulesContext with context.Background().
+//
+// Deprecated: use ListWAFRulesContext.
+func (api *API) ListWAFRules(domainId int, params map[string]string) ([]WAFRule, error) {
+	return api.ListWAFRulesContext(context.Background(), domainId, params)
+}
+
+// FetchWAFRuleContext returns a single WAF rule for the given ID
+func (api *API) FetchWAFRuleContext(ctx context.Context, id int, params map[string]string) (*WAFRule, error) {
 	if _, ok := api.methods["fetchWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "fetchWAFRule")
 	}
@@ -267,7 +289,7 @@ func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error)
 	definition := api.methods["fetchWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -284,8 +306,15 @@ func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error)
 	return &rules[0], nil
 }
 
-// CreateWAFRule creates a new WAF rule
-func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
+// FetchWAFRule is equivalent to FetchWAFRuleContext with context.Background().
+//
+// Deprecated: use FetchWAFRuleContext.
+func (api *API) FetchWAFRule(id int, params map[string]string) (*WAFRule, error) {
+	return api.FetchWAFRuleContext(context.Background(), id, params)
+}
+
+// CreateWAFRuleContext creates a new WAF rule
+func (api *API) CreateWAFRuleContext(ctx context.Context, rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
 	if _, ok := api.methods["createWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createWAFRule")
 	}
@@ -293,7 +322,7 @@ func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 	definition := api.methods["createWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, rule)
+	result, err := api.call(ctx, definition, rule)
 	if err != nil {
 		return nil, err
 	}
@@ -304,8 +333,15 @@ func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 	return res, nil
 }
 
-// UpdateWAFRule updates the passed WAF rule
-func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
+// CreateWAFRule is equivalent to CreateWAFRuleContext with context.Background().
+//
+// Deprecated: use CreateWAFRuleContext.
+func (api *API) CreateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
+	return api.CreateWAFRuleContext(context.Background(), rule, domainId, subDomainName)
+}
+
+// UpdateWAFRuleContext updates the passed WAF rule
+func (api *API) UpdateWAFRuleContext(ctx context.Context, rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
 	if _, ok := api.methods["updateWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateWAFRule")
 	}
@@ -313,7 +349,7 @@ func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 	definition := api.methods["updateWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, rule.ID)
 
-	result, err := api.call(definition, rule)
+	result, err := api.call(ctx, definition, rule)
 	if err != nil {
 		return nil, err
 	}
@@ -324,8 +360,15 @@ func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string)
 	return res, nil
 }
 
-// DeleteWAFRule deletes the passed WAF rule
-func (api *API) DeleteWAFRule(rule *WAFRule) (*WAFRule, error) {
+// UpdateWAFRule is equivalent to UpdateWAFRuleContext with context.Background().
+//
+// Deprecated: use UpdateWAFRuleContext.
+func (api *API) UpdateWAFRule(rule *WAFRule, domainId int, subDomainName string) (*WAFRule, error) {
+	return api.UpdateWAFRuleContext(context.Background(), rule, domainId, subDomainName)
+}
+
+// DeleteWAFRuleContext deletes the passed WAF rule
+func (api *API) DeleteWAFRuleContext(ctx context.Context, rule *WAFRule) (*WAFRule, error) {
 	if _, ok := api.methods["deleteWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteWAFRule")
 	}
@@ -333,9 +376,16 @@ func (api *API) DeleteWAFRule(rule *WAFRule) (*WAFRule, error) {
 	definition := api.methods["deleteWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, rule.ID)
 
-	_, err := api.call(definition, rule)
+	_, err := api.call(ctx, definition, rule)
 	if err != nil {
 		return nil, err
 	}
 	return rule, nil
+}
+
+// DeleteWAFRule is equivalent to DeleteWAFRuleContext with context.Background().
+//
+// Deprecated: use DeleteWAFRuleContext.
+func (api *API) DeleteWAFRule(rule *WAFRule) (*WAFRule, error) {
+	return api.DeleteWAFRuleContext(context.Background(), rule)
 }

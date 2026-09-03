@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -23,7 +24,7 @@ func getZoneConfigMethods() map[string]APIMethod {
 	}
 }
 
-func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (*string, error) {
+func (api *API) GetZoneConfigRawContext(ctx context.Context, domainId int, params map[string]string) (*string, error) {
 	if _, ok := api.methods["getZoneConfigRaw"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigRaw")
 	}
@@ -35,7 +36,7 @@ func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (*strin
 	definition := api.methods["getZoneConfigRaw"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, ipTarget)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +45,14 @@ func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (*strin
 	return &res, nil
 }
 
-func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (*string, error) {
+// GetZoneConfigRaw is equivalent to GetZoneConfigRawContext with context.Background().
+//
+// Deprecated: use GetZoneConfigRawContext.
+func (api *API) GetZoneConfigRaw(domainId int, params map[string]string) (*string, error) {
+	return api.GetZoneConfigRawContext(context.Background(), domainId, params)
+}
+
+func (api *API) GetZoneConfigJsonContext(ctx context.Context, domainId int, params map[string]string) (*string, error) {
 	if _, ok := api.methods["getZoneConfigJson"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getZoneConfigJson")
 	}
@@ -56,13 +64,20 @@ func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (*stri
 	definition := api.methods["getZoneConfigJson"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, ipTarget)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
 
 	ret := result.(string)
 	return &ret, nil
+}
+
+// GetZoneConfigJson is equivalent to GetZoneConfigJsonContext with context.Background().
+//
+// Deprecated: use GetZoneConfigJsonContext.
+func (api *API) GetZoneConfigJson(domainId int, params map[string]string) (*string, error) {
+	return api.GetZoneConfigJsonContext(context.Background(), domainId, params)
 }
 
 func decodeStringValue(resp *http.Response, definition APIMethod) (any, error) {

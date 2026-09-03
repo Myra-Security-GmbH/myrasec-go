@@ -2,6 +2,7 @@ package myrasec
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -66,15 +67,15 @@ type StatisticQuery struct {
 	Type string `json:"type,omitempty" jsonschema:"The scope selection mode. Valid values: 'fqdn' (default, use the provided FQDN list), 'all', 'own' or 'foreign' (every accessible, owned or assigned domain with its subdomains; rejected above 150 domains)."`
 }
 
-// QueryStatistics function is used to fetch statistical data
-func (api *API) QueryStatistics(query *StatisticQuery) (*Statistics, error) {
+// QueryStatisticsContext function is used to fetch statistical data
+func (api *API) QueryStatisticsContext(ctx context.Context, query *StatisticQuery) (*Statistics, error) {
 	if _, ok := api.methods["queryStatistics"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "queryStatistics")
 	}
 
 	definition := api.methods["queryStatistics"]
 
-	result, err := api.call(definition, &Statistics{Query: query})
+	result, err := api.call(ctx, definition, &Statistics{Query: query})
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +84,13 @@ func (api *API) QueryStatistics(query *StatisticQuery) (*Statistics, error) {
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return res, nil
+}
+
+// QueryStatistics is equivalent to QueryStatisticsContext with context.Background().
+//
+// Deprecated: use QueryStatisticsContext.
+func (api *API) QueryStatistics(query *StatisticQuery) (*Statistics, error) {
+	return api.QueryStatisticsContext(context.Background(), query)
 }
 
 // statisticsEnvelope is the wire shape of a statistic/query response. The API

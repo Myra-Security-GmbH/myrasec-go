@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -35,8 +36,8 @@ func getTagCacheSettingMethods() map[string]APIMethod {
 	}
 }
 
-// ListTagCacheSettings returns a slice containing all visible cache settings for a subdomain
-func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]CacheSetting, error) {
+// ListTagCacheSettingsContext returns a slice containing all visible cache settings for a subdomain
+func (api *API) ListTagCacheSettingsContext(ctx context.Context, tagId int, params map[string]string) ([]CacheSetting, error) {
 	if _, ok := api.methods["listTagCacheSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagCacheSettings")
 	}
@@ -44,7 +45,7 @@ func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]Cac
 	definition := api.methods["listTagCacheSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -56,8 +57,15 @@ func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]Cac
 	return *res, nil
 }
 
-// CreateTagCacheSetting creates a new cache setting for the passed subdomain (name) using the MYRA API
-func (api *API) CreateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
+// ListTagCacheSettings is equivalent to ListTagCacheSettingsContext with context.Background().
+//
+// Deprecated: use ListTagCacheSettingsContext.
+func (api *API) ListTagCacheSettings(tagId int, params map[string]string) ([]CacheSetting, error) {
+	return api.ListTagCacheSettingsContext(context.Background(), tagId, params)
+}
+
+// CreateTagCacheSettingContext creates a new cache setting for the passed subdomain (name) using the MYRA API
+func (api *API) CreateTagCacheSettingContext(ctx context.Context, setting *CacheSetting, tagId int) (*CacheSetting, error) {
 	if _, ok := api.methods["createTagCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagCacheSetting")
 	}
@@ -65,7 +73,7 @@ func (api *API) CreateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 	definition := api.methods["createTagCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, setting)
+	result, err := api.call(ctx, definition, setting)
 	if err != nil {
 		return nil, err
 	}
@@ -76,8 +84,15 @@ func (api *API) CreateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 	return res, nil
 }
 
-// UpdateTagCacheSetting updates the passed cache setting using the MYRA API
-func (api *API) UpdateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
+// CreateTagCacheSetting is equivalent to CreateTagCacheSettingContext with context.Background().
+//
+// Deprecated: use CreateTagCacheSettingContext.
+func (api *API) CreateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
+	return api.CreateTagCacheSettingContext(context.Background(), setting, tagId)
+}
+
+// UpdateTagCacheSettingContext updates the passed cache setting using the MYRA API
+func (api *API) UpdateTagCacheSettingContext(ctx context.Context, setting *CacheSetting, tagId int) (*CacheSetting, error) {
 	if _, ok := api.methods["updateTagCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagCacheSetting")
 	}
@@ -85,7 +100,7 @@ func (api *API) UpdateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 	definition := api.methods["updateTagCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId, setting.ID)
 
-	result, err := api.call(definition, setting)
+	result, err := api.call(ctx, definition, setting)
 	if err != nil {
 		return nil, err
 	}
@@ -96,8 +111,15 @@ func (api *API) UpdateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 	return res, nil
 }
 
-// DeleteTagCacheSetting deletes the passed cache setting using the MYRA API
-func (api *API) DeleteTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
+// UpdateTagCacheSetting is equivalent to UpdateTagCacheSettingContext with context.Background().
+//
+// Deprecated: use UpdateTagCacheSettingContext.
+func (api *API) UpdateTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
+	return api.UpdateTagCacheSettingContext(context.Background(), setting, tagId)
+}
+
+// DeleteTagCacheSettingContext deletes the passed cache setting using the MYRA API
+func (api *API) DeleteTagCacheSettingContext(ctx context.Context, setting *CacheSetting, tagId int) (*CacheSetting, error) {
 	if _, ok := api.methods["deleteTagCacheSetting"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTagCacheSetting")
 	}
@@ -105,9 +127,16 @@ func (api *API) DeleteTagCacheSetting(setting *CacheSetting, tagId int) (*CacheS
 	definition := api.methods["deleteTagCacheSetting"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId, setting.ID)
 
-	_, err := api.call(definition, setting)
+	_, err := api.call(ctx, definition, setting)
 	if err != nil {
 		return nil, err
 	}
 	return setting, nil
+}
+
+// DeleteTagCacheSetting is equivalent to DeleteTagCacheSettingContext with context.Background().
+//
+// Deprecated: use DeleteTagCacheSettingContext.
+func (api *API) DeleteTagCacheSetting(setting *CacheSetting, tagId int) (*CacheSetting, error) {
+	return api.DeleteTagCacheSettingContext(context.Background(), setting, tagId)
 }

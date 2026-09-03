@@ -296,9 +296,10 @@ func (api *API) SetHTTPClient(client *http.Client) error {
 	return nil
 }
 
-// call executes/sends the request to the MYRA API
-func (api *API) call(definition APIMethod, payload ...any) (any, error) {
-	req, err := api.prepareRequest(definition, payload...)
+// call executes/sends the request to the MYRA API. The ctx bounds the rate limiter wait,
+// the retry sleep and the HTTP request itself.
+func (api *API) call(ctx context.Context, definition APIMethod, payload ...any) (any, error) {
+	req, err := api.prepareRequest(ctx, definition, payload...)
 	if err != nil {
 		return nil, err
 	}
@@ -310,7 +311,7 @@ func (api *API) call(definition APIMethod, payload ...any) (any, error) {
 		}
 	}
 
-	resp, err := api.sendRequest(definition, payload...)
+	resp, err := api.sendRequest(ctx, definition, payload...)
 	if err != nil {
 		return nil, err
 	}
@@ -342,16 +343,22 @@ func (api *API) call(definition APIMethod, payload ...any) (any, error) {
 }
 
 // sendRequest performs the concrete send-action
-func (api *API) sendRequest(definition APIMethod, payload ...any) (*http.Response, error) {
+func (api *API) sendRequest(ctx context.Context, definition APIMethod, payload ...any) (*http.Response, error) {
 	var retries int
 
 	for {
-		req, err := api.prepareRequest(definition, payload...)
+		req, err := api.prepareRequest(ctx, definition, payload...)
 		if err != nil {
 			return nil, err
 		}
 
-		if err = api.limiter.Wait(context.Background()); err != nil {
+		// A cancelled or expired context is reported as such. The limiter also fails when
+		// the wait for the next token would exceed the deadline of the context.
+		if err = api.limiter.Wait(ctx); err != nil {
+			if ctx.Err() != nil {
+				return nil, ctx.Err()
+			}
+
 			return nil, errors.New(ErrorMsgRateLimitReached)
 		}
 
@@ -389,7 +396,11 @@ func (api *API) sendRequest(definition APIMethod, payload ...any) (*http.Respons
 		// The response is discarded, release its connection before retrying.
 		_ = resp.Body.Close()
 
-		time.Sleep(time.Duration(api.retrySleep) * time.Second)
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-time.After(time.Duration(api.retrySleep) * time.Second):
+		}
 	}
 }
 
@@ -451,8 +462,8 @@ func formatAPIErrorMessage(errorMessage string, violations []*Violation) string 
 	return msg.String()
 }
 
-// prepareRequest builds an HTTP request from the given API method definition and payload.
-func (api *API) prepareRequest(definition APIMethod, payload ...any) (*http.Request, error) {
+// prepareRequest builds an HTTP request bound to ctx from the given API method definition and payload.
+func (api *API) prepareRequest(ctx context.Context, definition APIMethod, payload ...any) (*http.Request, error) {
 	var err error
 	var req *http.Request
 
@@ -463,13 +474,13 @@ func (api *API) prepareRequest(definition APIMethod, payload ...any) (*http.Requ
 	apiURL := fmt.Sprintf(baseURL, definition.Action)
 	switch definition.Method {
 	case http.MethodGet:
-		req, err = api.prepareGETRequest(apiURL, payload...)
+		req, err = api.prepareGETRequest(ctx, apiURL, payload...)
 	case http.MethodPost:
-		req, err = api.preparePOSTRequest(apiURL, payload...)
+		req, err = api.preparePOSTRequest(ctx, apiURL, payload...)
 	case http.MethodPut:
-		req, err = api.preparePUTRequest(apiURL, payload...)
+		req, err = api.preparePUTRequest(ctx, apiURL, payload...)
 	case http.MethodDelete:
-		req, err = api.prepareDELETERequest(apiURL, payload...)
+		req, err = api.prepareDELETERequest(ctx, apiURL, payload...)
 	default:
 		req, err = nil, fmt.Errorf("passed APIMethod definition has a not supported HTTP method - [%s] is not supported", definition.Method)
 	}
@@ -494,9 +505,9 @@ func (api *API) prepareRequest(definition APIMethod, payload ...any) (*http.Requ
 }
 
 // prepareGETRequest handles/prepares GET requests
-func (api *API) prepareGETRequest(apiURL string, payload ...any) (*http.Request, error) {
+func (api *API) prepareGETRequest(ctx context.Context, apiURL string, payload ...any) (*http.Request, error) {
 	if len(payload) <= 0 {
-		return http.NewRequest(http.MethodGet, apiURL, nil)
+		return http.NewRequestWithContext(ctx, http.MethodGet, apiURL, nil)
 	}
 
 	if len(payload) > 1 {
@@ -519,37 +530,37 @@ func (api *API) prepareGETRequest(apiURL string, payload ...any) (*http.Request,
 
 	baseURL.RawQuery = params.Encode()
 
-	return http.NewRequest(http.MethodGet, baseURL.String(), nil)
+	return http.NewRequestWithContext(ctx, http.MethodGet, baseURL.String(), nil)
 }
 
 // preparePOSTRequest handles/prepares POST requests
-func (api *API) preparePOSTRequest(apiURL string, payload ...any) (*http.Request, error) {
+func (api *API) preparePOSTRequest(ctx context.Context, apiURL string, payload ...any) (*http.Request, error) {
 	data, err := preparePayload(payload...)
 	if err != nil {
 		return nil, err
 	}
 
-	return http.NewRequest(http.MethodPost, apiURL, bytes.NewBuffer(data))
+	return http.NewRequestWithContext(ctx, http.MethodPost, apiURL, bytes.NewBuffer(data))
 }
 
 // preparePUTRequest handles/prepares PUT requests
-func (api *API) preparePUTRequest(apiURL string, payload ...any) (*http.Request, error) {
+func (api *API) preparePUTRequest(ctx context.Context, apiURL string, payload ...any) (*http.Request, error) {
 	data, err := preparePayload(payload...)
 	if err != nil {
 		return nil, err
 	}
 
-	return http.NewRequest(http.MethodPut, apiURL, bytes.NewBuffer(data))
+	return http.NewRequestWithContext(ctx, http.MethodPut, apiURL, bytes.NewBuffer(data))
 }
 
 // prepareDELETERequest handles/prepares DELETE requests
-func (api *API) prepareDELETERequest(apiURL string, payload ...any) (*http.Request, error) {
+func (api *API) prepareDELETERequest(ctx context.Context, apiURL string, payload ...any) (*http.Request, error) {
 	data, err := preparePayload(payload...)
 	if err != nil {
 		return nil, err
 	}
 
-	return http.NewRequest(http.MethodDelete, apiURL, bytes.NewBuffer(data))
+	return http.NewRequestWithContext(ctx, http.MethodDelete, apiURL, bytes.NewBuffer(data))
 }
 
 // prepareResult prepares the response for further processing

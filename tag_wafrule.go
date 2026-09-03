@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -105,8 +106,8 @@ type TagWAFRule struct {
 	TagId int `json:"tagId" jsonschema:"The ID of the parent Tag to which this WAF rule is attached."`
 }
 
-// GetTagWAFRule returns a single tag for the given identifier
-func (api *API) GetTagWAFRule(tagId int, ruleId int) (*TagWAFRule, error) {
+// GetTagWAFRuleContext returns a single tag for the given identifier
+func (api *API) GetTagWAFRuleContext(ctx context.Context, tagId int, ruleId int) (*TagWAFRule, error) {
 	if _, ok := api.methods["getTagWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getTagWAFRule")
 	}
@@ -114,7 +115,7 @@ func (api *API) GetTagWAFRule(tagId int, ruleId int) (*TagWAFRule, error) {
 	definition := api.methods["getTagWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId, ruleId)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -126,8 +127,15 @@ func (api *API) GetTagWAFRule(tagId int, ruleId int) (*TagWAFRule, error) {
 	return res, nil
 }
 
-// ListTagWAFRules returns a slice containing all visible tags
-func (api *API) ListTagWAFRules(tagId int, params map[string]string) ([]TagWAFRule, error) {
+// GetTagWAFRule is equivalent to GetTagWAFRuleContext with context.Background().
+//
+// Deprecated: use GetTagWAFRuleContext.
+func (api *API) GetTagWAFRule(tagId int, ruleId int) (*TagWAFRule, error) {
+	return api.GetTagWAFRuleContext(context.Background(), tagId, ruleId)
+}
+
+// ListTagWAFRulesContext returns a slice containing all visible tags
+func (api *API) ListTagWAFRulesContext(ctx context.Context, tagId int, params map[string]string) ([]TagWAFRule, error) {
 	if _, ok := api.methods["listTagWAFRules"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagWAFRules")
 	}
@@ -135,7 +143,7 @@ func (api *API) ListTagWAFRules(tagId int, params map[string]string) ([]TagWAFRu
 	definition := api.methods["listTagWAFRules"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +155,15 @@ func (api *API) ListTagWAFRules(tagId int, params map[string]string) ([]TagWAFRu
 	return *res, nil
 }
 
-// CreateTagWAFRule creates a new tag using the MYRA API
-func (api *API) CreateTagWAFRule(rule *TagWAFRule, tagId int) (*TagWAFRule, error) {
+// ListTagWAFRules is equivalent to ListTagWAFRulesContext with context.Background().
+//
+// Deprecated: use ListTagWAFRulesContext.
+func (api *API) ListTagWAFRules(tagId int, params map[string]string) ([]TagWAFRule, error) {
+	return api.ListTagWAFRulesContext(context.Background(), tagId, params)
+}
+
+// CreateTagWAFRuleContext creates a new tag using the MYRA API
+func (api *API) CreateTagWAFRuleContext(ctx context.Context, rule *TagWAFRule, tagId int) (*TagWAFRule, error) {
 	if _, ok := api.methods["createTagWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagWAFRule")
 	}
@@ -156,7 +171,7 @@ func (api *API) CreateTagWAFRule(rule *TagWAFRule, tagId int) (*TagWAFRule, erro
 	definition := api.methods["createTagWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, rule)
+	result, err := api.call(ctx, definition, rule)
 	if err != nil {
 		return nil, err
 	}
@@ -168,8 +183,15 @@ func (api *API) CreateTagWAFRule(rule *TagWAFRule, tagId int) (*TagWAFRule, erro
 	return res, nil
 }
 
-// UpdateTagWAFRule updates the passed tag using the MYRA API
-func (api *API) UpdateTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
+// CreateTagWAFRule is equivalent to CreateTagWAFRuleContext with context.Background().
+//
+// Deprecated: use CreateTagWAFRuleContext.
+func (api *API) CreateTagWAFRule(rule *TagWAFRule, tagId int) (*TagWAFRule, error) {
+	return api.CreateTagWAFRuleContext(context.Background(), rule, tagId)
+}
+
+// UpdateTagWAFRuleContext updates the passed tag using the MYRA API
+func (api *API) UpdateTagWAFRuleContext(ctx context.Context, rule *TagWAFRule) (*TagWAFRule, error) {
 	if _, ok := api.methods["updateTagWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagWAFRule")
 	}
@@ -177,7 +199,7 @@ func (api *API) UpdateTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
 	definition := api.methods["updateTagWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, rule.TagId, rule.ID)
 
-	result, err := api.call(definition, rule)
+	result, err := api.call(ctx, definition, rule)
 	if err != nil {
 		return nil, err
 	}
@@ -189,8 +211,15 @@ func (api *API) UpdateTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
 	return res, nil
 }
 
-// DeleteTagWAFRule deletes the passed tag using the MYRA API
-func (api *API) DeleteTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
+// UpdateTagWAFRule is equivalent to UpdateTagWAFRuleContext with context.Background().
+//
+// Deprecated: use UpdateTagWAFRuleContext.
+func (api *API) UpdateTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
+	return api.UpdateTagWAFRuleContext(context.Background(), rule)
+}
+
+// DeleteTagWAFRuleContext deletes the passed tag using the MYRA API
+func (api *API) DeleteTagWAFRuleContext(ctx context.Context, rule *TagWAFRule) (*TagWAFRule, error) {
 	if _, ok := api.methods["deleteTagWAFRule"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTagWAFRule")
 	}
@@ -198,10 +227,17 @@ func (api *API) DeleteTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
 	definition := api.methods["deleteTagWAFRule"]
 	definition.Action = fmt.Sprintf(definition.Action, rule.TagId, rule.ID)
 
-	_, err := api.call(definition, rule)
+	_, err := api.call(ctx, definition, rule)
 	if err != nil {
 		return nil, err
 	}
 
 	return rule, nil
+}
+
+// DeleteTagWAFRule is equivalent to DeleteTagWAFRuleContext with context.Background().
+//
+// Deprecated: use DeleteTagWAFRuleContext.
+func (api *API) DeleteTagWAFRule(rule *TagWAFRule) (*TagWAFRule, error) {
+	return api.DeleteTagWAFRuleContext(context.Background(), rule)
 }

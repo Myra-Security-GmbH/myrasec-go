@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -203,8 +204,8 @@ type UpstreamOptions struct {
 	Weight int `json:"weight" jsonschema:"The load balancing weight. Higher numbers receive a larger proportion of traffic."`
 }
 
-// GetDNSRecord returns a single DNS record with/for the given identifier
-func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
+// GetDNSRecordContext returns a single DNS record with/for the given identifier
+func (api *API) GetDNSRecordContext(ctx context.Context, domainId int, id int) (*DNSRecord, error) {
 	if _, ok := api.methods["getDNSRecord"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getDNSRecord")
 	}
@@ -212,7 +213,7 @@ func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
 	definition := api.methods["getDNSRecord"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -224,8 +225,15 @@ func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
 	return res, nil
 }
 
-// ListDNSRecords returns a slice containing all visible DNS records for a domain
-func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRecord, error) {
+// GetDNSRecord is equivalent to GetDNSRecordContext with context.Background().
+//
+// Deprecated: use GetDNSRecordContext.
+func (api *API) GetDNSRecord(domainId int, id int) (*DNSRecord, error) {
+	return api.GetDNSRecordContext(context.Background(), domainId, id)
+}
+
+// ListDNSRecordsContext returns a slice containing all visible DNS records for a domain
+func (api *API) ListDNSRecordsContext(ctx context.Context, domainId int, params map[string]string) ([]DNSRecord, error) {
 	if _, ok := api.methods["listDNSRecords"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listDNSRecords")
 	}
@@ -233,7 +241,7 @@ func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRec
 	definition := api.methods["listDNSRecords"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -245,8 +253,15 @@ func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRec
 	return *res, nil
 }
 
-// CreateDNSRecord creates a new DNS record using the MYRA API
-func (api *API) CreateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
+// ListDNSRecords is equivalent to ListDNSRecordsContext with context.Background().
+//
+// Deprecated: use ListDNSRecordsContext.
+func (api *API) ListDNSRecords(domainId int, params map[string]string) ([]DNSRecord, error) {
+	return api.ListDNSRecordsContext(context.Background(), domainId, params)
+}
+
+// CreateDNSRecordContext creates a new DNS record using the MYRA API
+func (api *API) CreateDNSRecordContext(ctx context.Context, record *DNSRecord, domainId int) (*DNSRecord, error) {
 	if _, ok := api.methods["createDNSRecord"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createDNSRecord")
 	}
@@ -254,7 +269,7 @@ func (api *API) CreateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	definition := api.methods["createDNSRecord"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, record)
+	result, err := api.call(ctx, definition, record)
 	if err != nil {
 		return nil, err
 	}
@@ -265,8 +280,15 @@ func (api *API) CreateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	return res, nil
 }
 
-// UpdateDNSRecord updates the passed DNS record using the MYRA API
-func (api *API) UpdateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
+// CreateDNSRecord is equivalent to CreateDNSRecordContext with context.Background().
+//
+// Deprecated: use CreateDNSRecordContext.
+func (api *API) CreateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
+	return api.CreateDNSRecordContext(context.Background(), record, domainId)
+}
+
+// UpdateDNSRecordContext updates the passed DNS record using the MYRA API
+func (api *API) UpdateDNSRecordContext(ctx context.Context, record *DNSRecord, domainId int) (*DNSRecord, error) {
 	if _, ok := api.methods["updateDNSRecord"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateDNSRecord")
 	}
@@ -274,7 +296,7 @@ func (api *API) UpdateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	definition := api.methods["updateDNSRecord"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, record.ID)
 
-	result, err := api.call(definition, record)
+	result, err := api.call(ctx, definition, record)
 	if err != nil {
 		return nil, err
 	}
@@ -285,8 +307,15 @@ func (api *API) UpdateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	return res, nil
 }
 
-// DeleteDNSRecord deletes the passed DNS record using the MYRA API
-func (api *API) DeleteDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
+// UpdateDNSRecord is equivalent to UpdateDNSRecordContext with context.Background().
+//
+// Deprecated: use UpdateDNSRecordContext.
+func (api *API) UpdateDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
+	return api.UpdateDNSRecordContext(context.Background(), record, domainId)
+}
+
+// DeleteDNSRecordContext deletes the passed DNS record using the MYRA API
+func (api *API) DeleteDNSRecordContext(ctx context.Context, record *DNSRecord, domainId int) (*DNSRecord, error) {
 	if _, ok := api.methods["deleteDNSRecord"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteDNSRecord")
 	}
@@ -294,9 +323,16 @@ func (api *API) DeleteDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, er
 	definition := api.methods["deleteDNSRecord"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, record.ID)
 
-	_, err := api.call(definition, record)
+	_, err := api.call(ctx, definition, record)
 	if err != nil {
 		return nil, err
 	}
 	return record, nil
+}
+
+// DeleteDNSRecord is equivalent to DeleteDNSRecordContext with context.Background().
+//
+// Deprecated: use DeleteDNSRecordContext.
+func (api *API) DeleteDNSRecord(record *DNSRecord, domainId int) (*DNSRecord, error) {
+	return api.DeleteDNSRecordContext(context.Background(), record, domainId)
 }

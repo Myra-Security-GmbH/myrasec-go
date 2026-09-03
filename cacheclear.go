@@ -2,6 +2,7 @@ package myrasec
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -38,8 +39,8 @@ type CacheClear struct {
 	Recursive bool `json:"recursive" jsonschema:"Enables recursive purging. If true, the operation clears the target resource and all nested sub-resources."`
 }
 
-// ClearCache triggers a cache clear operation for the given domain.
-func (api *API) ClearCache(cacheClear *CacheClear, domainId int) (*[]CacheClear, error) {
+// ClearCacheContext triggers a cache clear operation for the given domain.
+func (api *API) ClearCacheContext(ctx context.Context, cacheClear *CacheClear, domainId int) (*[]CacheClear, error) {
 	if _, ok := api.methods["clearCache"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "clearCache")
 	}
@@ -47,7 +48,7 @@ func (api *API) ClearCache(cacheClear *CacheClear, domainId int) (*[]CacheClear,
 	definition := api.methods["clearCache"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, cacheClear)
+	result, err := api.call(ctx, definition, cacheClear)
 	if err != nil {
 		return nil, err
 	}
@@ -57,6 +58,13 @@ func (api *API) ClearCache(cacheClear *CacheClear, domainId int) (*[]CacheClear,
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return res, nil
+}
+
+// ClearCache is equivalent to ClearCacheContext with context.Background().
+//
+// Deprecated: use ClearCacheContext.
+func (api *API) ClearCache(cacheClear *CacheClear, domainId int) (*[]CacheClear, error) {
+	return api.ClearCacheContext(context.Background(), cacheClear, domainId)
 }
 
 // decodeCacheClearResponse - custom decode function for cache clear responses

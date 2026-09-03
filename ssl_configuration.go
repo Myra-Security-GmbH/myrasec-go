@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -35,14 +36,15 @@ type SslConfiguration struct {
 	Protocols string `json:"protocols" jsonschema:"Space-separated list of enabled TLS protocols (e.g., 'TLSv1.2 TLSv1.3')."`
 }
 
-func (api *API) ListSslConfigurations() ([]SslConfiguration, error) {
+// ListSslConfigurationsContext returns a slice containing all available SSL configurations (TLS profiles)
+func (api *API) ListSslConfigurationsContext(ctx context.Context) ([]SslConfiguration, error) {
 	if _, ok := api.methods["listSSLConfigurations"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSSLConfigurations")
 	}
 
 	definition := api.methods["listSSLConfigurations"]
 
-	result, err := api.call(definition)
+	result, err := api.call(ctx, definition)
 	if err != nil {
 		return nil, err
 	}
@@ -52,4 +54,11 @@ func (api *API) ListSslConfigurations() ([]SslConfiguration, error) {
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return *res, nil
+}
+
+// ListSslConfigurations is equivalent to ListSslConfigurationsContext with context.Background().
+//
+// Deprecated: use ListSslConfigurationsContext.
+func (api *API) ListSslConfigurations() ([]SslConfiguration, error) {
+	return api.ListSslConfigurationsContext(context.Background())
 }

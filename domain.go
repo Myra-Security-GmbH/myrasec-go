@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -84,8 +85,8 @@ type Domain struct {
 	Reversed bool `json:"reversed" jsonschema:"Indicates whether the domain is reversed (boolean flag)."`
 }
 
-// GetDomain returns a single domain with/for the given identifier
-func (api *API) GetDomain(id int) (*Domain, error) {
+// GetDomainContext returns a single domain with/for the given identifier
+func (api *API) GetDomainContext(ctx context.Context, id int) (*Domain, error) {
 	if _, ok := api.methods["getDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getDomain")
 	}
@@ -93,7 +94,7 @@ func (api *API) GetDomain(id int) (*Domain, error) {
 	definition := api.methods["getDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -105,15 +106,22 @@ func (api *API) GetDomain(id int) (*Domain, error) {
 	return res, nil
 }
 
-// ListDomains returns a slice containing all visible domains
-func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
+// GetDomain is equivalent to GetDomainContext with context.Background().
+//
+// Deprecated: use GetDomainContext.
+func (api *API) GetDomain(id int) (*Domain, error) {
+	return api.GetDomainContext(context.Background(), id)
+}
+
+// ListDomainsContext returns a slice containing all visible domains
+func (api *API) ListDomainsContext(ctx context.Context, params map[string]string) ([]Domain, error) {
 	if _, ok := api.methods["listDomains"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listDomains")
 	}
 
 	definition := api.methods["listDomains"]
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -125,15 +133,22 @@ func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
 	return *res, nil
 }
 
-// CreateDomain creates a new domain using the MYRA API
-func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
+// ListDomains is equivalent to ListDomainsContext with context.Background().
+//
+// Deprecated: use ListDomainsContext.
+func (api *API) ListDomains(params map[string]string) ([]Domain, error) {
+	return api.ListDomainsContext(context.Background(), params)
+}
+
+// CreateDomainContext creates a new domain using the MYRA API
+func (api *API) CreateDomainContext(ctx context.Context, domain *Domain) (*Domain, error) {
 	if _, ok := api.methods["createDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createDomain")
 	}
 
 	definition := api.methods["createDomain"]
 
-	result, err := api.call(definition, domain)
+	result, err := api.call(ctx, definition, domain)
 	if err != nil {
 		return nil, err
 	}
@@ -144,8 +159,15 @@ func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
 	return res, nil
 }
 
-// UpdateDomain updates the passed domain using the MYRA API
-func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
+// CreateDomain is equivalent to CreateDomainContext with context.Background().
+//
+// Deprecated: use CreateDomainContext.
+func (api *API) CreateDomain(domain *Domain) (*Domain, error) {
+	return api.CreateDomainContext(context.Background(), domain)
+}
+
+// UpdateDomainContext updates the passed domain using the MYRA API
+func (api *API) UpdateDomainContext(ctx context.Context, domain *Domain) (*Domain, error) {
 	if _, ok := api.methods["updateDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateDomain")
 	}
@@ -153,7 +175,7 @@ func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
 	definition := api.methods["updateDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, domain.ID)
 
-	result, err := api.call(definition, domain)
+	result, err := api.call(ctx, definition, domain)
 	if err != nil {
 		return nil, err
 	}
@@ -164,8 +186,15 @@ func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
 	return res, nil
 }
 
-// DeleteDomain deletes the passed domain using the MYRA API
-func (api *API) DeleteDomain(domain *Domain) (*Domain, error) {
+// UpdateDomain is equivalent to UpdateDomainContext with context.Background().
+//
+// Deprecated: use UpdateDomainContext.
+func (api *API) UpdateDomain(domain *Domain) (*Domain, error) {
+	return api.UpdateDomainContext(context.Background(), domain)
+}
+
+// DeleteDomainContext deletes the passed domain using the MYRA API
+func (api *API) DeleteDomainContext(ctx context.Context, domain *Domain) (*Domain, error) {
 	if _, ok := api.methods["deleteDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteDomain")
 	}
@@ -173,9 +202,16 @@ func (api *API) DeleteDomain(domain *Domain) (*Domain, error) {
 	definition := api.methods["deleteDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, domain.ID)
 
-	_, err := api.call(definition, domain)
+	_, err := api.call(ctx, definition, domain)
 	if err != nil {
 		return nil, err
 	}
 	return domain, nil
+}
+
+// DeleteDomain is equivalent to DeleteDomainContext with context.Background().
+//
+// Deprecated: use DeleteDomainContext.
+func (api *API) DeleteDomain(domain *Domain) (*Domain, error) {
+	return api.DeleteDomainContext(context.Background(), domain)
 }

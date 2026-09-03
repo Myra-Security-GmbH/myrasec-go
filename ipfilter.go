@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -83,8 +84,8 @@ type IPFilter struct {
 	SubDomainName string `json:"subDomainName" jsonschema:"The FQDN of the subdomain this filter belongs to. Immutable; usually inferred from the URL parameter or set once during creation."`
 }
 
-// GetIPFilter returns a single ip filter with/for the given identifier
-func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilter, error) {
+// GetIPFilterContext returns a single ip filter with/for the given identifier
+func (api *API) GetIPFilterContext(ctx context.Context, domainId int, subDomainName string, id int) (*IPFilter, error) {
 	if _, ok := api.methods["getIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getIPFilter")
 	}
@@ -92,7 +93,7 @@ func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilt
 	definition := api.methods["getIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -104,8 +105,15 @@ func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilt
 	return res, nil
 }
 
-// ListIPFilters returns a slice containing all visible ip filters for a subdomain
-func (api *API) ListIPFilters(domainId int, subDomainName string, params map[string]string) ([]IPFilter, error) {
+// GetIPFilter is equivalent to GetIPFilterContext with context.Background().
+//
+// Deprecated: use GetIPFilterContext.
+func (api *API) GetIPFilter(domainId int, subDomainName string, id int) (*IPFilter, error) {
+	return api.GetIPFilterContext(context.Background(), domainId, subDomainName, id)
+}
+
+// ListIPFiltersContext returns a slice containing all visible ip filters for a subdomain
+func (api *API) ListIPFiltersContext(ctx context.Context, domainId int, subDomainName string, params map[string]string) ([]IPFilter, error) {
 	if _, ok := api.methods["listIPFilters"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listIPFilters")
 	}
@@ -113,7 +121,7 @@ func (api *API) ListIPFilters(domainId int, subDomainName string, params map[str
 	definition := api.methods["listIPFilters"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +133,15 @@ func (api *API) ListIPFilters(domainId int, subDomainName string, params map[str
 	return *res, nil
 }
 
-// CreateIPFilter creates a new ip filter for the passed subdomain (name) using the MYRA API
-func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
+// ListIPFilters is equivalent to ListIPFiltersContext with context.Background().
+//
+// Deprecated: use ListIPFiltersContext.
+func (api *API) ListIPFilters(domainId int, subDomainName string, params map[string]string) ([]IPFilter, error) {
+	return api.ListIPFiltersContext(context.Background(), domainId, subDomainName, params)
+}
+
+// CreateIPFilterContext creates a new ip filter for the passed subdomain (name) using the MYRA API
+func (api *API) CreateIPFilterContext(ctx context.Context, filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
 	if _, ok := api.methods["createIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createIPFilter")
 	}
@@ -134,7 +149,7 @@ func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName str
 	definition := api.methods["createIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, filter)
+	result, err := api.call(ctx, definition, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +160,15 @@ func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName str
 	return res, nil
 }
 
-// UpdateIPFilter updates the passed ip filter using the MYRA API
-func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
+// CreateIPFilter is equivalent to CreateIPFilterContext with context.Background().
+//
+// Deprecated: use CreateIPFilterContext.
+func (api *API) CreateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
+	return api.CreateIPFilterContext(context.Background(), filter, domainId, subDomainName)
+}
+
+// UpdateIPFilterContext updates the passed ip filter using the MYRA API
+func (api *API) UpdateIPFilterContext(ctx context.Context, filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
 	if _, ok := api.methods["updateIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateIPFilter")
 	}
@@ -154,7 +176,7 @@ func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName str
 	definition := api.methods["updateIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, filter.ID)
 
-	result, err := api.call(definition, filter)
+	result, err := api.call(ctx, definition, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -165,8 +187,15 @@ func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName str
 	return res, nil
 }
 
-// DeleteIPFilter deletes the passed ip filter using the MYRA API
-func (api *API) DeleteIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
+// UpdateIPFilter is equivalent to UpdateIPFilterContext with context.Background().
+//
+// Deprecated: use UpdateIPFilterContext.
+func (api *API) UpdateIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
+	return api.UpdateIPFilterContext(context.Background(), filter, domainId, subDomainName)
+}
+
+// DeleteIPFilterContext deletes the passed ip filter using the MYRA API
+func (api *API) DeleteIPFilterContext(ctx context.Context, filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
 	if _, ok := api.methods["deleteIPFilter"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteIPFilter")
 	}
@@ -174,9 +203,16 @@ func (api *API) DeleteIPFilter(filter *IPFilter, domainId int, subDomainName str
 	definition := api.methods["deleteIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, filter.ID)
 
-	_, err := api.call(definition, filter)
+	_, err := api.call(ctx, definition, filter)
 	if err != nil {
 		return nil, err
 	}
 	return filter, nil
+}
+
+// DeleteIPFilter is equivalent to DeleteIPFilterContext with context.Background().
+//
+// Deprecated: use DeleteIPFilterContext.
+func (api *API) DeleteIPFilter(filter *IPFilter, domainId int, subDomainName string) (*IPFilter, error) {
+	return api.DeleteIPFilterContext(context.Background(), filter, domainId, subDomainName)
 }

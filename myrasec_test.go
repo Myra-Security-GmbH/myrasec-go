@@ -2,6 +2,7 @@ package myrasec
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -297,7 +298,7 @@ func TestPrepareRequestGET(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.prepareRequest(definition, map[string]string{})
+	req, err := api.prepareRequest(context.Background(), definition, map[string]string{})
 	if err != nil {
 		t.Errorf("Unexpected error: %s\n", err)
 	}
@@ -336,7 +337,7 @@ func TestPrepareRequestPOST(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.prepareRequest(definition, map[string]string{})
+	req, err := api.prepareRequest(context.Background(), definition, map[string]string{})
 	if err != nil {
 		t.Errorf("Unexpected error: %s\n", err)
 	}
@@ -375,7 +376,7 @@ func TestPrepareRequestPUT(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.prepareRequest(definition, map[string]string{})
+	req, err := api.prepareRequest(context.Background(), definition, map[string]string{})
 	if err != nil {
 		t.Errorf("Unexpected error: %s\n", err)
 	}
@@ -414,7 +415,7 @@ func TestPrepareRequestDELETE(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.prepareRequest(definition, map[string]string{})
+	req, err := api.prepareRequest(context.Background(), definition, map[string]string{})
 	if err != nil {
 		t.Errorf("Unexpected error: %s\n", err)
 	}
@@ -453,7 +454,7 @@ func TestPrepareRequestInvalidMethod(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.prepareRequest(definition, map[string]string{})
+	req, err := api.prepareRequest(context.Background(), definition, map[string]string{})
 	if err == nil {
 		t.Error("Expected an error as the passed HTTP method is not supported")
 	}
@@ -472,7 +473,7 @@ func TestPrepareGETRequest(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.prepareGETRequest("/test", map[string]string{
+	req, err := api.prepareGETRequest(context.Background(), "/test", map[string]string{
 		"test": "me",
 		"foo":  "bar",
 	})
@@ -509,7 +510,7 @@ func TestPrepareGETRequestWithMultiplePayloads(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	_, err = api.prepareGETRequest("/test", map[string]string{
+	_, err = api.prepareGETRequest(context.Background(), "/test", map[string]string{
 		"test": "me",
 	}, map[string]string{
 		"foo": "bar",
@@ -528,7 +529,7 @@ func TestPrepareGETRequestWithEmptyPayload(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.prepareGETRequest("/test", map[string]string{})
+	req, err := api.prepareGETRequest(context.Background(), "/test", map[string]string{})
 	if err != nil {
 		t.Errorf("Unexpected error passing empty payload")
 	}
@@ -555,7 +556,7 @@ func TestPrepareGETRequestPassingURLWithQuery(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.prepareGETRequest("/test?search=test", map[string]string{
+	req, err := api.prepareGETRequest(context.Background(), "/test?search=test", map[string]string{
 		"test":   "me",
 		"foo":    "bar",
 		"search": "test",
@@ -602,7 +603,7 @@ func TestPreparePOSTRequest(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.preparePOSTRequest("/test", nil)
+	req, err := api.preparePOSTRequest(context.Background(), "/test", nil)
 	if err != nil {
 		t.Errorf("Unexpected error preparing a POST request")
 	}
@@ -628,7 +629,7 @@ func TestPreparePUTRequest(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.preparePUTRequest("/test", nil)
+	req, err := api.preparePUTRequest(context.Background(), "/test", nil)
 	if err != nil {
 		t.Errorf("Unexpected error preparing a PUT request")
 	}
@@ -654,7 +655,7 @@ func TestPrepareDELETERequest(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	req, err := api.prepareDELETERequest("/test", nil)
+	req, err := api.prepareDELETERequest(context.Background(), "/test", nil)
 	if err != nil {
 		t.Errorf("Unexpected error preparing a DELETE request")
 	}

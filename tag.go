@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -112,8 +113,8 @@ type TagAssignment struct {
 	SubDomainName string `json:"subDomainName" jsonschema:"The specific subdomain FQDN. Required if 'type' is set to 'SUBDOMAIN'."`
 }
 
-// GetTag returns a single tag for the given identifier
-func (api *API) GetTag(id int) (*Tag, error) {
+// GetTagContext returns a single tag for the given identifier
+func (api *API) GetTagContext(ctx context.Context, id int) (*Tag, error) {
 	if _, ok := api.methods["getTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getTag")
 	}
@@ -121,7 +122,7 @@ func (api *API) GetTag(id int) (*Tag, error) {
 	definition := api.methods["getTag"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -133,15 +134,22 @@ func (api *API) GetTag(id int) (*Tag, error) {
 	return res, nil
 }
 
-// ListTags returns a slice containing all visible tags
-func (api *API) ListTags(params map[string]string) ([]Tag, error) {
+// GetTag is equivalent to GetTagContext with context.Background().
+//
+// Deprecated: use GetTagContext.
+func (api *API) GetTag(id int) (*Tag, error) {
+	return api.GetTagContext(context.Background(), id)
+}
+
+// ListTagsContext returns a slice containing all visible tags
+func (api *API) ListTagsContext(ctx context.Context, params map[string]string) ([]Tag, error) {
 	if _, ok := api.methods["listTags"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTags")
 	}
 
 	definition := api.methods["listTags"]
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -153,15 +161,22 @@ func (api *API) ListTags(params map[string]string) ([]Tag, error) {
 	return *res, nil
 }
 
-// CreateTag creates a new tag using the MYRA API
-func (api *API) CreateTag(tag *Tag) (*Tag, error) {
+// ListTags is equivalent to ListTagsContext with context.Background().
+//
+// Deprecated: use ListTagsContext.
+func (api *API) ListTags(params map[string]string) ([]Tag, error) {
+	return api.ListTagsContext(context.Background(), params)
+}
+
+// CreateTagContext creates a new tag using the MYRA API
+func (api *API) CreateTagContext(ctx context.Context, tag *Tag) (*Tag, error) {
 	if _, ok := api.methods["createTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTag")
 	}
 
 	definition := api.methods["createTag"]
 
-	result, err := api.call(definition, tag)
+	result, err := api.call(ctx, definition, tag)
 	if err != nil {
 		return nil, err
 	}
@@ -173,8 +188,15 @@ func (api *API) CreateTag(tag *Tag) (*Tag, error) {
 	return res, nil
 }
 
-// UpdateTag updates the passed tag using the MYRA API
-func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
+// CreateTag is equivalent to CreateTagContext with context.Background().
+//
+// Deprecated: use CreateTagContext.
+func (api *API) CreateTag(tag *Tag) (*Tag, error) {
+	return api.CreateTagContext(context.Background(), tag)
+}
+
+// UpdateTagContext updates the passed tag using the MYRA API
+func (api *API) UpdateTagContext(ctx context.Context, tag *Tag) (*Tag, error) {
 	if _, ok := api.methods["updateTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTag")
 	}
@@ -182,7 +204,7 @@ func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
 	definition := api.methods["updateTag"]
 	definition.Action = fmt.Sprintf(definition.Action, tag.ID)
 
-	result, err := api.call(definition, tag)
+	result, err := api.call(ctx, definition, tag)
 	if err != nil {
 		return nil, err
 	}
@@ -194,8 +216,15 @@ func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
 	return res, nil
 }
 
-// DeleteTag deletes the passed tag using the MYRA API
-func (api *API) DeleteTag(tag *Tag) (*Tag, error) {
+// UpdateTag is equivalent to UpdateTagContext with context.Background().
+//
+// Deprecated: use UpdateTagContext.
+func (api *API) UpdateTag(tag *Tag) (*Tag, error) {
+	return api.UpdateTagContext(context.Background(), tag)
+}
+
+// DeleteTagContext deletes the passed tag using the MYRA API
+func (api *API) DeleteTagContext(ctx context.Context, tag *Tag) (*Tag, error) {
 	if _, ok := api.methods["deleteTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTag")
 	}
@@ -203,7 +232,7 @@ func (api *API) DeleteTag(tag *Tag) (*Tag, error) {
 	definition := api.methods["deleteTag"]
 	definition.Action = fmt.Sprintf(definition.Action, tag.ID)
 
-	_, err := api.call(definition, tag)
+	_, err := api.call(ctx, definition, tag)
 	if err != nil {
 		return nil, err
 	}
@@ -211,8 +240,15 @@ func (api *API) DeleteTag(tag *Tag) (*Tag, error) {
 	return tag, nil
 }
 
-// CloneTag clones the passed tag using the MYRA API
-func (api *API) CloneTag(tag *Tag) (*Tag, error) {
+// DeleteTag is equivalent to DeleteTagContext with context.Background().
+//
+// Deprecated: use DeleteTagContext.
+func (api *API) DeleteTag(tag *Tag) (*Tag, error) {
+	return api.DeleteTagContext(context.Background(), tag)
+}
+
+// CloneTagContext clones the passed tag using the MYRA API
+func (api *API) CloneTagContext(ctx context.Context, tag *Tag) (*Tag, error) {
 	if _, ok := api.methods["cloneTag"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "cloneTag")
 	}
@@ -220,7 +256,7 @@ func (api *API) CloneTag(tag *Tag) (*Tag, error) {
 	definition := api.methods["cloneTag"]
 	definition.Action = fmt.Sprintf(definition.Action, tag.ID)
 
-	result, err := api.call(definition, tag)
+	result, err := api.call(ctx, definition, tag)
 	if err != nil {
 		return nil, err
 	}
@@ -230,4 +266,11 @@ func (api *API) CloneTag(tag *Tag) (*Tag, error) {
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return res, nil
+}
+
+// CloneTag is equivalent to CloneTagContext with context.Background().
+//
+// Deprecated: use CloneTagContext.
+func (api *API) CloneTag(tag *Tag) (*Tag, error) {
+	return api.CloneTagContext(context.Background(), tag)
 }

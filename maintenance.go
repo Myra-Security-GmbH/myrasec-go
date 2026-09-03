@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -77,8 +78,8 @@ type Maintenance struct {
 	FQDN string `json:"fqdn" jsonschema:"The Fully Qualified Domain Name (FQDN) to apply maintenance mode to (e.g., 'www.example.com')."`
 }
 
-// ListMaintenances returns a slice containing all maintenance pages for a subdomain
-func (api *API) ListMaintenances(domainId int, subDomainName string, params map[string]string) ([]Maintenance, error) {
+// ListMaintenancesContext returns a slice containing all maintenance pages for a subdomain
+func (api *API) ListMaintenancesContext(ctx context.Context, domainId int, subDomainName string, params map[string]string) ([]Maintenance, error) {
 	if _, ok := api.methods["listMaintenances"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listMaintenances")
 	}
@@ -86,7 +87,7 @@ func (api *API) ListMaintenances(domainId int, subDomainName string, params map[
 	definition := api.methods["listMaintenances"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +99,15 @@ func (api *API) ListMaintenances(domainId int, subDomainName string, params map[
 	return *res, nil
 }
 
-// CreateMaintenance creates a new maintenance page for the passed subdomain (name) using the MYRA API
-func (api *API) CreateMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
+// ListMaintenances is equivalent to ListMaintenancesContext with context.Background().
+//
+// Deprecated: use ListMaintenancesContext.
+func (api *API) ListMaintenances(domainId int, subDomainName string, params map[string]string) ([]Maintenance, error) {
+	return api.ListMaintenancesContext(context.Background(), domainId, subDomainName, params)
+}
+
+// CreateMaintenanceContext creates a new maintenance page for the passed subdomain (name) using the MYRA API
+func (api *API) CreateMaintenanceContext(ctx context.Context, maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
 	if _, ok := api.methods["createMaintenance"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createMaintenance")
 	}
@@ -107,7 +115,7 @@ func (api *API) CreateMaintenance(maintenance *Maintenance, domainId int, subDom
 	definition := api.methods["createMaintenance"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, maintenance)
+	result, err := api.call(ctx, definition, maintenance)
 	if err != nil {
 		return nil, err
 	}
@@ -118,8 +126,15 @@ func (api *API) CreateMaintenance(maintenance *Maintenance, domainId int, subDom
 	return res, nil
 }
 
-// UpdateMaintenance updates the passed maintenance page using the MYRA API
-func (api *API) UpdateMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
+// CreateMaintenance is equivalent to CreateMaintenanceContext with context.Background().
+//
+// Deprecated: use CreateMaintenanceContext.
+func (api *API) CreateMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
+	return api.CreateMaintenanceContext(context.Background(), maintenance, domainId, subDomainName)
+}
+
+// UpdateMaintenanceContext updates the passed maintenance page using the MYRA API
+func (api *API) UpdateMaintenanceContext(ctx context.Context, maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
 	if _, ok := api.methods["updateMaintenance"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateMaintenance")
 	}
@@ -127,7 +142,7 @@ func (api *API) UpdateMaintenance(maintenance *Maintenance, domainId int, subDom
 	definition := api.methods["updateMaintenance"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, maintenance.ID)
 
-	result, err := api.call(definition, maintenance)
+	result, err := api.call(ctx, definition, maintenance)
 	if err != nil {
 		return nil, err
 	}
@@ -138,8 +153,15 @@ func (api *API) UpdateMaintenance(maintenance *Maintenance, domainId int, subDom
 	return res, nil
 }
 
-// DeleteMaintenance deletes the passed maintenance page using the MYRA API
-func (api *API) DeleteMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
+// UpdateMaintenance is equivalent to UpdateMaintenanceContext with context.Background().
+//
+// Deprecated: use UpdateMaintenanceContext.
+func (api *API) UpdateMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
+	return api.UpdateMaintenanceContext(context.Background(), maintenance, domainId, subDomainName)
+}
+
+// DeleteMaintenanceContext deletes the passed maintenance page using the MYRA API
+func (api *API) DeleteMaintenanceContext(ctx context.Context, maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
 	if _, ok := api.methods["deleteMaintenance"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteMaintenance")
 	}
@@ -147,9 +169,16 @@ func (api *API) DeleteMaintenance(maintenance *Maintenance, domainId int, subDom
 	definition := api.methods["deleteMaintenance"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, maintenance.ID)
 
-	_, err := api.call(definition, maintenance)
+	_, err := api.call(ctx, definition, maintenance)
 	if err != nil {
 		return nil, err
 	}
 	return maintenance, nil
+}
+
+// DeleteMaintenance is equivalent to DeleteMaintenanceContext with context.Background().
+//
+// Deprecated: use DeleteMaintenanceContext.
+func (api *API) DeleteMaintenance(maintenance *Maintenance, domainId int, subDomainName string) (*Maintenance, error) {
+	return api.DeleteMaintenanceContext(context.Background(), maintenance, domainId, subDomainName)
 }

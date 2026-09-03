@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -133,16 +134,16 @@ type GroupRole struct {
 	Role string `json:"role" jsonschema:"The role identifier granted to the user within the group. Allowed values: 'ADMINISTRATOR', 'USER'. Required."`
 }
 
-// ListUserGroups returns all user groups visible to the authenticated user.
+// ListUserGroupsContext returns all user groups visible to the authenticated user.
 // Pass query parameters such as "page", "pageSize" or "role" via the params map.
-func (api *API) ListUserGroups(params map[string]string) ([]UserGroup, error) {
+func (api *API) ListUserGroupsContext(ctx context.Context, params map[string]string) ([]UserGroup, error) {
 	if _, ok := api.methods["listUserGroups"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listUserGroups")
 	}
 
 	definition := api.methods["listUserGroups"]
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -154,8 +155,15 @@ func (api *API) ListUserGroups(params map[string]string) ([]UserGroup, error) {
 	return *res, nil
 }
 
-// GetUserGroup returns the user group identified by the given id.
-func (api *API) GetUserGroup(id int) (*UserGroup, error) {
+// ListUserGroups is equivalent to ListUserGroupsContext with context.Background().
+//
+// Deprecated: use ListUserGroupsContext.
+func (api *API) ListUserGroups(params map[string]string) ([]UserGroup, error) {
+	return api.ListUserGroupsContext(context.Background(), params)
+}
+
+// GetUserGroupContext returns the user group identified by the given id.
+func (api *API) GetUserGroupContext(ctx context.Context, id int) (*UserGroup, error) {
 	if _, ok := api.methods["getUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getUserGroup")
 	}
@@ -163,7 +171,7 @@ func (api *API) GetUserGroup(id int) (*UserGroup, error) {
 	definition := api.methods["getUserGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -175,15 +183,22 @@ func (api *API) GetUserGroup(id int) (*UserGroup, error) {
 	return res, nil
 }
 
-// CreateUserGroup creates a new user group using the MYRA API.
-func (api *API) CreateUserGroup(group *UserGroup) (*UserGroup, error) {
+// GetUserGroup is equivalent to GetUserGroupContext with context.Background().
+//
+// Deprecated: use GetUserGroupContext.
+func (api *API) GetUserGroup(id int) (*UserGroup, error) {
+	return api.GetUserGroupContext(context.Background(), id)
+}
+
+// CreateUserGroupContext creates a new user group using the MYRA API.
+func (api *API) CreateUserGroupContext(ctx context.Context, group *UserGroup) (*UserGroup, error) {
 	if _, ok := api.methods["createUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createUserGroup")
 	}
 
 	definition := api.methods["createUserGroup"]
 
-	result, err := api.call(definition, group)
+	result, err := api.call(ctx, definition, group)
 	if err != nil {
 		return nil, err
 	}
@@ -195,8 +210,15 @@ func (api *API) CreateUserGroup(group *UserGroup) (*UserGroup, error) {
 	return res, nil
 }
 
-// UpdateUserGroup updates the passed user group using the MYRA API.
-func (api *API) UpdateUserGroup(group *UserGroup) (*UserGroup, error) {
+// CreateUserGroup is equivalent to CreateUserGroupContext with context.Background().
+//
+// Deprecated: use CreateUserGroupContext.
+func (api *API) CreateUserGroup(group *UserGroup) (*UserGroup, error) {
+	return api.CreateUserGroupContext(context.Background(), group)
+}
+
+// UpdateUserGroupContext updates the passed user group using the MYRA API.
+func (api *API) UpdateUserGroupContext(ctx context.Context, group *UserGroup) (*UserGroup, error) {
 	if _, ok := api.methods["updateUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateUserGroup")
 	}
@@ -204,7 +226,7 @@ func (api *API) UpdateUserGroup(group *UserGroup) (*UserGroup, error) {
 	definition := api.methods["updateUserGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, group.ID)
 
-	result, err := api.call(definition, group)
+	result, err := api.call(ctx, definition, group)
 	if err != nil {
 		return nil, err
 	}
@@ -216,8 +238,15 @@ func (api *API) UpdateUserGroup(group *UserGroup) (*UserGroup, error) {
 	return res, nil
 }
 
-// DeleteUserGroup deletes the passed user group using the MYRA API.
-func (api *API) DeleteUserGroup(group *UserGroup) (*UserGroup, error) {
+// UpdateUserGroup is equivalent to UpdateUserGroupContext with context.Background().
+//
+// Deprecated: use UpdateUserGroupContext.
+func (api *API) UpdateUserGroup(group *UserGroup) (*UserGroup, error) {
+	return api.UpdateUserGroupContext(context.Background(), group)
+}
+
+// DeleteUserGroupContext deletes the passed user group using the MYRA API.
+func (api *API) DeleteUserGroupContext(ctx context.Context, group *UserGroup) (*UserGroup, error) {
 	if _, ok := api.methods["deleteUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteUserGroup")
 	}
@@ -225,17 +254,24 @@ func (api *API) DeleteUserGroup(group *UserGroup) (*UserGroup, error) {
 	definition := api.methods["deleteUserGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, group.ID)
 
-	_, err := api.call(definition, group)
+	_, err := api.call(ctx, definition, group)
 	if err != nil {
 		return nil, err
 	}
 	return group, nil
 }
 
-// ListUsersFromGroup returns the users that are members of the given group.
+// DeleteUserGroup is equivalent to DeleteUserGroupContext with context.Background().
+//
+// Deprecated: use DeleteUserGroupContext.
+func (api *API) DeleteUserGroup(group *UserGroup) (*UserGroup, error) {
+	return api.DeleteUserGroupContext(context.Background(), group)
+}
+
+// ListUsersFromGroupContext returns the users that are members of the given group.
 // Supported query parameters include "search", "page", "pageSize", "language",
 // "includeRoles" and "sort".
-func (api *API) ListUsersFromGroup(groupID int, params map[string]string) ([]User, error) {
+func (api *API) ListUsersFromGroupContext(ctx context.Context, groupID int, params map[string]string) ([]User, error) {
 	if _, ok := api.methods["listUsersFromGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listUsersFromGroup")
 	}
@@ -243,7 +279,7 @@ func (api *API) ListUsersFromGroup(groupID int, params map[string]string) ([]Use
 	definition := api.methods["listUsersFromGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -255,8 +291,15 @@ func (api *API) ListUsersFromGroup(groupID int, params map[string]string) ([]Use
 	return *res, nil
 }
 
-// AddUserToGroup assigns a user to the given group with the role specified in role.
-func (api *API) AddUserToGroup(role *GroupRole, groupID int) (*GroupRole, error) {
+// ListUsersFromGroup is equivalent to ListUsersFromGroupContext with context.Background().
+//
+// Deprecated: use ListUsersFromGroupContext.
+func (api *API) ListUsersFromGroup(groupID int, params map[string]string) ([]User, error) {
+	return api.ListUsersFromGroupContext(context.Background(), groupID, params)
+}
+
+// AddUserToGroupContext assigns a user to the given group with the role specified in role.
+func (api *API) AddUserToGroupContext(ctx context.Context, role *GroupRole, groupID int) (*GroupRole, error) {
 	if _, ok := api.methods["addUserToGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "addUserToGroup")
 	}
@@ -264,7 +307,7 @@ func (api *API) AddUserToGroup(role *GroupRole, groupID int) (*GroupRole, error)
 	definition := api.methods["addUserToGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID)
 
-	result, err := api.call(definition, role)
+	result, err := api.call(ctx, definition, role)
 	if err != nil {
 		return nil, err
 	}
@@ -276,8 +319,15 @@ func (api *API) AddUserToGroup(role *GroupRole, groupID int) (*GroupRole, error)
 	return res, nil
 }
 
-// RemoveUserFromGroup removes the passed user from the group identified by groupID.
-func (api *API) RemoveUserFromGroup(user *User, groupID int) (*User, error) {
+// AddUserToGroup is equivalent to AddUserToGroupContext with context.Background().
+//
+// Deprecated: use AddUserToGroupContext.
+func (api *API) AddUserToGroup(role *GroupRole, groupID int) (*GroupRole, error) {
+	return api.AddUserToGroupContext(context.Background(), role, groupID)
+}
+
+// RemoveUserFromGroupContext removes the passed user from the group identified by groupID.
+func (api *API) RemoveUserFromGroupContext(ctx context.Context, user *User, groupID int) (*User, error) {
 	if _, ok := api.methods["removeUserFromGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "removeUserFromGroup")
 	}
@@ -285,9 +335,16 @@ func (api *API) RemoveUserFromGroup(user *User, groupID int) (*User, error) {
 	definition := api.methods["removeUserFromGroup"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID, user.ID)
 
-	_, err := api.call(definition, user)
+	_, err := api.call(ctx, definition, user)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+// RemoveUserFromGroup is equivalent to RemoveUserFromGroupContext with context.Background().
+//
+// Deprecated: use RemoveUserFromGroupContext.
+func (api *API) RemoveUserFromGroup(user *User, groupID int) (*User, error) {
+	return api.RemoveUserFromGroupContext(context.Background(), user, groupID)
 }

@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -49,15 +50,15 @@ type VHost struct {
 	Paused bool `json:"paused" jsonschema:"Indicates if the VHost is currently paused. If true, traffic processing is suspended."`
 }
 
-// ListAllSubdomains returns a list of all subdomains (VHosts) across all domains.
-func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
+// ListAllSubdomainsContext returns a list of all subdomains (VHosts) across all domains.
+func (api *API) ListAllSubdomainsContext(ctx context.Context, params map[string]string) ([]VHost, error) {
 	if _, ok := api.methods["listAllSubdomains"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listAllSubdomains")
 	}
 
 	definition := api.methods["listAllSubdomains"]
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -69,8 +70,15 @@ func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
 	return *res, nil
 }
 
-// ListAllSubdomainsForDomain returns a list of subdomains (VHosts) for the given domain ID.
-func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]string) ([]VHost, error) {
+// ListAllSubdomains is equivalent to ListAllSubdomainsContext with context.Background().
+//
+// Deprecated: use ListAllSubdomainsContext.
+func (api *API) ListAllSubdomains(params map[string]string) ([]VHost, error) {
+	return api.ListAllSubdomainsContext(context.Background(), params)
+}
+
+// ListAllSubdomainsForDomainContext returns a list of subdomains (VHosts) for the given domain ID.
+func (api *API) ListAllSubdomainsForDomainContext(ctx context.Context, domainId int, params map[string]string) ([]VHost, error) {
 	if _, ok := api.methods["listSubdomainsForDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSubdomainsForDomain")
 	}
@@ -78,7 +86,7 @@ func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]strin
 	definition := api.methods["listSubdomainsForDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -92,4 +100,11 @@ func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]strin
 	vhosts = append(vhosts, *res...)
 
 	return vhosts, nil
+}
+
+// ListAllSubdomainsForDomain is equivalent to ListAllSubdomainsForDomainContext with context.Background().
+//
+// Deprecated: use ListAllSubdomainsForDomainContext.
+func (api *API) ListAllSubdomainsForDomain(domainId int, params map[string]string) ([]VHost, error) {
+	return api.ListAllSubdomainsForDomainContext(context.Background(), domainId, params)
 }

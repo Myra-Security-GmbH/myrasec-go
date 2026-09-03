@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -59,13 +60,13 @@ type APIKey struct {
 	Secret string `json:"secret,omitempty" jsonschema:"The private secret of the API key. Visible only once upon creation; it cannot be retrieved later."`
 }
 
-// ListApiKeys returns a slice containing all available API keys
-func (api *API) ListApiKeys(params map[string]string) ([]APIKey, error) {
+// ListApiKeysContext returns a slice containing all available API keys
+func (api *API) ListApiKeysContext(ctx context.Context, params map[string]string) ([]APIKey, error) {
 	if _, ok := api.methods["listApiKeys"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listApiKeys")
 	}
 
-	user, err := api.Me()
+	user, err := api.MeContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +74,7 @@ func (api *API) ListApiKeys(params map[string]string) ([]APIKey, error) {
 	definition := api.methods["listApiKeys"]
 	definition.Action = fmt.Sprintf(definition.Action, user.ID)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -85,13 +86,20 @@ func (api *API) ListApiKeys(params map[string]string) ([]APIKey, error) {
 	return *res, nil
 }
 
-// CreateApiKey creates a new API key using the MYRA API
-func (api *API) CreateApiKey(apikey *APIKey) (*APIKey, error) {
+// ListApiKeys is equivalent to ListApiKeysContext with context.Background().
+//
+// Deprecated: use ListApiKeysContext.
+func (api *API) ListApiKeys(params map[string]string) ([]APIKey, error) {
+	return api.ListApiKeysContext(context.Background(), params)
+}
+
+// CreateApiKeyContext creates a new API key using the MYRA API
+func (api *API) CreateApiKeyContext(ctx context.Context, apikey *APIKey) (*APIKey, error) {
 	if _, ok := api.methods["createApiKey"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createApiKey")
 	}
 
-	user, err := api.Me()
+	user, err := api.MeContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +107,7 @@ func (api *API) CreateApiKey(apikey *APIKey) (*APIKey, error) {
 	definition := api.methods["createApiKey"]
 	definition.Action = fmt.Sprintf(definition.Action, user.ID)
 
-	result, err := api.call(definition, apikey)
+	result, err := api.call(ctx, definition, apikey)
 	if err != nil {
 		return nil, err
 	}
@@ -111,13 +119,20 @@ func (api *API) CreateApiKey(apikey *APIKey) (*APIKey, error) {
 	return res, nil
 }
 
-// DeleteApiKey deletes the passed API key using the MYRA API
-func (api *API) DeleteApiKey(apikey *APIKey) (*APIKey, error) {
+// CreateApiKey is equivalent to CreateApiKeyContext with context.Background().
+//
+// Deprecated: use CreateApiKeyContext.
+func (api *API) CreateApiKey(apikey *APIKey) (*APIKey, error) {
+	return api.CreateApiKeyContext(context.Background(), apikey)
+}
+
+// DeleteApiKeyContext deletes the passed API key using the MYRA API
+func (api *API) DeleteApiKeyContext(ctx context.Context, apikey *APIKey) (*APIKey, error) {
 	if _, ok := api.methods["deleteApiKey"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteApiKey")
 	}
 
-	user, err := api.Me()
+	user, err := api.MeContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -125,10 +140,17 @@ func (api *API) DeleteApiKey(apikey *APIKey) (*APIKey, error) {
 	definition := api.methods["deleteApiKey"]
 	definition.Action = fmt.Sprintf(definition.Action, user.ID, apikey.ID)
 
-	_, err = api.call(definition, apikey)
+	_, err = api.call(ctx, definition, apikey)
 	if err != nil {
 		return nil, err
 	}
 
 	return apikey, nil
+}
+
+// DeleteApiKey is equivalent to DeleteApiKeyContext with context.Background().
+//
+// Deprecated: use DeleteApiKeyContext.
+func (api *API) DeleteApiKey(apikey *APIKey) (*APIKey, error) {
+	return api.DeleteApiKeyContext(context.Background(), apikey)
 }
