@@ -18,7 +18,7 @@ type Maintenance struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set, while inserting a new object. To update or delete a Maintenance it is necessary to add this attribute to your object. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set, while inserting a new object. To update or delete a Maintenance it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. It will be created by the server after creating a new Maintenance object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. This value is always a date type with an `ISO 8601` format. |
 | `Start` | string | Start is a date type attribute with an `ISO 8601` format. This attribute shows the start date for a maintenance. This date have to be lower than end or null to start now. |

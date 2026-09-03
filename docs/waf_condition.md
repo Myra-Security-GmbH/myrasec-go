@@ -21,7 +21,7 @@ if err != nil {
 | Accept-Encoding header | accept_encoding | The "Accept-Encoding header" condition allows you to match to the requested compression method. | in | Only value |
 | Cookie | cookie | You can specify a freely definable key value pair for a cookie for matching. | in | Yes |
 | Path | url | Here you can match a freely definable path. | in | Only value |
-| Request method | method | The "Request method" condition allows you to match to the HTTP method used. | in | Only valuen|
+| Request method | method | The "Request method" condition allows you to match to the HTTP method used. | in | Only value |
 | Query string argument | arg | The "Query string argument" condition allows you to specify a freely definable key value pair for matching. | in | Yes |
 | Post argument | postarg | The "Post argument" condition allows you to match to a key value pair of a POST. | in | Yes |
 | Query string | querystring | Here you can match to freely definable query strings. | in | Only value |
@@ -29,4 +29,4 @@ if err != nil {
 | Remote IP address | remote_addr | The "Remote IP address" condition allows you to match to the client IP address. This works with both IPv4 and IPv6 addresses. | in | Only value |
 | Score | score | The "Score" condition allows you to match to points assigned by the scoring rules. | in | Only value |
 | Set-Cookie header | set_cookie | The "Set-Cookie header" is used by web servers to send cookies to the browser by Nginx. | out | Only value |
-| Content-Type header | content_type | The "Content-Type header" is used to filter the content allowd to access the website. | out | Only value |
+| Content-Type header | content_type | The "Content-Type header" is used to filter the content allowed to access the website. | out | Only value |

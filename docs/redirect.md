@@ -19,7 +19,7 @@ type Redirect struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a redirect it is necessary to add this attribute to your object. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a redirect it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new redirect object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `Type` | string | The redirect type how your customer is redirected. This can be an HTTP 301 (permanent) redirect, which is cacheable by browsers and search crawlers. Another option is an HTTP 302 (redirect) redirect which is usually not cached by browsers and crawlers. Valid options are ’permanent’ and ’redirect’. |
@@ -74,7 +74,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListRed
 | `enabled` | Return only enabled IP filters | null |
 
 ## Read
-The read operation returns a single redirect objct.
+The read operation returns a single redirect object.
 ```go
 redirect, err := api.GetRedirect(domainId, "www.example.com", redirectId)
 if err != nil {

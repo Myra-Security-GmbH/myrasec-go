@@ -13,7 +13,7 @@ type TagInformation struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a tag information it is necessary to add this attribute to your object. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a tag information it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new tag information object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `Key` | string | An arbitrary string value. |
@@ -60,7 +60,7 @@ if err != nil {
 
 
 ## Update
-Updating a TagInformation is very similar to createing a new one. The main difference is that an update will need the "id" and "modified" attributes to identify the version of the object you are trying to update.
+Updating a TagInformation is very similar to creating a new one. The main difference is that an update will need the "id" and "modified" attributes to identify the version of the object you are trying to update.
 
 ### Example
 ```go

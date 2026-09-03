@@ -95,7 +95,7 @@ func TestListRedirects(t *testing.T) {
 			}
 
 			if r.Destination != "/to" {
-				t.Errorf("Expected to get redirect with Desination [%s] but got [%s]", "/to", r.Destination)
+				t.Errorf("Expected to get redirect with Destination [%s] but got [%s]", "/to", r.Destination)
 			}
 
 			if r.MatchingType != "exact" {
@@ -121,7 +121,7 @@ func TestListRedirects(t *testing.T) {
 			}
 
 			if r.Destination != "/index.php" {
-				t.Errorf("Expected to get redirect with Desination [%s] but got [%s]", "/index.php", r.Destination)
+				t.Errorf("Expected to get redirect with Destination [%s] but got [%s]", "/index.php", r.Destination)
 			}
 
 			if r.MatchingType != "prefix" {

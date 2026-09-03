@@ -66,7 +66,7 @@ type Settings struct {
 
 | Field | Type | Description|
 |---|---|---|
-| AccessLog | bool | Activate separated access log. A access log from each Myra node delivering your website will be saved. You can download the access log files via sftp from custlogs.myracloud.com. |
+| AccessLog | bool | Activate separated access log. An access log from each Myra node delivering your website will be saved. You can download the access log files via sftp from custlogs.myracloud.com. |
 | AntibotPostFlood | bool | Detection of POST floods by using a JavaScript based puzzle. |
 | AntibotPostFloodThreshold | int | This parameter determines the frequency how often the puzzle has to be solved. The higher the value the less likely the puzzle needs to be solved. |
 | AntibotProofOfWork | bool | Detection of valid clients by using a JavaScript based puzzle. |

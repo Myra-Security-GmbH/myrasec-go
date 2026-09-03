@@ -850,31 +850,35 @@ func TestRetryFunctions(t *testing.T) {
 	}
 }
 
-func TestErrorMessageWithErrorInResponse(t *testing.T) {
+func TestNewAPIErrorWithErrorInResponse(t *testing.T) {
 	resp := http.Response{
-		Status: strconv.Itoa(http.StatusBadRequest),
-		Body:   io.NopCloser(bytes.NewBufferString(`{"error": true, "violationList": [{"propertypath": "test", "message": "this is a test message."}]}`)),
+		StatusCode: http.StatusBadRequest,
+		Body:       io.NopCloser(bytes.NewBufferString(`{"error": true, "violationList": [{"propertypath": "test", "message": "this is a test message."}]}`)),
 	}
 
-	_, err := errorMessage(&resp)
-	if err == nil {
-		t.Errorf("Expected to have an error.")
+	err := newAPIError(&resp)
+	if len(err.Violations) != 1 {
+		t.Fatalf("Expected to get [%d] violation but got [%d].", 1, len(err.Violations))
 	}
 
-	if err.Error() != "test: this is a test message.\n" {
-		t.Errorf("Expected to get error message [%s] but got [%s]", "test: this is a test message.", err.Error())
+	if err.Error() != "Bad Request (400):\ntest: this is a test message.\n" {
+		t.Errorf("Expected to get error message [%s] but got [%s]", "Bad Request (400):\ntest: this is a test message.\n", err.Error())
 	}
 }
 
-func TestErrorMessageWithoutError(t *testing.T) {
+func TestNewAPIErrorWithoutErrorInResponse(t *testing.T) {
 	resp := http.Response{
-		Status: strconv.Itoa(http.StatusBadRequest),
-		Body:   io.NopCloser(bytes.NewBufferString(`{"error": false}`)),
+		StatusCode: http.StatusBadRequest,
+		Body:       io.NopCloser(bytes.NewBufferString(`{"error": false}`)),
 	}
 
-	_, err := errorMessage(&resp)
-	if err != nil {
-		t.Errorf("Expected not to get an error but got [%s].", err.Error())
+	err := newAPIError(&resp)
+	if len(err.Violations) != 0 || err.ErrorMessage != "" {
+		t.Errorf("Expected no violations and no message but got %+v", err)
+	}
+
+	if err.Error() != "Bad Request (400)" {
+		t.Errorf("Expected to get error message [%s] but got [%s]", "Bad Request (400)", err.Error())
 	}
 }
 

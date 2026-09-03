@@ -109,7 +109,7 @@ func decodeStatisticsResponse(resp *http.Response, definition APIMethod) (any, e
 		return nil, err
 	}
 	if envelope.Error {
-		return nil, formatAPIError(envelope.ErrorMessage, envelope.ViolationList)
+		return nil, newAPIErrorFromEnvelope(resp.StatusCode, envelope.ErrorMessage, envelope.ViolationList)
 	}
 	stats := &Statistics{Query: envelope.Query}
 	if raw := bytes.TrimSpace(envelope.Result); len(raw) > 0 && raw[0] == '{' {

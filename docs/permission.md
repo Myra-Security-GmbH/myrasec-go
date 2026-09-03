@@ -17,7 +17,7 @@ type ObjectPermission struct {
 ```
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for the permission. Server-generated; required for delete operations, ignored on create. |
+| `ID` | int | ID is a unique identifier for the permission. Server-generated; required for delete operations, ignored on create. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Server-managed, read-only. |
 | `Modified` | *types.DateTime | Identifies the version of the permission. Server-managed, read-only. |
 | `Action` | string | The action being granted. Allowed values: `READ`, `CREATE`, `EDIT`, `SWITCH`, `ADMIN`, `AGENT_MODE`, `USER_MODE`, `CACHE_CLEAR`, `REVIEW`, `PUBLISH`, `LOADBALANCE_READ`, `LOADBALANCE_EDIT`. |

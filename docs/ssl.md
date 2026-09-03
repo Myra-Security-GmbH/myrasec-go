@@ -17,7 +17,7 @@ type Certificate struct {
 
 | Field | Type | Description |  
 |---|---|---|  
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Certificate it is necessary to add this attribute to your object. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a Certificate it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. It will be created by the server after creating a new Certificate object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletions. This value is always a date type with an `ISO 8601` format. |  
 | `Subject` | string | Shows the subject of the uploaded certificate. |  
@@ -56,7 +56,7 @@ type SSLCertificate struct {
 | `CertRefreshForced` | bool | Every time a certificate is refreshed with another non-matching certificate the operation is interrupted with an error. Setting certRefreshForced will ignore such errors and refresh the certificate anyway. Please use it only, if you are sure you can ignore an error when refreshing a certificate. |  
 | `CertToRefresh` | int | This property allows you to update an already existing certificate with a new one without changing IP addresses, the value has to be the ID of the cert that should be refreshed. |
 | `SslConfigurationName` | string | This property allows you to set a specific ssl configuration. default `Myra-Global-TLS-Default`, valid values are `Myra-Global-TLS-Default`, `2023-mozilla-intermediate`, `2023-mozilla-modern`. |
-| `Managed` | bool | Indicates wether this certificate is managed by Myra or not. |
+| `Managed` | bool | Indicates whether this certificate is managed by Myra or not. Managed certificates are issued and renewed through [SSL certificate requests](./ssl_certificate_request.md). |
 
 
 ```go
@@ -161,7 +161,7 @@ if err != nil {
 
 ## Delete
 It is not necessary to delete a certificate. When a certificate has not been assigned to any subdomain for more than one week it will be automatically removed.
-Due to the sake of consistensy and completeness, the `DeleteSSLCertificate` function is implemented and simply removes the assigned subdomains from the certificate.
+Due to the sake of consistency and completeness, the `DeleteSSLCertificate` function is implemented and simply removes the assigned subdomains from the certificate.
 
 ### Example
 ```go

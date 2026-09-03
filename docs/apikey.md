@@ -11,7 +11,7 @@ type APIKey struct {
 ```
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new API key object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format.|
 | `Name` | string | An arbitrary name of the API key. |
@@ -36,7 +36,7 @@ log.Println(key.ID, key.Name, key.Key, key.Secret)
 ```
 
 ## List
-The listing operation returns a list of API keys. The list conmtains API keys for the account you are accessing the API with.   
+The listing operation returns a list of API keys. The list contains API keys for the account you are accessing the API with.   
 **NOTE: The API keys in this list do not contain the `secret`. This value is visible only once, when creating a new API key.**
 
 ### Example

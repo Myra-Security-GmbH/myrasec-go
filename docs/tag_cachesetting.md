@@ -18,7 +18,7 @@ type CacheSetting struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a cache setting it is necessary to add this attribute to your object. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a cache setting it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `Type` | string | This will tell the server how to match the given path against a request. Available options are ’prefix’, ’suffix’ and ’exact’. |
@@ -26,7 +26,7 @@ type CacheSetting struct {
 | `TTL` |  int| Time to live limits the lifespan of a cached response for the given path. This is a numeric value and is given in seconds. Special case is ’like origin server’, which uses the TTL returned by your origin server. |
 | `NotFoundTTL` | int | How long an object will be cached. Origin responses with the HTTP codes 404 will be cached. |
 | `Sort` | int | The order in which the cache rules take action as long as the cache sorting is activated. |
-| `Enabled` | bool | Define wether this cache setting is enabled or not. |
+| `Enabled` | bool | Define whether this cache setting is enabled or not. |
 | `Enforce` | bool | Enforce cache TTL allows you to set the cache TTL (Cache Control: max-age) in the backend regardless of the response sent from your Origin. |
 | `Comment` | string | A comment to describe this cache setting. |
 

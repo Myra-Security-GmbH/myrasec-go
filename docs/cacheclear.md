@@ -54,7 +54,7 @@ log.Println(result)
 
 
 ## Resource Pattern matching
-Internally we use the [fnmatch](https://man7.org/linux/man-pages/man3/fnmatch.3.html) (flags=FNM_PATHNAME) function to find the matching resources that should be deleted. To allow you to do recurseve deletion in folder, the flag `recursive` was added.
+Internally we use the [fnmatch](https://man7.org/linux/man-pages/man3/fnmatch.3.html) (flags=FNM_PATHNAME) function to find the matching resources that should be deleted. To allow you to do recursive deletion in folder, the flag `recursive` was added.
 
 | Pattern | Recursive | Resource | Result |
 |---|---|---|---|
