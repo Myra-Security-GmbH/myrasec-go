@@ -210,7 +210,7 @@ func TestAddUserToGroup(t *testing.T) {
 	}
 }
 
-// TestListUsersFromGroupWithAgentAsString covers MAP-1838: the group members listing
+// TestListUsersFromGroupWithAgentAsString covers the case where the group members listing
 // returns the same user representation as /user/me, with the agent flag encoded as a
 // string, so it failed to decode the same way.
 func TestListUsersFromGroupWithAgentAsString(t *testing.T) {

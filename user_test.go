@@ -63,7 +63,7 @@ func TestMe(t *testing.T) {
 	}
 }
 
-// TestMeWithAgentAsString covers MAP-1838: the API serializes the user's agent flag
+// TestMeWithAgentAsString covers the case where the API serializes the user's agent flag
 // as a string ("" or "1") instead of a JSON boolean, which made every Me() call fail
 // while decoding the response. The fixture of TestMe never carried the field, and
 // preCacheRequest drops decoding errors, so the failure only showed against the
