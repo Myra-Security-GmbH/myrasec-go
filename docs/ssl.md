@@ -56,7 +56,7 @@ type SSLCertificate struct {
 | `CertRefreshForced` | bool | Every time a certificate is refreshed with another non-matching certificate the operation is interrupted with an error. Setting certRefreshForced will ignore such errors and refresh the certificate anyway. Please use it only, if you are sure you can ignore an error when refreshing a certificate. |  
 | `CertToRefresh` | int | This property allows you to update an already existing certificate with a new one without changing IP addresses, the value has to be the ID of the cert that should be refreshed. |
 | `SslConfigurationName` | string | This property allows you to set a specific ssl configuration. default `Myra-Global-TLS-Default`, valid values are `Myra-Global-TLS-Default`, `2023-mozilla-intermediate`, `2023-mozilla-modern`. |
-| `Managed` | bool | Indicates wether this certificate is managed by Myra or not. |
+| `Managed` | bool | Indicates whether this certificate is managed by Myra or not. Managed certificates are issued and renewed through [SSL certificate requests](./ssl_certificate_request.md). |
 
 
 ```go

@@ -42,6 +42,8 @@ func initializeMethods() map[string]APIMethod {
 		getSettingsMethods(),
 		getSslConfigurationMethods(),
 		getSSLMethods(),
+		getSSLCertificateRequestMethods(),
+		getSSLProviderCredentialsMethods(),
 		getStatisticsMethods(),
 		getTagCacheSettingMethods(),
 		getTagSettingsMethods(),

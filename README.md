@@ -48,6 +48,8 @@ func main() {
 - [IP ranges](./docs/ip_range.md)
 - [SSL certificates](./docs/ssl.md)
 - [SSL configuration](./docs/ssl_configuration.md)
+- [SSL certificate request (Myra Managed Certificate)](./docs/ssl_certificate_request.md)
+- [SSL provider credentials](./docs/ssl_provider_credentials.md)
 - [Maintenance](./docs/maintenance.md)
 - [Maintenance templates](./docs/maintenance_template.md)
 - [Error page](./docs/error_page.md)
