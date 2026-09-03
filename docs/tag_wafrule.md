@@ -58,7 +58,7 @@ newTagWAFRule := &myrasec.TagWAFRule{
     TagId: 12
 }
 
-t, err := api.CreateTagWAFRule(newTagWAFRule, 12)
+t, err := api.CreateTagWAFRuleContext(ctx, newTagWAFRule, 12)
 if err != nil {
     log.Fatal(err)
 }
@@ -69,7 +69,7 @@ The listing operation returns a list of TagWAFRules for the given TagID.
 
 ### Example
 ```go
-rules, err := api.ListTagWAFRules(12, nil)
+rules, err := api.ListTagWAFRulesContext(ctx, 12, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -78,7 +78,7 @@ if err != nil {
 ## Read
 The read operation returns an object of TagWAFRule for the given tagId and ruleId
 ```go
-rule, err := api.GetTagWAFRule(tagId, ruleId)
+rule, err := api.GetTagWAFRuleContext(ctx, tagId, ruleId)
 if err != nil {
     log.Fatal(err)
 }
@@ -107,7 +107,7 @@ rule := &myrasec.TagWAFRule{
     TagId: 12
 }
 
-updated, err := api.UpdateTagWAFRule(rule)
+updated, err := api.UpdateTagWAFRuleContext(ctx, rule)
 if err != nil {
     log.Fatal(err)
 }
@@ -125,7 +125,7 @@ rule := &myrasec.TagWAFRule{
     }
 }
 
-t, err := api.DeleteTagWAFRule(rule)
+t, err := api.DeleteTagWAFRuleContext(ctx, rule)
 if err != nil {
     log.Fatal(err)
 }

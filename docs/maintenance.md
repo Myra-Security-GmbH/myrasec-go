@@ -40,7 +40,7 @@ maintenance := &myrasec.Maintenance{
 		Content: "<DOCTYPE html><html><head><title>Maintenance</title></head><body><h1>Maintenance</h1></body></html>",
 		FQDN:    "www.example.com.",
 }
-m, err := api.CreateMaintenance(maintenance, domainId, "www.example.com")
+m, err := api.CreateMaintenanceContext(ctx, maintenance, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -51,13 +51,13 @@ The listing operation returns a list of maintenance pages for the passed subdoma
 
 ### Example
 ```go
-pages, err := api.ListMaintenances(domainId, "www.example.com", nil)
+pages, err := api.ListMaintenancesContext(ctx, domainId, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListMaintenances` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListMaintenancesContext` function.
 
 | name | description | default |
 |---|---|---|
@@ -83,7 +83,7 @@ maintenance := &myrasec.Maintenance{
 		FQDN:    "www.example.com.",
 }
 
-m, err := api.UpdateMaintenance(maintenance, domainId, "www.example.com");
+m, err := api.UpdateMaintenanceContext(ctx, maintenance, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -102,7 +102,7 @@ maintenance := &myrasec.Maintenance{
     },
 }
 
-m, err := api.DeleteMaintenance(maintenance, domainId, "www.example.com");
+m, err := api.DeleteMaintenanceContext(ctx, maintenance, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }

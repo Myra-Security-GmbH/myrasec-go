@@ -12,6 +12,7 @@ A Go library for interacting with Myra Security API.
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -26,7 +27,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	domains, err := api.ListDomains(map[string]string{"pageSize": "100"})
+	ctx := context.Background()
+
+	domains, err := api.ListDomainsContext(ctx, map[string]string{"pageSize": "100"})
 	if err != nil {
 		log.Fatal(err)
 	}

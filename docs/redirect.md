@@ -46,7 +46,7 @@ redirect := &myrasec.Redirect{
     SubDomainName: "www.example.com.",
     Type:          "redirect",
 }
-r, err := api.CreateRedirect(redirect, domainId, "www.example.com")
+r, err := api.CreateRedirectContext(ctx, redirect, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -58,13 +58,13 @@ The listing operation returns a list of redirects for the given domain.
 
 ### Example
 ```go
-redirects, err := api.ListRedirects(domainId, "www.example.com", nil)
+redirects, err := api.ListRedirectsContext(ctx, domainId, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListRedirects` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListRedirectsContext` function.
 
 | name | description | default |
 |---|---|---|
@@ -76,7 +76,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListRed
 ## Read
 The read operation returns a single redirect object.
 ```go
-redirect, err := api.GetRedirect(domainId, "www.example.com", redirectId)
+redirect, err := api.GetRedirectContext(ctx, domainId, "www.example.com", redirectId)
 if err != nil {
     log.Fatal(err)
 }
@@ -95,7 +95,7 @@ redirect := &myrasec.Redirect{
     Enabled: false,
 }
 
-r, err := api.UpdateRedirect(redirect, domainId, "www.example.com");
+r, err := api.UpdateRedirectContext(ctx, redirect, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -114,7 +114,7 @@ redirect := &myrasec.Redirect{
     },
 }
 
-r, err := api.DeleteRedirect(redirect, domainId, "www.example.com");
+r, err := api.DeleteRedirectContext(ctx, redirect, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }

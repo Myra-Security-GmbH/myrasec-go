@@ -132,7 +132,7 @@ The listing operation returns a settings object for the given domainId and subdo
 
 ### Example
 ```go
-settings, err := api.ListSettings(domainId, "www.example.com", nil)
+settings, err := api.ListSettingsContext(ctx, domainId, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -140,7 +140,7 @@ if err != nil {
 
 The listing full operation returns an interface of the settings. To get a map (key, value) of the domain settings you have to convert the structure as shown here:
 ```go
-settingsData, err := api.ListSettingsFull(domainId, "www.example.com", nil)
+settingsData, err := api.ListSettingsFullContext(ctx, domainId, "www.example.com", nil)
 if err != nil {
 	log.Fatal(err)
 }
@@ -164,7 +164,7 @@ Only attributes in the map will be touched in the api.
 settingsMap := make(map[string]interface{})
 settingsMap["only_https"] = true // update/create
 settingsMap["myra_ssl_header"] = nil // delete
-s, err = api.UpdateSettingsPartial(settingsMap, domainId, "www.example.com")
+s, err = api.UpdateSettingsPartialContext(ctx, settingsMap, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }

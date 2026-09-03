@@ -27,7 +27,7 @@ apikey := &myrasec.APIKey{
     Name: "Example",
 }
 
-key, err := api.CreateApiKey(apikey)
+key, err := api.CreateApiKeyContext(ctx, apikey)
 if err != nil {
     log.Fatal(err)
 }
@@ -41,7 +41,7 @@ The listing operation returns a list of API keys. The list contains API keys for
 
 ### Example
 ```go
-keys, err := api.ListApiKeys(map[string]string{})
+keys, err := api.ListApiKeysContext(ctx, map[string]string{})
 if err != nil {   
     log.Fatal(err)
 }
@@ -56,7 +56,7 @@ For deleting an API key, it is only necessary to send the "id" and the "modified
 
 ### Example
 ```go
-_, err := api.DeleteApiKey(key)
+_, err := api.DeleteApiKeyContext(ctx, key)
 if err != nil {
     log.Fatal(err)
 }

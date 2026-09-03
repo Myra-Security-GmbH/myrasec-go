@@ -59,7 +59,7 @@ newTag := &myrasec.Tag{
     }
 }
 
-t, err := api.CreateTag(newTag)
+t, err := api.CreateTagContext(ctx, newTag)
 if err != nil {
     log.Fatal(err)
 }
@@ -70,13 +70,13 @@ The listing operation returns a list of tags. The list contains tags for the org
 
 ### Example
 ```go
-tags, err := api.ListTags(nil)
+tags, err := api.ListTagsContext(ctx, nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListTags` function
+It is possible to pass a map of parameters (`map[string]string`) to the `ListTagsContext` function
 
 | name | description | default |
 |---|---|---|
@@ -87,7 +87,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListTag
 ## Read
 The read operation returns a single Tag by it's ID
 ```go
-tag, err := api.GetTag(tagId)
+tag, err := api.GetTagContext(ctx, tagId)
 if err != nil {
     log.Fatal(err)
 }
@@ -114,7 +114,7 @@ tag := &myrasec.Tag{
     Sort: 1
 }
 
-t, err := api.UpdateTag(tag)
+t, err := api.UpdateTagContext(ctx, tag)
 if err != nil {
     log.Fatal(err)
 }
@@ -132,7 +132,7 @@ tag := &myrasec.Tag{
     }
 }
 
-t, err := api.DeleteTag(tag)
+t, err := api.DeleteTagContext(ctx, tag)
 if err != nil {
     log.Fatal(err)
 }

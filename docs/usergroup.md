@@ -51,7 +51,7 @@ group := &myrasec.UserGroup{
     Name: "Engineering",
 }
 
-g, err := api.CreateUserGroup(group)
+g, err := api.CreateUserGroupContext(ctx, group)
 if err != nil {
     log.Fatal(err)
 }
@@ -64,13 +64,13 @@ The listing operation returns the user groups visible to the authenticated accou
 
 ### Example
 ```go
-groups, err := api.ListUserGroups(nil)
+groups, err := api.ListUserGroupsContext(ctx, nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListUserGroups` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListUserGroupsContext` function.
 
 | name | description | default |
 |---|---|---|
@@ -83,7 +83,7 @@ The read operation returns a single UserGroup by its ID.
 
 ### Example
 ```go
-group, err := api.GetUserGroup(groupId)
+group, err := api.GetUserGroupContext(ctx, groupId)
 if err != nil {
     log.Fatal(err)
 }
@@ -102,7 +102,7 @@ group := &myrasec.UserGroup{
     Name: "Engineering EU",
 }
 
-g, err := api.UpdateUserGroup(group)
+g, err := api.UpdateUserGroupContext(ctx, group)
 if err != nil {
     log.Fatal(err)
 }
@@ -120,7 +120,7 @@ group := &myrasec.UserGroup{
     },
 }
 
-g, err := api.DeleteUserGroup(group)
+g, err := api.DeleteUserGroupContext(ctx, group)
 if err != nil {
     log.Fatal(err)
 }
@@ -131,7 +131,7 @@ Returns the users that are members of the given group.
 
 ### Example
 ```go
-users, err := api.ListUsersFromGroup(groupId, nil)
+users, err := api.ListUsersFromGroupContext(ctx, groupId, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -156,7 +156,7 @@ role := &myrasec.GroupRole{
     Role:   myrasec.GroupRoleUser,
 }
 
-r, err := api.AddUserToGroup(role, groupId)
+r, err := api.AddUserToGroupContext(ctx, role, groupId)
 if err != nil {
     log.Fatal(err)
 }
@@ -169,7 +169,7 @@ Removes the passed user from the group identified by `groupId`.
 
 ### Example
 ```go
-u, err := api.RemoveUserFromGroup(user, groupId)
+u, err := api.RemoveUserFromGroupContext(ctx, user, groupId)
 if err != nil {
     log.Fatal(err)
 }

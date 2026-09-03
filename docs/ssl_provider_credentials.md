@@ -44,7 +44,7 @@ To create new credentials send a `SSLProviderCredentials` without the attributes
 
 ### Example (Sectigo)
 ```go
-credentials, err := api.CreateSSLProviderCredentials(&myrasec.SSLProviderCredentials{
+credentials, err := api.CreateSSLProviderCredentialsContext(ctx, &myrasec.SSLProviderCredentials{
     Name:     "Sectigo OV",
     Provider: myrasec.SSLProviderSectigo,
     Endpoint: "https://acme.sectigo.com/v2/OV",
@@ -61,7 +61,7 @@ log.Println(credentials.ID)
 
 ### Example (D-Trust)
 ```go
-credentials, err := api.CreateSSLProviderCredentials(&myrasec.SSLProviderCredentials{
+credentials, err := api.CreateSSLProviderCredentialsContext(ctx, &myrasec.SSLProviderCredentials{
     Name:     "D-Trust",
     Provider: myrasec.SSLProviderDTrust,
     EABKid:   os.Getenv("DTRUST_EAB_KID"),
@@ -77,7 +77,7 @@ The listing operation returns the credentials of the organization.
 
 ### Example
 ```go
-list, err := api.ListSSLProviderCredentials(map[string]string{"provider": "SECTIGO"})
+list, err := api.ListSSLProviderCredentialsContext(ctx, map[string]string{"provider": "SECTIGO"})
 if err != nil {
     log.Fatal(err)
 }
@@ -87,7 +87,7 @@ for _, c := range list {
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListSSLProviderCredentials` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListSSLProviderCredentialsContext` function.
 
 | Name | Description | Default |
 |---|---|---|
@@ -101,7 +101,7 @@ The read operation returns a single credentials object by its `ID`.
 
 ### Example
 ```go
-credentials, err := api.GetSSLProviderCredentials(credentialsId)
+credentials, err := api.GetSSLProviderCredentialsContext(ctx, credentialsId)
 if err != nil {
     log.Fatal(err)
 }
@@ -112,7 +112,7 @@ Updating credentials needs the `ID` and `Modified` attributes to identify the ob
 
 ### Example
 ```go
-credentials, err := api.GetSSLProviderCredentials(credentialsId)
+credentials, err := api.GetSSLProviderCredentialsContext(ctx, credentialsId)
 if err != nil {
     log.Fatal(err)
 }
@@ -120,7 +120,7 @@ if err != nil {
 credentials.EABKid = os.Getenv("SECTIGO_EAB_KID")
 credentials.EABHmac = os.Getenv("SECTIGO_EAB_HMAC")
 
-updated, err := api.UpdateSSLProviderCredentials(credentials)
+updated, err := api.UpdateSSLProviderCredentialsContext(ctx, credentials)
 if err != nil {
     log.Fatal(err)
 }
@@ -131,14 +131,14 @@ Deleting credentials detaches them from every managed certificate request that r
 
 ### Example
 ```go
-_, err := api.DeleteSSLProviderCredentials(&myrasec.SSLProviderCredentials{ID: credentialsId})
+_, err := api.DeleteSSLProviderCredentialsContext(ctx, &myrasec.SSLProviderCredentials{ID: credentialsId})
 if err != nil {
     log.Fatal(err)
 }
 ```
 
 ## List certificates
-`ListSSLProviderCertificates` returns the certificates issued with the credentials as compact summaries without PEM data, private key and intermediates. The full certificate is available through `ListSSLCertificates` on the domain given by `DomainID`, see [SSL certificates](./ssl.md).
+`ListSSLProviderCertificatesContext` returns the certificates issued with the credentials as compact summaries without PEM data, private key and intermediates. The full certificate is available through `ListSSLCertificatesContext` on the domain given by `DomainID`, see [SSL certificates](./ssl.md).
 
 ```go
 type SSLCertificateSummary struct {
@@ -165,7 +165,7 @@ type SSLCertificateSummary struct {
 
 | Field | Type | Description |
 |---|---|---|
-| `ID` | int | The identifier of the certificate, the same as in `ListSSLCertificates`. |
+| `ID` | int | The identifier of the certificate, the same as in `ListSSLCertificatesContext`. |
 | `Subject` | string | The subject of the certificate. |
 | `SubjectAlternatives` | []string | The names covered by the certificate. |
 | `Algorithm` | string | The signature algorithm of the certificate. |
@@ -184,7 +184,7 @@ type SSLCertificateSummary struct {
 
 ### Example
 ```go
-certs, err := api.ListSSLProviderCertificates(credentialsId, nil)
+certs, err := api.ListSSLProviderCertificatesContext(ctx, credentialsId, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -194,7 +194,7 @@ for _, c := range certs {
 }
 ```
 
-The function accepts the parameters `search`, `page` and `pageSize` like `ListSSLProviderCredentials`.
+The function accepts the parameters `search`, `page` and `pageSize` like `ListSSLProviderCredentialsContext`.
 
 ## Error handling
 See [Error handling](./ssl_certificate_request.md#error-handling) of the certificate requests. In addition to the causes listed there, HTTP 403 is returned when the API user is neither a member of the root user group nor an organization administrator.

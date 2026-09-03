@@ -5,7 +5,7 @@ The listing operation returns a list of WAF actions.
 
 ### Example
 ```go
-rules, err := api.ListWAFActions()
+rules, err := api.ListWAFActionsContext(ctx)
 if err != nil {
     log.Fatal(err)
 }

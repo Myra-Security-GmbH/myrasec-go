@@ -29,13 +29,13 @@ The listing operation returns a list of IP ranges.
 
 ### Example
 ```go
-filters, err := api.ListIPRanges(nil)
+filters, err := api.ListIPRangesContext(ctx, nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListIPRanges` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListIPRangesContext` function.
 
 | name | description | default |
 |---|---|---|

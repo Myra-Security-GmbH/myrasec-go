@@ -15,7 +15,7 @@ Only attributes in the map will be touched in the api.
 tagId := 0000
 settingsMap['only_https'] = true // update/create
 settingsMap['myra_ssl_header'] = nil // delete
-ts, err := api.UpdateTagSettingsPartial(settingsMap, tagId)
+ts, err := api.UpdateTagSettingsPartialContext(ctx, settingsMap, tagId)
 if err != nil {
     log.Fatal(err)
 }
@@ -27,7 +27,7 @@ To list all tag settings you need to send a tagId.
 ### Example
 ```go
 tagId := 0000
-ts, err := api.ListTagSettings(tagId)
+ts, err := api.ListTagSettingsContext(ctx, tagId)
 if err != nil {
     log.Fatal(err)
 }

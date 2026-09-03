@@ -101,7 +101,7 @@ rec := &myrasec.DNSRecord{
         Weight:      1,
     },
 }
-r, err := api.CreateDNSRecord(rec, domainId)
+r, err := api.CreateDNSRecordContext(ctx, rec, domainId)
 if err != nil {
     panic(err)
 }
@@ -112,13 +112,13 @@ The listing operation returns a list of DNS records for the passed domainId.
 
 ### Example
 ```go
-records, err := api.ListDNSRecords(domainId, nil)
+records, err := api.ListDNSRecordsContext(ctx, domainId, nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListDNSRecords` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListDNSRecordsContext` function.
 
 | name | description | default |
 |---|---|---|
@@ -133,7 +133,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListDNS
 The read operation returns a single DNS record by his ID and the domainId.
 ### Example
 ```go
-record, err := api.GetDNSRecord(domainId, recordId)
+record, err := api.GetDNSRecordContext(ctx, domainId, recordId)
 if err != nil {
     log.Fatal(err)
 }
@@ -151,7 +151,7 @@ rec := &myrasec.DNSRecord{
     Value:      "127.0.0.1",
 }
 
-r, err := api.UpdateDNSRecord(rec, domainId);
+r, err := api.UpdateDNSRecordContext(ctx, rec, domainId);
 if err != nil {
     log.Fatal(err)
 }
@@ -170,7 +170,7 @@ rec := &myrasec.DNSRecord{
     },
 }
 
-r, err := api.DeleteDNSRecord(rec, domainId);
+r, err := api.DeleteDNSRecordContext(ctx, rec, domainId);
 if err != nil {
     log.Fatal(err)
 }

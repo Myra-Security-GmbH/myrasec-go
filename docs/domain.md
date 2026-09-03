@@ -36,7 +36,7 @@ newDomain := &myrasec.Domain{
     Name: "example.com",
 }
 
-d, err := api.CreateDomain(newDomain)
+d, err := api.CreateDomainContext(ctx, newDomain)
 if err != nil {
     panic(err)
 }
@@ -48,13 +48,13 @@ The listing operation returns a list of domains. The list contains domains for t
 
 ### Example
 ```go
-domains, err := api.ListDomains(nil)
+domains, err := api.ListDomainsContext(ctx, nil)
 if err != nil {
     panic(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListDomains` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListDomainsContext` function.
 
 | name | description | default |
 |---|---|---|
@@ -65,7 +65,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListDom
 ## Read
 The read operation returns a single domain by it's ID
 ```go
-domain, err := api.GetDomain(domainId)
+domain, err := api.GetDomainContext(ctx, domainId)
 if err != nil {
     panic(err)
 }
@@ -87,7 +87,7 @@ domain := &myrasec.Domain{
     },
     AutoUpdate: false,
 }
-d, err := api.UpdateDomain(domain)
+d, err := api.UpdateDomainContext(ctx, domain)
 if err != nil {
     panic(err)
 }
@@ -106,29 +106,29 @@ domain := &myrasec.Domain{
     ID:   0000,
     Name: "example.com",
 }
-d, err := api.DeleteDomain(domain)
+d, err := api.DeleteDomainContext(ctx, domain)
 if err != nil {
     panic(err)
 }
 ```
 
 ## Fetch a domain by a domain name
-It is possible to fetch a single domain struct by passing the domain name to the `FetchDomain` function. 
+It is possible to fetch a single domain struct by passing the domain name to the `FetchDomainContext` function. 
 
 ### Example
 ```go
-domain, err := api.FetchDomain("example.com")
+domain, err := api.FetchDomainContext(ctx, "example.com")
 if err != nil {
     panic(err)
 }
 ```
 
 ## Fetch a domain by a subdomain name
-It is possible to fetch a single domain struct by passing a subdomain name to the `FetchDomainForSubdomainName` function. 
+It is possible to fetch a single domain struct by passing a subdomain name to the `FetchDomainForSubdomainNameContext` function. 
 
 ### Example
 ```go
-domain, err := api.FetchDomainForSubdomainName("www.example.com")
+domain, err := api.FetchDomainForSubdomainNameContext(ctx, "www.example.com")
 if err != nil {
     panic(err)
 }

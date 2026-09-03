@@ -13,7 +13,7 @@ Instead of specifying a subdomain name, ```"ALL-1234"``` needs to be passed, whe
 
 ### Example - listing redirects for General Domain:
 ```go
-redirects, err := api.ListRedirects(1234, "ALL-1234", nil)
+redirects, err := api.ListRedirectsContext(ctx, 1234, "ALL-1234", nil)
 if err != nil {
     log.Fatal(err)
 }

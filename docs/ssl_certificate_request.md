@@ -1,6 +1,6 @@
 # SSL certificate request (Myra Managed Certificate)
 
-A managed certificate request asks Myra to obtain a certificate from Let's Encrypt, Sectigo or D-Trust, to renew it automatically and to assign it to the subdomains of the request. The issuance is asynchronous: the request is created immediately, the certificate arrives later and the `Status` of the request reports the progress. Poll the request with `GetSSLCertificateRequest` until the status is `CREATED` or `FAILED`.
+A managed certificate request asks Myra to obtain a certificate from Let's Encrypt, Sectigo or D-Trust, to renew it automatically and to assign it to the subdomains of the request. The issuance is asynchronous: the request is created immediately, the certificate arrives later and the `Status` of the request reports the progress. Poll the request with `GetSSLCertificateRequestContext` until the status is `CREATED` or `FAILED`.
 
 ## Requirements
 
@@ -74,7 +74,7 @@ The `ID`, `Created` and `Modified` attributes of both nested objects are server-
 |---|---|---|
 | `OPEN` | `SSLCertificateRequestStatusOpen` | The request has been accepted and the certificate is being issued. |
 | `WAITING_FOR_CNAME` | `SSLCertificateRequestStatusWaitingForCNAME` | The issuance waits for the domain validation. Use [Check domains](#check-domains) to find out which CNAME record is expected. |
-| `CREATED` | `SSLCertificateRequestStatusCreated` | The certificate has been issued and assigned to the subdomains of the request. The certificate itself is available through `ListSSLCertificates` on the domain (with `Managed` set to true) or, for Sectigo and D-Trust, through `ListSSLProviderCertificates`. |
+| `CREATED` | `SSLCertificateRequestStatusCreated` | The certificate has been issued and assigned to the subdomains of the request. The certificate itself is available through `ListSSLCertificatesContext` on the domain (with `Managed` set to true) or, for Sectigo and D-Trust, through `ListSSLProviderCertificatesContext`. |
 | `FAILED` | `SSLCertificateRequestStatusFailed` | The issuance did not succeed. The request is not retried automatically. Fix the cause reported in `FailureReason`, then create a new request. Only two updates re-enter the issuance of a failed request: adding a name that no issued certificate covers or changing the `Provider`. |
 
 | Failure reason | Customer actionable | Meaning |
@@ -101,7 +101,7 @@ request := &myrasec.SSLCertificateRequest{
     },
 }
 
-created, err := api.CreateSSLCertificateRequest(request)
+created, err := api.CreateSSLCertificateRequestContext(ctx, request)
 if err != nil {
     log.Fatal(err)
 }
@@ -129,7 +129,7 @@ request := &myrasec.SSLCertificateRequest{
     },
 }
 
-created, err := api.CreateSSLCertificateRequest(request)
+created, err := api.CreateSSLCertificateRequestContext(ctx, request)
 if err != nil {
     log.Fatal(err)
 }
@@ -142,7 +142,7 @@ The listing operation returns the managed certificate requests of the organizati
 
 ### Example
 ```go
-requests, err := api.ListSSLCertificateRequests(map[string]string{
+requests, err := api.ListSSLCertificateRequestsContext(ctx, map[string]string{
     "status": "OPEN,WAITING_FOR_CNAME,CREATED,FAILED",
     "domain": "example.com",
 })
@@ -155,7 +155,7 @@ for _, r := range requests {
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListSSLCertificateRequests` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListSSLCertificateRequestsContext` function.
 
 | Name | Description | Default |
 |---|---|---|
@@ -170,7 +170,7 @@ The read operation returns a single managed certificate request by its `ID`. Use
 
 ### Example
 ```go
-request, err := api.GetSSLCertificateRequest(requestId)
+request, err := api.GetSSLCertificateRequestContext(ctx, requestId)
 if err != nil {
     log.Fatal(err)
 }
@@ -187,7 +187,7 @@ Updating a request is very similar to creating a new one. You have to provide th
 
 ### Example
 ```go
-request, err := api.GetSSLCertificateRequest(requestId)
+request, err := api.GetSSLCertificateRequestContext(ctx, requestId)
 if err != nil {
     log.Fatal(err)
 }
@@ -195,7 +195,7 @@ if err != nil {
 request.SubjectAlternativeNames = append(request.SubjectAlternativeNames, myrasec.SSLCertificateRequestSAN{Name: "shop.example.com"})
 request.Assignments = append(request.Assignments, myrasec.SSLCertificateRequestAssignment{SubDomainName: "shop.example.com"})
 
-updated, err := api.UpdateSSLCertificateRequest(request)
+updated, err := api.UpdateSSLCertificateRequestContext(ctx, request)
 if err != nil {
     log.Fatal(err)
 }
@@ -206,25 +206,25 @@ Deleting a request removes the request and the certificates issued for it. The `
 
 ### Example
 ```go
-_, err := api.DeleteSSLCertificateRequest(&myrasec.SSLCertificateRequest{ID: requestId})
+_, err := api.DeleteSSLCertificateRequestContext(ctx, &myrasec.SSLCertificateRequest{ID: requestId})
 if err != nil {
     log.Fatal(err)
 }
 ```
 
 ## Update the SSL configuration
-`UpdateSSLCertificateRequestConfiguration` applies a TLS profile to every certificate issued for the request. Valid profile names are returned by `ListSslConfigurations`, see [SSL configuration](./ssl_configuration.md). Profiles restricted to ECDSA keys are rejected for RSA requests.
+`UpdateSSLCertificateRequestConfigurationContext` applies a TLS profile to every certificate issued for the request. Valid profile names are returned by `ListSslConfigurationsContext`, see [SSL configuration](./ssl_configuration.md). Profiles restricted to ECDSA keys are rejected for RSA requests.
 
 ### Example
 ```go
-request, err := api.UpdateSSLCertificateRequestConfiguration(requestId, "2023-mozilla-modern")
+request, err := api.UpdateSSLCertificateRequestConfigurationContext(ctx, requestId, "2023-mozilla-modern")
 if err != nil {
     log.Fatal(err)
 }
 ```
 
 ## Check domains
-`CheckSSLCertificateRequestDomains` runs a live name server check for up to 99 domains and reports per domain whether it is served by Myra name servers. A domain served elsewhere needs a CNAME record from `ChallengeName` to `ExpectedCName` before the domain validation can succeed. Run the check before creating a request or when a request stays in `WAITING_FOR_CNAME`.
+`CheckSSLCertificateRequestDomainsContext` runs a live name server check for up to 99 domains and reports per domain whether it is served by Myra name servers. A domain served elsewhere needs a CNAME record from `ChallengeName` to `ExpectedCName` before the domain validation can succeed. Run the check before creating a request or when a request stays in `WAITING_FOR_CNAME`.
 
 ```go
 type SSLCertificateRequestDomainCheck struct {
@@ -244,7 +244,7 @@ type SSLCertificateRequestDomainCheck struct {
 
 ### Example
 ```go
-checks, err := api.CheckSSLCertificateRequestDomains([]string{"www.example.com", "*.example.org"})
+checks, err := api.CheckSSLCertificateRequestDomainsContext(ctx, []string{"www.example.com", "*.example.org"})
 if err != nil {
     log.Fatal(err)
 }
@@ -260,7 +260,11 @@ Domains whose lookup failed are absent from the result.
 
 ## End-to-end example (Let's Encrypt)
 ```go
-request, err := api.CreateSSLCertificateRequest(&myrasec.SSLCertificateRequest{
+// Bound the whole flow, including the polling below, to two hours.
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Hour)
+defer cancel()
+
+request, err := api.CreateSSLCertificateRequestContext(ctx, &myrasec.SSLCertificateRequest{
     Provider:                myrasec.SSLProviderLetsEncrypt,
     Algorithm:               myrasec.SSLCertificateRequestAlgorithmECDSA256,
     SubjectAlternativeNames: []myrasec.SSLCertificateRequestSAN{{Name: "www.example.com"}},
@@ -273,14 +277,14 @@ if err != nil {
 // The issuance takes minutes and can take hours when a CNAME record has to be created.
 // Poll with a generous interval, every request counts against the API rate limit.
 for {
-    request, err = api.GetSSLCertificateRequest(request.ID)
+    request, err = api.GetSSLCertificateRequestContext(ctx, request.ID)
     if err != nil {
         log.Fatal(err)
     }
 
     switch request.Status {
     case myrasec.SSLCertificateRequestStatusCreated:
-        certs, err := api.ListSSLCertificates(domainId, nil)
+        certs, err := api.ListSSLCertificatesContext(ctx, domainId, nil)
         if err != nil {
             log.Fatal(err)
         }
@@ -293,7 +297,7 @@ for {
     case myrasec.SSLCertificateRequestStatusFailed:
         log.Fatalf("issuance failed: %s (customer actionable: %t)", request.FailureReason, request.CustomerActionable)
     case myrasec.SSLCertificateRequestStatusWaitingForCNAME:
-        checks, _ := api.CheckSSLCertificateRequestDomains([]string{"www.example.com"})
+        checks, _ := api.CheckSSLCertificateRequestDomainsContext(ctx, []string{"www.example.com"})
         log.Printf("waiting for CNAME %s -> %s", checks["www.example.com"].ChallengeName, checks["www.example.com"].ExpectedCName)
     }
 
@@ -303,7 +307,10 @@ for {
 
 ## End-to-end example (Sectigo or D-Trust)
 ```go
-credentials, err := api.CreateSSLProviderCredentials(&myrasec.SSLProviderCredentials{
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Hour)
+defer cancel()
+
+credentials, err := api.CreateSSLProviderCredentialsContext(ctx, &myrasec.SSLProviderCredentials{
     Name:     "Sectigo OV",
     Provider: myrasec.SSLProviderSectigo,
     Endpoint: "https://acme.sectigo.com/v2/OV",
@@ -314,7 +321,7 @@ if err != nil {
     log.Fatal(err)
 }
 
-request, err := api.CreateSSLCertificateRequest(&myrasec.SSLCertificateRequest{
+request, err := api.CreateSSLCertificateRequestContext(ctx, &myrasec.SSLCertificateRequest{
     Provider:                 myrasec.SSLProviderSectigo,
     Algorithm:                myrasec.SSLCertificateRequestAlgorithmRSA2048,
     SSLProviderCredentialsID: credentials.ID,
@@ -327,7 +334,7 @@ if err != nil {
 
 // Poll GetSSLCertificateRequest as in the Let's Encrypt example. Once the status is
 // CREATED, the certificates issued with the credentials are listed on the credentials.
-certs, err := api.ListSSLProviderCertificates(credentials.ID, nil)
+certs, err := api.ListSSLProviderCertificatesContext(ctx, credentials.ID, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -359,7 +366,7 @@ Every method returns a `*myrasec.APIError` when the API answers with a non-succe
 | 403 | The organization lacks the `Myra-Certificate` feature or the user lacks the `SslCertRequest` permission on one of the domains. The API sends no body in this case, so the error carries the status code only. A request that does not exist answers 403 as well, with a violation `does-not-exist`. |
 
 ```go
-request, err := api.GetSSLCertificateRequest(requestId)
+request, err := api.GetSSLCertificateRequestContext(ctx, requestId)
 if err != nil {
     var apiErr *myrasec.APIError
     if errors.As(err, &apiErr) && apiErr.StatusCode == http.StatusForbidden {

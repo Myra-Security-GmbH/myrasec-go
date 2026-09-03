@@ -208,7 +208,7 @@ query := &myrasec.StatisticQuery{
     },
 }
 
-statistics, err := api.QueryStatistics(query)
+statistics, err := api.QueryStatisticsContext(ctx, query)
 if err != nil {
     // Validation failures reported by the API (unknown or denied FQDN, too
     // many FQDNs, malformed dates, invalid interval or type) are returned

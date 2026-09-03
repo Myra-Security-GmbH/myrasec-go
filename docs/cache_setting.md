@@ -45,7 +45,7 @@ cachesetting := &myrasec.CacheSetting{
     Enforce:     false,
     Comment:     "Matching /",
 }
-c, err := api.CreateCacheSetting(cachesetting, domainId, "www.example.com")
+c, err := api.CreateCacheSettingContext(ctx, cachesetting, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -57,13 +57,13 @@ The listing operation returns a list of cache settings for the passed subdomain 
 
 ### Example 
 ```go
-cachesettings, err := api.ListCacheSettings(domainId, "www.example.com", nil)
+cachesettings, err := api.ListCacheSettingsContext(ctx, domainId, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListRedirects` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListRedirectsContext` function.
 
 | name | description | default |
 |---|---|---|
@@ -85,7 +85,7 @@ cachesetting := &myrasec.CacheSetting{
     Path:      "/index.html",
 }
 
-c, err := api.UpdateCacheSetting(cachesetting, domainId, "www.example.com");
+c, err := api.UpdateCacheSettingContext(ctx, cachesetting, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -103,7 +103,7 @@ cachesetting := &myrasec.CacheSetting{
         Time: modified,
     },
 }
-c, err := api.DeleteCacheSetting(cachesetting, domainId, "www.example.com");
+c, err := api.DeleteCacheSettingContext(ctx, cachesetting, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
