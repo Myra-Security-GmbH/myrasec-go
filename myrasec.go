@@ -6,10 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"reflect"
+	"strings"
 	"sync"
 	"time"
 
@@ -91,6 +93,78 @@ type Violation struct {
 type Warning struct {
 	Path    string `json:"path,omitempty"`
 	Message string `json:"message,omitempty"`
+}
+
+// APIError is returned when the MYRA API rejects a request, either with a non-successful
+// HTTP status code or with an error envelope (error: true) in a successful response.
+// Use errors.As to inspect the status code, e.g. to detect a 403 that the API returns
+// when the organization lacks a feature or the user lacks a permission.
+type APIError struct {
+	// StatusCode is the HTTP status code of the response.
+	StatusCode int
+	// ErrorMessage is the errorMessage attribute of the API response, if the response carried one.
+	ErrorMessage string
+	// Violations are the violationList entries of the API response, if the response carried any.
+	Violations []*Violation
+	// Body is the raw response body of a non-successful response. It is empty for access
+	// denied responses (the API answers them without a body) and for error envelopes in
+	// successful responses.
+	Body string
+}
+
+// Error formats the status code and, when present, the violations and error message of the
+// response. An error envelope in a successful response renders the violations and message only.
+func (e *APIError) Error() string {
+	detail := formatAPIErrorMessage(e.ErrorMessage, e.Violations)
+
+	if e.StatusCode < http.StatusBadRequest {
+		if detail == "" {
+			return "The API returned an error."
+		}
+
+		return detail
+	}
+
+	msg := fmt.Sprintf("%s (%d)", http.StatusText(e.StatusCode), e.StatusCode)
+	if detail == "" {
+		return msg
+	}
+
+	return fmt.Sprintf("%s:\n%s", msg, detail)
+}
+
+// newAPIError builds an APIError from a non-successful response. The API answers access
+// denied with an empty body and proxies may answer with HTML, so a body that is empty or
+// not a JSON error envelope yields an APIError carrying the status code and the raw body only.
+func newAPIError(resp *http.Response) *APIError {
+	apiErr := &APIError{StatusCode: resp.StatusCode}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil || len(bytes.TrimSpace(body)) == 0 {
+		return apiErr
+	}
+
+	apiErr.Body = string(body)
+
+	var res Response
+	if err := json.Unmarshal(body, &res); err != nil {
+		return apiErr
+	}
+
+	apiErr.ErrorMessage = res.ErrorMessage
+	apiErr.Violations = res.ViolationList
+
+	return apiErr
+}
+
+// newAPIErrorFromEnvelope builds an APIError from the error envelope (error: true) of a
+// response whose status code was successful.
+func newAPIErrorFromEnvelope(statusCode int, errorMessage string, violations []*Violation) *APIError {
+	return &APIError{
+		StatusCode:   statusCode,
+		ErrorMessage: errorMessage,
+		Violations:   violations,
+	}
 }
 
 // New returns a new MYRA API Client
@@ -247,11 +321,7 @@ func (api *API) call(definition APIMethod, payload ...any) (any, error) {
 		http.StatusCreated,
 		http.StatusNoContent,
 	}) {
-		_, err = errorMessage(resp)
-		if err != nil {
-			return nil, fmt.Errorf("%s (%d):\n%s", http.StatusText(resp.StatusCode), resp.StatusCode, err.Error())
-		}
-		return nil, fmt.Errorf("%s (%d)", http.StatusText(resp.StatusCode), resp.StatusCode)
+		return nil, newAPIError(resp)
 	}
 
 	if definition.ResponseDecodeFunc != nil {
@@ -316,17 +386,11 @@ func (api *API) sendRequest(definition APIMethod, payload ...any) (*http.Respons
 			return resp, err
 		}
 
+		// The response is discarded, release its connection before retrying.
+		_ = resp.Body.Close()
+
 		time.Sleep(time.Duration(api.retrySleep) * time.Second)
 	}
-}
-
-// errorMessage returns the error message (error) from the response passed to the function.
-func errorMessage(resp *http.Response) (*Response, error) {
-	res, err := decodeBaseResponse(resp)
-	if err != nil {
-		return res, err
-	}
-	return res, nil
 }
 
 // decodeDefaultResponse handles the default decoding of a response.
@@ -362,31 +426,29 @@ func decodeBaseResponse(resp *http.Response) (*Response, error) {
 	}
 
 	if res.Error {
-		return nil, formatAPIError(res.ErrorMessage, res.ViolationList)
+		return nil, newAPIErrorFromEnvelope(resp.StatusCode, res.ErrorMessage, res.ViolationList)
 	}
 
 	return &res, nil
 }
 
-// formatAPIError builds an error from an API error response's errorMessage and violationList.
-func formatAPIError(errorMessage string, violations []*Violation) error {
-	var msg string
+// formatAPIErrorMessage renders the violationList and errorMessage of an API error response,
+// one entry per line. It returns an empty string when the response carried neither.
+func formatAPIErrorMessage(errorMessage string, violations []*Violation) string {
+	var msg strings.Builder
 	for _, v := range violations {
 		// Global violations (e.g. "Wrong format for provided dates!") carry no
 		// property path; do not prefix them with a bare colon.
 		if v.Path == "" {
-			msg += fmt.Sprintf("%s\n", v.Message)
+			fmt.Fprintf(&msg, "%s\n", v.Message)
 			continue
 		}
-		msg += fmt.Sprintf("%s: %s\n", v.Path, v.Message)
+		fmt.Fprintf(&msg, "%s: %s\n", v.Path, v.Message)
 	}
 	if errorMessage != "" {
-		msg += fmt.Sprintf("%s\n", errorMessage)
+		fmt.Fprintf(&msg, "%s\n", errorMessage)
 	}
-	if msg == "" {
-		msg = "The API returned an error."
-	}
-	return errors.New(msg)
+	return msg.String()
 }
 
 // prepareRequest builds an HTTP request from the given API method definition and payload.

@@ -341,7 +341,7 @@ func decodePermissionCheckResponse(resp *http.Response, definition APIMethod) (a
 	}
 
 	if raw.Error {
-		return nil, formatAPIError(raw.ErrorMessage, raw.ViolationList)
+		return nil, newAPIErrorFromEnvelope(resp.StatusCode, raw.ErrorMessage, raw.ViolationList)
 	}
 
 	if definition.Result == nil {
