@@ -13,11 +13,11 @@ type ErrorPage struct {
 
 | Field | Type | Description |
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an error page, the ID does not help because it is not used. |
-| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new error page object. This value is only informational so it is not neccessary to add this attribute to any API call. |
-| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updateing the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an `ISO 8601` format. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an error page, the ID does not help because it is not used. |
+| `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new error page object. This value is only informational so it is not necessary to add this attribute to any API call. |
+| `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `ErrorCode` | int | ErrorCode represents the Http Code for this error page. The ErrorCode should never be changed, because it is used as identifier additionally with the SubDomainName. |
-| `SubDomainName` | string | The configured error page is available for this subdomain. The SubDomainName should never be changed, becuase it is used as identifier additionally with the ErrorCode. |
+| `SubDomainName` | string | The configured error page is available for this subdomain. The SubDomainName should never be changed, because it is used as identifier additionally with the ErrorCode. |
 | `Content` | string | The Content is the HTML code for the error page. |
 
 ## Create

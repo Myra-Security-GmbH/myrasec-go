@@ -13,7 +13,7 @@ type VHost struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and is server-generated. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and is server-generated. |
 | `Label` | string | A descriptive name for the VHost without trailing dot (e.g., `shop.example.com`). |
 | `Value` | string | The specific hostname or FQDN associated with this VHost (e.g., `shop.example.com.`). |
 | `DomainName` | string | The Fully Qualified Domain Name (FQDN) of the parent domain. |

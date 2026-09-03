@@ -264,7 +264,7 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 	return res, nil
 }
 
-// ListSettingsFull returns a Setting struct containing the full hierarchie of the settings
+// ListSettingsFull returns a Setting struct containing the full hierarchy of the settings
 func (api *API) ListSettingsFull(domainId int, subDomainName string, params map[string]string) (any, error) {
 	if _, ok := api.methods["listSettingsFull"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSettings")

@@ -26,7 +26,7 @@ type User struct {
 ```
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for the user. Server-generated and read-only. |
+| `ID` | int | ID is a unique identifier for the user. Server-generated and read-only. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Server-managed, read-only. |
 | `Modified` | *types.DateTime | Identifies the version of the user object. Server-managed, read-only. |
 | `Login` | string | The user's login name. Must be a valid email address (format: `user@example.com`). |
@@ -65,7 +65,7 @@ type UserRole struct {
 ```
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for the role assignment. Server-generated and read-only. |
+| `ID` | int | ID is a unique identifier for the role assignment. Server-generated and read-only. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Server-managed, read-only. |
 | `Modified` | *types.DateTime | Identifies the version of the role assignment. Server-managed, read-only. |
 | `GroupID` | int | The identifier of the group this role applies to. |

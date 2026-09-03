@@ -138,7 +138,7 @@ Myra distinguishes transferred data as SSL and non-SSL traffic depending on the 
 > **Uncached**: Includes bytes of all responses transferred from Myra without caching.
 
 ### Other
-In addition to traffic and request statistics, Myra allows you to view detailled information about geographic distribution of your visitors, the performance of your origin server and the HTTP response codes of your application.
+In addition to traffic and request statistics, Myra allows you to view detailed information about geographic distribution of your visitors, the performance of your origin server and the HTTP response codes of your application.
 
 | Data source | S | N | C | U | Description | Possible types |
 |---|---|---|---|---|---|---|

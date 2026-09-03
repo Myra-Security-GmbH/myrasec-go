@@ -1,7 +1,7 @@
 # Waiting Room
 The Waiting Room feature of Myra lets you control the visitor flow to your website by limiting the number of concurrent sessions.
 Once the set limit is met, every other session is added to a virtual queue with a defined HTML waiting page, that gives the user feedback about their position in the queue.
-As soom as capacity on the server frees up, sessions from the queue can access the website via the FIFO principle.
+As soon as capacity on the server frees up, sessions from the queue can access the website via the FIFO principle.
 
 ```go
 type WaitingRoom struct {
@@ -45,7 +45,7 @@ A table with the most important placeholders can be found below:
 Defines the number of seconds until the page refreshes. This parameter needs to be included in the waiting page HTML as a meta tag in order for the page to reload automatically and give the user feedback about their position in the queue.
 
 `!CURRENT_POSITION!`
-Shows the position of the vistor in the queue.
+Shows the position of the visitor in the queue.
 
 `!SUBDOMAIN!`
 Shows the host name without the protocol and path.

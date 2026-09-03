@@ -15,7 +15,7 @@ type IPRange struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. |
+| `ID` | int | ID is a unique identifier for an object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. |
 | `Modified` | *types.DateTime | Identifies the version of the object. This value is always a date type with an `ISO 8601` format. |
 | `Network` | string | The network (CIDR notation). |

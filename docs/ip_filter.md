@@ -17,12 +17,12 @@ type IPFilter struct {
 
 | Field | Type | Description|
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an IP filter it is necessary to add this attribute to your object. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an IP filter it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new cache setting object. This value is only informational so it is not necessary to add this an attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `Value` | string | The value of an IP filter rule can contain a single IP address or a CIDR notation. IPv4 and IPv6 are both supported. An IP filter for IPv6 can only contain a /128 subnet. |
 | `Type` | string | This specifies how the IP filter is applied. Valid values are `BLACKLIST`, `WHITELIST` or `WHITELIST_REQUEST_LIMITER`. |
-| `ExpireDate` | *types.DateTime | Expire date schedules the deaktivation of the IP filter. If none is set, the filter will be active until manual deactivation. |
+| `ExpireDate` | *types.DateTime | Expire date schedules the deactivation of the IP filter. If none is set, the filter will be active until manual deactivation. |
 | `Enabled` | bool | Enable or disable an IP filter. |
 | `Comment` | string | A comment to describe this IP filter. |
 | `SubDomainName` | string | Identifies the subdomain via a FQDN (Full Qualified Domain Name) where this IP filter belongs to. This value cannot be changed through the object’s attribute as it is set via URL parameter. |

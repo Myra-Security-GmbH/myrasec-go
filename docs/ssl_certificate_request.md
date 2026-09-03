@@ -30,7 +30,7 @@ type SSLCertificateRequest struct {
 
 | Field | Type | Description |
 |---|---|---|
-| `ID` | int | ID is an unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a request it is necessary to add this attribute to your object. |
+| `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a request it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. It will be created by the server after creating a new request. This value is only informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates. A deletion identifies the request by its `ID` only. This value is always a date type with an `ISO 8601` format. |
 | `Algorithm` | string | The key algorithm of the requested certificate. Valid values: `RSA2048`, `RSA4096`, `RSA8192`, `ECDSA256`, `ECDSA384`. Let's Encrypt accepts `RSA2048`, `ECDSA256` and `ECDSA384` only. The algorithm is immutable after creation and has to be sent unchanged on updates, a changed value is rejected with HTTP 400. |
