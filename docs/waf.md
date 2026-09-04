@@ -114,7 +114,7 @@ newWAFRule := &myrasec.WAFRule{
     Conditions: []*myrasec.WAFCondition{},
 }
 
-t, err := api.CreateWAFRule(newWAFRule, domainId, "www.example.com")
+t, err := api.CreateWAFRuleContext(ctx, newWAFRule, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -125,7 +125,7 @@ The listing operation returns a list of WAFRules for the given ID.
 
 ### Example
 ```go
-rules, err := api.ListWAFRules(domainId, nil)
+rules, err := api.ListWAFRulesContext(ctx, domainId, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -136,7 +136,7 @@ WAFRules can also be fetched for a single subdomain.
 ### Example
 
 ```go
-rules, err := api.ListWAFRules(domainId, map[string]string{
+rules, err := api.ListWAFRulesContext(ctx, domainId, map[string]string{
 	"subDomain": "www.example.com",
 })
 if err != nil {
@@ -149,7 +149,7 @@ The read operation returns an object of WAFRule for the given ruleId
 
 ### Example
 ```go
-rule, err := api.FetchWAFRule(ruleId)
+rule, err := api.FetchWAFRuleContext(ctx, ruleId)
 if err != nil {
     log.Fatal(err)
 }
@@ -160,7 +160,7 @@ An easy way to access the actions/conditions of a WAF Rule is to range over them
 ### Example
 
 ```go
-rule, err := api.FetchWAFRule(ruleId)
+rule, err := api.FetchWAFRuleContext(ctx, ruleId)
 if err != nil {
 	log.Fatal(err)
 }
@@ -196,7 +196,7 @@ rule := &myrasec.WAFRule{
     Conditions: []*myrasec.WAFCondition{},
 }
 
-updated, err := api.UpdateWAFRule(rule, domainId, "www.example.com")
+updated, err := api.UpdateWAFRuleContext(ctx, rule, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -214,7 +214,7 @@ rule := &myrasec.WAFRule{
     }
 }
 
-t, err := api.DeleteWAFRule(rule)
+t, err := api.DeleteWAFRuleContext(ctx, rule)
 if err != nil {
     log.Fatal(err)
 }

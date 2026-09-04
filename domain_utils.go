@@ -1,20 +1,21 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
 )
 
-// FetchDomainForSubdomainName returns the Domain for the passed subdomain (name)
-func (api *API) FetchDomainForSubdomainName(subdomain string) (*Domain, error) {
+// FetchDomainForSubdomainNameContext returns the Domain for the passed subdomain (name)
+func (api *API) FetchDomainForSubdomainNameContext(ctx context.Context, subdomain string) (*Domain, error) {
 	if IsGeneralDomainName(subdomain) {
 		if strings.HasPrefix(subdomain, "ALL-") {
 			id, err := ExtractDomainIdFromGeneralDomainName(subdomain)
 			if err != nil {
 				return nil, err
 			}
-			return api.GetDomain(id)
+			return api.GetDomainContext(ctx, id)
 		}
 
 		var parts []string
@@ -24,13 +25,13 @@ func (api *API) FetchDomainForSubdomainName(subdomain string) (*Domain, error) {
 			return nil, fmt.Errorf("wrong format for ALL:<DOMAIN_NAME> annotation")
 		}
 
-		return api.FetchDomain(parts[1])
+		return api.FetchDomainContext(ctx, parts[1])
 	}
 
 	maxRetries := 2
 	retries := 0
 	for {
-		subdomains, err := api.ListAllSubdomains(map[string]string{"search": subdomain})
+		subdomains, err := api.ListAllSubdomainsContext(ctx, map[string]string{"search": subdomain})
 		if err != nil {
 			return nil, err
 		}
@@ -41,13 +42,13 @@ func (api *API) FetchDomainForSubdomainName(subdomain string) (*Domain, error) {
 		}
 
 		for dn := range domainNames {
-			domains, err := api.ListDomains(map[string]string{"search": dn})
+			domains, err := api.ListDomainsContext(ctx, map[string]string{"search": dn})
 			if err != nil {
 				return nil, err
 			}
 
 			for _, d := range domains {
-				vhosts, err := api.ListAllSubdomainsForDomain(d.ID, map[string]string{"search": subdomain})
+				vhosts, err := api.ListAllSubdomainsForDomainContext(ctx, d.ID, map[string]string{"search": subdomain})
 				if err != nil {
 					return nil, err
 				}
@@ -70,12 +71,19 @@ func (api *API) FetchDomainForSubdomainName(subdomain string) (*Domain, error) {
 	return nil, fmt.Errorf("unable to find domain for passed subdomain")
 }
 
-// FetchDomain returns the Domain for the passed domain (name)
-func (api *API) FetchDomain(domain string) (*Domain, error) {
+// FetchDomainForSubdomainName is equivalent to FetchDomainForSubdomainNameContext with context.Background().
+//
+// Deprecated: use FetchDomainForSubdomainNameContext.
+func (api *API) FetchDomainForSubdomainName(subdomain string) (*Domain, error) {
+	return api.FetchDomainForSubdomainNameContext(context.Background(), subdomain)
+}
+
+// FetchDomainContext returns the Domain for the passed domain (name)
+func (api *API) FetchDomainContext(ctx context.Context, domain string) (*Domain, error) {
 	maxRetries := 2
 	retries := 0
 	for {
-		domains, err := api.ListDomains(map[string]string{"search": domain})
+		domains, err := api.ListDomainsContext(ctx, map[string]string{"search": domain})
 		if err != nil {
 			return nil, err
 		}
@@ -86,7 +94,7 @@ func (api *API) FetchDomain(domain string) (*Domain, error) {
 			}
 		}
 
-		d, err := api.FetchDomainForSubdomainName(domain)
+		d, err := api.FetchDomainForSubdomainNameContext(ctx, domain)
 		if err != nil {
 			return nil, fmt.Errorf("unable to find domain for passed domain name [%s]", domain)
 		}
@@ -102,6 +110,13 @@ func (api *API) FetchDomain(domain string) (*Domain, error) {
 		api.PruneCache()
 	}
 	return nil, nil
+}
+
+// FetchDomain is equivalent to FetchDomainContext with context.Background().
+//
+// Deprecated: use FetchDomainContext.
+func (api *API) FetchDomain(domain string) (*Domain, error) {
+	return api.FetchDomainContext(context.Background(), domain)
 }
 
 // EnsureTrailingDot ensures and returns the passed subdomain with a trailing dot

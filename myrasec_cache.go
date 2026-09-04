@@ -10,7 +10,6 @@ type responseCache struct {
 	Key     string
 	Created int64
 	Expire  int64
-	Request *http.Request
 	Body    any
 }
 
@@ -75,7 +74,6 @@ func (api *API) cacheResponse(req *http.Request, resp any) {
 		Key:     s,
 		Created: time.Now().Unix(),
 		Expire:  time.Now().Add(time.Second * time.Duration(api.cacheTTL)).Unix(),
-		Request: req,
 		Body:    resp,
 	}
 }
@@ -94,7 +92,9 @@ func (api *API) RemoveFromCache(s string) {
 
 // PruneCache removes all entries from the response cache.
 func (api *API) PruneCache() {
+	api.muCache.Lock()
 	api.cache = make(map[string]*responseCache)
+	api.muCache.Unlock()
 }
 
 // BuildCacheKey generates a SHA256 hash from the request URL to use as a cache key.

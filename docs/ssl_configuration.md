@@ -19,7 +19,7 @@ type SslConfiguration struct {
 ## List configurations
 To get a list of all valid SSL configurations you can simply call this method:
 ```go
-configurations, err := api.ListSSLConfigurations()
+configurations, err := api.ListSslConfigurationsContext(ctx)
 if err != nil {
     log.Fatal(err)
 }

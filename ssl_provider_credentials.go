@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -165,16 +166,16 @@ type SSLCertificateSummary struct {
 	Subdomains []string `json:"subdomains,omitempty" jsonschema:"List of subdomains (FQDNs) assigned to this certificate. Read-only."`
 }
 
-// ListSSLProviderCredentials returns a slice containing all SSL provider credentials of the organization.
+// ListSSLProviderCredentialsContext returns a slice containing all SSL provider credentials of the organization.
 // The secret fields (EABHmac, PrivateKey) are never returned.
-func (api *API) ListSSLProviderCredentials(params map[string]string) ([]SSLProviderCredentials, error) {
+func (api *API) ListSSLProviderCredentialsContext(ctx context.Context, params map[string]string) ([]SSLProviderCredentials, error) {
 	if _, ok := api.methods["listSSLProviderCredentials"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSSLProviderCredentials")
 	}
 
 	definition := api.methods["listSSLProviderCredentials"]
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -186,9 +187,16 @@ func (api *API) ListSSLProviderCredentials(params map[string]string) ([]SSLProvi
 	return *res, nil
 }
 
-// GetSSLProviderCredentials returns a single SSL provider credentials object with/for the given identifier.
+// ListSSLProviderCredentials is equivalent to ListSSLProviderCredentialsContext with context.Background().
+//
+// Deprecated: use ListSSLProviderCredentialsContext.
+func (api *API) ListSSLProviderCredentials(params map[string]string) ([]SSLProviderCredentials, error) {
+	return api.ListSSLProviderCredentialsContext(context.Background(), params)
+}
+
+// GetSSLProviderCredentialsContext returns a single SSL provider credentials object with/for the given identifier.
 // The secret fields (EABHmac, PrivateKey) are never returned.
-func (api *API) GetSSLProviderCredentials(id int) (*SSLProviderCredentials, error) {
+func (api *API) GetSSLProviderCredentialsContext(ctx context.Context, id int) (*SSLProviderCredentials, error) {
 	if _, ok := api.methods["getSSLProviderCredentials"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getSSLProviderCredentials")
 	}
@@ -196,7 +204,7 @@ func (api *API) GetSSLProviderCredentials(id int) (*SSLProviderCredentials, erro
 	definition := api.methods["getSSLProviderCredentials"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -208,15 +216,22 @@ func (api *API) GetSSLProviderCredentials(id int) (*SSLProviderCredentials, erro
 	return res, nil
 }
 
-// CreateSSLProviderCredentials creates new SSL provider credentials using the MYRA API
-func (api *API) CreateSSLProviderCredentials(credentials *SSLProviderCredentials) (*SSLProviderCredentials, error) {
+// GetSSLProviderCredentials is equivalent to GetSSLProviderCredentialsContext with context.Background().
+//
+// Deprecated: use GetSSLProviderCredentialsContext.
+func (api *API) GetSSLProviderCredentials(id int) (*SSLProviderCredentials, error) {
+	return api.GetSSLProviderCredentialsContext(context.Background(), id)
+}
+
+// CreateSSLProviderCredentialsContext creates new SSL provider credentials using the MYRA API
+func (api *API) CreateSSLProviderCredentialsContext(ctx context.Context, credentials *SSLProviderCredentials) (*SSLProviderCredentials, error) {
 	if _, ok := api.methods["createSSLProviderCredentials"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createSSLProviderCredentials")
 	}
 
 	definition := api.methods["createSSLProviderCredentials"]
 
-	result, err := api.call(definition, credentials)
+	result, err := api.call(ctx, definition, credentials)
 	if err != nil {
 		return nil, err
 	}
@@ -228,9 +243,16 @@ func (api *API) CreateSSLProviderCredentials(credentials *SSLProviderCredentials
 	return res, nil
 }
 
-// UpdateSSLProviderCredentials updates the passed SSL provider credentials using the MYRA API.
+// CreateSSLProviderCredentials is equivalent to CreateSSLProviderCredentialsContext with context.Background().
+//
+// Deprecated: use CreateSSLProviderCredentialsContext.
+func (api *API) CreateSSLProviderCredentials(credentials *SSLProviderCredentials) (*SSLProviderCredentials, error) {
+	return api.CreateSSLProviderCredentialsContext(context.Background(), credentials)
+}
+
+// UpdateSSLProviderCredentialsContext updates the passed SSL provider credentials using the MYRA API.
 // Empty Cert and EABHmac values keep the stored ones, so a partial update never clears a secret.
-func (api *API) UpdateSSLProviderCredentials(credentials *SSLProviderCredentials) (*SSLProviderCredentials, error) {
+func (api *API) UpdateSSLProviderCredentialsContext(ctx context.Context, credentials *SSLProviderCredentials) (*SSLProviderCredentials, error) {
 	if _, ok := api.methods["updateSSLProviderCredentials"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSSLProviderCredentials")
 	}
@@ -238,7 +260,7 @@ func (api *API) UpdateSSLProviderCredentials(credentials *SSLProviderCredentials
 	definition := api.methods["updateSSLProviderCredentials"]
 	definition.Action = fmt.Sprintf(definition.Action, credentials.ID)
 
-	result, err := api.call(definition, credentials)
+	result, err := api.call(ctx, definition, credentials)
 	if err != nil {
 		return nil, err
 	}
@@ -250,10 +272,17 @@ func (api *API) UpdateSSLProviderCredentials(credentials *SSLProviderCredentials
 	return res, nil
 }
 
-// DeleteSSLProviderCredentials deletes the passed SSL provider credentials using the MYRA API.
+// UpdateSSLProviderCredentials is equivalent to UpdateSSLProviderCredentialsContext with context.Background().
+//
+// Deprecated: use UpdateSSLProviderCredentialsContext.
+func (api *API) UpdateSSLProviderCredentials(credentials *SSLProviderCredentials) (*SSLProviderCredentials, error) {
+	return api.UpdateSSLProviderCredentialsContext(context.Background(), credentials)
+}
+
+// DeleteSSLProviderCredentialsContext deletes the passed SSL provider credentials using the MYRA API.
 // Managed certificate requests referencing the credentials keep existing, their
 // SSLProviderCredentialsID is cleared.
-func (api *API) DeleteSSLProviderCredentials(credentials *SSLProviderCredentials) (*SSLProviderCredentials, error) {
+func (api *API) DeleteSSLProviderCredentialsContext(ctx context.Context, credentials *SSLProviderCredentials) (*SSLProviderCredentials, error) {
 	if _, ok := api.methods["deleteSSLProviderCredentials"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteSSLProviderCredentials")
 	}
@@ -261,7 +290,7 @@ func (api *API) DeleteSSLProviderCredentials(credentials *SSLProviderCredentials
 	definition := api.methods["deleteSSLProviderCredentials"]
 	definition.Action = fmt.Sprintf(definition.Action, credentials.ID)
 
-	_, err := api.call(definition, credentials)
+	_, err := api.call(ctx, definition, credentials)
 	if err != nil {
 		return nil, err
 	}
@@ -269,9 +298,16 @@ func (api *API) DeleteSSLProviderCredentials(credentials *SSLProviderCredentials
 	return credentials, nil
 }
 
-// ListSSLProviderCertificates returns a slice containing the certificates issued with the SSL
+// DeleteSSLProviderCredentials is equivalent to DeleteSSLProviderCredentialsContext with context.Background().
+//
+// Deprecated: use DeleteSSLProviderCredentialsContext.
+func (api *API) DeleteSSLProviderCredentials(credentials *SSLProviderCredentials) (*SSLProviderCredentials, error) {
+	return api.DeleteSSLProviderCredentialsContext(context.Background(), credentials)
+}
+
+// ListSSLProviderCertificatesContext returns a slice containing the certificates issued with the SSL
 // provider credentials with the given identifier.
-func (api *API) ListSSLProviderCertificates(credentialsId int, params map[string]string) ([]SSLCertificateSummary, error) {
+func (api *API) ListSSLProviderCertificatesContext(ctx context.Context, credentialsId int, params map[string]string) ([]SSLCertificateSummary, error) {
 	if _, ok := api.methods["listSSLProviderCertificates"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSSLProviderCertificates")
 	}
@@ -279,7 +315,7 @@ func (api *API) ListSSLProviderCertificates(credentialsId int, params map[string
 	definition := api.methods["listSSLProviderCertificates"]
 	definition.Action = fmt.Sprintf(definition.Action, credentialsId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -289,4 +325,11 @@ func (api *API) ListSSLProviderCertificates(credentialsId int, params map[string
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return *res, nil
+}
+
+// ListSSLProviderCertificates is equivalent to ListSSLProviderCertificatesContext with context.Background().
+//
+// Deprecated: use ListSSLProviderCertificatesContext.
+func (api *API) ListSSLProviderCertificates(credentialsId int, params map[string]string) ([]SSLCertificateSummary, error) {
+	return api.ListSSLProviderCertificatesContext(context.Background(), credentialsId, params)
 }

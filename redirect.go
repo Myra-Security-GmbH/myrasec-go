@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -95,8 +96,8 @@ type Redirect struct {
 	ExpertMode bool `json:"expertMode,omitempty" jsonschema:"If true, disables automatic redirect loop detection. Use with caution."`
 }
 
-// GetRedirect returns a single redirect with/for the given identifier
-func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redirect, error) {
+// GetRedirectContext returns a single redirect with/for the given identifier
+func (api *API) GetRedirectContext(ctx context.Context, domainId int, subDomainName string, id int) (*Redirect, error) {
 	if _, ok := api.methods["getRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getRedirect")
 	}
@@ -104,7 +105,7 @@ func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redire
 	definition := api.methods["getRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -116,8 +117,15 @@ func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redire
 	return res, nil
 }
 
-// ListRedirects returns a slice containing all visible redirects for a subdomain
-func (api *API) ListRedirects(domainId int, subDomainName string, params map[string]string) ([]Redirect, error) {
+// GetRedirect is equivalent to GetRedirectContext with context.Background().
+//
+// Deprecated: use GetRedirectContext.
+func (api *API) GetRedirect(domainId int, subDomainName string, id int) (*Redirect, error) {
+	return api.GetRedirectContext(context.Background(), domainId, subDomainName, id)
+}
+
+// ListRedirectsContext returns a slice containing all visible redirects for a subdomain
+func (api *API) ListRedirectsContext(ctx context.Context, domainId int, subDomainName string, params map[string]string) ([]Redirect, error) {
 	if _, ok := api.methods["listRedirects"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listRedirects")
 	}
@@ -125,7 +133,7 @@ func (api *API) ListRedirects(domainId int, subDomainName string, params map[str
 	definition := api.methods["listRedirects"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -137,8 +145,15 @@ func (api *API) ListRedirects(domainId int, subDomainName string, params map[str
 	return *res, nil
 }
 
-// CreateRedirect creates a new redirect for the passed subdomain (name) using the MYRA API
-func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
+// ListRedirects is equivalent to ListRedirectsContext with context.Background().
+//
+// Deprecated: use ListRedirectsContext.
+func (api *API) ListRedirects(domainId int, subDomainName string, params map[string]string) ([]Redirect, error) {
+	return api.ListRedirectsContext(context.Background(), domainId, subDomainName, params)
+}
+
+// CreateRedirectContext creates a new redirect for the passed subdomain (name) using the MYRA API
+func (api *API) CreateRedirectContext(ctx context.Context, redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
 	if _, ok := api.methods["createRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createRedirect")
 	}
@@ -146,7 +161,7 @@ func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName s
 	definition := api.methods["createRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, redirect)
+	result, err := api.call(ctx, definition, redirect)
 	if err != nil {
 		return nil, err
 	}
@@ -157,8 +172,15 @@ func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName s
 	return res, nil
 }
 
-// UpdateRedirect updates the passed redirect using the MYRA API
-func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
+// CreateRedirect is equivalent to CreateRedirectContext with context.Background().
+//
+// Deprecated: use CreateRedirectContext.
+func (api *API) CreateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
+	return api.CreateRedirectContext(context.Background(), redirect, domainId, subDomainName)
+}
+
+// UpdateRedirectContext updates the passed redirect using the MYRA API
+func (api *API) UpdateRedirectContext(ctx context.Context, redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
 	if _, ok := api.methods["updateRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateRedirect")
 	}
@@ -166,7 +188,7 @@ func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName s
 	definition := api.methods["updateRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, redirect.ID)
 
-	result, err := api.call(definition, redirect)
+	result, err := api.call(ctx, definition, redirect)
 	if err != nil {
 		return nil, err
 	}
@@ -177,8 +199,15 @@ func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName s
 	return res, nil
 }
 
-// DeleteRedirect deletes the passed redirect using the MYRA API
-func (api *API) DeleteRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
+// UpdateRedirect is equivalent to UpdateRedirectContext with context.Background().
+//
+// Deprecated: use UpdateRedirectContext.
+func (api *API) UpdateRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
+	return api.UpdateRedirectContext(context.Background(), redirect, domainId, subDomainName)
+}
+
+// DeleteRedirectContext deletes the passed redirect using the MYRA API
+func (api *API) DeleteRedirectContext(ctx context.Context, redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
 	if _, ok := api.methods["deleteRedirect"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteRedirect")
 	}
@@ -186,9 +215,16 @@ func (api *API) DeleteRedirect(redirect *Redirect, domainId int, subDomainName s
 	definition := api.methods["deleteRedirect"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, redirect.ID)
 
-	_, err := api.call(definition, redirect)
+	_, err := api.call(ctx, definition, redirect)
 	if err != nil {
 		return nil, err
 	}
 	return redirect, nil
+}
+
+// DeleteRedirect is equivalent to DeleteRedirectContext with context.Background().
+//
+// Deprecated: use DeleteRedirectContext.
+func (api *API) DeleteRedirect(redirect *Redirect, domainId int, subDomainName string) (*Redirect, error) {
+	return api.DeleteRedirectContext(context.Background(), redirect, domainId, subDomainName)
 }

@@ -11,7 +11,7 @@ To get the bind zone config as string as it's required in the bind config file
 params := map[string]string{
     "ipTarget": "myra"
 }
-zoneConfig, err := api.GetZoneConfigRaw(domainId, params)
+zoneConfig, err := api.GetZoneConfigRawContext(ctx, domainId, params)
 if err != nil {
     log.Fatal(err)
 }
@@ -38,7 +38,7 @@ To get the data printed to the bind zone config as json you can use this method
 params := map[string]string{
     "ipTarget": "myra"
 }
-zoneConfig, err := api.GetZoneConfigJson(domainId, params)
+zoneConfig, err := api.GetZoneConfigJsonContext(ctx, domainId, params)
 if err != nil {
     log.Fatal(err)
 }

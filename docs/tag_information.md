@@ -30,7 +30,7 @@ information := &myrasec.TagInformation{
     Value:   "/",
     Comment: "this is an optional comment",
 }
-i, err := api.CreateTagInformation(information, tagId)
+i, err := api.CreateTagInformationContext(ctx, information, tagId)
 if err != nil {
     log.Fatal(err)
 }
@@ -42,7 +42,7 @@ The listing operation returns a list of tag information for the passed tagId
 
 ### Example 
 ```go
-information, err := api.ListTagInformation(tagId, map[string]string{})
+information, err := api.ListTagInformationContext(ctx, tagId, map[string]string{})
 if err != nil {
     log.Fatal(err)
 }
@@ -52,7 +52,7 @@ It is possible to list all tags for an assigned subdomain
 
 ### Example 
 ```go
-information, err := api.ListTagInformationBySubDomainName(subdomainName, map[string]string{})
+information, err := api.ListTagInformationBySubDomainNameContext(ctx, subdomainName, map[string]string{})
 if err != nil {
     log.Fatal(err)
 }
@@ -72,7 +72,7 @@ information := &myrasec.TagInformation{
     Key:      "Updated-Key",
 }
 
-i, err := api.UpdateTagInformation(information, tagId);
+i, err := api.UpdateTagInformationContext(ctx, information, tagId);
 if err != nil {
     log.Fatal(err)
 }
@@ -90,7 +90,7 @@ information := &myrasec.TagInformation{
         Time: modified,
     },
 }
-i, err := api.DeleteTagInformation(information, tagId);
+i, err := api.DeleteTagInformationContext(ctx, information, tagId);
 if err != nil {
     log.Fatal(err)
 }

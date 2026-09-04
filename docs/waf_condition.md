@@ -5,7 +5,7 @@ The listing operation returns a list of WAF conditions.
 
 ### Example
 ```go
-rules, err := api.ListWAFConditions()
+rules, err := api.ListWAFConditionsContext(ctx)
 if err != nil {
     log.Fatal(err)
 }

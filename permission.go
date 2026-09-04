@@ -2,6 +2,7 @@ package myrasec
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -161,16 +162,16 @@ type PermissionCheckResult struct {
 	IsAuthorized bool `json:"isAuthorized" jsonschema:"True if the requesting user is allowed to perform the requested action on the requested target."`
 }
 
-// ListMyPermissions returns the permissions of the currently authenticated user.
+// ListMyPermissionsContext returns the permissions of the currently authenticated user.
 // Supported query parameters include "language", "actions" and "objects".
-func (api *API) ListMyPermissions(params map[string]string) ([]ObjectPermission, error) {
+func (api *API) ListMyPermissionsContext(ctx context.Context, params map[string]string) ([]ObjectPermission, error) {
 	if _, ok := api.methods["listMyPermissions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listMyPermissions")
 	}
 
 	definition := api.methods["listMyPermissions"]
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -182,17 +183,24 @@ func (api *API) ListMyPermissions(params map[string]string) ([]ObjectPermission,
 	return *res, nil
 }
 
-// CheckMyPermission asks the API whether the authenticated user is allowed to
+// ListMyPermissions is equivalent to ListMyPermissionsContext with context.Background().
+//
+// Deprecated: use ListMyPermissionsContext.
+func (api *API) ListMyPermissions(params map[string]string) ([]ObjectPermission, error) {
+	return api.ListMyPermissionsContext(context.Background(), params)
+}
+
+// CheckMyPermissionContext asks the API whether the authenticated user is allowed to
 // perform the action described by the passed permission template on the
 // referenced object type / instance.
-func (api *API) CheckMyPermission(permission *ObjectPermission) (*PermissionCheckResult, error) {
+func (api *API) CheckMyPermissionContext(ctx context.Context, permission *ObjectPermission) (*PermissionCheckResult, error) {
 	if _, ok := api.methods["checkMyPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "checkMyPermission")
 	}
 
 	definition := api.methods["checkMyPermission"]
 
-	result, err := api.call(definition, permission)
+	result, err := api.call(ctx, definition, permission)
 	if err != nil {
 		return nil, err
 	}
@@ -204,9 +212,16 @@ func (api *API) CheckMyPermission(permission *ObjectPermission) (*PermissionChec
 	return res, nil
 }
 
-// ListUserPermissions returns all permissions assigned to the user with the
+// CheckMyPermission is equivalent to CheckMyPermissionContext with context.Background().
+//
+// Deprecated: use CheckMyPermissionContext.
+func (api *API) CheckMyPermission(permission *ObjectPermission) (*PermissionCheckResult, error) {
+	return api.CheckMyPermissionContext(context.Background(), permission)
+}
+
+// ListUserPermissionsContext returns all permissions assigned to the user with the
 // given userID.
-func (api *API) ListUserPermissions(userID int, params map[string]string) ([]ObjectPermission, error) {
+func (api *API) ListUserPermissionsContext(ctx context.Context, userID int, params map[string]string) ([]ObjectPermission, error) {
 	if _, ok := api.methods["listUserPermissions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listUserPermissions")
 	}
@@ -214,7 +229,7 @@ func (api *API) ListUserPermissions(userID int, params map[string]string) ([]Obj
 	definition := api.methods["listUserPermissions"]
 	definition.Action = fmt.Sprintf(definition.Action, userID)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -226,8 +241,15 @@ func (api *API) ListUserPermissions(userID int, params map[string]string) ([]Obj
 	return *res, nil
 }
 
-// AddUserPermission grants the given permission to the user with the given userID.
-func (api *API) AddUserPermission(permission *ObjectPermission, userID int) (*ObjectPermission, error) {
+// ListUserPermissions is equivalent to ListUserPermissionsContext with context.Background().
+//
+// Deprecated: use ListUserPermissionsContext.
+func (api *API) ListUserPermissions(userID int, params map[string]string) ([]ObjectPermission, error) {
+	return api.ListUserPermissionsContext(context.Background(), userID, params)
+}
+
+// AddUserPermissionContext grants the given permission to the user with the given userID.
+func (api *API) AddUserPermissionContext(ctx context.Context, permission *ObjectPermission, userID int) (*ObjectPermission, error) {
 	if _, ok := api.methods["addUserPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "addUserPermission")
 	}
@@ -235,7 +257,7 @@ func (api *API) AddUserPermission(permission *ObjectPermission, userID int) (*Ob
 	definition := api.methods["addUserPermission"]
 	definition.Action = fmt.Sprintf(definition.Action, userID)
 
-	result, err := api.call(definition, permission)
+	result, err := api.call(ctx, definition, permission)
 	if err != nil {
 		return nil, err
 	}
@@ -247,9 +269,16 @@ func (api *API) AddUserPermission(permission *ObjectPermission, userID int) (*Ob
 	return res, nil
 }
 
-// RemoveUserPermission revokes the passed permission from the user identified
+// AddUserPermission is equivalent to AddUserPermissionContext with context.Background().
+//
+// Deprecated: use AddUserPermissionContext.
+func (api *API) AddUserPermission(permission *ObjectPermission, userID int) (*ObjectPermission, error) {
+	return api.AddUserPermissionContext(context.Background(), permission, userID)
+}
+
+// RemoveUserPermissionContext revokes the passed permission from the user identified
 // by userID.
-func (api *API) RemoveUserPermission(permission *ObjectPermission, userID int) (*ObjectPermission, error) {
+func (api *API) RemoveUserPermissionContext(ctx context.Context, permission *ObjectPermission, userID int) (*ObjectPermission, error) {
 	if _, ok := api.methods["removeUserPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "removeUserPermission")
 	}
@@ -257,16 +286,23 @@ func (api *API) RemoveUserPermission(permission *ObjectPermission, userID int) (
 	definition := api.methods["removeUserPermission"]
 	definition.Action = fmt.Sprintf(definition.Action, userID, permission.ID)
 
-	_, err := api.call(definition, permission)
+	_, err := api.call(ctx, definition, permission)
 	if err != nil {
 		return nil, err
 	}
 	return permission, nil
 }
 
-// ListUserGroupPermissions returns all permissions attached to the user group
+// RemoveUserPermission is equivalent to RemoveUserPermissionContext with context.Background().
+//
+// Deprecated: use RemoveUserPermissionContext.
+func (api *API) RemoveUserPermission(permission *ObjectPermission, userID int) (*ObjectPermission, error) {
+	return api.RemoveUserPermissionContext(context.Background(), permission, userID)
+}
+
+// ListUserGroupPermissionsContext returns all permissions attached to the user group
 // with the given groupID.
-func (api *API) ListUserGroupPermissions(groupID int, params map[string]string) ([]ObjectPermission, error) {
+func (api *API) ListUserGroupPermissionsContext(ctx context.Context, groupID int, params map[string]string) ([]ObjectPermission, error) {
 	if _, ok := api.methods["listUserGroupPermissions"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listUserGroupPermissions")
 	}
@@ -274,7 +310,7 @@ func (api *API) ListUserGroupPermissions(groupID int, params map[string]string) 
 	definition := api.methods["listUserGroupPermissions"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -286,9 +322,16 @@ func (api *API) ListUserGroupPermissions(groupID int, params map[string]string) 
 	return *res, nil
 }
 
-// AddUserGroupPermission grants the given permission to the user group with the
+// ListUserGroupPermissions is equivalent to ListUserGroupPermissionsContext with context.Background().
+//
+// Deprecated: use ListUserGroupPermissionsContext.
+func (api *API) ListUserGroupPermissions(groupID int, params map[string]string) ([]ObjectPermission, error) {
+	return api.ListUserGroupPermissionsContext(context.Background(), groupID, params)
+}
+
+// AddUserGroupPermissionContext grants the given permission to the user group with the
 // given groupID.
-func (api *API) AddUserGroupPermission(permission *ObjectPermission, groupID int) (*ObjectPermission, error) {
+func (api *API) AddUserGroupPermissionContext(ctx context.Context, permission *ObjectPermission, groupID int) (*ObjectPermission, error) {
 	if _, ok := api.methods["addUserGroupPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "addUserGroupPermission")
 	}
@@ -296,7 +339,7 @@ func (api *API) AddUserGroupPermission(permission *ObjectPermission, groupID int
 	definition := api.methods["addUserGroupPermission"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID)
 
-	result, err := api.call(definition, permission)
+	result, err := api.call(ctx, definition, permission)
 	if err != nil {
 		return nil, err
 	}
@@ -308,9 +351,16 @@ func (api *API) AddUserGroupPermission(permission *ObjectPermission, groupID int
 	return res, nil
 }
 
-// RemoveUserGroupPermission revokes the passed permission from the user group
+// AddUserGroupPermission is equivalent to AddUserGroupPermissionContext with context.Background().
+//
+// Deprecated: use AddUserGroupPermissionContext.
+func (api *API) AddUserGroupPermission(permission *ObjectPermission, groupID int) (*ObjectPermission, error) {
+	return api.AddUserGroupPermissionContext(context.Background(), permission, groupID)
+}
+
+// RemoveUserGroupPermissionContext revokes the passed permission from the user group
 // identified by groupID.
-func (api *API) RemoveUserGroupPermission(permission *ObjectPermission, groupID int) (*ObjectPermission, error) {
+func (api *API) RemoveUserGroupPermissionContext(ctx context.Context, permission *ObjectPermission, groupID int) (*ObjectPermission, error) {
 	if _, ok := api.methods["removeUserGroupPermission"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "removeUserGroupPermission")
 	}
@@ -318,11 +368,18 @@ func (api *API) RemoveUserGroupPermission(permission *ObjectPermission, groupID 
 	definition := api.methods["removeUserGroupPermission"]
 	definition.Action = fmt.Sprintf(definition.Action, groupID, permission.ID)
 
-	_, err := api.call(definition, permission)
+	_, err := api.call(ctx, definition, permission)
 	if err != nil {
 		return nil, err
 	}
 	return permission, nil
+}
+
+// RemoveUserGroupPermission is equivalent to RemoveUserGroupPermissionContext with context.Background().
+//
+// Deprecated: use RemoveUserGroupPermissionContext.
+func (api *API) RemoveUserGroupPermission(permission *ObjectPermission, groupID int) (*ObjectPermission, error) {
+	return api.RemoveUserGroupPermissionContext(context.Background(), permission, groupID)
 }
 
 // decodePermissionCheckResponse decodes the response of POST /user/permissions/check.

@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -243,8 +244,8 @@ type Settings struct {
 	WAFPolicy string `json:"waf_policy,omitempty" jsonschema:"Default action when a WAF rule is triggered. Valid values: 'block', 'allow', 'log'."`
 }
 
-// ListSettings returns a Setting struct containing the settings for the passed subdomain
-func (api *API) ListSettings(domainId int, subDomainName string, params map[string]string) (*Settings, error) {
+// ListSettingsContext returns a Setting struct containing the settings for the passed subdomain
+func (api *API) ListSettingsContext(ctx context.Context, domainId int, subDomainName string, params map[string]string) (*Settings, error) {
 	if _, ok := api.methods["listSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSettings")
 	}
@@ -252,7 +253,7 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 	definition := api.methods["listSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -264,8 +265,15 @@ func (api *API) ListSettings(domainId int, subDomainName string, params map[stri
 	return res, nil
 }
 
-// ListSettingsFull returns a Setting struct containing the full hierarchy of the settings
-func (api *API) ListSettingsFull(domainId int, subDomainName string, params map[string]string) (any, error) {
+// ListSettings is equivalent to ListSettingsContext with context.Background().
+//
+// Deprecated: use ListSettingsContext.
+func (api *API) ListSettings(domainId int, subDomainName string, params map[string]string) (*Settings, error) {
+	return api.ListSettingsContext(context.Background(), domainId, subDomainName, params)
+}
+
+// ListSettingsFullContext returns a Setting struct containing the full hierarchy of the settings
+func (api *API) ListSettingsFullContext(ctx context.Context, domainId int, subDomainName string, params map[string]string) (any, error) {
 	if _, ok := api.methods["listSettingsFull"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSettings")
 	}
@@ -273,7 +281,7 @@ func (api *API) ListSettingsFull(domainId int, subDomainName string, params map[
 	definition := api.methods["listSettingsFull"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -281,9 +289,17 @@ func (api *API) ListSettingsFull(domainId int, subDomainName string, params map[
 	return result, nil
 }
 
-// UpdateSettings updates the passed settings using the MYRA API
-// Deprecated: this method uses myra-api settings in a wrong way, please use UpdateSettingsPartial instead
-func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName string) (*Settings, error) {
+// ListSettingsFull is equivalent to ListSettingsFullContext with context.Background().
+//
+// Deprecated: use ListSettingsFullContext.
+func (api *API) ListSettingsFull(domainId int, subDomainName string, params map[string]string) (any, error) {
+	return api.ListSettingsFullContext(context.Background(), domainId, subDomainName, params)
+}
+
+// UpdateSettingsContext updates the passed settings using the MYRA API.
+//
+// Deprecated: this method uses the settings of the MYRA API in a wrong way, use UpdateSettingsPartialContext instead.
+func (api *API) UpdateSettingsContext(ctx context.Context, settings *Settings, domainId int, subDomainName string) (*Settings, error) {
 	if _, ok := api.methods["updateSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSettings")
 	}
@@ -291,7 +307,7 @@ func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName s
 	definition := api.methods["updateSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, settings)
+	result, err := api.call(ctx, definition, settings)
 	if err != nil {
 		return nil, err
 	}
@@ -302,8 +318,15 @@ func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName s
 	return res, nil
 }
 
-// UpdateSettingsPartial updates the passed settings using the MYRA API
-func (api *API) UpdateSettingsPartial(settings map[string]any, domainId int, subDomainName string) (any, error) {
+// UpdateSettings is equivalent to UpdateSettingsContext with context.Background().
+//
+// Deprecated: this method uses the settings of the MYRA API in a wrong way, use UpdateSettingsPartialContext instead.
+func (api *API) UpdateSettings(settings *Settings, domainId int, subDomainName string) (*Settings, error) {
+	return api.UpdateSettingsContext(context.Background(), settings, domainId, subDomainName)
+}
+
+// UpdateSettingsPartialContext updates the passed settings using the MYRA API
+func (api *API) UpdateSettingsPartialContext(ctx context.Context, settings map[string]any, domainId int, subDomainName string) (any, error) {
 	if _, ok := api.methods["updateSettingsPartial"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSettingsPartial")
 	}
@@ -311,11 +334,18 @@ func (api *API) UpdateSettingsPartial(settings map[string]any, domainId int, sub
 	definition := api.methods["updateSettingsPartial"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(definition, settings)
+	result, err := api.call(ctx, definition, settings)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
+}
+
+// UpdateSettingsPartial is equivalent to UpdateSettingsPartialContext with context.Background().
+//
+// Deprecated: use UpdateSettingsPartialContext.
+func (api *API) UpdateSettingsPartial(settings map[string]any, domainId int, subDomainName string) (any, error) {
+	return api.UpdateSettingsPartialContext(context.Background(), settings, domainId, subDomainName)
 }
 
 // decodeSettingsResponse - custom decode function for settings response. Used in the ListSettings action.

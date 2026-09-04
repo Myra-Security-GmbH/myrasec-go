@@ -101,7 +101,7 @@ ssl := &myrasec.SSLCertificate{
         "www.example.com",
     },
 }
-cert, err := api.CreateSSLCertificate(ssl, "example.com")
+cert, err := api.CreateSSLCertificateContext(ctx, ssl, "example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -112,13 +112,13 @@ The listing operation returns a list of SSL certificates for the passed domainId
 
 ### Example
 ```go
-api.ListSSLCertificates(domainId, nil)
+api.ListSSLCertificatesContext(ctx, domainId, nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListSSLCertificates` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListSSLCertificatesContext` function.
 
 | Name | Description | Default |
 |---|---|---|
@@ -128,7 +128,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListSSL
 ## Read
 The read operation returns a single SSL certificate by it's ID
 ```go
-cert, err := api.GetSSLCertificate(domaindId, certId)
+cert, err := api.GetSSLCertificateContext(ctx, domaindId, certId)
 if err != nil {
     log.Fatal(err)
 }
@@ -153,7 +153,7 @@ ssl := &myrasec.SSLCertificate{
     },
 }
 
-cert, err := api.UpdateSSLCertificate(ssl, "example.com")
+cert, err := api.UpdateSSLCertificateContext(ctx, ssl, "example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -161,7 +161,7 @@ if err != nil {
 
 ## Delete
 It is not necessary to delete a certificate. When a certificate has not been assigned to any subdomain for more than one week it will be automatically removed.
-Due to the sake of consistency and completeness, the `DeleteSSLCertificate` function is implemented and simply removes the assigned subdomains from the certificate.
+Due to the sake of consistency and completeness, the `DeleteSSLCertificateContext` function is implemented and simply removes the assigned subdomains from the certificate.
 
 ### Example
 ```go
@@ -176,7 +176,7 @@ ssl := &myrasec.SSLCertificate{
     },
 }
 
-cert, err := api.DeleteSSLCertificate(ssl, "example.com")
+cert, err := api.DeleteSSLCertificateContext(ctx, ssl, "example.com")
 if err != nil {
     log.Fatal(err)
 }

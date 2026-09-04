@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -142,8 +143,8 @@ type SSLIntermediate struct {
 	Issuer string `json:"issuer" jsonschema:"The name of the Issuer (CA) that signed this certificate. Read-only."`
 }
 
-// GetSSLCertificate returns a single SSL certificate with/for the given identifier
-func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error) {
+// GetSSLCertificateContext returns a single SSL certificate with/for the given identifier
+func (api *API) GetSSLCertificateContext(ctx context.Context, domainId int, id int) (*SSLCertificate, error) {
 	if _, ok := api.methods["getSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getSSLCertificate")
 	}
@@ -151,7 +152,7 @@ func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error)
 	definition := api.methods["getSSLCertificate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -163,8 +164,15 @@ func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error)
 	return res, nil
 }
 
-// ListSSLCertificates returns a slice containing all visible SSL certificates for a domain
-func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]SSLCertificate, error) {
+// GetSSLCertificate is equivalent to GetSSLCertificateContext with context.Background().
+//
+// Deprecated: use GetSSLCertificateContext.
+func (api *API) GetSSLCertificate(domainId int, id int) (*SSLCertificate, error) {
+	return api.GetSSLCertificateContext(context.Background(), domainId, id)
+}
+
+// ListSSLCertificatesContext returns a slice containing all visible SSL certificates for a domain
+func (api *API) ListSSLCertificatesContext(ctx context.Context, domainId int, params map[string]string) ([]SSLCertificate, error) {
 	if _, ok := api.methods["listSSLCertificates"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSSLCertificates")
 	}
@@ -172,7 +180,7 @@ func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]S
 	definition := api.methods["listSSLCertificates"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -184,8 +192,15 @@ func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]S
 	return *res, nil
 }
 
-// CreateSSLCertificate creates a new SSL certificates on the passed domain (ID) using the MYRA API
-func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
+// ListSSLCertificates is equivalent to ListSSLCertificatesContext with context.Background().
+//
+// Deprecated: use ListSSLCertificatesContext.
+func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]SSLCertificate, error) {
+	return api.ListSSLCertificatesContext(context.Background(), domainId, params)
+}
+
+// CreateSSLCertificateContext creates a new SSL certificates on the passed domain (ID) using the MYRA API
+func (api *API) CreateSSLCertificateContext(ctx context.Context, cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	if _, ok := api.methods["createSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createSSLCertificate")
 	}
@@ -193,7 +208,7 @@ func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	definition := api.methods["createSSLCertificate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, cert)
+	result, err := api.call(ctx, definition, cert)
 	if err != nil {
 		return nil, err
 	}
@@ -204,8 +219,15 @@ func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	return res, nil
 }
 
-// UpdateSSLCertificate updates the passed SSL certificate using the MYRA API
-func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
+// CreateSSLCertificate is equivalent to CreateSSLCertificateContext with context.Background().
+//
+// Deprecated: use CreateSSLCertificateContext.
+func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
+	return api.CreateSSLCertificateContext(context.Background(), cert, domainId)
+}
+
+// UpdateSSLCertificateContext updates the passed SSL certificate using the MYRA API
+func (api *API) UpdateSSLCertificateContext(ctx context.Context, cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	if _, ok := api.methods["updateSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSSLCertificate")
 	}
@@ -213,7 +235,7 @@ func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	definition := api.methods["updateSSLCertificate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, cert.ID)
 
-	result, err := api.call(definition, cert)
+	result, err := api.call(ctx, definition, cert)
 	if err != nil {
 		return nil, err
 	}
@@ -224,8 +246,15 @@ func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	return res, nil
 }
 
-// DeleteSSLCertificate "deletes" the passed SSL certificate by removing the assigned subdomains from the certificate using the MYRA API
-func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
+// UpdateSSLCertificate is equivalent to UpdateSSLCertificateContext with context.Background().
+//
+// Deprecated: use UpdateSSLCertificateContext.
+func (api *API) UpdateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
+	return api.UpdateSSLCertificateContext(context.Background(), cert, domainId)
+}
+
+// DeleteSSLCertificateContext "deletes" the passed SSL certificate by removing the assigned subdomains from the certificate using the MYRA API
+func (api *API) DeleteSSLCertificateContext(ctx context.Context, cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	if _, ok := api.methods["deleteSSLCertificate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteSSLCertificate")
 	}
@@ -235,7 +264,7 @@ func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 
 	cert.Subdomains = []string{}
 
-	result, err := api.call(definition, cert)
+	result, err := api.call(ctx, definition, cert)
 	if err != nil {
 		return nil, err
 	}
@@ -244,4 +273,11 @@ func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return res, nil
+}
+
+// DeleteSSLCertificate is equivalent to DeleteSSLCertificateContext with context.Background().
+//
+// Deprecated: use DeleteSSLCertificateContext.
+func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
+	return api.DeleteSSLCertificateContext(context.Background(), cert, domainId)
 }

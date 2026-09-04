@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -111,14 +112,14 @@ type UserRole struct {
 	Role string `json:"role,omitempty" jsonschema:"The role identifier. Allowed values: 'ADMINISTRATOR', 'USER'."`
 }
 
-// Me returns the active user information
-func (api *API) Me() (*User, error) {
+// MeContext returns the active user information
+func (api *API) MeContext(ctx context.Context) (*User, error) {
 	if _, ok := api.methods["me"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "me")
 	}
 
 	definition := api.methods["me"]
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -128,4 +129,11 @@ func (api *API) Me() (*User, error) {
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return res, nil
+}
+
+// Me is equivalent to MeContext with context.Background().
+//
+// Deprecated: use MeContext.
+func (api *API) Me() (*User, error) {
+	return api.MeContext(context.Background())
 }

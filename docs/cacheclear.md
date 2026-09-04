@@ -28,7 +28,7 @@ cc := &myrasec.CacheClear{
     Resource: "/*.jpg",
     Recursive: true,
 }
-cc, err := api.ClearCache(cc, domainId)
+cc, err := api.ClearCacheContext(ctx, cc, domainId)
 if err != nil {
     panic(err)
 }
@@ -44,7 +44,7 @@ cc := &myrasec.CacheClear{
     Resource: "/*.jpg",
     Recursive: true,
 }
-result, err := api.ClearCache(cc, domainId)
+result, err := api.ClearCacheContext(ctx, cc, domainId)
 if err != nil {
     panic(err)
 }

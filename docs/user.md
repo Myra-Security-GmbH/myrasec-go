@@ -77,7 +77,7 @@ Returns the User object representing the account currently used to access the AP
 
 ### Example
 ```go
-me, err := api.Me()
+me, err := api.MeContext(ctx)
 if err != nil {
     log.Fatal(err)
 }
@@ -89,7 +89,7 @@ log.Println(me.ID, me.Login)
 Several endpoints return User objects with the fields populated as documented above. For example, [ListUsersFromGroup](./usergroup.md) returns a list of users that are members of a given group, including the optional fields like `Firstname`, `OrganizationID` and (when `includeRoles=true` is passed) `Roles`.
 
 ```go
-users, err := api.ListUsersFromGroup(groupId, map[string]string{
+users, err := api.ListUsersFromGroupContext(ctx, groupId, map[string]string{
     "includeRoles": "true",
 })
 if err != nil {

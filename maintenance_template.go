@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -61,8 +62,8 @@ type MaintenanceTemplate struct {
 	Content string `json:"content" jsonschema:"The raw HTML content. Important: Do not link to resources (images/CSS) hosted on the domain being put into maintenance. Use external domains or inline Base64 encoding for assets."`
 }
 
-// ListMaintenanceTemplates returns a slice containing all maintenance templates for a domain
-func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string) ([]MaintenanceTemplate, error) {
+// ListMaintenanceTemplatesContext returns a slice containing all maintenance templates for a domain
+func (api *API) ListMaintenanceTemplatesContext(ctx context.Context, domainId int, params map[string]string) ([]MaintenanceTemplate, error) {
 	if _, ok := api.methods["listMaintenanceTemplates"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listMaintenanceTemplates")
 	}
@@ -70,7 +71,7 @@ func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string)
 	definition := api.methods["listMaintenanceTemplates"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -82,8 +83,15 @@ func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string)
 	return *res, nil
 }
 
-// CreateMaintenanceTemplate creates a new maintenance template for the passed domain (id) using the MYRA API
-func (api *API) CreateMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
+// ListMaintenanceTemplates is equivalent to ListMaintenanceTemplatesContext with context.Background().
+//
+// Deprecated: use ListMaintenanceTemplatesContext.
+func (api *API) ListMaintenanceTemplates(domainId int, params map[string]string) ([]MaintenanceTemplate, error) {
+	return api.ListMaintenanceTemplatesContext(context.Background(), domainId, params)
+}
+
+// CreateMaintenanceTemplateContext creates a new maintenance template for the passed domain (id) using the MYRA API
+func (api *API) CreateMaintenanceTemplateContext(ctx context.Context, template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
 	if _, ok := api.methods["createMaintenanceTemplate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createMaintenanceTemplate")
 	}
@@ -91,7 +99,7 @@ func (api *API) CreateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 	definition := api.methods["createMaintenanceTemplate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, template)
+	result, err := api.call(ctx, definition, template)
 	if err != nil {
 		return nil, err
 	}
@@ -102,8 +110,15 @@ func (api *API) CreateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 	return res, nil
 }
 
-// UpdateMaintenanceTemplate updates the passed maintenance template using the MYRA API
-func (api *API) UpdateMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
+// CreateMaintenanceTemplate is equivalent to CreateMaintenanceTemplateContext with context.Background().
+//
+// Deprecated: use CreateMaintenanceTemplateContext.
+func (api *API) CreateMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
+	return api.CreateMaintenanceTemplateContext(context.Background(), template, domainId)
+}
+
+// UpdateMaintenanceTemplateContext updates the passed maintenance template using the MYRA API
+func (api *API) UpdateMaintenanceTemplateContext(ctx context.Context, template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
 	if _, ok := api.methods["updateMaintenanceTemplate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateMaintenanceTemplate")
 	}
@@ -111,7 +126,7 @@ func (api *API) UpdateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 	definition := api.methods["updateMaintenanceTemplate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, template.ID)
 
-	result, err := api.call(definition, template)
+	result, err := api.call(ctx, definition, template)
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +137,15 @@ func (api *API) UpdateMaintenanceTemplate(template *MaintenanceTemplate, domainI
 	return res, nil
 }
 
-// DeleteMaintenanceTemplate deletes the passed maintenance template using the MYRA API
-func (api *API) DeleteMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
+// UpdateMaintenanceTemplate is equivalent to UpdateMaintenanceTemplateContext with context.Background().
+//
+// Deprecated: use UpdateMaintenanceTemplateContext.
+func (api *API) UpdateMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
+	return api.UpdateMaintenanceTemplateContext(context.Background(), template, domainId)
+}
+
+// DeleteMaintenanceTemplateContext deletes the passed maintenance template using the MYRA API
+func (api *API) DeleteMaintenanceTemplateContext(ctx context.Context, template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
 	if _, ok := api.methods["deleteMaintenanceTemplate"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteMaintenanceTemplate")
 	}
@@ -131,9 +153,16 @@ func (api *API) DeleteMaintenanceTemplate(template *MaintenanceTemplate, domainI
 	definition := api.methods["deleteMaintenanceTemplate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, template.ID)
 
-	_, err := api.call(definition, template)
+	_, err := api.call(ctx, definition, template)
 	if err != nil {
 		return nil, err
 	}
 	return template, nil
+}
+
+// DeleteMaintenanceTemplate is equivalent to DeleteMaintenanceTemplateContext with context.Background().
+//
+// Deprecated: use DeleteMaintenanceTemplateContext.
+func (api *API) DeleteMaintenanceTemplate(template *MaintenanceTemplate, domainId int) (*MaintenanceTemplate, error) {
+	return api.DeleteMaintenanceTemplateContext(context.Background(), template, domainId)
 }

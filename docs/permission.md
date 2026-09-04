@@ -63,13 +63,13 @@ myrasec.PermissionTypeGroup               // "GROUP"
 
 ### Example
 ```go
-permissions, err := api.ListMyPermissions(nil)
+permissions, err := api.ListMyPermissionsContext(ctx, nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListMyPermissions` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListMyPermissionsContext` function.
 
 | name | description | default |
 |---|---|---|
@@ -88,7 +88,7 @@ check := &myrasec.ObjectPermission{
     ObjectInstance: 12345,
 }
 
-result, err := api.CheckMyPermission(check)
+result, err := api.CheckMyPermissionContext(ctx, check)
 if err != nil {
     log.Fatal(err)
 }
@@ -102,7 +102,7 @@ if result.IsAuthorized {
 
 ### Example
 ```go
-permissions, err := api.ListUserPermissions(userId, nil)
+permissions, err := api.ListUserPermissionsContext(ctx, userId, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -118,7 +118,7 @@ permission := &myrasec.ObjectPermission{
     ObjectInstance: 12345,
 }
 
-p, err := api.AddUserPermission(permission, userId)
+p, err := api.AddUserPermissionContext(ctx, permission, userId)
 if err != nil {
     log.Fatal(err)
 }
@@ -127,11 +127,11 @@ log.Println(p.ID)
 ```
 
 ## Revoke a permission from a user
-Pass the permission obtained from `ListUserPermissions` (or stored after `AddUserPermission`). `ID` and `Modified` are required for the revoke.
+Pass the permission obtained from `ListUserPermissionsContext` (or stored after `AddUserPermissionContext`). `ID` and `Modified` are required for the revoke.
 
 ### Example
 ```go
-p, err := api.RemoveUserPermission(permission, userId)
+p, err := api.RemoveUserPermissionContext(ctx, permission, userId)
 if err != nil {
     log.Fatal(err)
 }
@@ -141,7 +141,7 @@ if err != nil {
 
 ### Example
 ```go
-permissions, err := api.ListUserGroupPermissions(groupId, nil)
+permissions, err := api.ListUserGroupPermissionsContext(ctx, groupId, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -157,7 +157,7 @@ permission := &myrasec.ObjectPermission{
     ObjectInstance: 12345,
 }
 
-p, err := api.AddUserGroupPermission(permission, groupId)
+p, err := api.AddUserGroupPermissionContext(ctx, permission, groupId)
 if err != nil {
     log.Fatal(err)
 }
@@ -167,7 +167,7 @@ if err != nil {
 
 ### Example
 ```go
-p, err := api.RemoveUserGroupPermission(permission, groupId)
+p, err := api.RemoveUserGroupPermissionContext(ctx, permission, groupId)
 if err != nil {
     log.Fatal(err)
 }

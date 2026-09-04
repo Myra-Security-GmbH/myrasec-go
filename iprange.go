@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -53,15 +54,15 @@ type IPRange struct {
 	Comment string `json:"comment,omitempty" jsonschema:"A descriptive comment or note for this IP range."`
 }
 
-// ListIPRanges returns a slice containing all ip ranges
-func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
+// ListIPRangesContext returns a slice containing all ip ranges
+func (api *API) ListIPRangesContext(ctx context.Context, params map[string]string) ([]IPRange, error) {
 	if _, ok := api.methods["listIPRanges"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listIPRanges")
 	}
 
 	definition := api.methods["listIPRanges"]
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -71,4 +72,11 @@ func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return *res, nil
+}
+
+// ListIPRanges is equivalent to ListIPRangesContext with context.Background().
+//
+// Deprecated: use ListIPRangesContext.
+func (api *API) ListIPRanges(params map[string]string) ([]IPRange, error) {
+	return api.ListIPRangesContext(context.Background(), params)
 }

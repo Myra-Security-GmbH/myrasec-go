@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -87,8 +88,8 @@ type ErrorPage struct {
 	SubDomainName string `json:"subDomainName,omitempty" jsonschema:"The target subdomain FQDN (e.g., 'shop.example.com'). Part of the composite unique key. Immutable after creation."`
 }
 
-// GetErrorPage returns a single error page with/for the given identifier
-func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
+// GetErrorPageContext returns a single error page with/for the given identifier
+func (api *API) GetErrorPageContext(ctx context.Context, domainId int, pageId int) (*ErrorPage, error) {
 	if _, ok := api.methods["getErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getErrorPage")
 	}
@@ -96,7 +97,7 @@ func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
 	definition := api.methods["getErrorPage"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, pageId)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -108,8 +109,15 @@ func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
 	return res, nil
 }
 
-// ListErrorPages returns a slice containing all error pages
-func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorPage, error) {
+// GetErrorPage is equivalent to GetErrorPageContext with context.Background().
+//
+// Deprecated: use GetErrorPageContext.
+func (api *API) GetErrorPage(domainId int, pageId int) (*ErrorPage, error) {
+	return api.GetErrorPageContext(context.Background(), domainId, pageId)
+}
+
+// ListErrorPagesContext returns a slice containing all error pages
+func (api *API) ListErrorPagesContext(ctx context.Context, domainId int, params map[string]string) ([]ErrorPage, error) {
 	if _, ok := api.methods["listErrorPages"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listErrorPages")
 	}
@@ -117,7 +125,7 @@ func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorP
 	definition := api.methods["listErrorPages"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -129,8 +137,15 @@ func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorP
 	return *res, nil
 }
 
-// CreateErrorPage creates a new error page using the MYRA API
-func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
+// ListErrorPages is equivalent to ListErrorPagesContext with context.Background().
+//
+// Deprecated: use ListErrorPagesContext.
+func (api *API) ListErrorPages(domainId int, params map[string]string) ([]ErrorPage, error) {
+	return api.ListErrorPagesContext(context.Background(), domainId, params)
+}
+
+// CreateErrorPageContext creates a new error page using the MYRA API
+func (api *API) CreateErrorPageContext(ctx context.Context, errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
 	if _, ok := api.methods["createErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createErrorPage")
 	}
@@ -139,7 +154,7 @@ func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	errorPageUpdate := convertErrorPageToErrorPageUpdate(errorPage)
-	res, err := api.call(definition, errorPageUpdate)
+	res, err := api.call(ctx, definition, errorPageUpdate)
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +166,15 @@ func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	return errorPage, nil
 }
 
-// UpdateErrorPage updates the passed error page using the MYRA API
-func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
+// CreateErrorPage is equivalent to CreateErrorPageContext with context.Background().
+//
+// Deprecated: use CreateErrorPageContext.
+func (api *API) CreateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
+	return api.CreateErrorPageContext(context.Background(), errorPage, domainId)
+}
+
+// UpdateErrorPageContext updates the passed error page using the MYRA API
+func (api *API) UpdateErrorPageContext(ctx context.Context, errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
 	if _, ok := api.methods["updateErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateErrorPage")
 	}
@@ -161,7 +183,7 @@ func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	errorPageUpdate := convertErrorPageToErrorPageUpdate(errorPage)
-	res, err := api.call(definition, errorPageUpdate)
+	res, err := api.call(ctx, definition, errorPageUpdate)
 	if err != nil {
 		return nil, err
 	}
@@ -173,8 +195,15 @@ func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	return errorPage, nil
 }
 
-// DeleteErrorPage deletes the passed error page using the MYRA API
-func (api *API) DeleteErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
+// UpdateErrorPage is equivalent to UpdateErrorPageContext with context.Background().
+//
+// Deprecated: use UpdateErrorPageContext.
+func (api *API) UpdateErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
+	return api.UpdateErrorPageContext(context.Background(), errorPage, domainId)
+}
+
+// DeleteErrorPageContext deletes the passed error page using the MYRA API
+func (api *API) DeleteErrorPageContext(ctx context.Context, errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
 	if _, ok := api.methods["deleteErrorPage"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteErrorPage")
 	}
@@ -183,11 +212,18 @@ func (api *API) DeleteErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage,
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
 	errorPageUpdate := convertErrorPageToErrorPageUpdate(errorPage)
-	_, err := api.call(definition, errorPageUpdate)
+	_, err := api.call(ctx, definition, errorPageUpdate)
 	if err != nil {
 		return nil, err
 	}
 	return errorPage, nil
+}
+
+// DeleteErrorPage is equivalent to DeleteErrorPageContext with context.Background().
+//
+// Deprecated: use DeleteErrorPageContext.
+func (api *API) DeleteErrorPage(errorPage *ErrorPage, domainId int) (*ErrorPage, error) {
+	return api.DeleteErrorPageContext(context.Background(), errorPage, domainId)
 }
 
 // decodeErrorPageResponse decodes the save (create/update) response of an error page.

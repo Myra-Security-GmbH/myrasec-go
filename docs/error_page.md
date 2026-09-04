@@ -32,7 +32,7 @@ errorPage := &myrasec.ErrorPage{
     ErrorCode: 500,
     Content: "<html><body>Error 500</body></html",
 }
-ep, err := api.CreateErrorPage(errorPage, domainId)
+ep, err := api.CreateErrorPageContext(ctx, errorPage, domainId)
 if err != nil {
     log.Fatal(err)
 }
@@ -43,13 +43,13 @@ The listing operation returns a list of error pages for the passed domain id.
 
 ### Example
 ```go
-errorPages, err := api.ListErrorPages(domainId)
+errorPages, err := api.ListErrorPagesContext(ctx, domainId)
 if err != nil {
     log.Fata(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListErrorPages` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListErrorPagesContext` function.
 
 | name | description | default |
 |---|---|---|
@@ -60,7 +60,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListErr
 ## Read
 The read operation returns a single error page by it's ID and domainId
 ```go
-errrorPage, err := api.GetErrorPage(domainId, errorPageId)
+errrorPage, err := api.GetErrorPageContext(ctx, domainId, errorPageId)
 if err != nil {
     log.Fatal(err)
 }
@@ -75,7 +75,7 @@ errorPage := &myrasec.ErrorPage{
     ErrorCode: 500,
     Content: "<html><body>Update error page</body></html",
 }
-ep, err := api.UpdateErrorPage(errorPage, domainId)
+ep, err := api.UpdateErrorPageContext(ctx, errorPage, domainId)
 if err != nil {
     log.Fatal(err)
 }
@@ -90,7 +90,7 @@ errorPage := &myrasec.ErrorPage{
     SubDomainName: "example.com.",
     ErrorCode: 500,
 }
-ep, err := api.DeleteErrorPage(errorPage, domainId)
+ep, err := api.DeleteErrorPageContext(ctx, errorPage, domainId)
 if err != nil {
     log.Fatal(err)
 }

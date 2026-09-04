@@ -25,7 +25,7 @@ The listing operation returns a list of all subdomains (VHosts) across all domai
 
 ### Example
 ```go
-subdomains, err := api.ListAllSubdomains(map[string]string{})
+subdomains, err := api.ListAllSubdomainsContext(ctx, map[string]string{})
 if err != nil {
     log.Fatal(err)
 }
@@ -42,7 +42,7 @@ Returns a list of subdomains (VHosts) for a specific domain, identified by domai
 ```go
 domainId := 1234
 
-subdomains, err := api.ListAllSubdomainsForDomain(domainId, map[string]string{})
+subdomains, err := api.ListAllSubdomainsForDomainContext(ctx, domainId, map[string]string{})
 if err != nil {
     log.Fatal(err)
 }

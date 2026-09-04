@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -69,8 +70,8 @@ func getTagInformationMethods() map[string]APIMethod {
 	}
 }
 
-// ListTagInformation returns a slice containing all tag information for the passed tag (ID)
-func (api *API) ListTagInformation(tagId int, params map[string]string) ([]TagInformation, error) {
+// ListTagInformationContext returns a slice containing all tag information for the passed tag (ID)
+func (api *API) ListTagInformationContext(ctx context.Context, tagId int, params map[string]string) ([]TagInformation, error) {
 	if _, ok := api.methods["listTagInformation"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagInformation")
 	}
@@ -78,7 +79,7 @@ func (api *API) ListTagInformation(tagId int, params map[string]string) ([]TagIn
 	definition := api.methods["listTagInformation"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -90,8 +91,15 @@ func (api *API) ListTagInformation(tagId int, params map[string]string) ([]TagIn
 	return *res, nil
 }
 
-// ListTagInformationBySubDomainName returns a slice containing all tag information for the passed subDomainName
-func (api *API) ListTagInformationBySubDomainName(subDomainName string, params map[string]string) ([]TagInformation, error) {
+// ListTagInformation is equivalent to ListTagInformationContext with context.Background().
+//
+// Deprecated: use ListTagInformationContext.
+func (api *API) ListTagInformation(tagId int, params map[string]string) ([]TagInformation, error) {
+	return api.ListTagInformationContext(context.Background(), tagId, params)
+}
+
+// ListTagInformationBySubDomainNameContext returns a slice containing all tag information for the passed subDomainName
+func (api *API) ListTagInformationBySubDomainNameContext(ctx context.Context, subDomainName string, params map[string]string) ([]TagInformation, error) {
 	if _, ok := api.methods["listTagInformationBySubDomainName"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagInformationBySubDomainName")
 	}
@@ -99,7 +107,7 @@ func (api *API) ListTagInformationBySubDomainName(subDomainName string, params m
 	definition := api.methods["listTagInformationBySubDomainName"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -111,8 +119,15 @@ func (api *API) ListTagInformationBySubDomainName(subDomainName string, params m
 	return *res, nil
 }
 
-// CreateTagInformation creates a new tag information for the passed tag (ID) using the MYRA API
-func (api *API) CreateTagInformation(information *TagInformation, tagId int) (*TagInformation, error) {
+// ListTagInformationBySubDomainName is equivalent to ListTagInformationBySubDomainNameContext with context.Background().
+//
+// Deprecated: use ListTagInformationBySubDomainNameContext.
+func (api *API) ListTagInformationBySubDomainName(subDomainName string, params map[string]string) ([]TagInformation, error) {
+	return api.ListTagInformationBySubDomainNameContext(context.Background(), subDomainName, params)
+}
+
+// CreateTagInformationContext creates a new tag information for the passed tag (ID) using the MYRA API
+func (api *API) CreateTagInformationContext(ctx context.Context, information *TagInformation, tagId int) (*TagInformation, error) {
 	if _, ok := api.methods["createTagInformation"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createTagInformation")
 	}
@@ -120,7 +135,7 @@ func (api *API) CreateTagInformation(information *TagInformation, tagId int) (*T
 	definition := api.methods["createTagInformation"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, information)
+	result, err := api.call(ctx, definition, information)
 	if err != nil {
 		return nil, err
 	}
@@ -131,8 +146,15 @@ func (api *API) CreateTagInformation(information *TagInformation, tagId int) (*T
 	return res, nil
 }
 
-// UpdateTagInformation updates the passed tag information using the MYRA API
-func (api *API) UpdateTagInformation(information *TagInformation, tagId int) (*TagInformation, error) {
+// CreateTagInformation is equivalent to CreateTagInformationContext with context.Background().
+//
+// Deprecated: use CreateTagInformationContext.
+func (api *API) CreateTagInformation(information *TagInformation, tagId int) (*TagInformation, error) {
+	return api.CreateTagInformationContext(context.Background(), information, tagId)
+}
+
+// UpdateTagInformationContext updates the passed tag information using the MYRA API
+func (api *API) UpdateTagInformationContext(ctx context.Context, information *TagInformation, tagId int) (*TagInformation, error) {
 	if _, ok := api.methods["updateTagInformation"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagInformation")
 	}
@@ -140,7 +162,7 @@ func (api *API) UpdateTagInformation(information *TagInformation, tagId int) (*T
 	definition := api.methods["updateTagInformation"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId, information.ID)
 
-	result, err := api.call(definition, information)
+	result, err := api.call(ctx, definition, information)
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +173,15 @@ func (api *API) UpdateTagInformation(information *TagInformation, tagId int) (*T
 	return res, nil
 }
 
-// DeleteTagInformation deletes the passed tag information using the MYRA API
-func (api *API) DeleteTagInformation(information *TagInformation, tagId int) (*TagInformation, error) {
+// UpdateTagInformation is equivalent to UpdateTagInformationContext with context.Background().
+//
+// Deprecated: use UpdateTagInformationContext.
+func (api *API) UpdateTagInformation(information *TagInformation, tagId int) (*TagInformation, error) {
+	return api.UpdateTagInformationContext(context.Background(), information, tagId)
+}
+
+// DeleteTagInformationContext deletes the passed tag information using the MYRA API
+func (api *API) DeleteTagInformationContext(ctx context.Context, information *TagInformation, tagId int) (*TagInformation, error) {
 	if _, ok := api.methods["deleteTagInformation"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteTagInformation")
 	}
@@ -160,9 +189,16 @@ func (api *API) DeleteTagInformation(information *TagInformation, tagId int) (*T
 	definition := api.methods["deleteTagInformation"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId, information.ID)
 
-	_, err := api.call(definition, information)
+	_, err := api.call(ctx, definition, information)
 	if err != nil {
 		return nil, err
 	}
 	return information, nil
+}
+
+// DeleteTagInformation is equivalent to DeleteTagInformationContext with context.Background().
+//
+// Deprecated: use DeleteTagInformationContext.
+func (api *API) DeleteTagInformation(information *TagInformation, tagId int) (*TagInformation, error) {
+	return api.DeleteTagInformationContext(context.Background(), information, tagId)
 }

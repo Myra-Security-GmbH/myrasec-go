@@ -71,7 +71,7 @@ waitingroom := &myrasec.WaitingRoom{
     Paths:              ["/test"],
     Content:            "<html>Content</html>",
 }
-rl, err := api.CreateWaitingRoom(waitingroom)
+rl, err := api.CreateWaitingRoomContext(ctx, waitingroom)
 if err != nil {
     log.Fatal(err)
 }
@@ -81,7 +81,7 @@ if err != nil {
 ## Read
 The listing operation returns a list of Waiting Rooms for a specific subdomain, or for the entire domain.
 
-It is required to pass a map of parameters (`map[string]string`) to the `ListWaitingRoomsForDomain` or `ListWaitingRoomsForSubDomain` functions.
+It is required to pass a map of parameters (`map[string]string`) to the `ListWaitingRoomsForDomainContext` or `ListWaitingRoomsForSubDomainContext` functions.
 
 | name | description | default |
 |---|---|---|---|
@@ -90,7 +90,7 @@ It is required to pass a map of parameters (`map[string]string`) to the `ListWai
 
 ### Example of listing for domain
 ```go
-waitingrooms, err := api.ListWaitingRoomsForDomain(domainId, nil)
+waitingrooms, err := api.ListWaitingRoomsForDomainContext(ctx, domainId, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -98,7 +98,7 @@ if err != nil {
 
 ### Example of listing for subdomain
 ```go
-waitingrooms, err := api.ListWaitingRoomsForSubDomain(subDomainName, nil)
+waitingrooms, err := api.ListWaitingRoomsForSubDomainContext(ctx, subDomainName, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -119,7 +119,7 @@ waitingroom := &myrasec.WaitingRoom{
     MaxConcurrent: 200,
 }
 
-waitingroom, err := api.UpdateWaitingRoom(waitingroom);
+waitingroom, err := api.UpdateWaitingRoomContext(ctx, waitingroom);
 if err != nil {
     log.Fatal(err)
 }
@@ -138,7 +138,7 @@ waitingroom := &myrasec.WaitingRoom{
     },
 }
 
-rl, err := api.DeleteWaitingRoom(waitingroom);
+rl, err := api.DeleteWaitingRoomContext(ctx, waitingroom);
 if err != nil {
     log.Fatal(err)
 }

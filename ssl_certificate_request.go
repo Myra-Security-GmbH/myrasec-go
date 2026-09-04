@@ -2,6 +2,7 @@ package myrasec
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -264,16 +265,16 @@ func (r *SSLCertificateRequest) payload() *SSLCertificateRequest {
 	return &payload
 }
 
-// ListSSLCertificateRequests returns a slice containing all visible managed certificate requests.
+// ListSSLCertificateRequestsContext returns a slice containing all visible managed certificate requests.
 // Without a "status" parameter the API omits requests in status CREATED.
-func (api *API) ListSSLCertificateRequests(params map[string]string) ([]SSLCertificateRequest, error) {
+func (api *API) ListSSLCertificateRequestsContext(ctx context.Context, params map[string]string) ([]SSLCertificateRequest, error) {
 	if _, ok := api.methods["listSSLCertificateRequests"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listSSLCertificateRequests")
 	}
 
 	definition := api.methods["listSSLCertificateRequests"]
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -285,8 +286,15 @@ func (api *API) ListSSLCertificateRequests(params map[string]string) ([]SSLCerti
 	return *res, nil
 }
 
-// GetSSLCertificateRequest returns a single managed certificate request with/for the given identifier
-func (api *API) GetSSLCertificateRequest(id int) (*SSLCertificateRequest, error) {
+// ListSSLCertificateRequests is equivalent to ListSSLCertificateRequestsContext with context.Background().
+//
+// Deprecated: use ListSSLCertificateRequestsContext.
+func (api *API) ListSSLCertificateRequests(params map[string]string) ([]SSLCertificateRequest, error) {
+	return api.ListSSLCertificateRequestsContext(context.Background(), params)
+}
+
+// GetSSLCertificateRequestContext returns a single managed certificate request with/for the given identifier
+func (api *API) GetSSLCertificateRequestContext(ctx context.Context, id int) (*SSLCertificateRequest, error) {
 	if _, ok := api.methods["getSSLCertificateRequest"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getSSLCertificateRequest")
 	}
@@ -294,7 +302,7 @@ func (api *API) GetSSLCertificateRequest(id int) (*SSLCertificateRequest, error)
 	definition := api.methods["getSSLCertificateRequest"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -306,16 +314,23 @@ func (api *API) GetSSLCertificateRequest(id int) (*SSLCertificateRequest, error)
 	return res, nil
 }
 
-// CreateSSLCertificateRequest creates a new managed certificate request using the MYRA API.
+// GetSSLCertificateRequest is equivalent to GetSSLCertificateRequestContext with context.Background().
+//
+// Deprecated: use GetSSLCertificateRequestContext.
+func (api *API) GetSSLCertificateRequest(id int) (*SSLCertificateRequest, error) {
+	return api.GetSSLCertificateRequestContext(context.Background(), id)
+}
+
+// CreateSSLCertificateRequestContext creates a new managed certificate request using the MYRA API.
 // The issuance is asynchronous: poll GetSSLCertificateRequest until the Status is CREATED or FAILED.
-func (api *API) CreateSSLCertificateRequest(request *SSLCertificateRequest) (*SSLCertificateRequest, error) {
+func (api *API) CreateSSLCertificateRequestContext(ctx context.Context, request *SSLCertificateRequest) (*SSLCertificateRequest, error) {
 	if _, ok := api.methods["createSSLCertificateRequest"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createSSLCertificateRequest")
 	}
 
 	definition := api.methods["createSSLCertificateRequest"]
 
-	result, err := api.call(definition, request.payload())
+	result, err := api.call(ctx, definition, request.payload())
 	if err != nil {
 		return nil, err
 	}
@@ -327,9 +342,16 @@ func (api *API) CreateSSLCertificateRequest(request *SSLCertificateRequest) (*SS
 	return res, nil
 }
 
-// UpdateSSLCertificateRequest updates the passed managed certificate request using the MYRA API.
+// CreateSSLCertificateRequest is equivalent to CreateSSLCertificateRequestContext with context.Background().
+//
+// Deprecated: use CreateSSLCertificateRequestContext.
+func (api *API) CreateSSLCertificateRequest(request *SSLCertificateRequest) (*SSLCertificateRequest, error) {
+	return api.CreateSSLCertificateRequestContext(context.Background(), request)
+}
+
+// UpdateSSLCertificateRequestContext updates the passed managed certificate request using the MYRA API.
 // The Algorithm is immutable and has to be sent unchanged.
-func (api *API) UpdateSSLCertificateRequest(request *SSLCertificateRequest) (*SSLCertificateRequest, error) {
+func (api *API) UpdateSSLCertificateRequestContext(ctx context.Context, request *SSLCertificateRequest) (*SSLCertificateRequest, error) {
 	if _, ok := api.methods["updateSSLCertificateRequest"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSSLCertificateRequest")
 	}
@@ -337,7 +359,7 @@ func (api *API) UpdateSSLCertificateRequest(request *SSLCertificateRequest) (*SS
 	definition := api.methods["updateSSLCertificateRequest"]
 	definition.Action = fmt.Sprintf(definition.Action, request.ID)
 
-	result, err := api.call(definition, request.payload())
+	result, err := api.call(ctx, definition, request.payload())
 	if err != nil {
 		return nil, err
 	}
@@ -349,9 +371,16 @@ func (api *API) UpdateSSLCertificateRequest(request *SSLCertificateRequest) (*SS
 	return res, nil
 }
 
-// DeleteSSLCertificateRequest deletes the passed managed certificate request using the MYRA API.
+// UpdateSSLCertificateRequest is equivalent to UpdateSSLCertificateRequestContext with context.Background().
+//
+// Deprecated: use UpdateSSLCertificateRequestContext.
+func (api *API) UpdateSSLCertificateRequest(request *SSLCertificateRequest) (*SSLCertificateRequest, error) {
+	return api.UpdateSSLCertificateRequestContext(context.Background(), request)
+}
+
+// DeleteSSLCertificateRequestContext deletes the passed managed certificate request using the MYRA API.
 // The certificates issued for the request are removed as well.
-func (api *API) DeleteSSLCertificateRequest(request *SSLCertificateRequest) (*SSLCertificateRequest, error) {
+func (api *API) DeleteSSLCertificateRequestContext(ctx context.Context, request *SSLCertificateRequest) (*SSLCertificateRequest, error) {
 	if _, ok := api.methods["deleteSSLCertificateRequest"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteSSLCertificateRequest")
 	}
@@ -359,7 +388,7 @@ func (api *API) DeleteSSLCertificateRequest(request *SSLCertificateRequest) (*SS
 	definition := api.methods["deleteSSLCertificateRequest"]
 	definition.Action = fmt.Sprintf(definition.Action, request.ID)
 
-	_, err := api.call(definition, request.payload())
+	_, err := api.call(ctx, definition, request.payload())
 	if err != nil {
 		return nil, err
 	}
@@ -367,10 +396,17 @@ func (api *API) DeleteSSLCertificateRequest(request *SSLCertificateRequest) (*SS
 	return request, nil
 }
 
-// UpdateSSLCertificateRequestConfiguration applies the SSL configuration (TLS profile) with the
+// DeleteSSLCertificateRequest is equivalent to DeleteSSLCertificateRequestContext with context.Background().
+//
+// Deprecated: use DeleteSSLCertificateRequestContext.
+func (api *API) DeleteSSLCertificateRequest(request *SSLCertificateRequest) (*SSLCertificateRequest, error) {
+	return api.DeleteSSLCertificateRequestContext(context.Background(), request)
+}
+
+// UpdateSSLCertificateRequestConfigurationContext applies the SSL configuration (TLS profile) with the
 // passed name to every certificate issued for the managed certificate request.
 // Valid names are returned by ListSslConfigurations.
-func (api *API) UpdateSSLCertificateRequestConfiguration(id int, sslConfigurationName string) (*SSLCertificateRequest, error) {
+func (api *API) UpdateSSLCertificateRequestConfigurationContext(ctx context.Context, id int, sslConfigurationName string) (*SSLCertificateRequest, error) {
 	if _, ok := api.methods["updateSSLCertificateRequestConfiguration"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSSLCertificateRequestConfiguration")
 	}
@@ -378,7 +414,7 @@ func (api *API) UpdateSSLCertificateRequestConfiguration(id int, sslConfiguratio
 	definition := api.methods["updateSSLCertificateRequestConfiguration"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
-	result, err := api.call(definition, map[string]string{"sslConfigurationName": sslConfigurationName})
+	result, err := api.call(ctx, definition, map[string]string{"sslConfigurationName": sslConfigurationName})
 	if err != nil {
 		return nil, err
 	}
@@ -390,10 +426,17 @@ func (api *API) UpdateSSLCertificateRequestConfiguration(id int, sslConfiguratio
 	return res, nil
 }
 
-// CheckSSLCertificateRequestDomains runs a live name server check for the passed domains and
+// UpdateSSLCertificateRequestConfiguration is equivalent to UpdateSSLCertificateRequestConfigurationContext with context.Background().
+//
+// Deprecated: use UpdateSSLCertificateRequestConfigurationContext.
+func (api *API) UpdateSSLCertificateRequestConfiguration(id int, sslConfigurationName string) (*SSLCertificateRequest, error) {
+	return api.UpdateSSLCertificateRequestConfigurationContext(context.Background(), id, sslConfigurationName)
+}
+
+// CheckSSLCertificateRequestDomainsContext runs a live name server check for the passed domains and
 // returns the result per domain. Use it before creating a request to find out whether the
 // domain validation needs a CNAME record. At most 99 domains can be checked per call.
-func (api *API) CheckSSLCertificateRequestDomains(domains []string) (SSLCertificateRequestDomainChecks, error) {
+func (api *API) CheckSSLCertificateRequestDomainsContext(ctx context.Context, domains []string) (SSLCertificateRequestDomainChecks, error) {
 	if _, ok := api.methods["checkSSLCertificateRequestDomains"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "checkSSLCertificateRequestDomains")
 	}
@@ -404,7 +447,7 @@ func (api *API) CheckSSLCertificateRequestDomains(domains []string) (SSLCertific
 
 	definition := api.methods["checkSSLCertificateRequestDomains"]
 
-	result, err := api.call(definition, map[string][]string{"domains": domains})
+	result, err := api.call(ctx, definition, map[string][]string{"domains": domains})
 	if err != nil {
 		return nil, err
 	}
@@ -414,4 +457,11 @@ func (api *API) CheckSSLCertificateRequestDomains(domains []string) (SSLCertific
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return res.Domains, nil
+}
+
+// CheckSSLCertificateRequestDomains is equivalent to CheckSSLCertificateRequestDomainsContext with context.Background().
+//
+// Deprecated: use CheckSSLCertificateRequestDomainsContext.
+func (api *API) CheckSSLCertificateRequestDomains(domains []string) (SSLCertificateRequestDomainChecks, error) {
+	return api.CheckSSLCertificateRequestDomainsContext(context.Background(), domains)
 }

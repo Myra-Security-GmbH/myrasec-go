@@ -23,7 +23,8 @@ if err != nil {
 package main
 
 import (
-	"log"	
+	"context"
+	"log"
 	"os"
 
 	myrasec "github.com/Myra-Security-GmbH/myrasec-go/v2"
@@ -35,7 +36,9 @@ func main() {
 		log.Fatal(err)
 	}
 	
-	domains, err := api.ListDomains(map[string]string{"pageSize": "100"})
+	ctx := context.Background()
+
+	domains, err := api.ListDomainsContext(ctx, map[string]string{"pageSize": "100"})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,11 +49,29 @@ func main() {
 }
 ```
 
+## Cancellation and timeouts
+Every function that sends a request has a variant with the suffix `Context` that takes a `context.Context` as its first parameter, for example `ListDomainsContext(ctx, params)`. The context bounds the whole call: the wait for the client side rate limiter, the HTTP request and the sleep between retries. When the context is cancelled or its deadline passes, the function returns `context.Canceled` or `context.DeadlineExceeded` (check with `errors.Is`) and no further request is sent. A deadline that is shorter than the wait the client side rate limiter needs for the next request fails immediately with `context.DeadlineExceeded` as well, the message names the rate limit as the cause. Independent of the context, the HTTP client times out after 30 seconds per request; use `SetHTTPClient` to change that.
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+defer cancel()
+
+domains, err := api.ListDomainsContext(ctx, map[string]string{"pageSize": "100"})
+if err != nil {
+    if errors.Is(err, context.DeadlineExceeded) {
+        log.Fatal("the API did not answer within 10 seconds")
+    }
+    log.Fatal(err)
+}
+```
+
+The functions without the suffix, for example `ListDomains(params)`, are equivalent to the `Context` variant called with `context.Background()`. They are deprecated and will be removed in the next major version. The examples in this documentation use the `Context` variants and assume a `ctx` variable, for example `ctx := context.Background()`.
+
 ## Error handling
 Every function returns a `*myrasec.APIError` when the API answers with a non-successful HTTP status. The error message contains the status and, when the API sent them, the violations and the error message of the response. Use `errors.As` to inspect the status code and the violations:
 
 ```go
-domain, err := api.GetDomain(domainId)
+domain, err := api.GetDomainContext(ctx, domainId)
 if err != nil {
     var apiErr *myrasec.APIError
     if errors.As(err, &apiErr) {

@@ -38,7 +38,7 @@ filter := &myrasec.IPFilter{
     Value:       "127.0.0.1",
     Enabled:     true,
 }
-f, err := api.CreateIPFilter(filter, domainId, "www.example.com")
+f, err := api.CreateIPFilterContext(ctx, filter, domainId, "www.example.com")
 if err != nil {
     log.Fatal(err)
 }
@@ -50,13 +50,13 @@ The listing operation returns a list of IP filters for the passed subdomain name
 
 ### Example
 ```go
-filters, err := api.ListIPFilters(domainId, "www.example.com", nil)
+filters, err := api.ListIPFiltersContext(ctx, domainId, "www.example.com", nil)
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-It is possible to pass a map of parameters (`map[string]string`) to the `ListIPFilters` function.
+It is possible to pass a map of parameters (`map[string]string`) to the `ListIPFiltersContext` function.
 
 | name | description | default |
 |---|---|---|
@@ -69,7 +69,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListIPF
 ## Read
 The read operation returns a single IP filter for passed domainId, subDomainName and it's ID
 ```go
-filter, err := api.GetIPFilter(domainId, "www.example.com", filterId)
+filter, err := api.GetIPFilterContext(ctx, domainId, "www.example.com", filterId)
 if err != nil {
     log.Fatal(err)
 }
@@ -88,7 +88,7 @@ filter := &myrasec.IPFilter{n
     Value:      "127.0.0.1",
 }
 
-f, err := api.UpdateIPFilter(filter, domainId, "www.example.com");
+f, err := api.UpdateIPFilterContext(ctx, filter, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }
@@ -107,7 +107,7 @@ filter := &myrasec.IPFilter{
     },
 }
 
-f, err := api.DeleteIPFilter(filter, domainId, "www.example.com");
+f, err := api.DeleteIPFilterContext(ctx, filter, domainId, "www.example.com");
 if err != nil {
     log.Fatal(err)
 }

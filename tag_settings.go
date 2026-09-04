@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -43,8 +44,8 @@ type tagSettingsResponse struct {
 	Settings Settings `json:"settings"`
 }
 
-// ListTagSettings returns a Setting struct containing the settings for the passed tag
-func (api *API) ListTagSettings(tagId int) (*Settings, error) {
+// ListTagSettingsContext returns a Setting struct containing the settings for the passed tag
+func (api *API) ListTagSettingsContext(ctx context.Context, tagId int) (*Settings, error) {
 	if _, ok := api.methods["listTagSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagSettings")
 	}
@@ -52,7 +53,7 @@ func (api *API) ListTagSettings(tagId int) (*Settings, error) {
 	definition := api.methods["listTagSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +65,15 @@ func (api *API) ListTagSettings(tagId int) (*Settings, error) {
 	return res, nil
 }
 
-func (api *API) ListTagSettingsMap(tagId int) (any, error) {
+// ListTagSettings is equivalent to ListTagSettingsContext with context.Background().
+//
+// Deprecated: use ListTagSettingsContext.
+func (api *API) ListTagSettings(tagId int) (*Settings, error) {
+	return api.ListTagSettingsContext(context.Background(), tagId)
+}
+
+// ListTagSettingsMapContext returns the settings of the passed tag (ID) as a generic map instead of a Settings struct
+func (api *API) ListTagSettingsMapContext(ctx context.Context, tagId int) (any, error) {
 	if _, ok := api.methods["listTagSettingsMap"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listTagSettingsMap")
 	}
@@ -72,15 +81,22 @@ func (api *API) ListTagSettingsMap(tagId int) (any, error) {
 	definition := api.methods["listTagSettingsMap"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-// UpdateTagSettings updates the passed settings using the MYRA API
-func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, error) {
+// ListTagSettingsMap is equivalent to ListTagSettingsMapContext with context.Background().
+//
+// Deprecated: use ListTagSettingsMapContext.
+func (api *API) ListTagSettingsMap(tagId int) (any, error) {
+	return api.ListTagSettingsMapContext(context.Background(), tagId)
+}
+
+// UpdateTagSettingsContext updates the passed settings using the MYRA API
+func (api *API) UpdateTagSettingsContext(ctx context.Context, settings *Settings, tagId int) (*Settings, error) {
 	if _, ok := api.methods["updateTagSettings"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagSettings")
 	}
@@ -88,7 +104,7 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 	definition := api.methods["updateTagSettings"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, settings)
+	result, err := api.call(ctx, definition, settings)
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +115,15 @@ func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, err
 	return res, nil
 }
 
-// UpdateTagSettings updates the passed settings using the MYRA API
-func (api *API) UpdateTagSettingsPartial(settings map[string]any, tagId int) (any, error) {
+// UpdateTagSettings is equivalent to UpdateTagSettingsContext with context.Background().
+//
+// Deprecated: use UpdateTagSettingsContext.
+func (api *API) UpdateTagSettings(settings *Settings, tagId int) (*Settings, error) {
+	return api.UpdateTagSettingsContext(context.Background(), settings, tagId)
+}
+
+// UpdateTagSettingsPartialContext updates the passed settings of the tag (ID) using the MYRA API
+func (api *API) UpdateTagSettingsPartialContext(ctx context.Context, settings map[string]any, tagId int) (any, error) {
 	if _, ok := api.methods["updateTagSettingsPartial"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateTagSettingsPartial")
 	}
@@ -108,11 +131,18 @@ func (api *API) UpdateTagSettingsPartial(settings map[string]any, tagId int) (an
 	definition := api.methods["updateTagSettingsPartial"]
 	definition.Action = fmt.Sprintf(definition.Action, tagId)
 
-	result, err := api.call(definition, settings)
+	result, err := api.call(ctx, definition, settings)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
+}
+
+// UpdateTagSettingsPartial is equivalent to UpdateTagSettingsPartialContext with context.Background().
+//
+// Deprecated: use UpdateTagSettingsPartialContext.
+func (api *API) UpdateTagSettingsPartial(settings map[string]any, tagId int) (any, error) {
+	return api.UpdateTagSettingsPartialContext(context.Background(), settings, tagId)
 }
 
 // decodeTagSettingsResponse - custom decode function for tag settings response. Used in the ListTagSettings action.

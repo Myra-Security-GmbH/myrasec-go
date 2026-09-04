@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -97,8 +98,8 @@ type WaitingRoom struct {
 	Content string `json:"content" jsonschema:"The raw HTML content displayed to visitors while they are in the waiting queue."`
 }
 
-// ListWaitingRoomsForDomain returns a slice containing all visible waiting rooms for domain
-func (api *API) ListWaitingRoomsForDomain(domainId int, params map[string]string) ([]WaitingRoom, error) {
+// ListWaitingRoomsForDomainContext returns a slice containing all visible waiting rooms for domain
+func (api *API) ListWaitingRoomsForDomainContext(ctx context.Context, domainId int, params map[string]string) ([]WaitingRoom, error) {
 	if _, ok := api.methods["listWaitingRoomsForDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWaitingRoomsForDomain")
 	}
@@ -106,7 +107,7 @@ func (api *API) ListWaitingRoomsForDomain(domainId int, params map[string]string
 	definition := api.methods["listWaitingRoomsForDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -118,8 +119,15 @@ func (api *API) ListWaitingRoomsForDomain(domainId int, params map[string]string
 	return *res, nil
 }
 
-// ListWaitingRoomsForSubDomain returns a slice containing all visible waiting rooms for subdomain
-func (api *API) ListWaitingRoomsForSubDomain(subDomainName string, params map[string]string) ([]WaitingRoom, error) {
+// ListWaitingRoomsForDomain is equivalent to ListWaitingRoomsForDomainContext with context.Background().
+//
+// Deprecated: use ListWaitingRoomsForDomainContext.
+func (api *API) ListWaitingRoomsForDomain(domainId int, params map[string]string) ([]WaitingRoom, error) {
+	return api.ListWaitingRoomsForDomainContext(context.Background(), domainId, params)
+}
+
+// ListWaitingRoomsForSubDomainContext returns a slice containing all visible waiting rooms for subdomain
+func (api *API) ListWaitingRoomsForSubDomainContext(ctx context.Context, subDomainName string, params map[string]string) ([]WaitingRoom, error) {
 	if _, ok := api.methods["listWaitingRoomsForSubDomain"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "listWaitingRoomsForSubDomain")
 	}
@@ -127,7 +135,7 @@ func (api *API) ListWaitingRoomsForSubDomain(subDomainName string, params map[st
 	definition := api.methods["listWaitingRoomsForSubDomain"]
 	definition.Action = fmt.Sprintf(definition.Action, subDomainName)
 
-	result, err := api.call(definition, params)
+	result, err := api.call(ctx, definition, params)
 	if err != nil {
 		return nil, err
 	}
@@ -139,8 +147,15 @@ func (api *API) ListWaitingRoomsForSubDomain(subDomainName string, params map[st
 	return *res, nil
 }
 
-// GetWaitingRoom returns the waiting room
-func (api *API) GetWaitingRoom(id int) (*WaitingRoom, error) {
+// ListWaitingRoomsForSubDomain is equivalent to ListWaitingRoomsForSubDomainContext with context.Background().
+//
+// Deprecated: use ListWaitingRoomsForSubDomainContext.
+func (api *API) ListWaitingRoomsForSubDomain(subDomainName string, params map[string]string) ([]WaitingRoom, error) {
+	return api.ListWaitingRoomsForSubDomainContext(context.Background(), subDomainName, params)
+}
+
+// GetWaitingRoomContext returns the waiting room
+func (api *API) GetWaitingRoomContext(ctx context.Context, id int) (*WaitingRoom, error) {
 	if _, ok := api.methods["getWaitingRoom"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "getWaitingRoom")
 	}
@@ -148,7 +163,7 @@ func (api *API) GetWaitingRoom(id int) (*WaitingRoom, error) {
 	definition := api.methods["getWaitingRoom"]
 	definition.Action = fmt.Sprintf(definition.Action, id)
 
-	result, err := api.call(definition, map[string]string{})
+	result, err := api.call(ctx, definition, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -159,15 +174,22 @@ func (api *API) GetWaitingRoom(id int) (*WaitingRoom, error) {
 	return res, nil
 }
 
-// CreateWaitingRoom creates a new waiting room
-func (api *API) CreateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error) {
+// GetWaitingRoom is equivalent to GetWaitingRoomContext with context.Background().
+//
+// Deprecated: use GetWaitingRoomContext.
+func (api *API) GetWaitingRoom(id int) (*WaitingRoom, error) {
+	return api.GetWaitingRoomContext(context.Background(), id)
+}
+
+// CreateWaitingRoomContext creates a new waiting room
+func (api *API) CreateWaitingRoomContext(ctx context.Context, waitingroom *WaitingRoom) (*WaitingRoom, error) {
 	if _, ok := api.methods["createWaitingRoom"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createWaitingRoom")
 	}
 
 	definition := api.methods["createWaitingRoom"]
 
-	result, err := api.call(definition, waitingroom)
+	result, err := api.call(ctx, definition, waitingroom)
 	if err != nil {
 		return nil, err
 	}
@@ -178,8 +200,15 @@ func (api *API) CreateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error
 	return res, nil
 }
 
-// UpdateWaitingRoom updates the waiting room
-func (api *API) UpdateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error) {
+// CreateWaitingRoom is equivalent to CreateWaitingRoomContext with context.Background().
+//
+// Deprecated: use CreateWaitingRoomContext.
+func (api *API) CreateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error) {
+	return api.CreateWaitingRoomContext(context.Background(), waitingroom)
+}
+
+// UpdateWaitingRoomContext updates the waiting room
+func (api *API) UpdateWaitingRoomContext(ctx context.Context, waitingroom *WaitingRoom) (*WaitingRoom, error) {
 	if _, ok := api.methods["updateWaitingRoom"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateWaitingRoom")
 	}
@@ -187,7 +216,7 @@ func (api *API) UpdateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error
 	definition := api.methods["updateWaitingRoom"]
 	definition.Action = fmt.Sprintf(definition.Action, waitingroom.ID)
 
-	result, err := api.call(definition, waitingroom)
+	result, err := api.call(ctx, definition, waitingroom)
 	if err != nil {
 		return nil, err
 	}
@@ -198,8 +227,15 @@ func (api *API) UpdateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error
 	return res, nil
 }
 
-// DeleteWaitingRoom deletes the passed waiting room using the MYRA API
-func (api *API) DeleteWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error) {
+// UpdateWaitingRoom is equivalent to UpdateWaitingRoomContext with context.Background().
+//
+// Deprecated: use UpdateWaitingRoomContext.
+func (api *API) UpdateWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error) {
+	return api.UpdateWaitingRoomContext(context.Background(), waitingroom)
+}
+
+// DeleteWaitingRoomContext deletes the passed waiting room using the MYRA API
+func (api *API) DeleteWaitingRoomContext(ctx context.Context, waitingroom *WaitingRoom) (*WaitingRoom, error) {
 	if _, ok := api.methods["deleteWaitingRoom"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteWaitingRoom")
 	}
@@ -207,9 +243,16 @@ func (api *API) DeleteWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error
 	definition := api.methods["deleteWaitingRoom"]
 	definition.Action = fmt.Sprintf(definition.Action, waitingroom.ID)
 
-	_, err := api.call(definition, waitingroom)
+	_, err := api.call(ctx, definition, waitingroom)
 	if err != nil {
 		return nil, err
 	}
 	return waitingroom, nil
+}
+
+// DeleteWaitingRoom is equivalent to DeleteWaitingRoomContext with context.Background().
+//
+// Deprecated: use DeleteWaitingRoomContext.
+func (api *API) DeleteWaitingRoom(waitingroom *WaitingRoom) (*WaitingRoom, error) {
+	return api.DeleteWaitingRoomContext(context.Background(), waitingroom)
 }
