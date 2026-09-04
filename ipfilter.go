@@ -149,7 +149,10 @@ func (api *API) CreateIPFilterContext(ctx context.Context, filter *IPFilter, dom
 	definition := api.methods["createIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
-	result, err := api.call(ctx, definition, filter)
+	payload := *filter
+	payload.Value = normalizeIPFilterValue(filter.Value)
+
+	result, err := api.call(ctx, definition, &payload)
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +179,10 @@ func (api *API) UpdateIPFilterContext(ctx context.Context, filter *IPFilter, dom
 	definition := api.methods["updateIPFilter"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, filter.ID)
 
-	result, err := api.call(ctx, definition, filter)
+	payload := *filter
+	payload.Value = normalizeIPFilterValue(filter.Value)
+
+	result, err := api.call(ctx, definition, &payload)
 	if err != nil {
 		return nil, err
 	}
