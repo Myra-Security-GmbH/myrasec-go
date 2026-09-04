@@ -16,7 +16,7 @@ type ErrorPage struct {
 | `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete an error page, the ID does not help because it is not used. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new error page object. This value is only informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add the modified timestamp for updates and deletes. This value is always a date type with an `ISO 8601` format. |
-| `ErrorCode` | int | ErrorCode represents the Http Code for this error page. The ErrorCode should never be changed, because it is used as identifier additionally with the SubDomainName. |
+| `ErrorCode` | int | ErrorCode represents the Http Code for this error page. Valid values are `400`, `404`, `405`, `429`, `500`, `502`, `503`, `504` and `9999` (`9999` = blocked requests). The ErrorCode should never be changed, because it is used as identifier additionally with the SubDomainName. |
 | `SubDomainName` | string | The configured error page is available for this subdomain. The SubDomainName should never be changed, because it is used as identifier additionally with the ErrorCode. |
 | `Content` | string | The Content is the HTML code for the error page. |
 
@@ -93,3 +93,10 @@ if err != nil {
     log.Fatal(err)
 }
 ```
+
+## Error handling
+The `ErrorCode` is validated server-side. Create, update and delete all pass it through the same transformer, so an unsupported code is rejected the same way on every operation.
+
+| Status | Cause |
+|---|---|
+| 400 | The `ErrorCode` is not one of the valid values `400`, `404`, `405`, `429`, `500`, `502`, `503`, `504`, `9999`. The violation message is `Unsupported error code.`. |

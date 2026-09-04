@@ -72,9 +72,12 @@ type ErrorPage struct {
 	// for update and delete operations to ensure data consistency.
 	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Required for updates and deletes to ensure data consistency (optimistic locking)."`
 
-	// ErrorCode represents the HTTP Status Code (e.g., 404, 500).
+	// ErrorCode is the HTTP status code the error page is served for, or 9999 for blocked requests.
+	// Valid values: 400, 404, 405, 429, 500, 502, 503, 504, 9999.
+	// Any other code is rejected by the API with an HTTP 400 whose violation message is
+	// "Unsupported error code.".
 	// This value is part of the composite unique key and is immutable once created.
-	ErrorCode int `json:"errorCode,omitempty" jsonschema:"The HTTP status code (e.g., 404 or 500). Part of the composite unique key. Immutable after creation."`
+	ErrorCode int `json:"errorCode,omitempty" jsonschema:"The HTTP status code the error page is served for, or 9999 for blocked requests. Valid values: 400, 404, 405, 429, 500, 502, 503, 504, 9999. Any other code is rejected by the API with an HTTP 400 whose violation message is 'Unsupported error code.'. Part of the composite unique key. Immutable after creation."`
 
 	// Content contains the raw HTML code to be rendered.
 	Content string `json:"content,omitempty" jsonschema:"The raw HTML content to be displayed for this error page."`
