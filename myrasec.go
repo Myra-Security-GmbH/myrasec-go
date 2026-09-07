@@ -54,6 +54,7 @@ type API struct {
 	token  string
 
 	cache    map[string]*responseCache
+	cacheGen uint64
 	muCache  *sync.Mutex
 	caching  bool
 	cacheTTL int
@@ -206,22 +207,29 @@ func buildApi(key, secret, token string) *API {
 	}
 }
 
-// EnableCaching enables the caching of the response. Note: Only GET requests are cached.
-// NOTE: The caching feature is still in development and may not work as expected.
+// EnableCaching enables the response cache with a TTL of DefaultCachingTTL seconds.
+//
+// Only the decoded responses of GET requests are cached, keyed by the request URL. A
+// cached response is served for a GET of the same URL until its TTL expires; no other
+// request is ever answered from the cache. Every request other than GET flushes the
+// whole cache once it was sent, whatever its outcome, so a read that follows a write of
+// this client is not answered with a response from before that write.
 func (api *API) EnableCaching() {
 	api.caching = true
 	api.cacheTTL = DefaultCachingTTL
 }
 
-// DisableCaching disables the caching of the response
-// NOTE: The caching feature is still in development and may not work as expected.
+// DisableCaching disables the response cache. Entries already cached are not served
+// while the cache is disabled. They stay in memory until PruneCache is called or the
+// next request other than GET flushes them.
 func (api *API) DisableCaching() {
 	api.caching = false
 	api.cacheTTL = 0
 }
 
-// SetCachingTTL sets a ttl value for the caching. You have to first call the EnableCaching function to enable the caching.
-// NOTE: The caching feature is still in development and may not work as expected.
+// SetCachingTTL sets the TTL (in seconds) of new cache entries. Call it after
+// EnableCaching, which resets the TTL to DefaultCachingTTL. Entries already cached keep
+// their TTL.
 func (api *API) SetCachingTTL(ttl int) {
 	api.cacheTTL = ttl
 }
@@ -309,11 +317,30 @@ func (api *API) call(ctx context.Context, definition APIMethod, payload ...any) 
 		return nil, err
 	}
 
-	if api.caching && api.inCache(req) {
-		res := api.fromCache(req)
-		if res != nil {
+	// Only GET responses are cached, and only a GET may be served from the cache. The cache
+	// key is the URL alone, so without this check a PUT or DELETE on a URL that was read
+	// shortly before would be answered from the cache and never reach the API.
+	cachable := api.caching && isCachable(req)
+
+	var generation uint64
+	if cachable {
+		if res := api.fromCache(req); res != nil {
 			return res, nil
 		}
+
+		// Read before the request is sent: a flush in the meantime means the response may
+		// hold state from before a write and is not cached, see cacheResponseOfGeneration.
+		generation = api.cacheGeneration()
+	}
+
+	// Every request other than GET may change state the cache still holds, including
+	// state of other resources (a DNS record creates a subdomain, a domain owns everything
+	// below it). The cache is flushed once the request was sent, whatever came back: the
+	// API can have applied a write whose answer was an error or never arrived. It is
+	// flushed with caching disabled too, entries from before DisableCaching would be
+	// served again after EnableCaching otherwise.
+	if !isCachable(req) {
+		defer api.PruneCache()
 	}
 
 	resp, err := api.sendRequest(ctx, definition, payload...)
@@ -332,16 +359,16 @@ func (api *API) call(ctx context.Context, definition APIMethod, payload ...any) 
 
 	if definition.ResponseDecodeFunc != nil {
 		res, err := definition.ResponseDecodeFunc(resp, definition)
-		if err == nil && api.caching && isCachable(req) && !api.inCache(req) {
-			api.cacheResponse(req, res)
+		if err == nil && cachable {
+			api.cacheResponseOfGeneration(req, res, generation)
 		}
 
 		return res, err
 	}
 
 	res, err := decodeDefaultResponse(resp, definition)
-	if err == nil && api.caching && isCachable(req) && !api.inCache(req) {
-		api.cacheResponse(req, res)
+	if err == nil && cachable {
+		api.cacheResponseOfGeneration(req, res, generation)
 	}
 
 	return res, err

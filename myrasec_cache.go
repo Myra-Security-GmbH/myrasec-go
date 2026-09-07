@@ -18,50 +18,53 @@ func (c *responseCache) isExpired() bool {
 	return c.Expire < time.Now().Unix()
 }
 
-// inCache checks the cache if the response for the passed request is stored in the cache.
+// inCache reports whether a valid (unexpired, non-empty) response for the passed request
+// is stored in the cache.
 func (api *API) inCache(req *http.Request) bool {
-	s := BuildCacheKey(req)
-
-	api.muCache.Lock()
-	c, ok := api.cache[s]
-	api.muCache.Unlock()
-
-	if !ok {
-		return false
-	}
-
-	// if ttl is expired - remove from cache and return false
-	if c.isExpired() {
-		api.RemoveFromCache(s)
-		return false
-	}
-	// if the body is nil - return false as we do not have any response cached to return
-	if c.Body == nil {
-		return false
-	}
-
-	return true
+	return api.fromCache(req) != nil
 }
 
-// fromCache loads the response from the cache (if it is cached)
+// fromCache returns the cached response for the passed request, or nil when there is
+// none or the entry expired. An expired entry is removed. Lookup, expiry check and
+// removal happen under one lock so a concurrent flush cannot slip in between.
 func (api *API) fromCache(req *http.Request) any {
-	if !api.inCache(req) {
-		return nil
-	}
-
 	s := BuildCacheKey(req)
+
 	api.muCache.Lock()
 	defer api.muCache.Unlock()
 
-	if c, ok := api.cache[s]; ok {
-		return c.Body
+	c, ok := api.cache[s]
+	if !ok {
+		return nil
 	}
 
-	return nil
+	if c.isExpired() {
+		delete(api.cache, s)
+		return nil
+	}
+
+	return c.Body
+}
+
+// cacheGeneration returns the current generation of the cache. Every flush and every
+// removal of an entry starts a new one.
+func (api *API) cacheGeneration() uint64 {
+	api.muCache.Lock()
+	defer api.muCache.Unlock()
+
+	return api.cacheGen
 }
 
 // cacheResponse stores the response body in the cache
 func (api *API) cacheResponse(req *http.Request, resp any) {
+	api.cacheResponseOfGeneration(req, resp, api.cacheGeneration())
+}
+
+// cacheResponseOfGeneration stores the response body in the cache, unless the cache was
+// flushed since the passed generation was read. A caller reads the generation before it
+// sends the request. A response that was requested before a flush can hold the state from
+// before the write that caused the flush, it must not come back into the cache.
+func (api *API) cacheResponseOfGeneration(req *http.Request, resp any, generation uint64) {
 	if !api.caching {
 		return
 	}
@@ -69,6 +72,10 @@ func (api *API) cacheResponse(req *http.Request, resp any) {
 	s := BuildCacheKey(req)
 	api.muCache.Lock()
 	defer api.muCache.Unlock()
+
+	if api.cacheGen != generation {
+		return
+	}
 
 	api.cache[s] = &responseCache{
 		Key:     s,
@@ -87,6 +94,7 @@ func isCachable(req *http.Request) bool {
 func (api *API) RemoveFromCache(s string) {
 	api.muCache.Lock()
 	delete(api.cache, s)
+	api.cacheGen++
 	api.muCache.Unlock()
 }
 
@@ -94,6 +102,7 @@ func (api *API) RemoveFromCache(s string) {
 func (api *API) PruneCache() {
 	api.muCache.Lock()
 	api.cache = make(map[string]*responseCache)
+	api.cacheGen++
 	api.muCache.Unlock()
 }
 

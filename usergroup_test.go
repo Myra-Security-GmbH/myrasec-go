@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -131,20 +132,13 @@ func TestListUsersFromGroup(t *testing.T) {
 }
 
 func TestCreateUserGroup(t *testing.T) {
-	api, err := setupPreCachedAPI(
-		preCacheRequest(
-			"https://apiv2.myracloud.com/user/groups",
-			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"POST /user/groups": {Status: http.StatusOK, Body: `{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":55,"name":"new-group","parent":42,"type":"USER"}
-			]}`,
-			"createUserGroup",
-		),
-	)
-	if err != nil {
-		t.Error("Unexpected error.")
-	}
+			]}`},
+	})
 
-	group, err := api.CreateUserGroup(&UserGroup{Name: "new-group", Parent: 42, Type: UserGroupTypeUser})
+	group, err := api.CreateUserGroupContext(context.Background(), &UserGroup{Name: "new-group", Parent: 42, Type: UserGroupTypeUser})
 	if err != nil {
 		t.Errorf("Expected not to get an error but got [%s]", err.Error())
 	}
@@ -185,20 +179,13 @@ func TestCreateUserGroupRootForbidden(t *testing.T) {
 }
 
 func TestUpdateUserGroup(t *testing.T) {
-	api, err := setupPreCachedAPI(
-		preCacheRequest(
-			"https://apiv2.myracloud.com/user/groups/55",
-			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"PUT /user/groups/55": {Status: http.StatusOK, Body: `{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":55,"name":"renamed","type":"USER"}
-			]}`,
-			"updateUserGroup",
-		),
-	)
-	if err != nil {
-		t.Error("Unexpected error.")
-	}
+			]}`},
+	})
 
-	group, err := api.UpdateUserGroup(&UserGroup{ID: 55, Name: "renamed", Type: UserGroupTypeUser})
+	group, err := api.UpdateUserGroupContext(context.Background(), &UserGroup{ID: 55, Name: "renamed", Type: UserGroupTypeUser})
 	if err != nil {
 		t.Errorf("Expected not to get an error but got [%s]", err.Error())
 	}
@@ -209,20 +196,13 @@ func TestUpdateUserGroup(t *testing.T) {
 }
 
 func TestAddUserToGroup(t *testing.T) {
-	api, err := setupPreCachedAPI(
-		preCacheRequest(
-			"https://apiv2.myracloud.com/user/group/7/users",
-			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"POST /user/group/7/users": {Status: http.StatusOK, Body: `{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":9001,"userId":100,"role":"USER"}
-			]}`,
-			"addUserToGroup",
-		),
-	)
-	if err != nil {
-		t.Error("Unexpected error.")
-	}
+			]}`},
+	})
 
-	role, err := api.AddUserToGroup(&GroupRole{UserID: 100, Role: GroupRoleUser}, 7)
+	role, err := api.AddUserToGroupContext(context.Background(), &GroupRole{UserID: 100, Role: GroupRoleUser}, 7)
 	if err != nil {
 		t.Errorf("Expected not to get an error but got [%s]", err.Error())
 	}
