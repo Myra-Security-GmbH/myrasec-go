@@ -150,7 +150,7 @@ func (api *API) CreateIPFilterContext(ctx context.Context, filter *IPFilter, dom
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName)
 
 	payload := *filter
-	payload.Value = normalizeIPFilterValue(filter.Value)
+	payload.Value = normalizeIPFilterValue(filter.Value, filter.Type)
 
 	result, err := api.call(ctx, definition, &payload)
 	if err != nil {
@@ -180,7 +180,7 @@ func (api *API) UpdateIPFilterContext(ctx context.Context, filter *IPFilter, dom
 	definition.Action = fmt.Sprintf(definition.Action, domainId, subDomainName, filter.ID)
 
 	payload := *filter
-	payload.Value = normalizeIPFilterValue(filter.Value)
+	payload.Value = normalizeIPFilterValue(filter.Value, filter.Type)
 
 	result, err := api.call(ctx, definition, &payload)
 	if err != nil {
