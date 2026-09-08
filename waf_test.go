@@ -212,9 +212,9 @@ func TestListWAFActions(t *testing.T) {
 		preCacheRequest(
 			"https://apiv2.myracloud.com/waf/actions",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
-				{"availablePhases": 1, "forceCustomValues": false, "name": "Allow", "type": "allow"},
-				{"availablePhases": 1, "forceCustomValues": false, "name": "Block", "type": "block"},
-				{"availablePhases": 3, "forceCustomValues": false, "name": "Add header", "type": "add_header"}
+				{"availablePhases": 1, "forceCustomValues": 0, "name": "Allow", "type": "allow"},
+				{"availablePhases": 1, "forceCustomValues": 0, "name": "Block", "type": "block"},
+				{"availablePhases": 3, "forceCustomValues": 2, "name": "Add header", "type": "add_header"}
 			]}`,
 			"listWAFActions",
 		),
@@ -237,8 +237,8 @@ func TestListWAFActions(t *testing.T) {
 			if a.AvailablePhases != 1 {
 				t.Errorf("Expected to get WAF Action with AvailablePhases [%d] but got [%d]", 1, a.AvailablePhases)
 			}
-			if a.ForceCustomValues != false {
-				t.Errorf("Expected to get WAF Action with ForceCustomValues [%t] but got [%t]", false, a.ForceCustomValues)
+			if a.ForceCustomValues != 0 {
+				t.Errorf("Expected to get WAF Action with ForceCustomValues [%d] but got [%d]", 0, a.ForceCustomValues)
 			}
 			if a.Name != "Allow" {
 				t.Errorf("Expected to get WAF Action with Name [%s] but got [%s]", "Allow", a.Name)
@@ -249,8 +249,8 @@ func TestListWAFActions(t *testing.T) {
 			if a.AvailablePhases != 1 {
 				t.Errorf("Expected to get WAF Action with AvailablePhases [%d] but got [%d]", 1, a.AvailablePhases)
 			}
-			if a.ForceCustomValues != false {
-				t.Errorf("Expected to get WAF Action with ForceCustomValues [%t] but got [%t]", false, a.ForceCustomValues)
+			if a.ForceCustomValues != 0 {
+				t.Errorf("Expected to get WAF Action with ForceCustomValues [%d] but got [%d]", 0, a.ForceCustomValues)
 			}
 			if a.Name != "Block" {
 				t.Errorf("Expected to get WAF Action with Name [%s] but got [%s]", "Block", a.Name)
@@ -261,8 +261,8 @@ func TestListWAFActions(t *testing.T) {
 			if a.AvailablePhases != 3 {
 				t.Errorf("Expected to get WAF Action with AvailablePhases [%d] but got [%d]", 3, a.AvailablePhases)
 			}
-			if a.ForceCustomValues != false {
-				t.Errorf("Expected to get WAF Action with ForceCustomValues [%t] but got [%t]", true, a.ForceCustomValues)
+			if a.ForceCustomValues != 2 {
+				t.Errorf("Expected to get WAF Action with ForceCustomValues [%d] but got [%d]", 2, a.ForceCustomValues)
 			}
 			if a.Name != "Add header" {
 				t.Errorf("Expected to get WAF Action with Name [%s] but got [%s]", "Add header", a.Name)
@@ -277,9 +277,9 @@ func TestListWAFConditions(t *testing.T) {
 		preCacheRequest(
 			"https://apiv2.myracloud.com/waf/conditions",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
-				{"alias": "Custom header", "availablePhases": 3, "category": "HEADER", "forceCustomValues": true, "name": "custom_header", "value": ""},
-				{"alias": "Host header", "availablePhases": 1, "category": "HEADER", "forceCustomValues": false, "name": "host", "value": ""},
-				{"alias": "User-Agent header", "availablePhases": 1, "category": "HEADER", "forceCustomValues": false, "name": "user_agent", "value": ""}
+				{"alias": "Custom header", "availablePhases": 3, "category": "HEADER", "forceCustomValues": 2, "name": "custom_header", "value": ""},
+				{"alias": "Host header", "availablePhases": 1, "category": "HEADER", "forceCustomValues": 0, "name": "host", "value": ""},
+				{"alias": "User-Agent header", "availablePhases": 1, "category": "HEADER", "forceCustomValues": 0, "name": "user_agent", "value": ""}
 			]}`,
 			"listWAFConditions",
 		),
@@ -302,8 +302,8 @@ func TestListWAFConditions(t *testing.T) {
 			if c.AvailablePhases != 3 {
 				t.Errorf("Expected to get WAF Condition with AvailablePhases [%d] but got [%d]", 3, c.AvailablePhases)
 			}
-			if c.ForceCustomValues != true {
-				t.Errorf("Expected to get WAF Condition with ForceCustomValues [%t] but got [%t]", true, c.ForceCustomValues)
+			if c.ForceCustomValues != 2 {
+				t.Errorf("Expected to get WAF Condition with ForceCustomValues [%d] but got [%d]", 2, c.ForceCustomValues)
 			}
 			if c.Value != "" {
 				t.Errorf("Expected to get WAF Condition with Value [%s] but got [%s]", "", c.Value)
@@ -320,8 +320,8 @@ func TestListWAFConditions(t *testing.T) {
 			if c.AvailablePhases != 1 {
 				t.Errorf("Expected to get WAF Condition with AvailablePhases [%d] but got [%d]", 1, c.AvailablePhases)
 			}
-			if c.ForceCustomValues != false {
-				t.Errorf("Expected to get WAF Condition with ForceCustomValues [%t] but got [%t]", false, c.ForceCustomValues)
+			if c.ForceCustomValues != 0 {
+				t.Errorf("Expected to get WAF Condition with ForceCustomValues [%d] but got [%d]", 0, c.ForceCustomValues)
 			}
 			if c.Value != "" {
 				t.Errorf("Expected to get WAF Condition with Value [%s] but got [%s]", "", c.Value)
@@ -338,8 +338,8 @@ func TestListWAFConditions(t *testing.T) {
 			if c.AvailablePhases != 1 {
 				t.Errorf("Expected to get WAF Condition with AvailablePhases [%d] but got [%d]", 1, c.AvailablePhases)
 			}
-			if c.ForceCustomValues != false {
-				t.Errorf("Expected to get WAF Condition with ForceCustomValues [%t] but got [%t]", false, c.ForceCustomValues)
+			if c.ForceCustomValues != 0 {
+				t.Errorf("Expected to get WAF Condition with ForceCustomValues [%d] but got [%d]", 0, c.ForceCustomValues)
 			}
 			if c.Value != "" {
 				t.Errorf("Expected to get WAF Condition with Value [%s] but got [%s]", "", c.Value)

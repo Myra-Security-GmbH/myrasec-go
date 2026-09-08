@@ -153,7 +153,7 @@ type WAFAction struct {
 
 	// ForceCustomValues indicates input requirements for this action type.
 	// 0=none, 1=value, 2=key+value. Read-only metadata.
-	ForceCustomValues bool `json:"forceCustomValues" jsonschema:"readOnly=true,description=Metadata indicating input requirements: 0=none, 1=value, 2=key+value. Read-only."`
+	ForceCustomValues int `json:"forceCustomValues" jsonschema:"readOnly=true,description=Metadata indicating input requirements: 0=none, 1=value, 2=key+value. Read-only."`
 
 	// AvailablePhases indicates in which request phases this action is valid.
 	// 1=request, 2=response, 3=both. Read-only metadata.
@@ -195,7 +195,7 @@ type WAFCondition struct {
 
 	// ForceCustomValues indicates input requirements for this condition type.
 	// 0=none, 1=value, 2=key+value. Read-only metadata.
-	ForceCustomValues bool `json:"forceCustomValues" jsonschema:"Metadata indicating input requirements: 0=none, 1=value, 2=key+value. Read-only."`
+	ForceCustomValues int `json:"forceCustomValues" jsonschema:"Metadata indicating input requirements: 0=none, 1=value, 2=key+value. Read-only."`
 
 	// AvailablePhases indicates in which request phases this condition is valid.
 	// 1=request, 2=response, 3=both. Read-only metadata.
