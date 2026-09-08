@@ -96,11 +96,11 @@ type UserGroup struct {
 
 	// Parent is the identifier of the parent group the new group is nested under.
 	// It is required when creating a group: the API rejects a create with a zero or
-	// omitted Parent (a root group) with 403 Forbidden, because a root group is the
-	// organization itself and cannot be created through the API. Pass the id of an
+	// omitted Parent (a root group) with 403 Forbidden, because a root group is
+	// created only with its organization and cannot be added through the API. Pass the id of an
 	// existing group in which the authenticated account holds the ADMINISTRATOR role
 	// (list them via ListUserGroups). Zero identifies a root group on read responses.
-	Parent int `json:"parent,omitempty" jsonschema:"The identifier of the parent group the new group is nested under. Required on create: a zero or omitted Parent (a root group) is rejected with 403 Forbidden, a root group cannot be created through the API. Pass the id of an existing group the account administers. Zero identifies a root group on read responses."`
+	Parent int `json:"parent,omitempty" jsonschema:"The identifier of the parent group the new group is nested under. Required on create: a zero or omitted Parent (a root group) is rejected with 403 Forbidden, because a root group is created only with its organization and cannot be added through the API. Pass the id of an existing group the account administers. Zero identifies a root group on read responses."`
 
 	// Children lists the immediate child groups nested under this group.
 	// This field is read-only and populated by the API on list/read responses.
@@ -200,8 +200,8 @@ func (api *API) GetUserGroup(id int) (*UserGroup, error) {
 // The group must be nested under a parent: set UserGroup.Parent to the id of an
 // existing group in which the authenticated account holds the ADMINISTRATOR role
 // (list them via ListUserGroups). A create with a zero or omitted Parent asks for a
-// root group, which is the organization itself and cannot be created through the API,
-// so the API rejects it with 403 Forbidden (an *APIError with StatusCode 403).
+// root group, which is created only with its organization and cannot be added through
+// the API, so the API rejects it with 403 Forbidden (an *APIError with StatusCode 403).
 func (api *API) CreateUserGroupContext(ctx context.Context, group *UserGroup) (*UserGroup, error) {
 	if _, ok := api.methods["createUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createUserGroup")
