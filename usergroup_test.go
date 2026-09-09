@@ -1,6 +1,10 @@
 package myrasec
 
-import "testing"
+import (
+	"errors"
+	"net/http"
+	"testing"
+)
 
 func TestListUserGroups(t *testing.T) {
 	api, err := setupPreCachedAPI(
@@ -131,7 +135,7 @@ func TestCreateUserGroup(t *testing.T) {
 		preCacheRequest(
 			"https://apiv2.myracloud.com/user/groups",
 			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
-				{"id":55,"name":"new-group","type":"USER"}
+				{"id":55,"name":"new-group","parent":42,"type":"USER"}
 			]}`,
 			"createUserGroup",
 		),
@@ -140,7 +144,7 @@ func TestCreateUserGroup(t *testing.T) {
 		t.Error("Unexpected error.")
 	}
 
-	group, err := api.CreateUserGroup(&UserGroup{Name: "new-group", Type: UserGroupTypeUser})
+	group, err := api.CreateUserGroup(&UserGroup{Name: "new-group", Parent: 42, Type: UserGroupTypeUser})
 	if err != nil {
 		t.Errorf("Expected not to get an error but got [%s]", err.Error())
 	}
@@ -151,6 +155,32 @@ func TestCreateUserGroup(t *testing.T) {
 
 	if group.Name != "new-group" {
 		t.Errorf("Expected group name to be [%s] but got [%s]", "new-group", group.Name)
+	}
+
+	if group.Parent != 42 {
+		t.Errorf("Expected group Parent to be [%d] but got [%d]", 42, group.Parent)
+	}
+}
+
+// TestCreateUserGroupRootForbidden covers the ticket scenario: a create with no Parent
+// asks for a root group, which the API rejects with an empty-body 403.
+func TestCreateUserGroupRootForbidden(t *testing.T) {
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"POST /user/groups": {Status: http.StatusForbidden, Body: ""},
+	})
+
+	_, err := api.CreateUserGroup(&UserGroup{Name: "new-group", Type: UserGroupTypeUser})
+	if err == nil {
+		t.Fatal("Expected an error for a 403 response")
+	}
+
+	var apiErr *APIError
+	if !errors.As(err, &apiErr) {
+		t.Fatalf("Expected an *APIError but got %T", err)
+	}
+
+	if apiErr.StatusCode != http.StatusForbidden {
+		t.Errorf("Expected status code [%d] but got [%d]", http.StatusForbidden, apiErr.StatusCode)
 	}
 }
 
