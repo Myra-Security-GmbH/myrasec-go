@@ -17,6 +17,12 @@ func getUserMethods() map[string]APIMethod {
 			Result:             User{},
 			ResponseDecodeFunc: decodeSingleElementResponse,
 		},
+		"listUsers": {
+			Name:   "listUsers",
+			Action: "users",
+			Method: http.MethodGet,
+			Result: []User{},
+		},
 	}
 }
 
@@ -136,4 +142,31 @@ func (api *API) MeContext(ctx context.Context) (*User, error) {
 // Deprecated: use MeContext.
 func (api *API) Me() (*User, error) {
 	return api.MeContext(context.Background())
+}
+
+// ListUsersContext returns the users visible to the authenticated account.
+// An account holding the ADMINISTRATOR role in at least one group (root or
+// sub group) sees every user of its organization, any other account sees only
+// itself. Pass query parameters such as "page", "pageSize" or "search" via the
+// params map.
+//
+// The list carries the base user fields only: Admin, RootAdmin, Roles and
+// RootGroupRoles are not populated by this endpoint.
+func (api *API) ListUsersContext(ctx context.Context, params map[string]string) ([]User, error) {
+	if _, ok := api.methods["listUsers"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "listUsers")
+	}
+
+	definition := api.methods["listUsers"]
+
+	result, err := api.call(ctx, definition, params)
+	if err != nil {
+		return nil, err
+	}
+
+	res, ok := result.(*[]User)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return *res, nil
 }

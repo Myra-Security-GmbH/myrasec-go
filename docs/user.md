@@ -85,6 +85,39 @@ if err != nil {
 log.Println(me.ID, me.Login)
 ```
 
+## List
+The listing operation returns the users visible to the authenticated account. An account holding the `ADMINISTRATOR` role in at least one group (root or sub group) gets every user of its organization, any other account gets only itself. Agent accounts cannot call this endpoint while in agent mode (the API answers `403 Forbidden`).
+
+The list carries the base user fields only: `Admin`, `RootAdmin`, `Roles` and `RootGroupRoles` are not populated by this endpoint.
+
+### Example
+```go
+users, err := api.ListUsersContext(ctx, nil)
+if err != nil {
+    log.Fatal(err)
+}
+
+for _, u := range users {
+    log.Println(u.ID, u.Login, u.Firstname, u.Lastname)
+}
+```
+
+It is possible to pass a map of parameters (`map[string]string`) to the `ListUsersContext` function.
+
+| name | description | default |
+|---|---|---|
+| `search` | Restrict the result to users whose login, email, first name, last name or full name contains the search term. | null |
+| `page` | Specify the page of the result. | 1 |
+| `pageSize` | Specify the amount of results in the response. | 50 |
+
+```go
+users, err := api.ListUsersContext(ctx, map[string]string{
+    myrasec.ParamSearch:   "example.com",
+    myrasec.ParamPage:     "1",
+    myrasec.ParamPageSize: "25",
+})
+```
+
 ## Use as a return type
 Several endpoints return User objects with the fields populated as documented above. For example, [ListUsersFromGroup](./usergroup.md) returns a list of users that are members of a given group, including the optional fields like `Firstname`, `OrganizationID` and (when `includeRoles=true` is passed) `Roles`.
 
