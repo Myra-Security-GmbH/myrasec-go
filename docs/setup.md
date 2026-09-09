@@ -65,7 +65,7 @@ if err != nil {
 }
 ```
 
-The functions without the suffix, for example `ListDomains(params)`, are equivalent to the `Context` variant called with `context.Background()`. They are deprecated and will be removed in the next major version. The examples in this documentation use the `Context` variants and assume a `ctx` variable, for example `ctx := context.Background()`.
+The functions without the suffix, for example `ListDomains(params)`, are equivalent to the `Context` variant called with `context.Background()`. They are deprecated and will be removed in the next major version. Functions added since then exist as `Context` variants only. The examples in this documentation use the `Context` variants and assume a `ctx` variable, for example `ctx := context.Background()`.
 
 ## Error handling
 Every function returns a `*myrasec.APIError` when the API answers with a non-successful HTTP status. The error message contains the status and, when the API sent them, the violations and the error message of the response. Use `errors.As` to inspect the status code and the violations:
