@@ -19,7 +19,7 @@ type UserGroup struct {
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new UserGroup object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
 | `Name` | string | The display name of the group. |
-| `Parent` | int | The identifier of the parent group. Zero or omitted means the group is a root group. |
+| `Parent` | int | The identifier of the parent group the new group is nested under. Required on create (see [Create](#create)); zero identifies a root group on read responses. |
 | `Children` | []UserGroup | The immediate child groups nested under this group. Read-only, populated by the server on list and read responses. |
 | `Roles` | []string | The role identifiers the requesting user holds on this group. Read-only. |
 | `MembersCount` | int | The number of users currently assigned to this group. Read-only. |
@@ -43,12 +43,20 @@ type GroupRole struct {
 | `Role` | string | The role identifier granted to the user within the group. Allowed values: `ADMINISTRATOR`, `USER`. Required. |
 
 ## Create
-To create a new user group it is necessary to send a UserGroup object with at least a name. Set `Parent` to nest the new group under an existing group; omit it to create a root group.
+To create a new user group send a UserGroup object with a name and a `Parent`. `Parent` is the id of an existing group in which the authenticated account holds the `ADMINISTRATOR` role (list them via `ListUserGroups` and read the id of the group you administer). A customer account cannot create a root group (a group with a zero or omitted `Parent`) through the API: the root group is created only together with its organization.
+
+The API answers `403 Forbidden` with an empty body for every create it denies, so a `403` is ambiguous. It can mean any of:
+
+- `Parent` is zero or omitted (a root group create).
+- `Parent` does not exist, or is not a user group.
+- `Parent` belongs to a different organization.
+- the authenticated account holds only the `USER` role in `Parent`, not `ADMINISTRATOR`.
 
 ### Example
 ```go
 group := &myrasec.UserGroup{
-    Name: "Engineering",
+    Name:   "Engineering",
+    Parent: parentGroupId,
 }
 
 g, err := api.CreateUserGroupContext(ctx, group)
@@ -90,7 +98,7 @@ if err != nil {
 ```
 
 ## Update
-Updating a user group needs the `ID` and `Modified` attributes to identify the object and verify the version.
+Updating a user group needs the `ID` and `Modified` attributes to identify the object and verify the version. Only sub groups can be updated: an update of a root group is rejected with `403 Forbidden`.
 
 ### Example
 ```go
@@ -109,7 +117,7 @@ if err != nil {
 ```
 
 ## Delete
-For deleting a user group it is only necessary to send the `ID` and `Modified` attributes as body content.
+For deleting a user group it is only necessary to send the `ID` and `Modified` attributes as body content. Only sub groups can be deleted: a delete of a root group is rejected with `403 Forbidden`.
 
 ### Example
 ```go

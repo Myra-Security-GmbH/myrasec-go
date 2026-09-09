@@ -94,8 +94,13 @@ type UserGroup struct {
 	// Name is the human-readable display name of the group.
 	Name string `json:"name,omitempty" jsonschema:"The display name of the group."`
 
-	// Parent is the identifier of the parent group, or zero for a root group.
-	Parent int `json:"parent,omitempty" jsonschema:"The identifier of the parent group. Zero or omitted for a root group."`
+	// Parent is the identifier of the parent group the new group is nested under.
+	// It is required when creating a group: pass the id of an existing group in which
+	// the authenticated account holds the ADMINISTRATOR role (list them via
+	// ListUserGroups). Omitting it is rejected with 403 Forbidden. See
+	// CreateUserGroupContext for the create requirements and what a 403 can mean.
+	// Zero identifies a root group on read responses.
+	Parent int `json:"parent,omitempty" jsonschema:"The identifier of the parent group the new group is nested under. Required on create: the id of an existing group in which the account holds the ADMINISTRATOR role. Omitting it is rejected with 403 Forbidden. Zero identifies a root group on read responses."`
 
 	// Children lists the immediate child groups nested under this group.
 	// This field is read-only and populated by the API on list/read responses.
@@ -191,6 +196,19 @@ func (api *API) GetUserGroup(id int) (*UserGroup, error) {
 }
 
 // CreateUserGroupContext creates a new user group using the MYRA API.
+//
+// The group must be nested under a parent: set UserGroup.Parent to the id of an
+// existing group in which the authenticated account holds the ADMINISTRATOR role
+// (list them via ListUserGroups). A customer account cannot create a root group (a
+// group with a zero or omitted Parent) through the API; the root group is created
+// only together with its organization.
+//
+// The API answers 403 Forbidden with an empty body (an *APIError with StatusCode 403)
+// for every create it denies, so a 403 is ambiguous. It can mean any of:
+//   - Parent is zero or omitted (a root group create).
+//   - Parent does not exist, or is not a user group.
+//   - Parent belongs to a different organization.
+//   - the authenticated account holds only the USER role in Parent, not ADMINISTRATOR.
 func (api *API) CreateUserGroupContext(ctx context.Context, group *UserGroup) (*UserGroup, error) {
 	if _, ok := api.methods["createUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createUserGroup")
@@ -218,6 +236,9 @@ func (api *API) CreateUserGroup(group *UserGroup) (*UserGroup, error) {
 }
 
 // UpdateUserGroupContext updates the passed user group using the MYRA API.
+//
+// Only sub groups can be updated: updating a root group (one with no parent) is
+// rejected with 403 Forbidden.
 func (api *API) UpdateUserGroupContext(ctx context.Context, group *UserGroup) (*UserGroup, error) {
 	if _, ok := api.methods["updateUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateUserGroup")
@@ -246,6 +267,9 @@ func (api *API) UpdateUserGroup(group *UserGroup) (*UserGroup, error) {
 }
 
 // DeleteUserGroupContext deletes the passed user group using the MYRA API.
+//
+// Only sub groups can be deleted: deleting a root group (one with no parent) is
+// rejected with 403 Forbidden.
 func (api *API) DeleteUserGroupContext(ctx context.Context, group *UserGroup) (*UserGroup, error) {
 	if _, ok := api.methods["deleteUserGroup"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "deleteUserGroup")
