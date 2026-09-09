@@ -1,6 +1,6 @@
 # Setup myrasec-go
 
-To be able to access the Myra API using the myrasec-go lib, you need a API Key and API Secret or an API token. You can create this on your own after accessing your own user page in the user management.
+To be able to access the Myra API using the myrasec-go lib, you need a API Key and API Secret or an API token. You can create this on your own after accessing your own user page in the user management. Once you have access, the library can manage them as well, see [API Key](./apikey.md) and [API Token](./apitoken.md).
 
 ## Setup example
 ```go

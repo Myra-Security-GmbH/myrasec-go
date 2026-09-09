@@ -28,6 +28,7 @@ func initializeMethods() map[string]APIMethod {
 
 	for _, m := range []map[string]APIMethod{
 		getAPIKeyMethods(),
+		getAPITokenMethods(),
 		getCacheClearMethods(),
 		getCacheSettingMethods(),
 		getDNSRecordMethods(),
