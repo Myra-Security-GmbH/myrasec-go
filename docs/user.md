@@ -107,12 +107,14 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListUse
 | name | description | default |
 |---|---|---|
 | `search` | Restrict the result to users whose login, email, first name, last name or full name contains the search term. | null |
+| `sort` | Sort the result by a user attribute, `field:direction` with `asc` or `desc`, e.g. `login:asc`. Several fields can be separated by commas. A value without the direction is ignored, a field that is not a user attribute is rejected. | null |
 | `page` | Specify the page of the result. | 1 |
 | `pageSize` | Specify the amount of results in the response. | 50 |
 
 ```go
 users, err := api.ListUsersContext(ctx, map[string]string{
     myrasec.ParamSearch:   "example.com",
+    "sort":                "lastname:asc,firstname:asc",
     myrasec.ParamPage:     "1",
     myrasec.ParamPageSize: "25",
 })

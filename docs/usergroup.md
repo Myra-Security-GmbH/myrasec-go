@@ -149,7 +149,7 @@ if err != nil {
 |---|---|---|
 | `search` | Filter by the specified search query. | null |
 | `includeRoles` | If `true`, the response includes each user's role assignments on the group. | false |
-| `sort` | Sort field (e.g. `login`, `firstname`). | null |
+| `sort` | Sort the result by a user attribute, `field:direction` with `asc` or `desc`, e.g. `login:asc`. Several fields can be separated by commas. A value without the direction is ignored. | null |
 | `page` | Specify the page of the result. | 1 |
 | `pageSize` | Specify the amount of results in the response. | 50 |
 | `language` | Locale for translated fields. | null |
