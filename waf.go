@@ -1,7 +1,9 @@
 package myrasec
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -151,13 +153,51 @@ type WAFAction struct {
 	// Usage depends on ForceCustomValues.
 	Value string `json:"value" jsonschema:"The configuration value for the action. Required for certain action types."`
 
-	// ForceCustomValues indicates input requirements for this action type.
-	// 0=none, 1=value, 2=key+value. Read-only metadata.
-	ForceCustomValues int `json:"forceCustomValues" jsonschema:"readOnly=true,description=Metadata indicating input requirements: 0=none, 1=value, 2=key+value. Read-only."`
+	// ForceCustomValues is true when the action requires custom input (Value or Key+Value).
+	// Read-only metadata, see ForceCustomValuesMode for the exact requirement.
+	ForceCustomValues bool `json:"forceCustomValues" jsonschema:"readOnly=true,description=True when the action requires custom input. Read-only."`
+
+	// ForceCustomValuesMode is the raw API value: 0=none, 1=value, 2=key+value.
+	// Read-only metadata, populated from the API response.
+	ForceCustomValuesMode int `json:"-"`
 
 	// AvailablePhases indicates in which request phases this action is valid.
 	// 1=request, 2=response, 3=both. Read-only metadata.
 	AvailablePhases int `json:"availablePhases" jsonschema:"readOnly=true,description=Metadata indicating valid phases: 1=request, 2=response, 3=both. Read-only."`
+}
+
+// UnmarshalJSON accepts forceCustomValues as integer (current API) or boolean (legacy payloads).
+func (a *WAFAction) UnmarshalJSON(b []byte) error {
+	type alias WAFAction
+	aux := struct {
+		*alias
+		ForceCustomValues json.RawMessage `json:"forceCustomValues"`
+	}{alias: (*alias)(a)}
+	if err := json.Unmarshal(b, &aux); err != nil {
+		return err
+	}
+	raw := bytes.TrimSpace(aux.ForceCustomValues)
+	switch {
+	case len(raw) == 0 || bytes.Equal(raw, []byte("null")):
+		return nil
+	case raw[0] == 't' || raw[0] == 'f':
+		var v bool
+		if err := json.Unmarshal(raw, &v); err != nil {
+			return err
+		}
+		a.ForceCustomValues = v
+		if v {
+			a.ForceCustomValuesMode = 1
+		}
+	default:
+		var n int
+		if err := json.Unmarshal(raw, &n); err != nil {
+			return err
+		}
+		a.ForceCustomValuesMode = n
+		a.ForceCustomValues = n != 0
+	}
+	return nil
 }
 
 // WAFCondition represents a logical check within a WAF rule.
@@ -193,9 +233,9 @@ type WAFCondition struct {
 	// Read-only.
 	Category string `json:"category" jsonschema:"The category of the condition. Read-only."`
 
-	// ForceCustomValues indicates input requirements for this condition type.
-	// 0=none, 1=value, 2=key+value. Read-only metadata.
-	ForceCustomValues int `json:"forceCustomValues" jsonschema:"Metadata indicating input requirements: 0=none, 1=value, 2=key+value. Read-only."`
+	// ForceCustomValues is true when the condition requires a custom value.
+	// Read-only metadata.
+	ForceCustomValues bool `json:"forceCustomValues" jsonschema:"Metadata indicating whether the condition requires a custom value. Read-only."`
 
 	// AvailablePhases indicates in which request phases this condition is valid.
 	// 1=request, 2=response, 3=both. Read-only metadata.
