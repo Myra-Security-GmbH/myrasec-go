@@ -44,15 +44,16 @@ type WAFRule struct {
 
 ```go
 type WAFAction struct {
-	ID                int             `json:"id,omitempty"`
-	Created           *types.DateTime `json:"created,omitempty"`
-	Modified          *types.DateTime `json:"modified,omitempty"`
-	ForceCustomValues bool            `json:"forceCustomValues"`
-	AvailablePhases   int             `json:"availablePhases"`
-	Name              string          `json:"name"`
-	Type              string          `json:"type"`
-	CustomKey         string          `json:"customKey"`
-	Value             string          `json:"value"`
+	ID                    int             `json:"id,omitempty"`
+	Created               *types.DateTime `json:"created,omitempty"`
+	Modified              *types.DateTime `json:"modified,omitempty"`
+	ForceCustomValues     bool            `json:"forceCustomValues"`
+	ForceCustomValuesMode int             `json:"-"`
+	AvailablePhases       int             `json:"availablePhases"`
+	Name                  string          `json:"name"`
+	Type                  string          `json:"type"`
+	CustomKey             string          `json:"customKey"`
+	Value                 string          `json:"value"`
 }
 ```
 | Field | Type | Description |
@@ -60,7 +61,8 @@ type WAFAction struct {
 | `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a WAF Action it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new WAFRule action object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
-| `ForeceCustomValues` | bool | This attributes determines number of input fields when utilised (0=none, 1=value, 2=key+value). |
+| `ForceCustomValues` | bool | Read-only metadata that is `true` when the action requires custom input (`Value` or `Key`+`Value`). Populated from the API response, which returns an integer; see `ForceCustomValuesMode` for the exact requirement. |
+| `ForceCustomValuesMode` | int | Read-only metadata carrying the raw API value (0=none, 1=value, 2=key+value). Not sent to the API. |
 | `AvailablePhases` | int | This attributes determines the support for different phases (1=request, 2=response, 3=both). |
 | `Name` | string | Display name of the action. |
 | `Type` | string | [Type of the action.](./waf_action.md) |
@@ -87,7 +89,7 @@ type WAFCondition struct {
 | `ID` | int | ID is a unique identifier for an object. This value is always a number type and cannot be set while inserting a new object. To update or delete a WAF Condition it is necessary to add this attribute to your object. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Created will be created by the server after creating a new WAFRule condition object. This value is informational so it is not necessary to add this attribute to any API call. |
 | `Modified` | *types.DateTime | Identifies the version of the object. To ensure that you are updating the most recent version and not overwriting other changes, you always have to add modified for updates and deletes. This value is always a date type with an `ISO 8601` format. |
-| `ForeceCustomValues` | bool | This attributes determines number of input fields when utilised (0=none, 1=value, 2=key+value). |
+| `ForceCustomValues` | bool | Read-only metadata that is `true` when the condition requires a custom value. |
 | `AvailablePhases` | int | This attributes determines the support for different phases (1=request, 2=response, 3=both). |
 | `Alias` | string | Display name of the condition. |
 | `Category` | string | Category of the WAF condition. |

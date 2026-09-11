@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"encoding/json"
 	"testing"
 )
 
@@ -212,9 +213,9 @@ func TestListWAFActions(t *testing.T) {
 		preCacheRequest(
 			"https://apiv2.myracloud.com/waf/actions",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 3, "data": [
-				{"availablePhases": 1, "forceCustomValues": false, "name": "Allow", "type": "allow"},
-				{"availablePhases": 1, "forceCustomValues": false, "name": "Block", "type": "block"},
-				{"availablePhases": 3, "forceCustomValues": false, "name": "Add header", "type": "add_header"}
+				{"availablePhases": 1, "forceCustomValues": 0, "name": "Allow", "type": "allow"},
+				{"availablePhases": 1, "forceCustomValues": 0, "name": "Block", "type": "block"},
+				{"availablePhases": 3, "forceCustomValues": 2, "name": "Add header", "type": "add_header"}
 			]}`,
 			"listWAFActions",
 		),
@@ -240,6 +241,9 @@ func TestListWAFActions(t *testing.T) {
 			if a.ForceCustomValues != false {
 				t.Errorf("Expected to get WAF Action with ForceCustomValues [%t] but got [%t]", false, a.ForceCustomValues)
 			}
+			if a.ForceCustomValuesMode != 0 {
+				t.Errorf("Expected to get WAF Action with ForceCustomValuesMode [%d] but got [%d]", 0, a.ForceCustomValuesMode)
+			}
 			if a.Name != "Allow" {
 				t.Errorf("Expected to get WAF Action with Name [%s] but got [%s]", "Allow", a.Name)
 			}
@@ -252,6 +256,9 @@ func TestListWAFActions(t *testing.T) {
 			if a.ForceCustomValues != false {
 				t.Errorf("Expected to get WAF Action with ForceCustomValues [%t] but got [%t]", false, a.ForceCustomValues)
 			}
+			if a.ForceCustomValuesMode != 0 {
+				t.Errorf("Expected to get WAF Action with ForceCustomValuesMode [%d] but got [%d]", 0, a.ForceCustomValuesMode)
+			}
 			if a.Name != "Block" {
 				t.Errorf("Expected to get WAF Action with Name [%s] but got [%s]", "Block", a.Name)
 			}
@@ -261,14 +268,47 @@ func TestListWAFActions(t *testing.T) {
 			if a.AvailablePhases != 3 {
 				t.Errorf("Expected to get WAF Action with AvailablePhases [%d] but got [%d]", 3, a.AvailablePhases)
 			}
-			if a.ForceCustomValues != false {
+			if a.ForceCustomValues != true {
 				t.Errorf("Expected to get WAF Action with ForceCustomValues [%t] but got [%t]", true, a.ForceCustomValues)
+			}
+			if a.ForceCustomValuesMode != 2 {
+				t.Errorf("Expected to get WAF Action with ForceCustomValuesMode [%d] but got [%d]", 2, a.ForceCustomValuesMode)
 			}
 			if a.Name != "Add header" {
 				t.Errorf("Expected to get WAF Action with Name [%s] but got [%s]", "Add header", a.Name)
 			}
 		}
 
+	}
+}
+
+func TestWAFActionUnmarshalForceCustomValues(t *testing.T) {
+	cases := []struct {
+		raw       string
+		wantForce bool
+		wantMode  int
+	}{
+		{`{"forceCustomValues": 0}`, false, 0},
+		{`{"forceCustomValues": 1}`, true, 1},
+		{`{"forceCustomValues": 2}`, true, 2},
+		{`{"forceCustomValues": false}`, false, 0},
+		{`{"forceCustomValues": true}`, true, 1},
+		{`{}`, false, 0},
+		{`{"forceCustomValues": null}`, false, 0},
+	}
+
+	for _, c := range cases {
+		var a WAFAction
+		if err := json.Unmarshal([]byte(c.raw), &a); err != nil {
+			t.Errorf("Unexpected error unmarshalling %s: %v", c.raw, err)
+			continue
+		}
+		if a.ForceCustomValues != c.wantForce {
+			t.Errorf("For %s expected ForceCustomValues [%t] but got [%t]", c.raw, c.wantForce, a.ForceCustomValues)
+		}
+		if a.ForceCustomValuesMode != c.wantMode {
+			t.Errorf("For %s expected ForceCustomValuesMode [%d] but got [%d]", c.raw, c.wantMode, a.ForceCustomValuesMode)
+		}
 	}
 }
 
