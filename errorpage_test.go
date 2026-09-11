@@ -112,6 +112,40 @@ func TestCreateErrorPage(t *testing.T) {
 	}
 }
 
+// TestCreateErrorPageStatusCode413 confirms the 413 "Request Entity Too Large" status
+// code is forwarded and read back unchanged, matching the documented valid-code list.
+func TestCreateErrorPageStatusCode413(t *testing.T) {
+	api, err := setupPreCachedAPI(
+		preCacheRequest(
+			"https://apiv2.myracloud.com/domain/1/errorpages",
+			`{"error": false, "data": [
+				{"id": 13, "errorCode": 413, "content": "<h1>HTTP 413 error</h1>", "subDomainName": "www.example.com", "created": "2025-01-09T16:31:13+0100", "modified": "2025-04-02T10:15:49+0200"}
+			]}`,
+			"createErrorPage",
+		),
+	)
+	if err != nil {
+		t.Fatal("Unexpected error")
+	}
+
+	page, err := api.CreateErrorPage(&ErrorPage{
+		ErrorCode:     413,
+		Content:       "<h1>HTTP 413 error</h1>",
+		SubDomainName: "www.example.com",
+	}, 1)
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if page.ErrorCode != 413 {
+		t.Errorf("Expected to get ErrorPage for ErrorCode [%d] but got [%d]", 413, page.ErrorCode)
+	}
+
+	if page.ID != 13 {
+		t.Errorf("Expected to get ErrorPage with ID [%d] but got [%d]", 13, page.ID)
+	}
+}
+
 // TestUpdateErrorPage mirrors TestCreateErrorPage for the update endpoint.
 func TestUpdateErrorPage(t *testing.T) {
 	api, err := setupPreCachedAPI(
