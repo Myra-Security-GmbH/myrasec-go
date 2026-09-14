@@ -43,9 +43,9 @@ func TestGetErrorPage(t *testing.T) {
 func TestListErrorPages(t *testing.T) {
 	api, err := setupPreCachedAPI(
 		preCacheRequest(
-			"https://apiv2.myracloud.com/domain/1/errorpages",
+			"https://apiv2.myracloud.com/domain/1/errorpages?includeContent=true",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 2, "data": [
-				{"id": 1, "errorCode": 500, "content": "<!DOCTYPE html><html><head><title>Error 500</title></head><body><h1>HTTP 500 error</h1></body></html>", "subDomainName": "www.example.com"}, 
+				{"id": 1, "errorCode": 500, "content": "<!DOCTYPE html><html><head><title>Error 500</title></head><body><h1>HTTP 500 error</h1></body></html>", "subDomainName": "www.example.com"},
 				{"id": 2, "errorCode": 404, "content": "<!DOCTYPE html><html><head><title>Error 404</title></head><body><h1>HTTP 404 error</h1></body></html>", "subDomainName": "test.example.com"}
 			]}`,
 			"listErrorPages",
@@ -55,13 +55,30 @@ func TestListErrorPages(t *testing.T) {
 		t.Error("Unexpected error")
 	}
 
-	pages, err := api.ListErrorPages(1, nil)
+	pages, err := api.ListErrorPages(1, map[string]string{"includeContent": "true"})
 	if err != nil {
 		t.Errorf("Expected not to get an error but got [%s]", err.Error())
 	}
 
 	if len(pages) != 2 {
 		t.Errorf("Expected to get [%d] error pages but got [%d]", 2, len(pages))
+	}
+
+	// Lock in the decode contract: each listed entry must carry its own HTML
+	// content, not an empty string.
+	expectedContent := map[int]string{
+		1: "<h1>HTTP 500 error</h1>",
+		2: "<h1>HTTP 404 error</h1>",
+	}
+	for _, page := range pages {
+		want, ok := expectedContent[page.ID]
+		if !ok {
+			t.Errorf("Unexpected ErrorPage with ID [%d] in the list", page.ID)
+			continue
+		}
+		if !strings.Contains(page.Content, want) {
+			t.Errorf("Expected ErrorPage [%d] content to contain [\"%s\"] but got [\"%s\"]", page.ID, want, page.Content)
+		}
 	}
 }
 
