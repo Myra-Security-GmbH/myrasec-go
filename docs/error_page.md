@@ -56,6 +56,16 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListErr
 | `search` | Filter by the specified search query | null |
 | `page` | Specify the page of the result | 1 |
 | `pageSize` | Specify the amount of results in the response | 50 |
+| `includeContent` | Include the HTML body (`Content`) for each entry (by default the list omits it) | `false` |
+
+By default the list omits the `Content` of each error page for performance reasons; pass `includeContent=true` to populate it in a single list call instead of fetching each page with `GetErrorPage`.
+
+```go
+errorPages, err := api.ListErrorPagesContext(ctx, domainId, map[string]string{"includeContent": "true"})
+if err != nil {
+    log.Fatal(err)
+}
+```
 
 ## Read
 The read operation returns a single error page by it's ID and domainId
