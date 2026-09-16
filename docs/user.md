@@ -9,6 +9,9 @@ type User struct {
     Email              string          `json:"email,omitempty"`
     Firstname          string          `json:"firstname,omitempty"`
     Lastname           string          `json:"lastname,omitempty"`
+    PrimaryPhone       string          `json:"primaryPhone,omitempty"`
+    SecondaryPhone     string          `json:"secondaryPhone,omitempty"`
+    PreferredCommunicationLanguage string `json:"preferredCommunicationLanguage,omitempty"`
     OrganizationID     int             `json:"organizationId,omitempty"`
     OrganizationName   string          `json:"organizationName,omitempty"`
     Active             bool            `json:"active,omitempty"`
@@ -33,6 +36,9 @@ type User struct {
 | `Email` | string | The user's contact email address. |
 | `Firstname` | string | The user's given name. |
 | `Lastname` | string | The user's family name. |
+| `PrimaryPhone` | string | The user's primary phone number. |
+| `SecondaryPhone` | string | The user's secondary phone number. |
+| `PreferredCommunicationLanguage` | string | The user's preferred communication language. |
 | `OrganizationID` | int | The unique identifier of the organization the user belongs to. |
 | `OrganizationName` | string | The display name of the user's organization. |
 | `Active` | bool | Indicates whether the user account is currently enabled. |
@@ -118,6 +124,24 @@ users, err := api.ListUsersContext(ctx, map[string]string{
     myrasec.ParamPage:     "1",
     myrasec.ParamPageSize: "25",
 })
+```
+
+## Update
+Updates a user identified by its `ID`. Profile fields such as `PrimaryPhone`, `SecondaryPhone` and `PreferredCommunicationLanguage` are writable through this call.
+
+### Example
+```go
+user := &myrasec.User{
+    ID:                             userId,
+    PrimaryPhone:                   "+49111",
+    SecondaryPhone:                 "+49222",
+    PreferredCommunicationLanguage: "EN",
+}
+
+updated, err := api.UpdateUserContext(ctx, user)
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
 ## Use as a return type

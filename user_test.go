@@ -2,6 +2,7 @@ package myrasec
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"testing"
 )
@@ -13,6 +14,7 @@ func TestMe(t *testing.T) {
 			`{"error":false, "violationList":[], "warningList":[], "data":[
 				{"objectType":"UserExtendedVO", "id": 12345, "login":"test@example.com", "modified":"2025-07-28T15:39:12+0200", "created":"2025-01-09T16:31:13+0100",
 					"admin": true, "active": true, "tfaEnabled": true,
+					"primaryPhone":"+49111", "secondaryPhone":"+49222", "preferredCommunicationLanguage":"EN",
 					"roles":[
 						{"id": 10, "groupId": 1, "groupName": "root", "role": "ADMINISTRATOR"},
 						{"id": 11, "groupId": 2, "groupName": "team", "role": "USER"}
@@ -48,6 +50,10 @@ func TestMe(t *testing.T) {
 
 	if !user.TfaEnabled {
 		t.Error("Expected user.TfaEnabled to be true")
+	}
+
+	if user.PrimaryPhone != "+49111" || user.SecondaryPhone != "+49222" || user.PreferredCommunicationLanguage != "EN" {
+		t.Errorf("Expected the profile fields to decode, got primaryPhone [%s] secondaryPhone [%s] preferredCommunicationLanguage [%s]", user.PrimaryPhone, user.SecondaryPhone, user.PreferredCommunicationLanguage)
 	}
 
 	if len(user.Roles) != 2 {
@@ -198,6 +204,45 @@ func TestListUsersWithoutParams(t *testing.T) {
 
 	if sent := requests.last(t); len(sent.Query) != 0 {
 		t.Errorf("Expected no query parameters but got %v", sent.Query)
+	}
+}
+
+func TestUpdateUser(t *testing.T) {
+	api, requests := newTestAPI(t, map[string]testResponse{
+		"PUT /users/12345": {Status: http.StatusOK, Body: `{"error":false,"violationList":[],"warningList":[],"data":[
+			{"objectType":"UserVO","id":12345,"login":"test@example.com","firstname":"Test","lastname":"User",
+				"primaryPhone":"+49111","secondaryPhone":"+49222","preferredCommunicationLanguage":"DE"}
+		]}`},
+	})
+
+	updated, err := api.UpdateUserContext(context.Background(), &User{
+		ID:                             12345,
+		Firstname:                      "Test",
+		Lastname:                       "User",
+		PrimaryPhone:                   "+49111",
+		SecondaryPhone:                 "+49222",
+		PreferredCommunicationLanguage: "DE",
+	})
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if updated.PreferredCommunicationLanguage != "DE" {
+		t.Errorf("Expected the updated user's language to decode, got [%s]", updated.PreferredCommunicationLanguage)
+	}
+
+	sent := requests.last(t)
+	if sent.Method != http.MethodPut || sent.Path != "/users/12345" {
+		t.Errorf("Expected PUT /users/12345 but got %s %s", sent.Method, sent.Path)
+	}
+
+	var payload map[string]any
+	if err := json.Unmarshal(sent.Body, &payload); err != nil {
+		t.Fatalf("Expected a JSON payload but got [%s]", sent.Body)
+	}
+
+	if payload["primaryPhone"] != "+49111" || payload["secondaryPhone"] != "+49222" || payload["preferredCommunicationLanguage"] != "DE" {
+		t.Errorf("Expected the profile fields in the update payload, got %v", payload)
 	}
 }
 

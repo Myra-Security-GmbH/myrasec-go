@@ -23,6 +23,12 @@ func getUserMethods() map[string]APIMethod {
 			Method: http.MethodGet,
 			Result: []User{},
 		},
+		"updateUser": {
+			Name:   "updateUser",
+			Action: "users/%d",
+			Method: http.MethodPut,
+			Result: User{},
+		},
 	}
 }
 
@@ -54,6 +60,15 @@ type User struct {
 
 	// Lastname is the user's family name.
 	Lastname string `json:"lastname,omitempty" jsonschema:"The user's family name."`
+
+	// PrimaryPhone is the user's primary phone number.
+	PrimaryPhone string `json:"primaryPhone,omitempty" jsonschema:"The user's primary phone number."`
+
+	// SecondaryPhone is the user's secondary phone number.
+	SecondaryPhone string `json:"secondaryPhone,omitempty" jsonschema:"The user's secondary phone number."`
+
+	// PreferredCommunicationLanguage is the language used to communicate with the user.
+	PreferredCommunicationLanguage string `json:"preferredCommunicationLanguage,omitempty" jsonschema:"The user's preferred communication language."`
 
 	// OrganizationID is the unique identifier of the organization the user belongs to.
 	OrganizationID int `json:"organizationId,omitempty" jsonschema:"The unique identifier of the organization the user belongs to."`
@@ -169,4 +184,32 @@ func (api *API) ListUsersContext(ctx context.Context, params map[string]string) 
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return *res, nil
+}
+
+// UpdateUserContext updates the passed user using the MYRA API
+func (api *API) UpdateUserContext(ctx context.Context, user *User) (*User, error) {
+	if _, ok := api.methods["updateUser"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateUser")
+	}
+
+	definition := api.methods["updateUser"]
+	definition.Action = fmt.Sprintf(definition.Action, user.ID)
+
+	result, err := api.call(ctx, definition, user)
+	if err != nil {
+		return nil, err
+	}
+
+	res, ok := result.(*User)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
+}
+
+// UpdateUser is equivalent to UpdateUserContext with context.Background().
+//
+// Deprecated: use UpdateUserContext.
+func (api *API) UpdateUser(user *User) (*User, error) {
+	return api.UpdateUserContext(context.Background(), user)
 }
