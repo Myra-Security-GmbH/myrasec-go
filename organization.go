@@ -44,7 +44,9 @@ type OrganizationNote struct {
 	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Server-managed, read-only."`
 
 	// Notes is the free-form note text of the organization.
-	Notes string `json:"notes,omitempty" jsonschema:"The free-form note text of the organization."`
+	// It is intentionally sent without omitempty: clearing the note upserts an
+	// empty string, so the field must stay in the payload to overwrite the stored value.
+	Notes string `json:"notes" jsonschema:"The free-form note text of the organization."`
 }
 
 // GetOrganizationNoteContext returns the note of the authenticated organization

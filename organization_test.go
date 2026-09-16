@@ -92,4 +92,16 @@ func TestUpdateOrganizationNoteClearing(t *testing.T) {
 	if sent.Method != http.MethodPut || sent.Path != "/organization/notes" {
 		t.Errorf("Expected PUT /organization/notes but got %s %s", sent.Method, sent.Path)
 	}
+
+	// The cleared value must be carried in the payload; if "notes" were dropped
+	// (e.g. via omitempty) the upsert would leave the stored note untouched.
+	var payload map[string]any
+	if err := json.Unmarshal(sent.Body, &payload); err != nil {
+		t.Fatalf("Expected a JSON payload but got [%s]", sent.Body)
+	}
+
+	notes, present := payload["notes"]
+	if !present || notes != "" {
+		t.Errorf("Expected the payload to carry notes=\"\" so the note is cleared, got %v", payload)
+	}
 }

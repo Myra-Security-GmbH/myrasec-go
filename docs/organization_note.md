@@ -6,7 +6,7 @@ type OrganizationNote struct {
 	ID       int             `json:"id,omitempty"`
 	Created  *types.DateTime `json:"created,omitempty"`
 	Modified *types.DateTime `json:"modified,omitempty"`
-	Notes    string          `json:"notes,omitempty"`
+	Notes    string          `json:"notes"`
 }
 ```
 
