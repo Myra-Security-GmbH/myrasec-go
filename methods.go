@@ -38,6 +38,8 @@ func initializeMethods() map[string]APIMethod {
 		getIPRangeMethods(),
 		getMaintenanceMethods(),
 		getMaintenanceTemplateMethods(),
+		getOrganizationContactMethods(),
+		getOrganizationNoteMethods(),
 		getPermissionMethods(),
 		getRedirectMethods(),
 		getSettingsMethods(),

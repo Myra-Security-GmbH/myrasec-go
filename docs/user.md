@@ -9,11 +9,14 @@ type User struct {
     Email              string          `json:"email,omitempty"`
     Firstname          string          `json:"firstname,omitempty"`
     Lastname           string          `json:"lastname,omitempty"`
+    PrimaryPhone       string          `json:"primaryPhone,omitempty"`
+    SecondaryPhone     string          `json:"secondaryPhone,omitempty"`
+    PreferredCommunicationLanguage string `json:"preferredCommunicationLanguage,omitempty"`
     OrganizationID     int             `json:"organizationId,omitempty"`
     OrganizationName   string          `json:"organizationName,omitempty"`
-    Active             bool            `json:"active,omitempty"`
-    Locked             bool            `json:"locked,omitempty"`
-    Deleted            bool            `json:"deleted,omitempty"`
+    Active             bool            `json:"active"`
+    Locked             bool            `json:"locked"`
+    Deleted            bool            `json:"deleted"`
     Agent              types.Bool      `json:"agent,omitempty"`
     TfaEnabled         bool            `json:"tfaEnabled,omitempty"`
     TfaRequired        bool            `json:"tfaRequired,omitempty"`
@@ -33,6 +36,9 @@ type User struct {
 | `Email` | string | The user's contact email address. |
 | `Firstname` | string | The user's given name. |
 | `Lastname` | string | The user's family name. |
+| `PrimaryPhone` | string | The user's primary phone number. |
+| `SecondaryPhone` | string | The user's secondary phone number. |
+| `PreferredCommunicationLanguage` | string | The user's preferred communication language. |
 | `OrganizationID` | int | The unique identifier of the organization the user belongs to. |
 | `OrganizationName` | string | The display name of the user's organization. |
 | `Active` | bool | Indicates whether the user account is currently enabled. |
@@ -118,6 +124,32 @@ users, err := api.ListUsersContext(ctx, map[string]string{
     myrasec.ParamPage:     "1",
     myrasec.ParamPageSize: "25",
 })
+```
+
+## Update
+Updates a user identified by its `ID`. Profile fields such as `PrimaryPhone`, `SecondaryPhone` and `PreferredCommunicationLanguage` are writable through this call.
+
+The update is a **full replace**: fields you omit are cleared server-side, and the `Modified` value must be echoed back so the server can detect concurrent modifications. Treat it as a read-modify-write — fetch the user, change the fields you want, and send the whole object back. Because it is a full replace, the `Active`, `Locked` and `Deleted` flags are always written: set `Active` to `false` to deactivate a user.
+
+### Example
+```go
+// Fetch the user via the list endpoint, then change the fields to update.
+users, err := api.ListUsersContext(ctx, map[string]string{"search": "user@example.com"})
+if err != nil {
+    log.Fatal(err)
+}
+
+user := users[0]
+user.PrimaryPhone = "+49111"
+user.SecondaryPhone = "+49222"
+user.PreferredCommunicationLanguage = "EN"
+
+// user still carries its ID and Modified, so the full-replace update keeps the
+// remaining fields and passes the optimistic-lock check.
+updated, err := api.UpdateUserContext(ctx, &user)
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
 ## Use as a return type

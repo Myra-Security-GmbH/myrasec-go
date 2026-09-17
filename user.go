@@ -23,6 +23,12 @@ func getUserMethods() map[string]APIMethod {
 			Method: http.MethodGet,
 			Result: []User{},
 		},
+		"updateUser": {
+			Name:   "updateUser",
+			Action: "users/%d",
+			Method: http.MethodPut,
+			Result: User{},
+		},
 	}
 }
 
@@ -55,6 +61,15 @@ type User struct {
 	// Lastname is the user's family name.
 	Lastname string `json:"lastname,omitempty" jsonschema:"The user's family name."`
 
+	// PrimaryPhone is the user's primary phone number.
+	PrimaryPhone string `json:"primaryPhone,omitempty" jsonschema:"The user's primary phone number."`
+
+	// SecondaryPhone is the user's secondary phone number.
+	SecondaryPhone string `json:"secondaryPhone,omitempty" jsonschema:"The user's secondary phone number."`
+
+	// PreferredCommunicationLanguage is the language used to communicate with the user.
+	PreferredCommunicationLanguage string `json:"preferredCommunicationLanguage,omitempty" jsonschema:"The user's preferred communication language."`
+
 	// OrganizationID is the unique identifier of the organization the user belongs to.
 	OrganizationID int `json:"organizationId,omitempty" jsonschema:"The unique identifier of the organization the user belongs to."`
 
@@ -62,13 +77,20 @@ type User struct {
 	OrganizationName string `json:"organizationName,omitempty" jsonschema:"The display name of the user's organization."`
 
 	// Active indicates whether the user account is currently enabled.
-	Active bool `json:"active,omitempty" jsonschema:"Indicates whether the user account is currently enabled."`
+	// The update route is a full replace and writes this flag unconditionally, so
+	// it is sent without omitempty: a false value must reach the API to deactivate
+	// a user (otherwise the flag would be dropped from the payload).
+	Active bool `json:"active" jsonschema:"Indicates whether the user account is currently enabled."`
 
 	// Locked indicates whether the user account is locked, e.g. after repeated failed login attempts.
-	Locked bool `json:"locked,omitempty" jsonschema:"Indicates whether the user account is locked (e.g. after failed login attempts)."`
+	// Sent without omitempty for the same reason as Active: the full-replace update
+	// must be able to carry a false value.
+	Locked bool `json:"locked" jsonschema:"Indicates whether the user account is locked (e.g. after failed login attempts)."`
 
 	// Deleted indicates whether the user has been soft-deleted.
-	Deleted bool `json:"deleted,omitempty" jsonschema:"Indicates whether the user has been soft-deleted."`
+	// Sent without omitempty for the same reason as Active: the full-replace update
+	// must be able to carry a false value.
+	Deleted bool `json:"deleted" jsonschema:"Indicates whether the user has been soft-deleted."`
 
 	// Agent indicates whether the user has agent privileges.
 	// The API sends this flag as a string ("" or "1") instead of a JSON boolean,
@@ -169,4 +191,29 @@ func (api *API) ListUsersContext(ctx context.Context, params map[string]string) 
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return *res, nil
+}
+
+// UpdateUserContext updates the passed user using the MYRA API.
+// The route is a full replace, so it is a read-modify-write: fetch the user via
+// ListUsersContext, mutate the fields you want to change, and send the whole
+// object back (including Modified for the optimistic-lock check). Omitted fields
+// are cleared server-side.
+func (api *API) UpdateUserContext(ctx context.Context, user *User) (*User, error) {
+	if _, ok := api.methods["updateUser"]; !ok {
+		return nil, fmt.Errorf("passed action [%s] is not supported", "updateUser")
+	}
+
+	definition := api.methods["updateUser"]
+	definition.Action = fmt.Sprintf(definition.Action, user.ID)
+
+	result, err := api.call(ctx, definition, user)
+	if err != nil {
+		return nil, err
+	}
+
+	res, ok := result.(*User)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+	return res, nil
 }
