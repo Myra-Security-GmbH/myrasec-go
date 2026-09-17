@@ -25,6 +25,7 @@ type SSLCertificateRequest struct {
 	SSLProviderCredentialsID int                               `json:"sslProviderCredentialsId,omitempty"`
 	RenewalInterval          int                               `json:"renewalInterval,omitempty"`
 	SignatureAlgorithm       string                            `json:"signatureAlgorithm,omitempty"`
+	IncludeCrossSignedRoots  bool                              `json:"includeCrossSignedRoots"`
 }
 ```
 
@@ -44,6 +45,7 @@ type SSLCertificateRequest struct {
 | `SSLProviderCredentialsID` | int | The `ID` of the [SSL provider credentials](./ssl_provider_credentials.md) used for the issuance. Required for `SECTIGO` and `DTRUST`, ignored for `LETS_ENCRYPT`. The server clears the value when the referenced credentials are deleted. |
 | `RenewalInterval` | int | The number of days before the certificate expires at which it is renewed. Zero means the system default. Accepted for `SECTIGO` and `DTRUST` only. |
 | `SignatureAlgorithm` | string | The signature algorithm of the requested certificate. Valid values: `SHA256`, `SHA384`, `SHA512`. Empty means the system default. Accepted for `SECTIGO` and `DTRUST` only. `SHA512` cannot be combined with `ECDSA256` or `ECDSA384`. |
+| `IncludeCrossSignedRoots` | bool | Serves the certificate chain as the certificate authority delivers it, including its cross-signed certificates. For `SECTIGO` these are `Sectigo Public Server Authentication Root R46/E46` cross-signed by USERTrust and the USERTrust certificate cross-signed by AAA Certificate Services. By default they are stripped, because current clients already trust these roots. Enable it for clients on an outdated trust store (legacy Java or Android versions). Chain scanners can then report an anchor in the chain. A self-signed root is never served. Accepted for every provider, today only `SECTIGO` chains carry such cross-signs. A change does not re-issue the certificate, it applies from the next issuance or renewal. The field is always sent: an update replaces the whole request, so `false` switches the option off. |
 
 ```go
 type SSLCertificateRequestSAN struct {
