@@ -14,9 +14,9 @@ type User struct {
     PreferredCommunicationLanguage string `json:"preferredCommunicationLanguage,omitempty"`
     OrganizationID     int             `json:"organizationId,omitempty"`
     OrganizationName   string          `json:"organizationName,omitempty"`
-    Active             bool            `json:"active,omitempty"`
-    Locked             bool            `json:"locked,omitempty"`
-    Deleted            bool            `json:"deleted,omitempty"`
+    Active             bool            `json:"active"`
+    Locked             bool            `json:"locked"`
+    Deleted            bool            `json:"deleted"`
     Agent              types.Bool      `json:"agent,omitempty"`
     TfaEnabled         bool            `json:"tfaEnabled,omitempty"`
     TfaRequired        bool            `json:"tfaRequired,omitempty"`
