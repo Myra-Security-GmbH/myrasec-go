@@ -18,10 +18,11 @@ func getOrganizationContactMethods() map[string]APIMethod {
 			Result: []OrganizationContact{},
 		},
 		"createOrganizationContacts": {
-			Name:   "createOrganizationContacts",
-			Action: "organization/contacts",
-			Method: http.MethodPost,
-			Result: OrganizationContact{},
+			Name:               "createOrganizationContacts",
+			Action:             "organization/contacts",
+			Method:             http.MethodPost,
+			Result:             OrganizationContact{},
+			ResponseDecodeFunc: decodeOrganizationContactCreateResponse,
 		},
 		"updateOrganizationContact": {
 			Name:   "updateOrganizationContact",
@@ -44,6 +45,19 @@ func getOrganizationContactMethods() map[string]APIMethod {
 	}
 }
 
+// decodeOrganizationContactCreateResponse decodes the response of the bulk
+// create route. That endpoint answers with an envelope carrying an empty data
+// list (no created objects, no targetObject), so the shared prepareResult would
+// reject it with "empty Data in API response". This decoder only surfaces an
+// error envelope (error:true / violationList) and otherwise reports success
+// without a decoded body.
+func decodeOrganizationContactCreateResponse(resp *http.Response, definition APIMethod) (any, error) {
+	if _, err := decodeBaseResponse(resp); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
 // OrganizationContact represents a contact person of an organization.
 // The organization is resolved from the authenticated session, so contacts
 // carry no domain or subdomain context.
@@ -57,8 +71,10 @@ type OrganizationContact struct {
 	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
 
 	// Modified serves as a version identifier for optimistic locking.
-	// It records the last update time in ISO 8601 format.
-	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Server-managed, read-only."`
+	// It records the last update time in ISO 8601 format. It is read-only on
+	// create, but must be echoed back unchanged on update so the server can
+	// detect concurrent modifications.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Read-only on create; must be echoed back on update (optimistic locking)."`
 
 	// UserID links the contact to a user of the organization, if any.
 	UserID int `json:"userId,omitempty" jsonschema:"The identifier of the linked user of the organization, if the contact is tied to a user account."`
@@ -84,7 +100,10 @@ type OrganizationContact struct {
 
 	// Types lists the contact-type keys assigned to this contact (multi-select).
 	// Valid keys come from the contact-type catalog (ListOrganizationContactTypes).
-	Types []string `json:"types,omitempty" jsonschema:"The contact-type keys assigned to this contact (multi-select). Valid keys come from the contact-type catalog."`
+	// The tag uses omitzero on purpose: a nil slice is omitted (leaving the
+	// stored types unchanged), while an explicit empty slice serializes as [] to
+	// remove all assigned types.
+	Types []string `json:"types,omitzero" jsonschema:"The contact-type keys assigned to this contact (multi-select). Valid keys come from the contact-type catalog. Send an empty array to remove all types; omit to leave them unchanged."`
 
 	// ReceiveSSLReminders controls whether the contact receives SSL expiry reminders.
 	ReceiveSSLReminders bool `json:"receiveSSLReminders" jsonschema:"Indicates whether the contact receives SSL expiry reminders."`
@@ -97,7 +116,9 @@ type OrganizationContact struct {
 	TechnicalPriority int `json:"technicalPriority,omitempty" jsonschema:"The technical contact priority. Valid range: 1-6."`
 
 	// EscalationChain is the escalation priority (1-6). The REST key stays 'escalationPriority'.
-	EscalationChain int `json:"escalationPriority,omitempty" jsonschema:"The escalation priority (escalation chain). Valid range: 1-6."`
+	// The server only stores it when the contact also carries the 'ESCALATION'
+	// type; submitting types without 'ESCALATION' resets the stored value to null.
+	EscalationChain int `json:"escalationPriority,omitempty" jsonschema:"The escalation priority (escalation chain). Valid range: 1-6. Only stored when the contact also carries the 'ESCALATION' type."`
 }
 
 // OrganizationContactType represents an entry of the contact-type catalog.
@@ -132,38 +153,24 @@ func (api *API) ListOrganizationContactsContext(ctx context.Context, params map[
 	return *res, nil
 }
 
-// ListOrganizationContacts is equivalent to ListOrganizationContactsContext with context.Background().
-//
-// Deprecated: use ListOrganizationContactsContext.
-func (api *API) ListOrganizationContacts(params map[string]string) ([]OrganizationContact, error) {
-	return api.ListOrganizationContactsContext(context.Background(), params)
-}
-
 // CreateOrganizationContactsContext creates the passed contacts using the MYRA API.
 // The endpoint is a bulk create, so the contacts are sent as a JSON array.
-func (api *API) CreateOrganizationContactsContext(ctx context.Context, contacts []OrganizationContact) (*OrganizationContact, error) {
+//
+// The API acknowledges the create with an empty body: it returns no created
+// objects, so the returned slice is the input echoed back and carries no
+// server-generated ids. Call ListOrganizationContactsContext afterwards to
+// obtain the persisted contacts with their ids.
+func (api *API) CreateOrganizationContactsContext(ctx context.Context, contacts []OrganizationContact) ([]OrganizationContact, error) {
 	if _, ok := api.methods["createOrganizationContacts"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "createOrganizationContacts")
 	}
 
 	definition := api.methods["createOrganizationContacts"]
 
-	result, err := api.call(ctx, definition, contacts)
-	if err != nil {
+	if _, err := api.call(ctx, definition, contacts); err != nil {
 		return nil, err
 	}
-	res, ok := result.(*OrganizationContact)
-	if !ok {
-		return nil, fmt.Errorf("unexpected result type %T", result)
-	}
-	return res, nil
-}
-
-// CreateOrganizationContacts is equivalent to CreateOrganizationContactsContext with context.Background().
-//
-// Deprecated: use CreateOrganizationContactsContext.
-func (api *API) CreateOrganizationContacts(contacts []OrganizationContact) (*OrganizationContact, error) {
-	return api.CreateOrganizationContactsContext(context.Background(), contacts)
+	return contacts, nil
 }
 
 // UpdateOrganizationContactContext updates the passed contact using the MYRA API
@@ -186,13 +193,6 @@ func (api *API) UpdateOrganizationContactContext(ctx context.Context, contact *O
 	return res, nil
 }
 
-// UpdateOrganizationContact is equivalent to UpdateOrganizationContactContext with context.Background().
-//
-// Deprecated: use UpdateOrganizationContactContext.
-func (api *API) UpdateOrganizationContact(contact *OrganizationContact) (*OrganizationContact, error) {
-	return api.UpdateOrganizationContactContext(context.Background(), contact)
-}
-
 // DeleteOrganizationContactContext deletes the passed contact using the MYRA API
 func (api *API) DeleteOrganizationContactContext(ctx context.Context, contact *OrganizationContact) (*OrganizationContact, error) {
 	if _, ok := api.methods["deleteOrganizationContact"]; !ok {
@@ -207,13 +207,6 @@ func (api *API) DeleteOrganizationContactContext(ctx context.Context, contact *O
 		return nil, err
 	}
 	return contact, nil
-}
-
-// DeleteOrganizationContact is equivalent to DeleteOrganizationContactContext with context.Background().
-//
-// Deprecated: use DeleteOrganizationContactContext.
-func (api *API) DeleteOrganizationContact(contact *OrganizationContact) (*OrganizationContact, error) {
-	return api.DeleteOrganizationContactContext(context.Background(), contact)
 }
 
 // ListOrganizationContactTypesContext returns the contact-type catalog of the organization
@@ -234,11 +227,4 @@ func (api *API) ListOrganizationContactTypesContext(ctx context.Context) ([]Orga
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return *res, nil
-}
-
-// ListOrganizationContactTypes is equivalent to ListOrganizationContactTypesContext with context.Background().
-//
-// Deprecated: use ListOrganizationContactTypesContext.
-func (api *API) ListOrganizationContactTypes() ([]OrganizationContactType, error) {
-	return api.ListOrganizationContactTypesContext(context.Background())
 }

@@ -77,13 +77,20 @@ type User struct {
 	OrganizationName string `json:"organizationName,omitempty" jsonschema:"The display name of the user's organization."`
 
 	// Active indicates whether the user account is currently enabled.
-	Active bool `json:"active,omitempty" jsonschema:"Indicates whether the user account is currently enabled."`
+	// The update route is a full replace and writes this flag unconditionally, so
+	// it is sent without omitempty: a false value must reach the API to deactivate
+	// a user (otherwise the flag would be dropped from the payload).
+	Active bool `json:"active" jsonschema:"Indicates whether the user account is currently enabled."`
 
 	// Locked indicates whether the user account is locked, e.g. after repeated failed login attempts.
-	Locked bool `json:"locked,omitempty" jsonschema:"Indicates whether the user account is locked (e.g. after failed login attempts)."`
+	// Sent without omitempty for the same reason as Active: the full-replace update
+	// must be able to carry a false value.
+	Locked bool `json:"locked" jsonschema:"Indicates whether the user account is locked (e.g. after failed login attempts)."`
 
 	// Deleted indicates whether the user has been soft-deleted.
-	Deleted bool `json:"deleted,omitempty" jsonschema:"Indicates whether the user has been soft-deleted."`
+	// Sent without omitempty for the same reason as Active: the full-replace update
+	// must be able to carry a false value.
+	Deleted bool `json:"deleted" jsonschema:"Indicates whether the user has been soft-deleted."`
 
 	// Agent indicates whether the user has agent privileges.
 	// The API sends this flag as a string ("" or "1") instead of a JSON boolean,
@@ -186,7 +193,11 @@ func (api *API) ListUsersContext(ctx context.Context, params map[string]string) 
 	return *res, nil
 }
 
-// UpdateUserContext updates the passed user using the MYRA API
+// UpdateUserContext updates the passed user using the MYRA API.
+// The route is a full replace, so it is a read-modify-write: fetch the user via
+// ListUsersContext, mutate the fields you want to change, and send the whole
+// object back (including Modified for the optimistic-lock check). Omitted fields
+// are cleared server-side.
 func (api *API) UpdateUserContext(ctx context.Context, user *User) (*User, error) {
 	if _, ok := api.methods["updateUser"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateUser")
@@ -205,11 +216,4 @@ func (api *API) UpdateUserContext(ctx context.Context, user *User) (*User, error
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return res, nil
-}
-
-// UpdateUser is equivalent to UpdateUserContext with context.Background().
-//
-// Deprecated: use UpdateUserContext.
-func (api *API) UpdateUser(user *User) (*User, error) {
-	return api.UpdateUserContext(context.Background(), user)
 }

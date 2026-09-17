@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"testing"
+	"time"
+
+	"github.com/Myra-Security-GmbH/myrasec-go/v2/pkg/types"
 )
 
 func TestMe(t *testing.T) {
@@ -211,17 +214,24 @@ func TestUpdateUser(t *testing.T) {
 	api, requests := newTestAPI(t, map[string]testResponse{
 		"PUT /users/12345": {Status: http.StatusOK, Body: `{"error":false,"violationList":[],"warningList":[],"data":[
 			{"objectType":"UserVO","id":12345,"login":"test@example.com","firstname":"Test","lastname":"User",
-				"primaryPhone":"+49111","secondaryPhone":"+49222","preferredCommunicationLanguage":"DE"}
+				"primaryPhone":"+49111","secondaryPhone":"+49222","preferredCommunicationLanguage":"DE","active":false}
 		]}`},
 	})
 
+	// The update route is a full replace and writes active/locked/deleted
+	// unconditionally, so deactivating a user means sending active:false. Modified
+	// travels back for the optimistic-lock check.
+	modified := types.DateTime{Time: time.Date(2025, 7, 28, 15, 39, 12, 0, time.UTC)}
 	updated, err := api.UpdateUserContext(context.Background(), &User{
 		ID:                             12345,
+		Login:                          "test@example.com",
 		Firstname:                      "Test",
 		Lastname:                       "User",
 		PrimaryPhone:                   "+49111",
 		SecondaryPhone:                 "+49222",
 		PreferredCommunicationLanguage: "DE",
+		Active:                         false,
+		Modified:                       &modified,
 	})
 	if err != nil {
 		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
@@ -243,6 +253,18 @@ func TestUpdateUser(t *testing.T) {
 
 	if payload["primaryPhone"] != "+49111" || payload["secondaryPhone"] != "+49222" || payload["preferredCommunicationLanguage"] != "DE" {
 		t.Errorf("Expected the profile fields in the update payload, got %v", payload)
+	}
+
+	// active:false must reach the API; if 'active' were dropped (omitempty) a user
+	// could never be deactivated through a full-replace update.
+	active, present := payload["active"]
+	if !present || active != false {
+		t.Errorf("Expected the payload to carry active=false so the user can be deactivated, got %v", payload["active"])
+	}
+
+	// Modified must travel so the server can verify the version.
+	if _, present := payload["modified"]; !present {
+		t.Errorf("Expected the update payload to carry 'modified', got %v", payload)
 	}
 }
 

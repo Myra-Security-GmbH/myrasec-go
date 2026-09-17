@@ -14,7 +14,7 @@ type OrganizationNote struct {
 |---|---|---|
 | `ID` | int | The unique identifier for the note. Server-generated and read-only. |
 | `Created` | *types.DateTime | Created is a date type attribute with an `ISO 8601` format. Server-managed, read-only. |
-| `Modified` | *types.DateTime | Identifies the version of the note. Server-managed, read-only. |
+| `Modified` | *types.DateTime | Identifies the version of the note (`ISO 8601`). Read-only on create; must be echoed back when saving an existing note so the server can detect concurrent modifications. |
 | `Notes` | string | The free-form note text of the organization. |
 
 ## Get
@@ -31,14 +31,19 @@ log.Println(note.Notes)
 ```
 
 ## Save
-Saving the note is an upsert: the same call creates the note when none exists and edits it otherwise.
+Saving the note is an upsert: the same call creates the note when none exists and edits it otherwise. When editing an existing note, echo its `Modified` value back so the optimistic-lock check passes — treat it as a read-modify-write.
 
 ### Example
 ```go
-note := &myrasec.OrganizationNote{
-    Notes: "remember the maintenance window",
+// Fetch the current note, change the text, and save it back.
+note, err := api.GetOrganizationNoteContext(ctx)
+if err != nil {
+    log.Fatal(err)
 }
 
+note.Notes = "remember the maintenance window"
+
+// note still carries its Modified value, so the save passes the version check.
 saved, err := api.UpdateOrganizationNoteContext(ctx, note)
 if err != nil {
     log.Fatal(err)

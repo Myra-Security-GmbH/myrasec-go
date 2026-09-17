@@ -129,16 +129,24 @@ users, err := api.ListUsersContext(ctx, map[string]string{
 ## Update
 Updates a user identified by its `ID`. Profile fields such as `PrimaryPhone`, `SecondaryPhone` and `PreferredCommunicationLanguage` are writable through this call.
 
+The update is a **full replace**: fields you omit are cleared server-side, and the `Modified` value must be echoed back so the server can detect concurrent modifications. Treat it as a read-modify-write — fetch the user, change the fields you want, and send the whole object back. Because it is a full replace, the `Active`, `Locked` and `Deleted` flags are always written: set `Active` to `false` to deactivate a user.
+
 ### Example
 ```go
-user := &myrasec.User{
-    ID:                             userId,
-    PrimaryPhone:                   "+49111",
-    SecondaryPhone:                 "+49222",
-    PreferredCommunicationLanguage: "EN",
+// Fetch the user via the list endpoint, then change the fields to update.
+users, err := api.ListUsersContext(ctx, map[string]string{"search": "user@example.com"})
+if err != nil {
+    log.Fatal(err)
 }
 
-updated, err := api.UpdateUserContext(ctx, user)
+user := users[0]
+user.PrimaryPhone = "+49111"
+user.SecondaryPhone = "+49222"
+user.PreferredCommunicationLanguage = "EN"
+
+// user still carries its ID and Modified, so the full-replace update keeps the
+// remaining fields and passes the optimistic-lock check.
+updated, err := api.UpdateUserContext(ctx, &user)
 if err != nil {
     log.Fatal(err)
 }

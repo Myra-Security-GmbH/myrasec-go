@@ -40,8 +40,10 @@ type OrganizationNote struct {
 	// This is a server-managed, read-only value in ISO 8601 format.
 	Created *types.DateTime `json:"created,omitempty" jsonschema:"The timestamp of creation (ISO 8601 format). Server-managed, read-only."`
 
-	// Modified records the last update time in ISO 8601 format.
-	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Server-managed, read-only."`
+	// Modified records the last update time in ISO 8601 format. It is read-only on
+	// create, but must be echoed back unchanged when saving an existing note so the
+	// server can detect concurrent modifications.
+	Modified *types.DateTime `json:"modified,omitempty" jsonschema:"The last update timestamp (ISO 8601 format). Read-only on create; must be echoed back when saving an existing note (optimistic locking)."`
 
 	// Notes is the free-form note text of the organization.
 	// It is intentionally sent without omitempty: clearing the note upserts an
@@ -69,14 +71,10 @@ func (api *API) GetOrganizationNoteContext(ctx context.Context) (*OrganizationNo
 	return res, nil
 }
 
-// GetOrganizationNote is equivalent to GetOrganizationNoteContext with context.Background().
-//
-// Deprecated: use GetOrganizationNoteContext.
-func (api *API) GetOrganizationNote() (*OrganizationNote, error) {
-	return api.GetOrganizationNoteContext(context.Background())
-}
-
-// UpdateOrganizationNoteContext saves (upserts) the note of the authenticated organization
+// UpdateOrganizationNoteContext saves (upserts) the note of the authenticated organization.
+// Saving an existing note is a read-modify-write: fetch it via
+// GetOrganizationNoteContext, change Notes, and send the whole object back
+// (including Modified) so the optimistic-lock check passes.
 func (api *API) UpdateOrganizationNoteContext(ctx context.Context, note *OrganizationNote) (*OrganizationNote, error) {
 	if _, ok := api.methods["updateOrganizationNote"]; !ok {
 		return nil, fmt.Errorf("passed action [%s] is not supported", "updateOrganizationNote")
@@ -93,11 +91,4 @@ func (api *API) UpdateOrganizationNoteContext(ctx context.Context, note *Organiz
 		return nil, fmt.Errorf("unexpected result type %T", result)
 	}
 	return res, nil
-}
-
-// UpdateOrganizationNote is equivalent to UpdateOrganizationNoteContext with context.Background().
-//
-// Deprecated: use UpdateOrganizationNoteContext.
-func (api *API) UpdateOrganizationNote(note *OrganizationNote) (*OrganizationNote, error) {
-	return api.UpdateOrganizationNoteContext(context.Background(), note)
 }
