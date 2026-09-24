@@ -12,7 +12,7 @@ func TestGetDNSRecord(t *testing.T) {
 		preCacheRequest(
 			"https://apiv2.myracloud.com/domain/1/dns-records/1",
 			`{"error": false, "pageSize": 10, "page": 1, "count": 1, "data": [
-				{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "upstreamOptions": {"id": 1, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}
+				{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "alternativeCname": "www-example-com.ax4z.com.", "alternativeCnameDnsSec": "www-example-com.ax4z-s.com.", "upstreamOptions": {"id": 1, "backup": false, "down": false, "failTimeout": "1", "maxFails": 100, "weight": 1}}
 			]}`,
 			"getDNSRecord",
 		),
@@ -46,6 +46,14 @@ func TestGetDNSRecord(t *testing.T) {
 		t.Errorf("Expected to get DNS record with TTL [%d] but got [%d]", 300, rec.TTL)
 	}
 
+	if rec.AlternativeCNAME != "www-example-com.ax4z.com." {
+		t.Errorf("Expected to get DNS record with AlternativeCNAME [%s] but got [%s]", "www-example-com.ax4z.com.", rec.AlternativeCNAME)
+	}
+
+	if rec.AlternativeCNAMEDNSSEC != "www-example-com.ax4z-s.com." {
+		t.Errorf("Expected to get DNS record with AlternativeCNAMEDNSSEC [%s] but got [%s]", "www-example-com.ax4z-s.com.", rec.AlternativeCNAMEDNSSEC)
+	}
+
 	if rec.UpstreamOptions.ID != 1 {
 		t.Errorf("Expected to get DNS record with Upstream-Options ID [%d] but got [%d]", 1, rec.UpstreamOptions.ID)
 	}
@@ -68,6 +76,26 @@ func TestGetDNSRecord(t *testing.T) {
 
 	if rec.UpstreamOptions.Weight != 1 {
 		t.Errorf("Expected to get DNS record with Upstream-Options Weight [%d] but got [%d]", 1, rec.UpstreamOptions.Weight)
+	}
+}
+
+func TestDNSRecordAlternativeCNAMEDNSSECNull(t *testing.T) {
+	var rec DNSRecord
+	if err := json.Unmarshal([]byte(`{"name": "1.0.0.127.in-addr.arpa.", "alternativeCname": "1-0-0-127-in--addr-arpa.ax4z.com.", "alternativeCnameDnsSec": null}`), &rec); err != nil {
+		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if rec.AlternativeCNAMEDNSSEC != "" {
+		t.Errorf("Expected an empty AlternativeCNAMEDNSSEC but got [%s]", rec.AlternativeCNAMEDNSSEC)
+	}
+
+	out, err := json.Marshal(rec)
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if strings.Contains(string(out), "alternativeCnameDnsSec") {
+		t.Errorf("Expected an empty AlternativeCNAMEDNSSEC to be omitted but got [%s]", string(out))
 	}
 }
 
