@@ -2,28 +2,28 @@
 
 ```go
 type DNSRecord struct {
-	ID                   int                 `json:"id,omitempty"`
-	Created              *types.DateTime     `json:"created,omitempty"`
-	Modified             *types.DateTime     `json:"modified,omitempty"`
-	Name                 string              `json:"name"`
-	Value                string              `json:"value"`
-	RecordType           string              `json:"recordType"`
-	AlternativeCNAME     string              `json:"alternativeCname,omitempty"`
-	AlternativeCNAMEDNSSEC string              `json:"alternativeCnameDnsSec,omitempty"`
-	Comment              string              `json:"comment,omitempty"`
-	CAATag               string              `json:"caaTag,omitempty"`
-	Active               bool                `json:"active"`
-	Enabled              bool                `json:"enabled"`
-	TTL                  int                 `json:"ttl"`
-	Priority             int                 `json:"priority,omitempty"`
-	Port                 int                 `json:"port,omitempty"`
-	Weight               int                 `json:"weight,omitempty"`
-	CAAFlags             int                 `json:"caaFlags,omitempty"`
-	Encryption           int                 `json:"encryption,omitempty"`
-	HashType             int                 `json:"hashType,omitempty"`
-	IdentificationNumber int                 `json:"identificationNumber,omitempty"`
-	Endpoints            DNSRecordEndpoints  `json:"endpoints,omitempty"`
-	UpstreamOptions      *UpstreamOptions    `json:"upstreamOptions,omitempty"`
+	ID                     int                `json:"id,omitempty"`
+	Created                *types.DateTime    `json:"created,omitempty"`
+	Modified               *types.DateTime    `json:"modified,omitempty"`
+	Name                   string             `json:"name"`
+	Value                  string             `json:"value"`
+	RecordType             string             `json:"recordType"`
+	AlternativeCNAME       string             `json:"alternativeCname,omitempty"`
+	AlternativeCNAMEDNSSEC string             `json:"alternativeCnameDnsSec,omitempty"`
+	Comment                string             `json:"comment,omitempty"`
+	CAATag                 string             `json:"caaTag,omitempty"`
+	Active                 bool               `json:"active"`
+	Enabled                bool               `json:"enabled"`
+	TTL                    int                `json:"ttl"`
+	Priority               int                `json:"priority,omitempty"`
+	Port                   int                `json:"port,omitempty"`
+	Weight                 int                `json:"weight,omitempty"`
+	CAAFlags               int                `json:"caaFlags,omitempty"`
+	Encryption             int                `json:"encryption,omitempty"`
+	HashType               int                `json:"hashType,omitempty"`
+	IdentificationNumber   int                `json:"identificationNumber,omitempty"`
+	Endpoints              DNSRecordEndpoints `json:"endpoints,omitempty"`
+	UpstreamOptions        *UpstreamOptions   `json:"upstreamOptions,omitempty"`
 }
 ```
 
