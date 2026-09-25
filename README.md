@@ -73,5 +73,7 @@ func main() {
 - [API Token](./docs/apitoken.md)
 - [User](./docs/user.md)
 - [User Group](./docs/usergroup.md)
+- [Organization Contact](./docs/organization_contact.md)
+- [Organization Note](./docs/organization_note.md)
 - [Permission](./docs/permission.md)
 - [VHost](./docs/vhost.md)
