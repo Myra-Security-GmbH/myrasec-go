@@ -174,6 +174,18 @@ type SSLCertificateRequest struct {
 	// Valid values: 'SHA256', 'SHA384', 'SHA512'. Empty means the system default.
 	// Accepted by Sectigo and D-Trust only. SHA512 cannot be combined with an ECDSA key algorithm.
 	SignatureAlgorithm string `json:"signatureAlgorithm,omitempty" jsonschema:"The signature algorithm. Valid values: 'SHA256', 'SHA384', 'SHA512'. Empty means the system default. Accepted by 'SECTIGO' and 'DTRUST' only. 'SHA512' cannot be combined with an ECDSA key algorithm."`
+
+	// IncludeCrossSignedRoots serves the certificate chain as the certificate authority delivers
+	// it, including its cross-signed certificates. For Sectigo these are 'Sectigo Public Server
+	// Authentication Root R46/E46' cross-signed by USERTrust and the USERTrust certificate
+	// cross-signed by AAA Certificate Services. By default they are stripped, because current
+	// clients already trust these roots. Enable it for clients on an outdated trust store. Chain
+	// scanners can then report an anchor in the chain. A self-signed root is never served. The
+	// value is accepted for every provider, today only Sectigo chains carry such cross-signs.
+	// A change does not re-issue the certificate, it applies from the next issuance or renewal.
+	// The field is always sent (no omitempty): an update replaces the whole request, so the
+	// client states the value explicitly instead of relying on the server default.
+	IncludeCrossSignedRoots bool `json:"includeCrossSignedRoots" jsonschema:"Serve the certificate chain as delivered by the certificate authority, including its cross-signed certificates, for clients on an outdated trust store. Defaults to false. A change applies from the next issuance or renewal, it does not re-issue the certificate."`
 }
 
 // SSLCertificateRequestSAN is a subject alternative name of a managed certificate request.

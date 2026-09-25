@@ -21,7 +21,8 @@ const sslCertificateRequestJSON = `{
 	"assignments": [
 		{"objectType": "SslCertRequestAssignmentVO", "id": 9, "created": "2026-08-01T10:00:00+0200", "modified": "2026-08-01T10:00:00+0200", "subDomainName": "www.example.com"}
 	],
-	"multiDomain": false, "sslProviderCredentialsId": 3, "renewalInterval": 30, "signatureAlgorithm": "SHA384"
+	"multiDomain": false, "sslProviderCredentialsId": 3, "renewalInterval": 30, "signatureAlgorithm": "SHA384",
+	"includeCrossSignedRoots": true
 }`
 
 func assertSSLCertificateRequest(t *testing.T, request *SSLCertificateRequest) {
@@ -81,6 +82,10 @@ func assertSSLCertificateRequest(t *testing.T, request *SSLCertificateRequest) {
 
 	if request.SignatureAlgorithm != SSLCertificateRequestSignatureAlgorithmSHA384 {
 		t.Errorf("Expected SignatureAlgorithm [%s] but got [%s]", SSLCertificateRequestSignatureAlgorithmSHA384, request.SignatureAlgorithm)
+	}
+
+	if !request.IncludeCrossSignedRoots {
+		t.Error("Expected IncludeCrossSignedRoots to be true")
 	}
 }
 
@@ -173,6 +178,11 @@ func TestCreateSSLCertificateRequest(t *testing.T) {
 			t.Errorf("Expected [%s] to be omitted from the create payload, got %v", key, payload[key])
 		}
 	}
+
+	// Always sent, also as false: a write replaces the whole request, the value is stated explicitly.
+	if value, present := payload["includeCrossSignedRoots"]; !present || value != false {
+		t.Errorf("Expected includeCrossSignedRoots to be sent as false in the create payload, got %v (present: %t)", value, present)
+	}
 }
 
 func TestCreateSSLCertificateRequestSendsEmptyCollections(t *testing.T) {
@@ -218,6 +228,7 @@ func TestUpdateSSLCertificateRequest(t *testing.T) {
 		SSLProviderCredentialsID: 3,
 		RenewalInterval:          30,
 		SignatureAlgorithm:       SSLCertificateRequestSignatureAlgorithmSHA384,
+		IncludeCrossSignedRoots:  true,
 	})
 	if err != nil {
 		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
@@ -241,6 +252,10 @@ func TestUpdateSSLCertificateRequest(t *testing.T) {
 
 	if payload["algorithm"] != "ECDSA256" || payload["sslProviderCredentialsId"] != float64(3) || payload["renewalInterval"] != float64(30) {
 		t.Errorf("Expected algorithm, credentials and renewal interval in the update payload, got %v", payload)
+	}
+
+	if payload["includeCrossSignedRoots"] != true {
+		t.Errorf("Expected includeCrossSignedRoots to be sent as true in the update payload, got %v", payload["includeCrossSignedRoots"])
 	}
 
 	sans, ok := payload["subjectAlternativeNames"].([]any)
