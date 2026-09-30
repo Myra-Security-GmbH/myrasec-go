@@ -2,6 +2,7 @@ package myrasec
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"net/http"
 	"strings"
@@ -86,26 +87,24 @@ func TestListErrorPages(t *testing.T) {
 // returned page carries the server-assigned id, created and modified instead of the
 // zero values.
 func TestCreateErrorPage(t *testing.T) {
-	api, err := setupPreCachedAPI(
-		preCacheRequest(
-			"https://apiv2.myracloud.com/domain/1/errorpages",
-			`{"error": false, "data": [
+	api, requests := newTestAPI(t, map[string]testResponse{
+		"POST /domain/1/errorpages": {Status: http.StatusOK, Body: `{"error": false, "data": [
 				{"id": 7, "errorCode": 404, "content": "<h1>HTTP 404 error</h1>", "subDomainName": "www.example.com", "created": "2025-01-09T16:31:13+0100", "modified": "2025-04-02T10:15:49+0200"}
-			]}`,
-			"createErrorPage",
-		),
-	)
-	if err != nil {
-		t.Fatal("Unexpected error")
-	}
+			]}`},
+	})
 
-	page, err := api.CreateErrorPage(&ErrorPage{
+	page, err := api.CreateErrorPageContext(context.Background(), &ErrorPage{
 		ErrorCode:     404,
 		Content:       "<h1>HTTP 404 error</h1>",
 		SubDomainName: "www.example.com",
 	}, 1)
 	if err != nil {
 		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	// The save endpoint takes the page content and a subdomain/errorCode selection.
+	if body := string(requests.last(t).Body); !strings.Contains(body, `"selection":{"www.example.com":{"404":true}}`) {
+		t.Errorf("Expected the selection to be sent as request body but got [%s]", body)
 	}
 
 	if page.ID != 7 {
@@ -132,20 +131,13 @@ func TestCreateErrorPage(t *testing.T) {
 // TestCreateErrorPageStatusCode413 confirms the 413 "Request Entity Too Large" status
 // code is forwarded and read back unchanged, matching the documented valid-code list.
 func TestCreateErrorPageStatusCode413(t *testing.T) {
-	api, err := setupPreCachedAPI(
-		preCacheRequest(
-			"https://apiv2.myracloud.com/domain/1/errorpages",
-			`{"error": false, "data": [
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"POST /domain/1/errorpages": {Status: http.StatusOK, Body: `{"error": false, "data": [
 				{"id": 13, "errorCode": 413, "content": "<h1>HTTP 413 error</h1>", "subDomainName": "www.example.com", "created": "2025-01-09T16:31:13+0100", "modified": "2025-04-02T10:15:49+0200"}
-			]}`,
-			"createErrorPage",
-		),
-	)
-	if err != nil {
-		t.Fatal("Unexpected error")
-	}
+			]}`},
+	})
 
-	page, err := api.CreateErrorPage(&ErrorPage{
+	page, err := api.CreateErrorPageContext(context.Background(), &ErrorPage{
 		ErrorCode:     413,
 		Content:       "<h1>HTTP 413 error</h1>",
 		SubDomainName: "www.example.com",
@@ -165,20 +157,13 @@ func TestCreateErrorPageStatusCode413(t *testing.T) {
 
 // TestUpdateErrorPage mirrors TestCreateErrorPage for the update endpoint.
 func TestUpdateErrorPage(t *testing.T) {
-	api, err := setupPreCachedAPI(
-		preCacheRequest(
-			"https://apiv2.myracloud.com/domain/1/errorpages",
-			`{"error": false, "data": [
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"POST /domain/1/errorpages": {Status: http.StatusOK, Body: `{"error": false, "data": [
 				{"id": 9, "errorCode": 500, "content": "<h1>HTTP 500 error</h1>", "subDomainName": "www.example.com", "created": "2025-01-09T16:31:13+0100", "modified": "2025-04-02T10:15:49+0200"}
-			]}`,
-			"updateErrorPage",
-		),
-	)
-	if err != nil {
-		t.Fatal("Unexpected error")
-	}
+			]}`},
+	})
 
-	page, err := api.UpdateErrorPage(&ErrorPage{
+	page, err := api.UpdateErrorPageContext(context.Background(), &ErrorPage{
 		ErrorCode:     500,
 		Content:       "<h1>HTTP 500 error</h1>",
 		SubDomainName: "www.example.com",

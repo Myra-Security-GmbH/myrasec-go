@@ -1,7 +1,9 @@
 package myrasec
 
 import (
+	"context"
 	"encoding/json"
+	"net/http"
 	"reflect"
 	"strings"
 	"testing"
@@ -128,20 +130,19 @@ func TestListDNSRecords(t *testing.T) {
 // with "endpoints": [] (an empty JSON array) instead of an empty JSON object, which made
 // every CreateDNSRecord call fail while decoding the response.
 func TestCreateDNSRecordWithEmptyEndpoints(t *testing.T) {
-	api, err := setupPreCachedAPI(preCacheRequest(
-		"https://apiv2.myracloud.com/domain/1/dns-records",
-		`{"error": false, "violationList": [], "warningList": [], "data": [
+	api, requests := newTestAPI(t, map[string]testResponse{
+		"POST /domain/1/dns-records": {Status: http.StatusOK, Body: `{"error": false, "violationList": [], "warningList": [], "data": [
 			{"id": 1, "name": "www.example.com.", "value": "127.0.0.1", "ttl": 300, "recordType": "A", "endpoints": []}
-		]}`,
-		"createDNSRecord",
-	))
-	if err != nil {
-		t.Error("Unexpected error.")
-	}
+		]}`},
+	})
 
-	rec, err := api.CreateDNSRecord(&DNSRecord{Name: "www.example.com.", Value: "127.0.0.1", TTL: 300, RecordType: "A"}, 1)
+	rec, err := api.CreateDNSRecordContext(context.Background(), &DNSRecord{Name: "www.example.com.", Value: "127.0.0.1", TTL: 300, RecordType: "A"}, 1)
 	if err != nil {
 		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if body := string(requests.last(t).Body); !strings.Contains(body, `"recordType":"A"`) {
+		t.Errorf("Expected the record to be sent as request body but got [%s]", body)
 	}
 
 	if rec.ID != 1 {

@@ -2,6 +2,7 @@ package myrasec
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"net/http"
 	"strconv"
@@ -180,20 +181,13 @@ func TestDecodePermissionCheckResponseInvalidBody(t *testing.T) {
 }
 
 func TestAddUserPermission(t *testing.T) {
-	api, err := setupPreCachedAPI(
-		preCacheRequest(
-			"https://apiv2.myracloud.com/user/12/permissions",
-			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"POST /user/12/permissions": {Status: http.StatusOK, Body: `{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":77,"action":"READ","objectType":"Domain","objectPermissionType":"USER","objectInstance":12345}
-			]}`,
-			"addUserPermission",
-		),
-	)
-	if err != nil {
-		t.Error("Unexpected error.")
-	}
+			]}`},
+	})
 
-	p, err := api.AddUserPermission(&ObjectPermission{
+	p, err := api.AddUserPermissionContext(context.Background(), &ObjectPermission{
 		Action:               PermissionActionRead,
 		ObjectType:           "Domain",
 		ObjectPermissionType: PermissionTypeUser,
@@ -213,18 +207,11 @@ func TestAddUserPermission(t *testing.T) {
 }
 
 func TestCheckMyPermission(t *testing.T) {
-	api, err := setupPreCachedAPI(
-		preCacheRequest(
-			"https://apiv2.myracloud.com/user/permissions/check",
-			`{"error":false,"data":{"isAuthorized":true}}`,
-			"checkMyPermission",
-		),
-	)
-	if err != nil {
-		t.Error("Unexpected error.")
-	}
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"POST /user/permissions/check": {Status: http.StatusOK, Body: `{"error":false,"data":{"isAuthorized":true}}`},
+	})
 
-	result, err := api.CheckMyPermission(&ObjectPermission{
+	result, err := api.CheckMyPermissionContext(context.Background(), &ObjectPermission{
 		Action:     PermissionActionEdit,
 		ObjectType: "Domain",
 	})
@@ -238,20 +225,13 @@ func TestCheckMyPermission(t *testing.T) {
 }
 
 func TestAddUserGroupPermission(t *testing.T) {
-	api, err := setupPreCachedAPI(
-		preCacheRequest(
-			"https://apiv2.myracloud.com/user/group/3/permissions",
-			`{"error":false,"violationList":[],"warningList":[],"targetObject":[
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"POST /user/group/3/permissions": {Status: http.StatusOK, Body: `{"error":false,"violationList":[],"warningList":[],"targetObject":[
 				{"id":88,"action":"EDIT","objectType":"Domain","objectPermissionType":"GROUP"}
-			]}`,
-			"addUserGroupPermission",
-		),
-	)
-	if err != nil {
-		t.Error("Unexpected error.")
-	}
+			]}`},
+	})
 
-	p, err := api.AddUserGroupPermission(&ObjectPermission{
+	p, err := api.AddUserGroupPermissionContext(context.Background(), &ObjectPermission{
 		Action:               PermissionActionEdit,
 		ObjectType:           "Domain",
 		ObjectPermissionType: PermissionTypeGroup,
