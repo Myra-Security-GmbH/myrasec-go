@@ -83,6 +83,20 @@ type Domain struct {
 
 	// Reversed indicates if the domain is reversed.
 	Reversed bool `json:"reversed" jsonschema:"Indicates whether the domain is reversed (boolean flag)."`
+
+	// Verified reports whether the ownership of the domain is verified. A domain that is not
+	// verified (false) is stored but not published and gets no certificates, no statistics and no
+	// cache clears. A domain is created this way when its name overlaps with a domain of another
+	// account; the support can also revoke the verification of an existing domain. The dashboard
+	// shows the reason and what resolves it (a TXT record or the support). Read-only, the API
+	// ignores it on writes. Nil when the API did not return it.
+	Verified *bool `json:"verified,omitempty" jsonschema:"Whether the domain ownership is verified. False means the domain is not published and gets no certificates, statistics or cache clears: it was created with a name that overlaps with a domain of another account or the support revoked its verification. The dashboard shows the reason and the next step. Read-only."`
+}
+
+// IsPendingVerification reports whether the API returned the domain as not verified (Verified is
+// false). A domain without the attribute (an API version without domain verification) is not pending.
+func (d *Domain) IsPendingVerification() bool {
+	return d.Verified != nil && !*d.Verified
 }
 
 // GetDomainContext returns a single domain with/for the given identifier
