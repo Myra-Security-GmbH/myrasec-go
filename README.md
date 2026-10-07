@@ -75,3 +75,23 @@ func main() {
 - [User Group](./docs/usergroup.md)
 - [Permission](./docs/permission.md)
 - [VHost](./docs/vhost.md)
+
+## Release
+
+Every SDK operation must call a route that the public API documentation lists. `TestEveryOperationIsDocumented` checks each operation in `initializeMethods()` against `testdata/documented-routes.txt`, and CI runs it on every push. CI only checks that committed snapshot, it never downloads the documentation, so the snapshot is only as current as its last refresh.
+
+Before tagging a `v*` release:
+
+1. Refresh the route list from the production API documentation:
+
+   ```shell
+   ./scripts/update-documented-routes.sh
+   ```
+
+   The script downloads `https://apiv2.myracloud.com/api/doc.json`, or `<host>/api/doc.json` when an https host is passed as the first argument, and writes one `METHOD /path` line per documented operation, with every path parameter replaced by `*`. It keeps the existing file when the download fails or lists no operations. It needs `curl` and `jq`.
+
+2. Run `go test ./...` and commit the updated `testdata/documented-routes.txt` together with the release.
+
+An SDK change that uses a new API route can only be merged once that route is documented on the production API, because the refreshed snapshot would otherwise reject it.
+
+When the test reports an operation, either the route must be documented in the API, or the operation must be removed from the SDK.
