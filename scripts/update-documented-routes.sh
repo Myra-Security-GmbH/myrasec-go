@@ -17,7 +17,8 @@ trap 'rm -f "$tmp"' EXIT
 curl -fsSL --proto '=https' --proto-redir '=https' --max-time 30 --max-redirs 3 "${host}/api/doc.json" \
     | jq -r '
         if (.basePath // "/") != "/" then error("unexpected basePath \(.basePath)") else . end
-        | .paths | to_entries[] | .key as $path | select($path | test("^/[A-Za-z0-9_./{}-]*$"))
+        | .paths | to_entries[] | .key as $path
+        | if ($path | test("^/[A-Za-z0-9_./{}-]*$")) then . else error("unexpected path \($path)") end
         | .value | keys[] | select(test("^(get|post|put|patch|delete)$")) | "\(ascii_upcase) \($path)"' \
     | sed -E 's/\{[^}]+\}/*/g' \
     | LC_ALL=C sort -u > "$tmp"

@@ -21,7 +21,6 @@ DELETE /user/*/sessions/*
 DELETE /user/group/*/permissions/*
 DELETE /user/group/*/users/*
 DELETE /user/groups/*
-DELETE /user/tokens/*
 DELETE /users/*
 DELETE /waiting-room/*
 GET /domain/*/*/cache-settings
@@ -45,7 +44,6 @@ GET /domain/*/redirects/*
 GET /domain/*/redirects/*/*
 GET /domain/*/ssl/certificates
 GET /domain/*/ssl/certificates/*
-GET /domain/*/subdomains
 GET /domain/*/vhost/*/dns-records
 GET /domain/*/waf-rules
 GET /domain/waf-rules/*
@@ -53,7 +51,6 @@ GET /domains
 GET /domains/*
 GET /domains/*/bind-raw/*
 GET /domains/*/bind/*
-GET /ip-ranges
 GET /organization/contacts
 GET /ssl-configurations
 GET /ssl/providers
@@ -63,7 +60,6 @@ GET /ssl/requests
 GET /ssl/requests/*
 GET /statistics/total-domain-requests/*/*
 GET /statistics/total-domain-traffic/*/*
-GET /subdomains
 GET /tag/*/cache-settings
 GET /tag/*/settings
 GET /tag/*/waf-rules
@@ -80,9 +76,7 @@ GET /user/group/*/users
 GET /user/groups
 GET /user/groups/*
 GET /user/me
-GET /user/permissions
 GET /user/subaccounts
-GET /user/tokens
 GET /users
 GET /users/*
 GET /waf/actions
@@ -130,10 +124,8 @@ POST /user/group/*/users
 POST /user/groups
 POST /user/password/new
 POST /user/password/reset
-POST /user/permissions/check
 POST /user/reauthenticate
 POST /user/switch-account/*
-POST /user/tokens
 POST /users
 POST /waiting-room
 PUT /domain/*/*/cache-settings/*
@@ -158,6 +150,5 @@ PUT /tag/*/waf-rules/*
 PUT /tags/*
 PUT /tags/*/information/*
 PUT /user/groups/*
-PUT /user/tokens/*
 PUT /users/*
 PUT /waiting-room/*

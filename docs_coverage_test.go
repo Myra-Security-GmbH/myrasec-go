@@ -8,24 +8,52 @@ import (
 	"testing"
 )
 
-const documentedRoutesFile = "testdata/documented-routes.txt"
+const (
+	documentedRoutesFile = "testdata/documented-routes.txt"
+	pendingRoutesFile    = "testdata/pending-routes.txt"
+)
 
 var actionPlaceholders = strings.NewReplacer("%d", "*", "%s", "*", "%v", "*")
 
 func TestEveryOperationIsDocumented(t *testing.T) {
-	documented := readDocumentedRoutes(t)
-	methods := initializeMethods()
+	documented := readRoutes(t, documentedRoutesFile)
+	pending := readRoutes(t, pendingRoutesFile)
 
-	names := make([]string, 0, len(methods))
-	for name := range methods {
-		names = append(names, name)
+	if len(documented) == 0 {
+		t.Fatalf("%s lists no routes, run ./scripts/update-documented-routes.sh", documentedRoutesFile)
 	}
-	sort.Strings(names)
 
-	for _, name := range names {
+	methods := initializeMethods()
+	for _, name := range sortedOperationNames(methods) {
 		route := documentedRoute(methods[name])
-		if _, ok := documented[route]; !ok {
-			t.Errorf("SDK operation %q calls %q, which %s does not list", name, route, documentedRoutesFile)
+		_, isDocumented := documented[route]
+		_, isPending := pending[route]
+
+		if !isDocumented && !isPending {
+			t.Errorf("SDK operation %q calls %q, which neither %s nor %s lists", name, route, documentedRoutesFile, pendingRoutesFile)
+		}
+	}
+}
+
+func TestPendingRoutesAreNotDocumentedYet(t *testing.T) {
+	documented := readRoutes(t, documentedRoutesFile)
+
+	for _, route := range sortedRoutes(readRoutes(t, pendingRoutesFile)) {
+		if _, ok := documented[route]; ok {
+			t.Errorf("%q is documented in production now, remove it from %s", route, pendingRoutesFile)
+		}
+	}
+}
+
+func TestPendingRoutesAreCalledBySDK(t *testing.T) {
+	called := map[string]struct{}{}
+	for _, method := range initializeMethods() {
+		called[documentedRoute(method)] = struct{}{}
+	}
+
+	for _, route := range sortedRoutes(readRoutes(t, pendingRoutesFile)) {
+		if _, ok := called[route]; !ok {
+			t.Errorf("no SDK operation calls %q, remove it from %s", route, pendingRoutesFile)
 		}
 	}
 }
@@ -56,29 +84,46 @@ func documentedRoute(method APIMethod) string {
 	return method.Method + " /" + actionPlaceholders.Replace(action)
 }
 
-func readDocumentedRoutes(t *testing.T) map[string]struct{} {
+func sortedOperationNames(methods map[string]APIMethod) []string {
+	names := make([]string, 0, len(methods))
+	for name := range methods {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+
+	return names
+}
+
+func sortedRoutes(routes map[string]struct{}) []string {
+	sorted := make([]string, 0, len(routes))
+	for route := range routes {
+		sorted = append(sorted, route)
+	}
+	sort.Strings(sorted)
+
+	return sorted
+}
+
+func readRoutes(t *testing.T, path string) map[string]struct{} {
 	t.Helper()
 
-	file, err := os.Open(documentedRoutesFile)
+	file, err := os.Open(path)
 	if err != nil {
-		t.Fatalf("cannot read %s: %v", documentedRoutesFile, err)
+		t.Fatalf("cannot read %s: %v", path, err)
 	}
 	defer file.Close()
 
 	routes := map[string]struct{}{}
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		if line := strings.TrimSpace(scanner.Text()); line != "" {
+		line, _, _ := strings.Cut(scanner.Text(), "#")
+		if line = strings.TrimSpace(line); line != "" {
 			routes[line] = struct{}{}
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		t.Fatalf("cannot read %s: %v", documentedRoutesFile, err)
-	}
-
-	if len(routes) == 0 {
-		t.Fatalf("%s lists no routes, run ./scripts/update-documented-routes.sh", documentedRoutesFile)
+		t.Fatalf("cannot read %s: %v", path, err)
 	}
 
 	return routes
