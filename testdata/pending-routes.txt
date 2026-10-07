@@ -1,0 +1,13 @@
+# Routes the SDK already calls that the production API documentation does not
+# list yet. Each one needs a reason. TestPendingRoutesAreNotDocumentedYet fails
+# once a route shows up in documented-routes.txt, so remove it here when that
+# happens. Keep this file empty whenever possible.
+DELETE /user/tokens/*          # documented by the next API release
+GET /domain/*/subdomains       # documented by the next API release
+GET /ip-ranges                 # documented by the next API release
+GET /subdomains                # documented by the next API release
+GET /user/permissions          # documented by the next API release
+GET /user/tokens               # documented by the next API release
+POST /user/permissions/check   # documented by the next API release
+POST /user/tokens              # documented by the next API release
+PUT /user/tokens/*             # documented by the next API release
