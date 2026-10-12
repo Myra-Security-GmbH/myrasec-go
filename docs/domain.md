@@ -11,6 +11,7 @@ type Domain struct {
 	Paused      bool            `json:"paused"`
 	PausedUntil *types.DateTime `json:"pausedUntil,omitempty"`
 	Reversed    bool            `json:"reversed"`
+	Verified    *bool           `json:"verified,omitempty"`
 }
 ```
 | Field | Type | Description|
@@ -24,6 +25,7 @@ type Domain struct {
 | `Paused` | bool | Shows if the domain is currently in pause mode. |
 | `PausedUntil` | *types.DateTime | Shows the date when Myra protection will be reactivated automatically. |
 | `Reversed` | bool | Indicates whether the domain is reversed. |
+| `Verified` | *bool | Shows whether the ownership of the domain is verified. A domain that is not verified (`false`) is stored but not published and gets no certificates, no statistics and no cache clears. A domain is created this way when its name overlaps with a domain of another account; the support can also revoke the verification of an existing domain. The dashboard shows the reason and what resolves it (a TXT record or the support). Read-only, ignored on writes. `IsPendingVerification()` reports the state; it is `false` when the API did not return the attribute. |
 
 
 ## Create
