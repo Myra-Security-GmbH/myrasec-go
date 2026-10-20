@@ -15,7 +15,8 @@ func TestSettingsPrivateKeyRequests(t *testing.T) {
 		update                       func(*API, *Settings) error
 		partial                      func(*API, map[string]any) error
 	}{
-		{"flat", "/domain/1/www.example.test/settings", http.MethodPost,
+		{
+			"flat", "/domain/1/www.example.test/settings", http.MethodPost,
 			`{"myra_ssl_certificate_key":["<redacted>"],"only_https":true}`,
 			func(api *API) (*Settings, error) {
 				return api.ListSettingsContext(context.Background(), 1, "www.example.test", nil)
@@ -29,7 +30,8 @@ func TestSettingsPrivateKeyRequests(t *testing.T) {
 				return err
 			},
 		},
-		{"tag", "/tag/1/settings", http.MethodPut,
+		{
+			"tag", "/tag/1/settings", http.MethodPut,
 			`{"settings":{"myra_ssl_certificate_key":["<redacted>"],"only_https":true}}`,
 			func(api *API) (*Settings, error) { return api.ListTagSettingsContext(context.Background(), 1) },
 			func(api *API, s *Settings) error {
