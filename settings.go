@@ -39,6 +39,10 @@ func getSettingsMethods() map[string]APIMethod {
 	}
 }
 
+// RedactedSettingsPrivateKey indicates a configured private key in settings responses.
+// Sending the marker back preserves the stored key.
+const RedactedSettingsPrivateKey = "<redacted>"
+
 // Settings represents the comprehensive configuration for a domain or subdomain.
 // It controls caching, WAF, security features and upstream balancing behavior.
 type Settings struct {
@@ -162,8 +166,11 @@ type Settings struct {
 	// MyraSSLCertificate lists certificates to use for upstream authentication.
 	MyraSSLCertificate []string `json:"myra_ssl_certificate,omitempty" jsonschema:"List of SSL Certificates (PEM chain) used for client authentication against the origin server."`
 
-	// MyraSSLCertificateKey lists private keys for the upstream certificates.
-	MyraSSLCertificateKey []string `json:"myra_ssl_certificate_key,omitempty" jsonschema:"List of private keys corresponding to the MyraSSLCertificate."`
+	// MyraSSLCertificateKey accepts private keys for the upstream certificates.
+	// Reads return RedactedSettingsPrivateKey instead of stored keys. Sending the marker
+	// preserves the key. To clear it, use a partial update with an explicit nil or []string{}.
+	// This struct omits nil and empty slices when marshaling.
+	MyraSSLCertificateKey []string `json:"myra_ssl_certificate_key,omitempty" jsonschema:"Write-only private keys corresponding to MyraSSLCertificate. Reads return a <redacted> marker. Sending that marker preserves the stored keys."`
 
 	// NextUpstream defines conditions to try the next server in the pool.
 	// Values: error, timeout, invalid_header, http_500, http_502, etc. 'off' disables it.

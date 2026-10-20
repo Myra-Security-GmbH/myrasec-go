@@ -169,3 +169,9 @@ if err != nil {
     log.Fatal(err)
 }
 ```
+
+## Private key settings
+
+`myra_ssl_certificate_key` is write-only. Reads return `["<redacted>"]` for a configured key and retain the empty or inherited representation when no key is configured. `RedactedSettingsPrivateKey` identifies this marker. It contains no key material and cannot be used as a private key.
+
+Sending the marker back preserves the stored key, so a read followed by an update of another setting does not replace it. To replace a key, send the new value. To remove the stored setting, use the partial-update method with `"myra_ssl_certificate_key": nil`. An explicit empty slice in a partial update creates an empty override. Omitting the field preserves it. The typed `Settings` struct uses `omitempty`, so an empty slice there is omitted rather than clearing the setting.
