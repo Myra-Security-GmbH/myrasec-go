@@ -1,40 +1,123 @@
 package myrasec
 
 import (
+	"context"
 	"encoding/json"
-	"io"
 	"net/http"
 	"reflect"
-	"strings"
 	"testing"
 )
 
-func TestSettingsPrivateKeyMarkerRoundTrip(t *testing.T) {
-	for _, tag := range []bool{false, true} {
-		body := `{"myra_ssl_certificate_key":["<redacted>"],"only_https":true}`
-		decode := decodeSettingsResponse
-		if tag {
-			body = `{"settings":` + body + `}`
-			decode = decodeTagSettingsResponse
-		}
-		decoded, err := decode(&http.Response{Body: io.NopCloser(strings.NewReader(body))}, APIMethod{})
-		if err != nil {
-			t.Fatal(err)
-		}
-		settings := decoded.(*Settings)
-		if !reflect.DeepEqual(settings.MyraSSLCertificateKey, []string{RedactedSettingsPrivateKey}) {
-			t.Fatal("configured key marker was lost")
-		}
-		encoded, err := json.Marshal(settings)
-		if err != nil {
-			t.Fatal(err)
-		}
-		var payload map[string]any
-		if err := json.Unmarshal(encoded, &payload); err != nil {
-			t.Fatal(err)
-		}
-		if !reflect.DeepEqual(payload["myra_ssl_certificate_key"], []any{RedactedSettingsPrivateKey}) {
-			t.Fatal("update payload must preserve the marker")
-		}
+func TestSettingsPrivateKeyRequests(t *testing.T) {
+	variants := []struct {
+		name, path, method, readBody string
+		read                         func(*API) (*Settings, error)
+		update                       func(*API, *Settings) error
+		partial                      func(*API, map[string]any) error
+	}{
+		{"flat", "/domain/1/www.example.test/settings", http.MethodPost,
+			`{"myra_ssl_certificate_key":["<redacted>"],"only_https":true}`,
+			func(api *API) (*Settings, error) {
+				return api.ListSettingsContext(context.Background(), 1, "www.example.test", nil)
+			},
+			func(api *API, s *Settings) error {
+				_, err := api.UpdateSettingsContext(context.Background(), s, 1, "www.example.test")
+				return err
+			},
+			func(api *API, s map[string]any) error {
+				_, err := api.UpdateSettingsPartialContext(context.Background(), s, 1, "www.example.test")
+				return err
+			},
+		},
+		{"tag", "/tag/1/settings", http.MethodPut,
+			`{"settings":{"myra_ssl_certificate_key":["<redacted>"],"only_https":true}}`,
+			func(api *API) (*Settings, error) { return api.ListTagSettingsContext(context.Background(), 1) },
+			func(api *API, s *Settings) error {
+				_, err := api.UpdateTagSettingsContext(context.Background(), s, 1)
+				return err
+			},
+			func(api *API, s map[string]any) error {
+				_, err := api.UpdateTagSettingsPartialContext(context.Background(), s, 1)
+				return err
+			},
+		},
 	}
+	for _, v := range variants {
+		t.Run(v.name, func(t *testing.T) {
+			api, requests := newTestAPI(t, map[string]testResponse{
+				"GET " + v.path:         {Status: 200, Body: v.readBody},
+				v.method + " " + v.path: {Status: 200, Body: `{"error":false,"data":[{}]}`},
+			})
+			t.Run("read_modify_write", func(t *testing.T) {
+				settings, err := v.read(api)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if RedactedSettingsPrivateKey != "<redacted>" || !reflect.DeepEqual(settings.MyraSSLCertificateKey, []string{RedactedSettingsPrivateKey}) {
+					t.Fatal("unexpected server marker")
+				}
+				enabled := false
+				settings.OnlyHTTPS = &enabled
+				if err := v.update(api, settings); err != nil {
+					t.Fatal(err)
+				}
+				payload := privateKeyRequestPayload(t, requests, v.method, v.path)
+				if !reflect.DeepEqual(payload["myra_ssl_certificate_key"], []any{"<redacted>"}) || payload["only_https"] != false {
+					t.Fatal("HTTP update must preserve the returned marker while changing another setting")
+				}
+			})
+			for _, tc := range []struct {
+				name string
+				keys []string
+			}{{"typed_nil", nil}, {"typed_empty", []string{}}} {
+				t.Run(tc.name, func(t *testing.T) {
+					if err := v.update(api, &Settings{MyraSSLCertificateKey: tc.keys}); err != nil {
+						t.Fatal(err)
+					}
+					payload := privateKeyRequestPayload(t, requests, v.method, v.path)
+					if _, ok := payload["myra_ssl_certificate_key"]; ok {
+						t.Fatal("typed nil and empty slices must be omitted from the HTTP request")
+					}
+				})
+			}
+			for _, tc := range []struct {
+				name  string
+				value any
+				want  any
+			}{{"partial_nil", nil, nil}, {"partial_empty", []string{}, []any{}}, {"partial_new_key", []string{"NEW_KEY"}, []any{"NEW_KEY"}}} {
+				t.Run(tc.name, func(t *testing.T) {
+					if err := v.partial(api, map[string]any{"myra_ssl_certificate_key": tc.value}); err != nil {
+						t.Fatal(err)
+					}
+					payload := privateKeyRequestPayload(t, requests, v.method, v.path)
+					got, ok := payload["myra_ssl_certificate_key"]
+					if !ok || !reflect.DeepEqual(got, tc.want) {
+						t.Fatalf("HTTP key value = %#v, present %t; want %#v", got, ok, tc.want)
+					}
+				})
+			}
+			t.Run("partial_omitted", func(t *testing.T) {
+				if err := v.partial(api, map[string]any{"only_https": false}); err != nil {
+					t.Fatal(err)
+				}
+				payload := privateKeyRequestPayload(t, requests, v.method, v.path)
+				if _, ok := payload["myra_ssl_certificate_key"]; ok {
+					t.Fatal("partial update must leave omitted keys out of the HTTP request")
+				}
+			})
+		})
+	}
+}
+
+func privateKeyRequestPayload(t *testing.T, requests *testRequests, method, path string) map[string]any {
+	t.Helper()
+	request := requests.last(t)
+	if request.Method != method || request.Path != path {
+		t.Fatalf("unexpected request: %s %s", request.Method, request.Path)
+	}
+	var payload map[string]any
+	if err := json.Unmarshal(request.Body, &payload); err != nil {
+		t.Fatal(err)
+	}
+	return payload
 }

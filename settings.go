@@ -39,8 +39,11 @@ func getSettingsMethods() map[string]APIMethod {
 	}
 }
 
-// RedactedSettingsPrivateKey indicates a configured private key in settings responses.
-// Sending the marker back preserves the stored key.
+// RedactedSettingsPrivateKey identifies a configured key on APIs with key redaction enabled.
+// Only return this marker to an API that supplied it. Older APIs return actual keys
+// and may store a fabricated marker literally. Marker support requires an API rollout,
+// not just an SDK update. The marker is valid only as the sole slice element;
+// sending it back alone preserves the stored keys. Mixed values are rejected.
 const RedactedSettingsPrivateKey = "<redacted>"
 
 // Settings represents the comprehensive configuration for a domain or subdomain.
@@ -167,10 +170,12 @@ type Settings struct {
 	MyraSSLCertificate []string `json:"myra_ssl_certificate,omitempty" jsonschema:"List of SSL Certificates (PEM chain) used for client authentication against the origin server."`
 
 	// MyraSSLCertificateKey accepts private keys for the upstream certificates.
-	// Reads return RedactedSettingsPrivateKey instead of stored keys. Sending the marker
-	// preserves the key. To clear it, use a partial update with an explicit nil or []string{}.
-	// This struct omits nil and empty slices when marshaling.
-	MyraSSLCertificateKey []string `json:"myra_ssl_certificate_key,omitempty" jsonschema:"Write-only private keys corresponding to MyraSSLCertificate. Reads return a <redacted> marker. Sending that marker preserves the stored keys."`
+	// APIs with key redaction enabled return RedactedSettingsPrivateKey instead of stored keys.
+	// The marker may only be sent back alone to an API that supplied it; see its documentation.
+	// In a partial update, nil removes the stored setting and restores inheritance,
+	// while []string{} creates an empty override that shadows inherited keys.
+	// This struct omits nil and empty slices when marshaling, preserving the setting.
+	MyraSSLCertificateKey []string `json:"myra_ssl_certificate_key,omitempty" jsonschema:"Private keys corresponding to MyraSSLCertificate. APIs with key redaction enabled return <redacted>. Only return a server-supplied marker as the sole element. In partial updates null restores inheritance and [] creates an empty override."`
 
 	// NextUpstream defines conditions to try the next server in the pool.
 	// Values: error, timeout, invalid_header, http_500, http_502, etc. 'off' disables it.
