@@ -167,10 +167,14 @@ type Settings struct {
 	MyraSSLHeader *bool `json:"myra_ssl_header,omitempty" jsonschema:"If true, adds the 'X-Myra-SSL' header to requests forwarded to the origin to indicate the client used HTTPS."`
 
 	// MyraSSLCertificate lists certificates to use for upstream authentication.
+	// When replacing certificates, also send matching MyraSSLCertificateKey values;
+	// the redaction marker always preserves the stored keys.
 	MyraSSLCertificate []string `json:"myra_ssl_certificate,omitempty" jsonschema:"List of SSL Certificates (PEM chain) used for client authentication against the origin server."`
 
 	// MyraSSLCertificateKey accepts private keys for the upstream certificates.
-	// APIs with key redaction enabled return RedactedSettingsPrivateKey instead of stored keys.
+	// APIs with key redaction enabled return one RedactedSettingsPrivateKey whenever
+	// keys apply, including inherited keys, regardless of the number of keys.
+	// When replacing MyraSSLCertificate, also send matching keys; the marker keeps the stored keys.
 	// The marker may only be sent back alone to an API that supplied it; see its documentation.
 	// In a partial update, nil removes the stored setting and restores inheritance,
 	// while []string{} creates an empty override that shadows inherited keys.

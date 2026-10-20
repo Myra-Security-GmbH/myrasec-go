@@ -53,17 +53,21 @@ func TestSettingsPrivateKeyRequests(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				if RedactedSettingsPrivateKey != "<redacted>" || !reflect.DeepEqual(settings.MyraSSLCertificateKey, []string{RedactedSettingsPrivateKey}) {
-					t.Fatal("unexpected server marker")
+				if RedactedSettingsPrivateKey != "<redacted>" {
+					t.Fatalf("RedactedSettingsPrivateKey = %q, want <redacted>", RedactedSettingsPrivateKey)
+				}
+				if !reflect.DeepEqual(settings.MyraSSLCertificateKey, []string{RedactedSettingsPrivateKey}) {
+					t.Fatalf("decoded key = %#v, want a single server marker", settings.MyraSSLCertificateKey)
 				}
 				enabled := false
 				settings.OnlyHTTPS = &enabled
+				before := len(requests.all())
 				if err := v.update(api, settings); err != nil {
 					t.Fatal(err)
 				}
-				payload := privateKeyRequestPayload(t, requests, v.method, v.path)
+				payload := privateKeyRequestPayload(t, requests, v.method, v.path, before)
 				if !reflect.DeepEqual(payload["myra_ssl_certificate_key"], []any{"<redacted>"}) || payload["only_https"] != false {
-					t.Fatal("HTTP update must preserve the returned marker while changing another setting")
+					t.Fatalf("HTTP update must preserve the returned marker while changing another setting, got %#v", payload)
 				}
 			})
 			for _, tc := range []struct {
@@ -71,12 +75,13 @@ func TestSettingsPrivateKeyRequests(t *testing.T) {
 				keys []string
 			}{{"typed_nil", nil}, {"typed_empty", []string{}}} {
 				t.Run(tc.name, func(t *testing.T) {
+					before := len(requests.all())
 					if err := v.update(api, &Settings{MyraSSLCertificateKey: tc.keys}); err != nil {
 						t.Fatal(err)
 					}
-					payload := privateKeyRequestPayload(t, requests, v.method, v.path)
+					payload := privateKeyRequestPayload(t, requests, v.method, v.path, before)
 					if _, ok := payload["myra_ssl_certificate_key"]; ok {
-						t.Fatal("typed nil and empty slices must be omitted from the HTTP request")
+						t.Fatalf("typed nil and empty slices must be omitted from the HTTP request, got %#v", payload)
 					}
 				})
 			}
@@ -86,10 +91,11 @@ func TestSettingsPrivateKeyRequests(t *testing.T) {
 				want  any
 			}{{"partial_nil", nil, nil}, {"partial_empty", []string{}, []any{}}, {"partial_new_key", []string{"NEW_KEY"}, []any{"NEW_KEY"}}} {
 				t.Run(tc.name, func(t *testing.T) {
+					before := len(requests.all())
 					if err := v.partial(api, map[string]any{"myra_ssl_certificate_key": tc.value}); err != nil {
 						t.Fatal(err)
 					}
-					payload := privateKeyRequestPayload(t, requests, v.method, v.path)
+					payload := privateKeyRequestPayload(t, requests, v.method, v.path, before)
 					got, ok := payload["myra_ssl_certificate_key"]
 					if !ok || !reflect.DeepEqual(got, tc.want) {
 						t.Fatalf("HTTP key value = %#v, present %t; want %#v", got, ok, tc.want)
@@ -97,20 +103,24 @@ func TestSettingsPrivateKeyRequests(t *testing.T) {
 				})
 			}
 			t.Run("partial_omitted", func(t *testing.T) {
+				before := len(requests.all())
 				if err := v.partial(api, map[string]any{"only_https": false}); err != nil {
 					t.Fatal(err)
 				}
-				payload := privateKeyRequestPayload(t, requests, v.method, v.path)
+				payload := privateKeyRequestPayload(t, requests, v.method, v.path, before)
 				if _, ok := payload["myra_ssl_certificate_key"]; ok {
-					t.Fatal("partial update must leave omitted keys out of the HTTP request")
+					t.Fatalf("partial update must leave omitted keys out of the HTTP request, got %#v", payload)
 				}
 			})
 		})
 	}
 }
 
-func privateKeyRequestPayload(t *testing.T, requests *testRequests, method, path string) map[string]any {
+func privateKeyRequestPayload(t *testing.T, requests *testRequests, method, path string, before int) map[string]any {
 	t.Helper()
+	if got := len(requests.all()) - before; got != 1 {
+		t.Fatalf("update sent %d requests, want exactly one", got)
+	}
 	request := requests.last(t)
 	if request.Method != method || request.Path != path {
 		t.Fatalf("unexpected request: %s %s", request.Method, request.Path)
