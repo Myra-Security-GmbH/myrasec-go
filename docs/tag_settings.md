@@ -32,3 +32,7 @@ if err != nil {
     log.Fatal(err)
 }
 ```
+
+## Private key settings
+
+See [Private key settings](./subdomain_settings.md#private-key-settings) for API rollout requirements, the single-element marker contract and the difference between inheritance and an empty override. For tags, use `UpdateTagSettingsPartialContext` to send an explicit `nil` or `[]string{}`.

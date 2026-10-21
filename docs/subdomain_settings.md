@@ -100,8 +100,8 @@ type Settings struct {
 | MonitoringContactEMail | string | Email addresses, to which monitoring emails should be send. Multiple addresses are separated with a space. |
 | MonitoringSendAlert | bool | Enables / disables the upstream error reporting. |
 | MyraSSLHeader | bool | Activate the X-Myra-SSL Header, which indicates if a request was received via SSL. |
-| MyraSSLCertificate | []string | An SSL Certificate (and chain) to be used to make requests on the origin. |
-| MyraSSLCertificateKey | []string | The private key for the MyraSSLCertificate. |
+| MyraSSLCertificate | []string | An SSL Certificate (and chain) to be used to make requests on the origin. When replacing certificates, also send the matching keys in MyraSSLCertificateKey; the marker always preserves the stored keys. |
+| MyraSSLCertificateKey | []string | Private keys for MyraSSLCertificate. Write-only on APIs with key redaction enabled: reads return RedactedSettingsPrivateKey. See [Private key settings](#private-key-settings) for rollout requirements. |
 | NextUpstream | []string | Specify in which case the current upstream should be marked as "down". The values can be arbitrary combined, expect the value "off". |
 | OnlyHTTPS | bool | If activated, Myra will forward all requests to the origin using HTTPS regardless of the used protocol of the originating request. |
 | OriginConnectionHeader | string | Sets the Connection header, which is transmitted to the origin with a request. |
@@ -169,3 +169,13 @@ if err != nil {
     log.Fatal(err)
 }
 ```
+
+## Private key settings
+
+The following marker contract requires an API deployment with private key redaction enabled. Installing this SDK does not enable it on the server. Older API deployments return actual private keys and may store a fabricated `<redacted>` value literally. Only send a marker back to an API that returned it; never replace a key with this constant locally.
+
+On supporting deployments, `myra_ssl_certificate_key` is write-only. Reads return the single element `["<redacted>"]` whenever a key applies, whether stored at this level or inherited, regardless of how many keys are stored. When no key applies, the field stays empty. The marker does not preserve the key count and cannot be paired with certificates by index. `RedactedSettingsPrivateKey` identifies this marker. It contains no key material and cannot be used as a private key.
+
+Sending the server-supplied marker back preserves the stored keys, so updating another setting does not require entering them again. The marker is valid only as the single element: appending a new key to it is rejected. To replace keys, send the complete new set without the marker. When replacing `MyraSSLCertificate`, send the matching keys too: the marker always preserves the stored keys, even when the certificates change.
+
+With `UpdateSettingsPartialContext`, `"myra_ssl_certificate_key": nil` removes the stored setting so inherited keys apply again. An explicit `[]string{}` creates an empty override that shadows inherited keys. Omitting the field preserves it. The typed `Settings` struct uses `omitempty`, so nil and empty slices there are omitted rather than changing the setting.

@@ -39,6 +39,13 @@ func getSettingsMethods() map[string]APIMethod {
 	}
 }
 
+// RedactedSettingsPrivateKey identifies a configured key on APIs with key redaction enabled.
+// Only return this marker to an API that supplied it. Older APIs return actual keys
+// and may store a fabricated marker literally. Marker support requires an API rollout,
+// not just an SDK update. The marker is valid only as the sole slice element;
+// sending it back alone preserves the stored keys. Mixed values are rejected.
+const RedactedSettingsPrivateKey = "<redacted>"
+
 // Settings represents the comprehensive configuration for a domain or subdomain.
 // It controls caching, WAF, security features and upstream balancing behavior.
 type Settings struct {
@@ -160,10 +167,19 @@ type Settings struct {
 	MyraSSLHeader *bool `json:"myra_ssl_header,omitempty" jsonschema:"If true, adds the 'X-Myra-SSL' header to requests forwarded to the origin to indicate the client used HTTPS."`
 
 	// MyraSSLCertificate lists certificates to use for upstream authentication.
+	// When replacing certificates, also send matching MyraSSLCertificateKey values;
+	// the redaction marker always preserves the stored keys.
 	MyraSSLCertificate []string `json:"myra_ssl_certificate,omitempty" jsonschema:"List of SSL Certificates (PEM chain) used for client authentication against the origin server."`
 
-	// MyraSSLCertificateKey lists private keys for the upstream certificates.
-	MyraSSLCertificateKey []string `json:"myra_ssl_certificate_key,omitempty" jsonschema:"List of private keys corresponding to the MyraSSLCertificate."`
+	// MyraSSLCertificateKey accepts private keys for the upstream certificates.
+	// APIs with key redaction enabled return one RedactedSettingsPrivateKey whenever
+	// keys apply, including inherited keys, regardless of the number of keys.
+	// When replacing MyraSSLCertificate, also send matching keys; the marker keeps the stored keys.
+	// The marker may only be sent back alone to an API that supplied it; see its documentation.
+	// In a partial update, nil removes the stored setting and restores inheritance,
+	// while []string{} creates an empty override that shadows inherited keys.
+	// This struct omits nil and empty slices when marshaling, preserving the setting.
+	MyraSSLCertificateKey []string `json:"myra_ssl_certificate_key,omitempty" jsonschema:"Private keys corresponding to MyraSSLCertificate. APIs with key redaction enabled return <redacted>. Only return a server-supplied marker as the sole element. In partial updates null restores inheritance and [] creates an empty override."`
 
 	// NextUpstream defines conditions to try the next server in the pool.
 	// Values: error, timeout, invalid_header, http_500, http_502, etc. 'off' disables it.
