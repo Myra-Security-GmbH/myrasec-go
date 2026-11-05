@@ -59,11 +59,14 @@ type API struct {
 	caching  bool
 	cacheTTL int
 
-	headers    http.Header
-	client     *http.Client
-	limiter    *rate.Limiter
-	maxRetries int
-	retrySleep int
+	headers http.Header
+	client  *http.Client
+	limiter *rate.Limiter
+
+	// insecureHTTP allows requests to plain HTTP endpoints outside the local machine.
+	insecureHTTP bool
+	maxRetries   int
+	retrySleep   int
 
 	methods map[string]APIMethod
 }
@@ -199,7 +202,7 @@ func buildApi(key, secret, token string) *API {
 		caching:    false,
 		cacheTTL:   0,
 		headers:    make(http.Header),
-		client:     &http.Client{Timeout: 30 * time.Second},
+		client:     &http.Client{Timeout: 30 * time.Second, CheckRedirect: checkRedirect},
 		limiter:    rate.NewLimiter(rate.Limit(5), 1), // 5rps = 300req/min
 		maxRetries: DefaultRetryCount,
 		retrySleep: DefaultRetrySleep,
@@ -255,7 +258,8 @@ func (api *API) SetMaxRetries(n int) {
 	api.maxRetries = n
 }
 
-// SetRetrySleep sets a sleep value. It will wait for n-seconds to do the request again in case of retry operation.
+// SetRetrySleep sets the wait in seconds before the second attempt of a retried request. The
+// wait doubles with every further attempt, see docs/setup.md for the statuses that are retried.
 func (api *API) SetRetrySleep(n int) {
 	api.retrySleep = n
 }
@@ -294,14 +298,32 @@ func (api *API) SetProxy(proxyURL string) error {
 
 // SetHTTPClient sets the HTTP client used by the api client.
 // Must be used before SetProxy if SetProxy is used.
+//
+// A client without a redirect policy (CheckRedirect is nil) is copied and the copy gets the
+// policy of this library, which refuses redirects to another host and from HTTPS to plain
+// HTTP. A client with its own CheckRedirect is used as is.
 func (api *API) SetHTTPClient(client *http.Client) error {
 	if client == nil {
 		return errors.New("nil http client")
 	}
 
+	if client.CheckRedirect == nil {
+		withPolicy := *client
+		withPolicy.CheckRedirect = checkRedirect
+		client = &withPolicy
+	}
+
 	api.client = client
 
 	return nil
+}
+
+// SetInsecureHTTP allows requests to plain HTTP endpoints on hosts other than the local
+// machine. By default such requests fail with ErrInsecureEndpoint because the API key and
+// signature or the API token would be sent in clear text. Plain HTTP to localhost or a
+// loopback address is always allowed, so local test servers need no opt-in.
+func (api *API) SetInsecureHTTP(allow bool) {
+	api.insecureHTTP = allow
 }
 
 // call executes/sends the request to the MYRA API. The ctx bounds the rate limiter wait,
@@ -422,17 +444,21 @@ func (api *API) sendRequest(ctx context.Context, definition APIMethod, payload .
 
 		retries++
 
-		if resp.StatusCode != http.StatusInternalServerError || retries >= api.maxRetries {
+		if !retryableStatus(request.Method, resp.StatusCode) || retries >= api.maxRetries {
 			return resp, err
 		}
 
-		// The response is discarded, release its connection before retrying.
+		delay := api.retryDelay(resp.StatusCode, resp.Header, retries)
+
+		// The response is discarded. Drain a bounded part of the body so the connection can be
+		// reused, then release it.
+		_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, maxDrainBytes))
 		_ = resp.Body.Close()
 
 		select {
 		case <-ctx.Done():
 			return nil, ctx.Err()
-		case <-time.After(time.Duration(api.retrySleep) * time.Second):
+		case <-time.After(delay):
 		}
 	}
 }
@@ -519,6 +545,10 @@ func (api *API) prepareRequest(ctx context.Context, definition APIMethod, payloa
 	}
 
 	if err != nil {
+		return nil, err
+	}
+
+	if err := api.checkScheme(req.URL); err != nil {
 		return nil, err
 	}
 

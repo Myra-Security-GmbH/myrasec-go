@@ -95,4 +95,23 @@ if err != nil {
 | `Violations` | []*Violation | The `violationList` entries of the response with `Path` and `Message`, empty when the API sent none. Access denied responses (403) carry no body, so both are empty then. |
 | `Body` | string | The raw body of a non-successful response. Useful when the body is not a JSON error envelope, for example HTML from a proxy. In that case the error message carries the status only. |
 
-A successful status with an error envelope (`error: true`, used by some endpoints for validation failures) is returned as `*APIError` as well. Its `StatusCode` is the successful status and its message carries the violations and the error message without a status prefix, exactly the message the library returned before `APIError` existed. Errors that happen before a response arrives (network errors, the client side rate limit, an unsupported action) are returned as plain errors. The client retries HTTP 500 responses when `SetMaxRetries` is set to a value above 1, waiting `SetRetrySleep` seconds between the attempts.
+A successful status with an error envelope (`error: true`, used by some endpoints for validation failures) is returned as `*APIError` as well. Its `StatusCode` is the successful status and its message carries the violations and the error message without a status prefix, exactly the message the library returned before `APIError` existed. Errors that happen before a response arrives (network errors, the client side rate limit, an unsupported action) are returned as plain errors.
+
+## Retries
+The client retries a request when `SetMaxRetries` is set to a value above 1 (the default is 1, a single attempt) and the API answers with one of these statuses:
+
+| Status | Retried for |
+|---|---|
+| 429 Too Many Requests, 503 Service Unavailable | every method, the API did not process the request |
+| 500 Internal Server Error, 502 Bad Gateway, 504 Gateway Timeout | GET only. The API or the gateway in front of it may have processed the request already: a repeated POST could create a duplicate, a repeated PUT or DELETE would fail on the changed or missing entry. |
+
+The wait between the attempts is the `Retry-After` header of the response when the API sends one (capped at 60 seconds). Without the header the wait starts at `SetRetrySleep` seconds (default 0) and doubles with every further attempt (for example 1s, 2s, 4s) up to 60 seconds, or up to the configured sleep when that is longer. A 429 or 503 without `Retry-After` waits at least one second. The wait is interrupted when the context is cancelled.
+
+## Transport security
+The client refuses to send requests to a plain `http://` endpoint on a host other than the local machine, because the API key and signature or the API token would travel in clear text, and fails with `ErrInsecureEndpoint` (check with `errors.Is`). Endpoints on `localhost` or a loopback address are exempt, so local test servers work without any setting. To talk to a plain HTTP endpoint on another host, for example a proxy in a lab network, opt in explicitly:
+
+```go
+api.SetInsecureHTTP(true)
+```
+
+The API does not redirect, so a redirect means a misconfigured endpoint or a hostile network. The HTTP client refuses redirects to another host and redirects from HTTPS to plain HTTP (the Go HTTP client keeps the credentials on a same-host redirect regardless of the scheme) and follows at most 10 same-host redirects. A client passed to `SetHTTPClient` without its own `CheckRedirect` is copied and the copy gets this policy; a client with its own `CheckRedirect` is used unchanged.

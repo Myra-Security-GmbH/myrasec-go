@@ -382,4 +382,4 @@ if err != nil {
 }
 ```
 
-The client retries HTTP 500 responses when `SetMaxRetries` is set, all other statuses are returned immediately. See [Setup](./setup.md#error-handling) for the general error handling of the client.
+The client retries some responses when `SetMaxRetries` is set, see [Retries](./setup.md#retries). See [Setup](./setup.md#error-handling) for the general error handling of the client.
