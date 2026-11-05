@@ -26,7 +26,7 @@ type CacheSetting struct {
 | `TTL` |  int| Time to live limits the lifespan of a cached response for the given path. This is a numeric value and is given in seconds. Special case is ’like origin server’, which uses the TTL returned by your origin server. |
 | `NotFoundTTL` | int | How long an object will be cached. Origin responses with the HTTP codes 404 will be cached. |
 | `Sort` | int | The order in which the cache rules take action as long as the cache sorting is activated. |
-| `Enabled` | *bool | Define whether this cache setting is enabled or not. `nil` leaves the choice to the API, which enables a new setting. Use `myrasec.BoolPtr(false)` to create or update a disabled setting. |
+| `Enabled` | *bool | Define whether this cache setting is enabled or not. `nil` omits the attribute and the API treats that as enabled, on create and on update alike: an update with `nil` enables a disabled setting. Use `myrasec.BoolPtr(false)` to create a disabled setting or to keep one disabled. |
 | `Enforce` | bool | Enforce cache TTL allows you to set the cache TTL (Cache Control: max-age) in the backend regardless of the response sent from your Origin. |
 | `Comment` | string | A comment to describe this cache setting. |
 
@@ -73,7 +73,7 @@ It is possible to pass a map of parameters (`map[string]string`) to the `ListRed
 
 
 ## Update
-Updating a CacheSetting is very similar to create a new one. The main difference is that an update will need the "id" and "modified" attributes to identify the version of the object you are trying to update.
+Updating a CacheSetting is very similar to create a new one. The main difference is that an update will need the "id" and "modified" attributes to identify the version of the object you are trying to update. The update replaces the whole setting: an attribute you leave out is sent as its zero value (`Type` empty, `TTL` 0) and an omitted `Enabled` is treated as true by the API, so build the object with every attribute.
 
 ### Example
 ```go
@@ -82,7 +82,11 @@ cachesetting := &myrasec.CacheSetting{
     Modified: &types.DateTime{
         Time: modified,
     },
-    Path:      "/index.html",
+    Type:        "exact",
+    Path:        "/index.html",
+    TTL:         300,
+    NotFoundTTL: 60,
+    Enabled:     myrasec.BoolPtr(true),
 }
 
 c, err := api.UpdateCacheSettingContext(ctx, cachesetting, domainId, "www.example.com");

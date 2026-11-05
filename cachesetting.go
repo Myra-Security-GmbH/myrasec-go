@@ -74,9 +74,10 @@ type CacheSetting struct {
 	// Lower numbers typically indicate higher priority when sorting is active.
 	Sort int `json:"sort,omitempty" jsonschema:"The execution priority order of the cache rule."`
 
-	// Enabled determines if the rule is currently active. A nil value leaves the choice to the
-	// API, which enables a new setting by default.
-	Enabled *bool `json:"enabled,omitempty" jsonschema:"Determines whether this cache setting is active. A new setting is enabled when the attribute is omitted."`
+	// Enabled determines if the rule is currently active. nil omits the attribute and the API
+	// treats that as true, on create and on update alike: an update with nil enables a disabled
+	// setting. Send BoolPtr(false) to create a disabled setting or to keep one disabled.
+	Enabled *bool `json:"enabled,omitempty" jsonschema:"Determines whether this cache setting is active. The API treats an omitted attribute as true, on create and on update."`
 
 	// Enforce overrides the Origin's Cache-Control headers.
 	// If true, the backend uses the defined TTL regardless of the Origin's instructions.

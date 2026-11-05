@@ -84,8 +84,10 @@ func TestListCacheSettings(t *testing.T) {
 }
 
 func TestCacheSettingSendsDisabledFlags(t *testing.T) {
+	disabled := `{"error": false, "targetObject": [{"id": 1, "path": "/index.html", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": false}]}`
 	api, requests := newTestAPI(t, map[string]testResponse{
-		"POST /domain/1/www.example.com/cache-settings": {Status: http.StatusOK, Body: `{"error": false, "targetObject": [{"id": 1, "path": "/index.html", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": false}]}`},
+		"POST /domain/1/www.example.com/cache-settings":  {Status: http.StatusOK, Body: disabled},
+		"PUT /domain/1/www.example.com/cache-settings/1": {Status: http.StatusOK, Body: disabled},
 	})
 
 	_, err := api.CreateCacheSettingContext(context.Background(), &CacheSetting{Path: "/index.html", TTL: 300, NotFoundTTL: 300, Type: "exact", Enabled: BoolPtr(false)}, 1, "www.example.com")
@@ -96,7 +98,21 @@ func TestCacheSettingSendsDisabledFlags(t *testing.T) {
 	body := string(requests.last(t).Body)
 	for _, want := range []string{`"enabled":false`, `"enforce":false`} {
 		if !strings.Contains(body, want) {
-			t.Errorf("Expected the request body to contain %s but got %s", want, body)
+			t.Errorf("Expected the create body to contain %s but got %s", want, body)
+		}
+	}
+
+	// The API treats an omitted enabled as true on update as well, so a disabled setting has
+	// to be updated with an explicit false to stay disabled.
+	_, err = api.UpdateCacheSettingContext(context.Background(), &CacheSetting{ID: 1, Path: "/index.html", TTL: 300, NotFoundTTL: 300, Type: "exact", Enabled: BoolPtr(false)}, 1, "www.example.com")
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got %v", err)
+	}
+
+	body = string(requests.last(t).Body)
+	for _, want := range []string{`"enabled":false`, `"enforce":false`} {
+		if !strings.Contains(body, want) {
+			t.Errorf("Expected the update body to contain %s but got %s", want, body)
 		}
 	}
 }

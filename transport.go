@@ -16,10 +16,12 @@ const (
 	// the limit the default policy of net/http uses as well.
 	maxRedirects = 10
 
-	// maxRetryAfter caps the wait a Retry-After header can request before the next attempt.
-	maxRetryAfter = 60 * time.Second
+	// maxRetryWait caps the wait before the next attempt, whether a Retry-After header asks
+	// for it or the doubling of the configured sleep reaches it.
+	maxRetryWait = 60 * time.Second
 
-	// maxBackoffShift caps the exponential growth of the sleep between attempts.
+	// maxBackoffShift stops the shift that doubles the configured sleep from overflowing.
+	// The wait itself is capped by maxRetryWait long before the shift matters.
 	maxBackoffShift = 6
 
 	// maxDrainBytes bounds how much of a discarded response body is read so the connection
@@ -82,16 +84,19 @@ func isLoopbackHost(host string) bool {
 	return ip != nil && ip.IsLoopback()
 }
 
-// retryableStatus reports whether a response is worth another attempt. 429 and 503 mean the
-// API did not process the request, so every method is repeated. 500, 502 and 504 can be
-// reported for a request the API has processed already (the gateway in front of the API timed
-// out, or the API failed after it stored the change): a repeated POST would create a
-// duplicate, a repeated PUT or DELETE fails on the changed or missing entry. Those statuses
-// are retried for GET only.
-func retryableStatus(method string, status int) bool {
+// retryableStatus reports whether a response is worth another attempt. A 429 comes from a rate
+// limiter that answers before the request is processed, so every method is repeated. A 503
+// with Retry-After is the explicit invitation of a server that did not handle the request and
+// is repeated for every method as well. Without the header a 503 can come from a gateway that
+// lost the API after passing the request on, or from the API after a partial change, just
+// like 500, 502 and 504: a repeated POST would create a duplicate, a repeated PUT or DELETE
+// fails on the changed or missing entry. Those responses are retried for GET only.
+func retryableStatus(method string, status int, retryAfter bool) bool {
 	switch status {
-	case http.StatusTooManyRequests, http.StatusServiceUnavailable:
+	case http.StatusTooManyRequests:
 		return true
+	case http.StatusServiceUnavailable:
+		return method == http.MethodGet || retryAfter
 	case http.StatusInternalServerError, http.StatusBadGateway, http.StatusGatewayTimeout:
 		return method == http.MethodGet
 	default:
@@ -99,22 +104,23 @@ func retryableStatus(method string, status int) bool {
 	}
 }
 
-// retryDelay returns the wait before the next attempt. A Retry-After header of the response
-// (seconds or an HTTP date) is honoured up to maxRetryAfter. Without the header the wait is
-// the configured retry sleep doubled with every attempt (1s, 2s, 4s, ...) up to maxRetryAfter,
-// or the configured sleep alone when that is longer. A 429 or 503 without the header and
-// without a configured sleep waits one second, repeating such a request at once is pointless.
+// retryDelay returns the wait before the next attempt, attempt being the number of the
+// attempt that just failed, starting at 1. A Retry-After header of the response (seconds or
+// an HTTP date) is honoured up to maxRetryWait. Without the header the wait is the configured
+// retry sleep doubled with every attempt (1s, 2s, 4s, ...) up to maxRetryWait, or the
+// configured sleep alone when that is longer. A 429 or 503 without the header and without a
+// configured sleep waits one second, repeating such a request at once is pointless.
 func (api *API) retryDelay(status int, header http.Header, attempt int) time.Duration {
 	if wait, ok := parseRetryAfter(header.Get("Retry-After")); ok {
-		return min(wait, maxRetryAfter)
+		return min(wait, maxRetryWait)
 	}
 
 	sleep := time.Duration(api.retrySleep) * time.Second
-	if sleep > maxRetryAfter {
+	if sleep > maxRetryWait {
 		return sleep
 	}
 
-	wait := min(sleep<<min(max(attempt-1, 0), maxBackoffShift), maxRetryAfter)
+	wait := min(sleep<<min(attempt-1, maxBackoffShift), maxRetryWait)
 	if wait > 0 {
 		return wait
 	}
@@ -126,7 +132,19 @@ func (api *API) retryDelay(status int, header http.Header, attempt int) time.Dur
 	return 0
 }
 
+// limiterWait returns how long the rate limiter would hold a request made at the given time.
+func (api *API) limiterWait(at time.Time) time.Duration {
+	tokens := api.limiter.TokensAt(at)
+	limit := api.limiter.Limit()
+	if tokens >= 1 || limit <= 0 {
+		return 0
+	}
+
+	return time.Duration((1 - tokens) / float64(limit) * float64(time.Second))
+}
+
 // parseRetryAfter reads a Retry-After header value, either a number of seconds or an HTTP date.
+// HTTP/1 trims the value in net/http, HTTP/2 hands it over verbatim.
 func parseRetryAfter(value string) (time.Duration, bool) {
 	value = strings.TrimSpace(value)
 	if value == "" {
@@ -134,8 +152,8 @@ func parseRetryAfter(value string) (time.Duration, bool) {
 	}
 
 	if seconds, err := strconv.Atoi(value); err == nil {
-		if seconds > int(maxRetryAfter/time.Second) {
-			return maxRetryAfter, true
+		if seconds > int(maxRetryWait/time.Second) {
+			return maxRetryWait, true
 		}
 
 		return time.Duration(max(seconds, 0)) * time.Second, true

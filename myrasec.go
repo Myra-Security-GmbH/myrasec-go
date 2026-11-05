@@ -31,7 +31,8 @@ const (
 	DefaultCachingTTL = 10
 	// DefaultRetryCount is the default number of total attempts for a request.
 	DefaultRetryCount = 1
-	// DefaultRetrySleep is the default sleep duration in seconds between retries.
+	// DefaultRetrySleep is the default base in seconds of the wait between the attempts of a
+	// retried request, see SetRetrySleep and the Retries section in docs/setup.md.
 	DefaultRetrySleep = 0
 	// ErrorMsgRateLimitReached is the error message returned when the rate limiter blocks a request.
 	ErrorMsgRateLimitReached = "rate limit reached - too many requests"
@@ -253,7 +254,9 @@ func (api *API) SetLanguage(language string) error {
 	return nil
 }
 
-// SetMaxRetries sets the maxRetries value in the API struct. In case of a non-successful request, it will try (in total) n times.
+// SetMaxRetries sets the number of attempts (in total) for a request whose response carries one
+// of the retried statuses, see the Retries section in docs/setup.md for the statuses and the
+// methods. Any other failure gets a single attempt regardless of n.
 func (api *API) SetMaxRetries(n int) {
 	api.maxRetries = n
 }
@@ -444,11 +447,18 @@ func (api *API) sendRequest(ctx context.Context, definition APIMethod, payload .
 
 		retries++
 
-		if !retryableStatus(request.Method, resp.StatusCode) || retries >= api.maxRetries {
-			return resp, err
+		if !retryableStatus(request.Method, resp.StatusCode, resp.Header.Get("Retry-After") != "") || retries >= api.maxRetries {
+			return resp, nil
 		}
 
 		delay := api.retryDelay(resp.StatusCode, resp.Header, retries)
+
+		// The next attempt waits for the delay and then for the rate limiter. A wait that
+		// reaches past the deadline of the context would end in a deadline error that hides
+		// the status the API sent. The response is reported instead.
+		if deadline, ok := ctx.Deadline(); ok && time.Until(deadline) <= delay+api.limiterWait(time.Now().Add(delay)) {
+			return resp, nil
+		}
 
 		// The response is discarded. Drain a bounded part of the body so the connection can be
 		// reused, then release it.

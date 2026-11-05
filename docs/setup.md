@@ -102,10 +102,11 @@ The client retries a request when `SetMaxRetries` is set to a value above 1 (the
 
 | Status | Retried for |
 |---|---|
-| 429 Too Many Requests, 503 Service Unavailable | every method, the API did not process the request |
+| 429 Too Many Requests | every method, a rate limiter answers before the request is processed |
+| 503 Service Unavailable | GET, and every method when the response carries `Retry-After`, the explicit invitation of a server that did not handle the request. Without the header a 503 can come from a gateway that lost the API after passing the request on, or from the API after a partial change, so writes are not repeated. |
 | 500 Internal Server Error, 502 Bad Gateway, 504 Gateway Timeout | GET only. The API or the gateway in front of it may have processed the request already: a repeated POST could create a duplicate, a repeated PUT or DELETE would fail on the changed or missing entry. |
 
-The wait between the attempts is the `Retry-After` header of the response when the API sends one (capped at 60 seconds). Without the header the wait starts at `SetRetrySleep` seconds (default 0) and doubles with every further attempt (for example 1s, 2s, 4s) up to 60 seconds, or up to the configured sleep when that is longer. A 429 or 503 without `Retry-After` waits at least one second. The wait is interrupted when the context is cancelled.
+The wait between the attempts is the `Retry-After` header of the response when the API sends one (capped at 60 seconds). Without the header the wait starts at `SetRetrySleep` seconds (default 0) and doubles with every further attempt (for example 1s, 2s, 4s) up to 60 seconds, or up to the configured sleep when that is longer. A 429 or 503 without `Retry-After` waits at least one second. The wait is interrupted when the context is cancelled. When the wait, together with the wait for the client side rate limit, would reach past the deadline of the context, the client does not wait and returns the error of the last response instead, so the status the API sent is not lost behind a deadline error.
 
 ## Transport security
 The client refuses to send requests to a plain `http://` endpoint on a host other than the local machine, because the API key and signature or the API token would travel in clear text, and fails with `ErrInsecureEndpoint` (check with `errors.Is`). Endpoints on `localhost` or a loopback address are exempt, so local test servers work without any setting. To talk to a plain HTTP endpoint on another host, for example a proxy in a lab network, opt in explicitly:

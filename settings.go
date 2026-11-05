@@ -84,15 +84,23 @@ type Settings struct {
 	BotCalcFingerprint *bool `json:"bot_calc_fingerprint,omitempty" jsonschema:"Bot management toggle: If true, a client fingerprint is calculated for bot detection."`
 
 	// BotCustomerRegex0 is the first customer defined regular expression for bot detection.
+	// An empty value is omitted from the typed update (omitempty), clear a stored value with
+	// UpdateSettingsPartialContext.
 	BotCustomerRegex0 string `json:"bot_customer_regex_0,omitempty" jsonschema:"Bot management: first customer defined regular expression used to identify bots."`
 
 	// BotCustomerRegex1 is the second customer defined regular expression for bot detection.
+	// An empty value is omitted from the typed update (omitempty), clear a stored value with
+	// UpdateSettingsPartialContext.
 	BotCustomerRegex1 string `json:"bot_customer_regex_1,omitempty" jsonschema:"Bot management: second customer defined regular expression used to identify bots."`
 
 	// BotCustomerRegex2 is the third customer defined regular expression for bot detection.
+	// An empty value is omitted from the typed update (omitempty), clear a stored value with
+	// UpdateSettingsPartialContext.
 	BotCustomerRegex2 string `json:"bot_customer_regex_2,omitempty" jsonschema:"Bot management: third customer defined regular expression used to identify bots."`
 
 	// BotExternalSessionID names the external session identifier used by the bot management.
+	// An empty value is omitted from the typed update (omitempty), clear a stored value with
+	// UpdateSettingsPartialContext.
 	BotExternalSessionID string `json:"bot_external_session_id,omitempty" jsonschema:"Bot management: name of the external session identifier (for example a cookie) used to correlate requests of a client."`
 
 	// CacheEnabled toggles the caching engine.

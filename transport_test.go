@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -247,35 +248,44 @@ func TestCheckScheme(t *testing.T) {
 
 func TestRetryableStatus(t *testing.T) {
 	tests := []struct {
-		method string
-		status int
-		want   bool
+		method     string
+		status     int
+		retryAfter bool
+		want       bool
 	}{
-		{http.MethodGet, http.StatusOK, false},
-		{http.MethodGet, http.StatusBadRequest, false},
-		{http.MethodGet, http.StatusForbidden, false},
-		{http.MethodGet, http.StatusNotFound, false},
-		{http.MethodGet, http.StatusTooManyRequests, true},
-		{http.MethodPost, http.StatusTooManyRequests, true},
-		{http.MethodPut, http.StatusTooManyRequests, true},
-		{http.MethodDelete, http.StatusTooManyRequests, true},
-		{http.MethodGet, http.StatusServiceUnavailable, true},
-		{http.MethodPost, http.StatusServiceUnavailable, true},
-		{http.MethodGet, http.StatusInternalServerError, true},
-		{http.MethodPost, http.StatusInternalServerError, false},
-		{http.MethodPut, http.StatusInternalServerError, false},
-		{http.MethodDelete, http.StatusInternalServerError, false},
-		{http.MethodGet, http.StatusBadGateway, true},
-		{http.MethodPost, http.StatusBadGateway, false},
-		{http.MethodPut, http.StatusBadGateway, false},
-		{http.MethodGet, http.StatusGatewayTimeout, true},
-		{http.MethodPost, http.StatusGatewayTimeout, false},
-		{http.MethodDelete, http.StatusGatewayTimeout, false},
+		{http.MethodGet, http.StatusOK, false, false},
+		{http.MethodGet, http.StatusBadRequest, false, false},
+		{http.MethodGet, http.StatusForbidden, false, false},
+		{http.MethodGet, http.StatusNotFound, false, false},
+		{http.MethodGet, http.StatusTooManyRequests, false, true},
+		{http.MethodPost, http.StatusTooManyRequests, false, true},
+		{http.MethodPut, http.StatusTooManyRequests, false, true},
+		{http.MethodDelete, http.StatusTooManyRequests, false, true},
+		{http.MethodGet, http.StatusServiceUnavailable, false, true},
+		{http.MethodGet, http.StatusServiceUnavailable, true, true},
+		{http.MethodPost, http.StatusServiceUnavailable, false, false},
+		{http.MethodPost, http.StatusServiceUnavailable, true, true},
+		{http.MethodPut, http.StatusServiceUnavailable, false, false},
+		{http.MethodPut, http.StatusServiceUnavailable, true, true},
+		{http.MethodDelete, http.StatusServiceUnavailable, false, false},
+		{http.MethodDelete, http.StatusServiceUnavailable, true, true},
+		{http.MethodGet, http.StatusInternalServerError, false, true},
+		{http.MethodPost, http.StatusInternalServerError, false, false},
+		{http.MethodPost, http.StatusInternalServerError, true, false},
+		{http.MethodPut, http.StatusInternalServerError, false, false},
+		{http.MethodDelete, http.StatusInternalServerError, false, false},
+		{http.MethodGet, http.StatusBadGateway, false, true},
+		{http.MethodPost, http.StatusBadGateway, false, false},
+		{http.MethodPost, http.StatusBadGateway, true, false},
+		{http.MethodPut, http.StatusBadGateway, false, false},
+		{http.MethodGet, http.StatusGatewayTimeout, false, true},
+		{http.MethodPost, http.StatusGatewayTimeout, false, false},
+		{http.MethodDelete, http.StatusGatewayTimeout, false, false},
 	}
 
 	for _, tt := range tests {
-		if got := retryableStatus(tt.method, tt.status); got != tt.want {
-			t.Errorf("retryableStatus(%s, %d) = %t, want %t", tt.method, tt.status, got, tt.want)
+		if got := retryableStatus(tt.method, tt.status, tt.retryAfter); got != tt.want {
+			t.Errorf("retryableStatus(%s, %d, retryAfter %t) = %t, want %t", tt.method, tt.status, tt.retryAfter, got, tt.want)
 		}
 	}
 }
@@ -302,13 +312,13 @@ func TestRetryDelay(t *testing.T) {
 		{"first attempt", http.StatusBadGateway, "", 1, time.Second},
 		{"second attempt", http.StatusBadGateway, "", 2, 2 * time.Second},
 		{"third attempt", http.StatusBadGateway, "", 3, 4 * time.Second},
-		{"growth is capped", http.StatusBadGateway, "", 20, maxRetryAfter},
-		{"zero attempt", http.StatusBadGateway, "", 0, time.Second},
+		{"growth is capped", http.StatusBadGateway, "", 20, maxRetryWait},
+		{"shift does not overflow", http.StatusBadGateway, "", 70, maxRetryWait},
 		{"retry after seconds", http.StatusTooManyRequests, "3", 1, 3 * time.Second},
 		{"retry after zero is honoured", http.StatusTooManyRequests, "0", 2, 0},
 		{"retry after negative", http.StatusTooManyRequests, "-5", 2, 0},
-		{"retry after is capped", http.StatusTooManyRequests, "3600", 1, maxRetryAfter},
-		{"retry after does not overflow", http.StatusTooManyRequests, "9223372036854775807", 1, maxRetryAfter},
+		{"retry after is capped", http.StatusTooManyRequests, "3600", 1, maxRetryWait},
+		{"retry after does not overflow", http.StatusTooManyRequests, "9223372036854775807", 1, maxRetryWait},
 		{"retry after garbage", http.StatusTooManyRequests, "soon", 2, 2 * time.Second},
 	}
 
@@ -326,6 +336,14 @@ func TestRetryDelay(t *testing.T) {
 		got := api.retryDelay(http.StatusTooManyRequests, response(at), 1)
 		if got < 25*time.Second || got > 30*time.Second {
 			t.Errorf("retryDelay = %s, want about 30s", got)
+		}
+	})
+
+	t.Run("retry after date is capped", func(t *testing.T) {
+		at := time.Now().Add(2 * time.Hour).UTC().Format(http.TimeFormat)
+
+		if got := api.retryDelay(http.StatusTooManyRequests, response(at), 1); got != maxRetryWait {
+			t.Errorf("retryDelay = %s, want %s", got, maxRetryWait)
 		}
 	})
 
@@ -416,6 +434,40 @@ func TestRetryOnServiceUnavailable(t *testing.T) {
 	}
 }
 
+func TestRetryOnServiceUnavailableForWritesNeedsRetryAfter(t *testing.T) {
+	var hits int
+	var retryAfter bool
+	api := newTestAPIWithHandler(t, func(w http.ResponseWriter, r *http.Request) {
+		hits++
+		if retryAfter {
+			w.Header().Set("Retry-After", "0")
+		}
+		w.WriteHeader(http.StatusServiceUnavailable)
+	})
+	api.SetMaxRetries(3)
+	api.SetRetrySleep(0)
+
+	var apiErr *APIError
+	if _, err := api.CreateDomainContext(context.Background(), &Domain{Name: "example.com"}); !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusServiceUnavailable {
+		t.Fatalf("Expected an APIError with status 503 but got %v", err)
+	}
+
+	if hits != 1 {
+		t.Errorf("Expected a single attempt for the POST without Retry-After but got %d", hits)
+	}
+
+	hits = 0
+	retryAfter = true
+
+	if _, err := api.CreateDomainContext(context.Background(), &Domain{Name: "example.com"}); !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusServiceUnavailable {
+		t.Fatalf("Expected an APIError with status 503 but got %v", err)
+	}
+
+	if hits != 3 {
+		t.Errorf("Expected three attempts for the POST with Retry-After but got %d", hits)
+	}
+}
+
 func TestRetryOnBadGatewayDependsOnMethod(t *testing.T) {
 	var hits int
 	api := newTestAPIWithHandler(t, func(w http.ResponseWriter, r *http.Request) {
@@ -486,9 +538,18 @@ func TestNoRetryOnServerErrorForWrites(t *testing.T) {
 	if hits != 1 {
 		t.Errorf("Expected a single attempt for the POST but got %d", hits)
 	}
+}
 
-	hits = 0
+func TestRetryOnServerErrorForReads(t *testing.T) {
+	var hits int
+	api := newTestAPIWithHandler(t, func(w http.ResponseWriter, r *http.Request) {
+		hits++
+		w.WriteHeader(http.StatusInternalServerError)
+	})
+	api.SetMaxRetries(3)
+	api.SetRetrySleep(0)
 
+	var apiErr *APIError
 	if _, err := api.ListDomainsContext(context.Background(), nil); !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusInternalServerError {
 		t.Fatalf("Expected an APIError with status 500 but got %v", err)
 	}
@@ -498,21 +559,82 @@ func TestNoRetryOnServerErrorForWrites(t *testing.T) {
 	}
 }
 
-func TestRetryWaitStopsOnContextCancel(t *testing.T) {
+func TestRetryWaitPastDeadlineReportsResponse(t *testing.T) {
 	var hits int
 	api := newTestAPIWithHandler(t, func(w http.ResponseWriter, r *http.Request) {
 		hits++
 		w.Header().Set("Retry-After", "30")
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusTooManyRequests)
+		_, _ = w.Write([]byte(`{"error": true, "errorMessage": "slow down"}`))
 	})
 	api.SetMaxRetries(3)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 
 	start := time.Now()
 	_, err := api.ListDomainsContext(ctx, nil)
-	if !errors.Is(err, context.DeadlineExceeded) {
+
+	var apiErr *APIError
+	if !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusTooManyRequests {
+		t.Fatalf("Expected the 429 of the API rather than a context error but got %v", err)
+	}
+
+	// The body of the reported response is left for the decoder.
+	if apiErr.ErrorMessage != "slow down" {
+		t.Errorf("Expected the error message of the response but got %q", apiErr.ErrorMessage)
+	}
+
+	if elapsed := time.Since(start); elapsed > time.Second {
+		t.Errorf("Expected no wait when the deadline comes before Retry-After, the call took %s", elapsed)
+	}
+
+	if hits != 1 {
+		t.Errorf("Expected a single attempt but got %d", hits)
+	}
+}
+
+func TestRetryLimiterWaitPastDeadlineReportsResponse(t *testing.T) {
+	var hits int
+	api := newTestAPIWithHandler(t, func(w http.ResponseWriter, r *http.Request) {
+		hits++
+		w.WriteHeader(http.StatusInternalServerError)
+	})
+	api.SetMaxRetries(3)
+	api.SetRetrySleep(0)
+
+	// No retry delay, but the rate limiter (5 requests per second, burst 1) holds the next
+	// attempt for about 200 ms, past this deadline.
+	ctx, cancel := context.WithTimeout(context.Background(), 150*time.Millisecond)
+	defer cancel()
+
+	var apiErr *APIError
+	if _, err := api.ListDomainsContext(ctx, nil); !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusInternalServerError {
+		t.Fatalf("Expected the 500 of the API rather than a rate limit or context error but got %v", err)
+	}
+
+	if hits != 1 {
+		t.Errorf("Expected a single attempt but got %d", hits)
+	}
+}
+
+func TestRetryWaitStopsOnContextCancel(t *testing.T) {
+	var hits int
+	api := newTestAPIWithHandler(t, func(w http.ResponseWriter, r *http.Request) {
+		hits++
+		w.WriteHeader(http.StatusTooManyRequests)
+	})
+	api.SetMaxRetries(3)
+	api.SetRetrySleep(10)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	time.AfterFunc(100*time.Millisecond, cancel)
+
+	start := time.Now()
+	_, err := api.ListDomainsContext(ctx, nil)
+	if !errors.Is(err, context.Canceled) {
 		t.Fatalf("Expected the context error but got %v", err)
 	}
 
@@ -521,7 +643,54 @@ func TestRetryWaitStopsOnContextCancel(t *testing.T) {
 	}
 
 	if hits != 1 {
-		t.Errorf("Expected a single attempt before the context expired but got %d", hits)
+		t.Errorf("Expected a single attempt before the context was cancelled but got %d", hits)
+	}
+}
+
+// TestRetryReusesConnection checks that a discarded response is drained so the connection
+// serves the next attempt. Go 1.27 drains bodies up to 256 KiB on an early close itself, so
+// the test only bites on Go 1.26, the minimum version of the module.
+func TestRetryReusesConnection(t *testing.T) {
+	var hits int
+	var connections atomic.Int32
+
+	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		hits++
+		w.Header().Set("Content-Type", "application/json")
+		if hits < 3 {
+			w.Header().Set("Retry-After", "0")
+			w.WriteHeader(http.StatusTooManyRequests)
+			_, _ = w.Write([]byte(`{"error": true, "errorMessage": "too many requests"}`))
+			return
+		}
+
+		_, _ = w.Write([]byte(domainsResponse))
+	}))
+	server.Config.ConnState = func(_ net.Conn, state http.ConnState) {
+		if state == http.StateNew {
+			connections.Add(1)
+		}
+	}
+	server.Start()
+	t.Cleanup(server.Close)
+
+	api, err := NewWithToken("token")
+	if err != nil {
+		t.Fatalf("Unexpected error creating the API client: %v", err)
+	}
+	api.BaseURL = server.URL + "/%s"
+	api.SetMaxRetries(3)
+
+	if _, err := api.ListDomainsContext(context.Background(), nil); err != nil {
+		t.Fatalf("Expected the retries to succeed but got %v", err)
+	}
+
+	if hits != 3 {
+		t.Errorf("Expected three requests but got %d", hits)
+	}
+
+	if got := connections.Load(); got != 1 {
+		t.Errorf("Expected the discarded responses to be drained so the connection is reused, the server saw %d connections", got)
 	}
 }
 
