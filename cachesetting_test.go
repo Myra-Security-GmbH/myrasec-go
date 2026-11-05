@@ -1,6 +1,9 @@
 package myrasec
 
 import (
+	"context"
+	"net/http"
+	"strings"
 	"testing"
 )
 
@@ -38,8 +41,8 @@ func TestListCacheSettings(t *testing.T) {
 				t.Errorf("Expected to get cache setting with Type [%s] but got [%s]", "/index.html", v.Path)
 			}
 
-			if v.Enabled != true {
-				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%t]", true, v.Enabled)
+			if v.Enabled == nil || !*v.Enabled {
+				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%s]", true, boolPtrStr(v.Enabled))
 			}
 
 			if v.Comment != "this is a comment" {
@@ -53,8 +56,8 @@ func TestListCacheSettings(t *testing.T) {
 				t.Errorf("Expected to get cache setting with Type [%s] but got [%s]", "/index.php", v.Path)
 			}
 
-			if v.Enabled != false {
-				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%t]", false, v.Enabled)
+			if v.Enabled == nil || *v.Enabled {
+				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%s]", false, boolPtrStr(v.Enabled))
 			}
 
 			if v.Comment != "" {
@@ -77,5 +80,55 @@ func TestListCacheSettings(t *testing.T) {
 		if v.Type != "exact" {
 			t.Errorf("Expected to get cache setting with Type [%s] but got [%s]", "exact", v.Type)
 		}
+	}
+}
+
+func TestCacheSettingSendsDisabledFlags(t *testing.T) {
+	disabled := `{"error": false, "targetObject": [{"id": 1, "path": "/index.html", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": false}]}`
+	api, requests := newTestAPI(t, map[string]testResponse{
+		"POST /domain/1/www.example.com/cache-settings":  {Status: http.StatusOK, Body: disabled},
+		"PUT /domain/1/www.example.com/cache-settings/1": {Status: http.StatusOK, Body: disabled},
+	})
+
+	_, err := api.CreateCacheSettingContext(context.Background(), &CacheSetting{Path: "/index.html", TTL: 300, NotFoundTTL: 300, Type: "exact", Enabled: BoolPtr(false)}, 1, "www.example.com")
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got %v", err)
+	}
+
+	body := string(requests.last(t).Body)
+	for _, want := range []string{`"enabled":false`, `"enforce":false`} {
+		if !strings.Contains(body, want) {
+			t.Errorf("Expected the create body to contain %s but got %s", want, body)
+		}
+	}
+
+	// The API treats an omitted enabled as true on update as well, so a disabled setting has
+	// to be updated with an explicit false to stay disabled.
+	_, err = api.UpdateCacheSettingContext(context.Background(), &CacheSetting{ID: 1, Path: "/index.html", TTL: 300, NotFoundTTL: 300, Type: "exact", Enabled: BoolPtr(false)}, 1, "www.example.com")
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got %v", err)
+	}
+
+	body = string(requests.last(t).Body)
+	for _, want := range []string{`"enabled":false`, `"enforce":false`} {
+		if !strings.Contains(body, want) {
+			t.Errorf("Expected the update body to contain %s but got %s", want, body)
+		}
+	}
+}
+
+func TestCacheSettingOmitsUnsetEnabled(t *testing.T) {
+	api, requests := newTestAPI(t, map[string]testResponse{
+		"POST /domain/1/www.example.com/cache-settings": {Status: http.StatusOK, Body: `{"error": false, "targetObject": [{"id": 1, "path": "/index.html", "ttl": 300, "notFoundTtl": 300, "type": "exact", "enforce": false, "enabled": true}]}`},
+	})
+
+	// Without an explicit value the API decides, a new setting is enabled by default.
+	_, err := api.CreateCacheSettingContext(context.Background(), &CacheSetting{Path: "/index.html", TTL: 300, NotFoundTTL: 300, Type: "exact"}, 1, "www.example.com")
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got %v", err)
+	}
+
+	if body := string(requests.last(t).Body); strings.Contains(body, `"enabled"`) {
+		t.Errorf("Expected the request body not to contain the enabled attribute but got %s", body)
 	}
 }

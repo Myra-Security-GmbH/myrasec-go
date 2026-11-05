@@ -19,8 +19,8 @@ func TestDomainVerifiedIsDecoded(t *testing.T) {
 		verified *bool
 		pending  bool
 	}{
-		{1, boolPtr(false), true},
-		{2, boolPtr(true), false},
+		{1, new(false), true},
+		{2, new(true), false},
 		// an API without domain verification sends no attribute: not pending
 		{3, nil, false},
 	}
@@ -55,8 +55,4 @@ func TestDomainVerifiedIsNotSentWhenUnset(t *testing.T) {
 	if _, ok := decoded["verified"]; ok {
 		t.Errorf("Expected a create payload without verified, got %s", body)
 	}
-}
-
-func boolPtr(v bool) *bool {
-	return &v
 }

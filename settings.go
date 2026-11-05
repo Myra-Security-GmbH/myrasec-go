@@ -77,6 +77,32 @@ type Settings struct {
 	// BlockTorNetwork blocks traffic originating from known Tor exit nodes.
 	BlockTorNetwork *bool `json:"block_tor_network,omitempty" jsonschema:"Security toggle: If true, blocks all traffic originating from the Tor anonymity network."`
 
+	// BotBlockAICategory blocks bots of the AI category (crawlers of AI companies).
+	BotBlockAICategory *bool `json:"bot_block_ai_category,omitempty" jsonschema:"Bot management toggle: If true, blocks bots classified in the AI category, for example crawlers of AI companies."`
+
+	// BotCalcFingerprint enables the calculation of a client fingerprint for bot detection.
+	BotCalcFingerprint *bool `json:"bot_calc_fingerprint,omitempty" jsonschema:"Bot management toggle: If true, a client fingerprint is calculated for bot detection."`
+
+	// BotCustomerRegex0 is the first customer defined regular expression for bot detection.
+	// An empty value is omitted from the typed update (omitempty), clear a stored value with
+	// UpdateSettingsPartialContext.
+	BotCustomerRegex0 string `json:"bot_customer_regex_0,omitempty" jsonschema:"Bot management: first customer defined regular expression used to identify bots."`
+
+	// BotCustomerRegex1 is the second customer defined regular expression for bot detection.
+	// An empty value is omitted from the typed update (omitempty), clear a stored value with
+	// UpdateSettingsPartialContext.
+	BotCustomerRegex1 string `json:"bot_customer_regex_1,omitempty" jsonschema:"Bot management: second customer defined regular expression used to identify bots."`
+
+	// BotCustomerRegex2 is the third customer defined regular expression for bot detection.
+	// An empty value is omitted from the typed update (omitempty), clear a stored value with
+	// UpdateSettingsPartialContext.
+	BotCustomerRegex2 string `json:"bot_customer_regex_2,omitempty" jsonschema:"Bot management: third customer defined regular expression used to identify bots."`
+
+	// BotExternalSessionID names the external session identifier used by the bot management.
+	// An empty value is omitted from the typed update (omitempty), clear a stored value with
+	// UpdateSettingsPartialContext.
+	BotExternalSessionID string `json:"bot_external_session_id,omitempty" jsonschema:"Bot management: name of the external session identifier (for example a cookie) used to correlate requests of a client."`
+
 	// CacheEnabled toggles the caching engine.
 	// Requires defined Cache Settings objects to function effectively.
 	CacheEnabled *bool `json:"cache_enabled,omitempty" jsonschema:"Master switch for caching. If true, you must also define specific Cache Setting objects for caching to occur."`
