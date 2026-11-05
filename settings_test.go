@@ -17,6 +17,12 @@ func TestListSettings(t *testing.T) {
 				"balancing_method": "round_robin",
 				"block_not_whitelisted": false,
 				"block_tor_network": false,
+				"bot_block_ai_category": true,
+				"bot_calc_fingerprint": false,
+				"bot_customer_regex_0": "^Mozilla",
+				"bot_customer_regex_1": "",
+				"bot_customer_regex_2": "",
+				"bot_external_session_id": "PHPSESSID",
 				"cache_enabled": true,
 				"cache_revalidate": false,
 				"client_max_body_size": 10,
@@ -102,6 +108,26 @@ func TestListSettings(t *testing.T) {
 
 	if settings.BlockTorNetwork == nil || *settings.BlockTorNetwork != false {
 		t.Errorf("Expected to get Setting with BlockTorNetwork [%t] but got [%s]", false, boolPtrStr(settings.BlockTorNetwork))
+	}
+
+	if settings.BotBlockAICategory == nil || *settings.BotBlockAICategory != true {
+		t.Errorf("Expected to get Setting with BotBlockAICategory [%t] but got [%s]", true, boolPtrStr(settings.BotBlockAICategory))
+	}
+
+	if settings.BotCalcFingerprint == nil || *settings.BotCalcFingerprint != false {
+		t.Errorf("Expected to get Setting with BotCalcFingerprint [%t] but got [%s]", false, boolPtrStr(settings.BotCalcFingerprint))
+	}
+
+	if settings.BotCustomerRegex0 != "^Mozilla" {
+		t.Errorf("Expected to get Setting with BotCustomerRegex0 [%s] but got [%s]", "^Mozilla", settings.BotCustomerRegex0)
+	}
+
+	if settings.BotCustomerRegex1 != "" || settings.BotCustomerRegex2 != "" {
+		t.Errorf("Expected to get Setting with empty BotCustomerRegex1 and BotCustomerRegex2 but got [%s] and [%s]", settings.BotCustomerRegex1, settings.BotCustomerRegex2)
+	}
+
+	if settings.BotExternalSessionID != "PHPSESSID" {
+		t.Errorf("Expected to get Setting with BotExternalSessionID [%s] but got [%s]", "PHPSESSID", settings.BotExternalSessionID)
 	}
 
 	if settings.CacheEnabled == nil || *settings.CacheEnabled != true {

@@ -38,8 +38,8 @@ func TestListTagCacheSettings(t *testing.T) {
 				t.Errorf("Expected to get cache setting with Type [%s] but got [%s]", "/index.html", v.Path)
 			}
 
-			if v.Enabled != true {
-				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%t]", true, v.Enabled)
+			if v.Enabled == nil || !*v.Enabled {
+				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%s]", true, boolPtrStr(v.Enabled))
 			}
 
 			if v.Comment != "this is a comment" {
@@ -53,8 +53,8 @@ func TestListTagCacheSettings(t *testing.T) {
 				t.Errorf("Expected to get cache setting with Type [%s] but got [%s]", "/index.php", v.Path)
 			}
 
-			if v.Enabled != false {
-				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%t]", false, v.Enabled)
+			if v.Enabled == nil || *v.Enabled {
+				t.Errorf("Expected to get cache setting with Enabled [%t] but got [%s]", false, boolPtrStr(v.Enabled))
 			}
 
 			if v.Comment != "" {

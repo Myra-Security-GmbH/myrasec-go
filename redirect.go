@@ -93,7 +93,7 @@ type Redirect struct {
 
 	// ExpertMode disables safety checks like loop detection.
 	// Use with caution to prevent infinite redirect loops.
-	ExpertMode bool `json:"expertMode,omitempty" jsonschema:"If true, disables automatic redirect loop detection. Use with caution."`
+	ExpertMode bool `json:"expertMode" jsonschema:"If true, disables automatic redirect loop detection. Use with caution."`
 }
 
 // GetRedirectContext returns a single redirect with/for the given identifier

@@ -1,6 +1,9 @@
 package myrasec
 
 import (
+	"context"
+	"net/http"
+	"strings"
 	"testing"
 )
 
@@ -141,5 +144,23 @@ func TestListRedirects(t *testing.T) {
 			}
 		}
 
+	}
+}
+
+func TestRedirectSendsDisabledExpertMode(t *testing.T) {
+	api, requests := newTestAPI(t, map[string]testResponse{
+		"POST /domain/1/redirects/www.example.com": {Status: http.StatusOK, Body: `{"error": false, "targetObject": [{"id": 1, "type": "permanent", "subDomainName": "www.example.com", "source": "/old", "destination": "/new", "matchingType": "exact", "enabled": true, "expertMode": false}]}`},
+	})
+
+	_, err := api.CreateRedirectContext(context.Background(), &Redirect{Type: "permanent", Source: "/old", Destination: "/new", MatchingType: "exact", Enabled: true}, 1, "www.example.com")
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got %v", err)
+	}
+
+	body := string(requests.last(t).Body)
+	for _, want := range []string{`"enabled":true`, `"expertMode":false`} {
+		if !strings.Contains(body, want) {
+			t.Errorf("Expected the request body to contain %s but got %s", want, body)
+		}
 	}
 }

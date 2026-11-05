@@ -10,8 +10,8 @@ type CacheSetting struct {
 	TTL         int             `json:"ttl"`
 	NotFoundTTL int             `json:"notFoundTtl"`
 	Sort        int             `json:"sort,omitempty"`
-	Enabled     bool            `json:"enabled,omitempty"`
-	Enforce     bool            `json:"enforce,omitempty"`
+	Enabled     *bool           `json:"enabled,omitempty"`
+	Enforce     bool            `json:"enforce"`
 	Comment     string          `json:"comment,omitempty"`
 }
 ```
@@ -26,7 +26,7 @@ type CacheSetting struct {
 | `TTL` |  int| Time to live limits the lifespan of a cached response for the given path. This is a numeric value and is given in seconds. Special case is ’like origin server’, which uses the TTL returned by your origin server. |
 | `NotFoundTTL` | int | How long an object will be cached. Origin responses with the HTTP codes 404 will be cached. |
 | `Sort` | int | The order in which the cache rules take action as long as the cache sorting is activated. |
-| `Enabled` | bool | Define whether this cache setting is enabled or not. |
+| `Enabled` | *bool | Define whether this cache setting is enabled or not. `nil` leaves the choice to the API, which enables a new setting. Use `myrasec.BoolPtr(false)` to create or update a disabled setting. |
 | `Enforce` | bool | Enforce cache TTL allows you to set the cache TTL (Cache Control: max-age) in the backend regardless of the response sent from your Origin. |
 | `Comment` | string | A comment to describe this cache setting. |
 
@@ -40,7 +40,7 @@ cachesetting := &myrasec.CacheSetting{
     Path:        "/",
     TTL:         2678400,
     NotFoundTTL: 3600,
-    Enabled:     true,
+    Enabled:     myrasec.BoolPtr(true),
     Enforce:     false,
     Comment:     "Matching /",
 }

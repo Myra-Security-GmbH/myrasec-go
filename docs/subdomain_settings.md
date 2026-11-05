@@ -10,6 +10,12 @@ type Settings struct {
 	BalancingMethod             string   `json:"balancing_method,omitempty"`
 	BlockNotWhitelisted         bool     `json:"block_not_whitelisted,omitempty"`
 	BlockTorNetwork             bool     `json:"block_tor_network,omitempty"`
+	BotBlockAICategory          *bool    `json:"bot_block_ai_category,omitempty"`
+	BotCalcFingerprint          *bool    `json:"bot_calc_fingerprint,omitempty"`
+	BotCustomerRegex0           string   `json:"bot_customer_regex_0,omitempty"`
+	BotCustomerRegex1           string   `json:"bot_customer_regex_1,omitempty"`
+	BotCustomerRegex2           string   `json:"bot_customer_regex_2,omitempty"`
+	BotExternalSessionID        string   `json:"bot_external_session_id,omitempty"`
 	CacheEnabled                bool     `json:"cache_enabled,omitempty"`
 	CacheRevalidate             bool     `json:"cache_revalidate,omitempty"`
 	CDN                         bool     `json:"cdn,omitempty"`
@@ -74,6 +80,12 @@ type Settings struct {
 | BalancingMethod | string | Specifies with which method requests are balanced between upstream servers. The default behavior is the round-robin balancing. The value ip_hash will cause Myra to forward the same client IP always to the same upstream server. The value least_conn will cause Myra to forward the request to the upstream server with least connections. |
 | BlockNotWhitelisted | bool | Block all IPs which are not whitelisted in the IP filter settings. |
 | BlockTorNetwork | bool | Block traffic from the TOR network. |
+| BotBlockAICategory | bool | Block bots classified in the AI category, for example crawlers of AI companies. |
+| BotCalcFingerprint | bool | Calculate a client fingerprint for bot detection. |
+| BotCustomerRegex0 | string | First customer defined regular expression used to identify bots. |
+| BotCustomerRegex1 | string | Second customer defined regular expression used to identify bots. |
+| BotCustomerRegex2 | string | Third customer defined regular expression used to identify bots. |
+| BotExternalSessionID | string | Name of the external session identifier (for example a cookie) used to correlate requests of a client. |
 | CacheEnabled | bool | Turn caching on or off. If you enable the cache, you also have to define the objects to be cached in the cache settings. |
 | CacheRevalidate | bool | If enabled, expired cache items will be requested with the additional HTTP header "If-Modified-Since" and "If-None-Match". |
 | CDN | bool | ~~Should this subdomain be used as Content Delivery Node (CDN). After enabling the CDN you will be able to create buckets and upload files using the Myra upload API.~~ **NOTE:** This setting is deprecated and has no effect anymore. |
