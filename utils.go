@@ -14,7 +14,7 @@ func intInSlice(needle int, haystack []int) bool {
 // BoolPtr returns a pointer to the passed bool value.
 // This is a convenience helper for setting *bool fields in structs like Settings.
 func BoolPtr(v bool) *bool {
-	return &v
+	return new(v)
 }
 
 // BuildSHA256 builds the SHA256 for the passed string
