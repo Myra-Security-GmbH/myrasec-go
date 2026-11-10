@@ -172,6 +172,8 @@ To delete an attribute you have to add the attribute with `nil`.
 
 Only attributes in the map will be touched in the api.
 
+The result is a `*map[string]any`. When every attribute in the map was set to `nil`, it is an empty map.
+
 The typed `Settings` struct of the deprecated `UpdateSettingsContext` omits empty strings and nil pointers (`omitempty`), so a stored value of a string attribute such as `bot_customer_regex_0` cannot be cleared through it. Use `UpdateSettingsPartialContext` with `nil` to delete the attribute.
 ### Example
 ```go

@@ -31,10 +31,11 @@ func getTagSettingsMethods() map[string]APIMethod {
 			Result: Settings{},
 		},
 		"updateTagSettingsPartial": {
-			Name:   "updateTagSettingsPartial",
-			Action: "tag/%d/settings",
-			Method: http.MethodPut,
-			Result: map[string]any{},
+			Name:               "updateTagSettingsPartial",
+			Action:             "tag/%d/settings",
+			Method:             http.MethodPut,
+			Result:             map[string]any{},
+			ResponseDecodeFunc: decodeSettingsPartialResponse,
 		},
 	}
 }

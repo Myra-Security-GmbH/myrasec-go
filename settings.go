@@ -31,10 +31,11 @@ func getSettingsMethods() map[string]APIMethod {
 			Result: Settings{},
 		},
 		"updateSettingsPartial": {
-			Name:   "updateSettingsPartial",
-			Action: "domain/%d/%s/settings",
-			Method: http.MethodPost,
-			Result: map[string]any{},
+			Name:               "updateSettingsPartial",
+			Action:             "domain/%d/%s/settings",
+			Method:             http.MethodPost,
+			Result:             map[string]any{},
+			ResponseDecodeFunc: decodeSettingsPartialResponse,
 		},
 	}
 }
@@ -388,6 +389,26 @@ func (api *API) UpdateSettingsPartialContext(ctx context.Context, settings map[s
 // Deprecated: use UpdateSettingsPartialContext.
 func (api *API) UpdateSettingsPartial(settings map[string]any, domainId int, subDomainName string) (any, error) {
 	return api.UpdateSettingsPartialContext(context.Background(), settings, domainId, subDomainName)
+}
+
+// decodeSettingsPartialResponse decodes the answer of a partial settings update (subdomain
+// and tag settings). The API answers with the remaining settings in data[0]. When no setting
+// is left, for example after every setting was reset to nil, PHP encodes the empty map as a
+// JSON array and the API answers "data":[[]]. This decoder treats that empty array as an
+// empty map, so a successful reset does not fail with a decoding error.
+func decodeSettingsPartialResponse(resp *http.Response, definition APIMethod) (any, error) {
+	res, err := decodeBaseResponse(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(res.Data) > 0 {
+		if list, ok := res.Data[0].([]any); ok && len(list) == 0 {
+			res.Data[0] = map[string]any{}
+		}
+	}
+
+	return prepareResult(*res, definition)
 }
 
 // decodeSettingsResponse - custom decode function for settings response. Used in the ListSettings action.
