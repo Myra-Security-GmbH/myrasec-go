@@ -25,16 +25,18 @@ func getTagSettingsMethods() map[string]APIMethod {
 			ResponseDecodeFunc: decodeTagSettingsMapResponse,
 		},
 		"updateTagSettings": {
-			Name:   "updateTagSettings",
-			Action: "tag/%d/settings",
-			Method: http.MethodPut,
-			Result: Settings{},
+			Name:               "updateTagSettings",
+			Action:             "tag/%d/settings",
+			Method:             http.MethodPut,
+			Result:             Settings{},
+			ResponseDecodeFunc: decodeSettingsUpdateResponse,
 		},
 		"updateTagSettingsPartial": {
-			Name:   "updateTagSettingsPartial",
-			Action: "tag/%d/settings",
-			Method: http.MethodPut,
-			Result: map[string]any{},
+			Name:               "updateTagSettingsPartial",
+			Action:             "tag/%d/settings",
+			Method:             http.MethodPut,
+			Result:             map[string]any{},
+			ResponseDecodeFunc: decodeSettingsUpdateResponse,
 		},
 	}
 }

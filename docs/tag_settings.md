@@ -10,6 +10,8 @@ To create/update you add the specific attribute to the map with the required val
 To delete an attribute you have to add the attribute with `nil`.
 
 Only attributes in the map will be touched in the api.
+
+The result is a `*map[string]any`. When every attribute in the map was set to `nil`, it is an empty map.
 ### Example
 ```go
 tagId := 0000

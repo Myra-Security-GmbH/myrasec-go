@@ -25,16 +25,18 @@ func getSettingsMethods() map[string]APIMethod {
 			ResponseDecodeFunc: decodeSettingsResponseFull,
 		},
 		"updateSettings": {
-			Name:   "updateSettings",
-			Action: "domain/%d/%s/settings",
-			Method: http.MethodPost,
-			Result: Settings{},
+			Name:               "updateSettings",
+			Action:             "domain/%d/%s/settings",
+			Method:             http.MethodPost,
+			Result:             Settings{},
+			ResponseDecodeFunc: decodeSettingsUpdateResponse,
 		},
 		"updateSettingsPartial": {
-			Name:   "updateSettingsPartial",
-			Action: "domain/%d/%s/settings",
-			Method: http.MethodPost,
-			Result: map[string]any{},
+			Name:               "updateSettingsPartial",
+			Action:             "domain/%d/%s/settings",
+			Method:             http.MethodPost,
+			Result:             map[string]any{},
+			ResponseDecodeFunc: decodeSettingsUpdateResponse,
 		},
 	}
 }
@@ -388,6 +390,27 @@ func (api *API) UpdateSettingsPartialContext(ctx context.Context, settings map[s
 // Deprecated: use UpdateSettingsPartialContext.
 func (api *API) UpdateSettingsPartial(settings map[string]any, domainId int, subDomainName string) (any, error) {
 	return api.UpdateSettingsPartialContext(context.Background(), settings, domainId, subDomainName)
+}
+
+// decodeSettingsUpdateResponse decodes the answer of a settings update (subdomain and tag
+// settings, typed and partial). The API echoes the submitted attributes that are not null in
+// data[0]; it does not return the settings stored on the subdomain or tag. When every
+// submitted attribute is null (or none was sent), PHP encodes the empty map as a JSON array
+// and the API answers "data":[[]]. This decoder treats that empty array as an empty object,
+// so a successful update does not fail with a decoding error.
+func decodeSettingsUpdateResponse(resp *http.Response, definition APIMethod) (any, error) {
+	res, err := decodeBaseResponse(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(res.Data) > 0 {
+		if list, ok := res.Data[0].([]any); ok && len(list) == 0 {
+			res.Data[0] = map[string]any{}
+		}
+	}
+
+	return prepareResult(*res, definition)
 }
 
 // decodeSettingsResponse - custom decode function for settings response. Used in the ListSettings action.
