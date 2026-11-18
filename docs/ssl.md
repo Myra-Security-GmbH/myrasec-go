@@ -107,6 +107,28 @@ if err != nil {
 }
 ```
 
+### Validation: errors and warnings
+The API checks every uploaded certificate, key and chain when it is saved (create, renewal with `certToRefresh` and an update of the intermediates). The SDK relies on this save-time check; it has no separate preview call.
+
+- A blocking result rejects the request and nothing is stored. The error is an `*APIError` whose `Violations` carry, per result, the field (`Path`, e.g. `cert`, `key`, `intermediates[0].cert`), the stable `Code` (e.g. `LEAF_EXPIRED`), the `Translations` (`en`, `de`) and the `Parameters` of the message. `err.Error()` renders each as `path: message [CODE]`.
+- A warning (e.g. `CHAIN_INTERMEDIATE_MISSING`, `LEAF_EXPIRES_SOON`) does not fail the request. `CreateSSLCertificateWithWarningsContext` and `UpdateSSLCertificateWithWarningsContext` return the warnings next to the saved certificate; `CreateSSLCertificateContext` and `UpdateSSLCertificateContext` drop them.
+
+```go
+cert, warnings, err := api.CreateSSLCertificateWithWarningsContext(ctx, ssl, domainId)
+if err != nil {
+    var apiErr *myrasec.APIError
+    if errors.As(err, &apiErr) {
+        for _, v := range apiErr.Violations {
+            log.Printf("%s: %s [%s]", v.Path, v.Message, v.Code)
+        }
+    }
+    log.Fatal(err)
+}
+for _, w := range warnings {
+    log.Printf("warning: %s", w)
+}
+```
+
 ## List
 The listing operation returns a list of SSL certificates for the passed domainId.
 
