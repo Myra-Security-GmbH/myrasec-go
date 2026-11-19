@@ -88,16 +88,25 @@ type Response struct {
 	Domain        []any        `json:"domain,omitempty"`
 }
 
-// Violation defines a violation VO, returned by the MYRA API
+// Violation defines a violation VO, returned by the MYRA API.
+// Code, Translations and Parameters are set by endpoints that report machine-readable results,
+// such as the SSL certificate upload; other endpoints leave them empty.
 type Violation struct {
-	Path    string `json:"propertypath,omitempty"`
-	Message string `json:"message,omitempty"`
+	Path         string            `json:"propertypath,omitempty"`
+	Message      string            `json:"message,omitempty"`
+	Code         string            `json:"code,omitempty"`
+	Translations map[string]string `json:"translations,omitempty"`
+	Parameters   map[string]any    `json:"parameters,omitempty"`
 }
 
-// Warning defines a warning VO, returned by the MYRA API
+// Warning defines a warning VO, returned by the MYRA API next to a successful result.
+// It carries the same fields as a Violation; a warning never fails the request.
 type Warning struct {
-	Path    string `json:"path,omitempty"`
-	Message string `json:"message,omitempty"`
+	Path         string            `json:"propertyPath,omitempty"`
+	Message      string            `json:"message,omitempty"`
+	Code         string            `json:"code,omitempty"`
+	Translations map[string]string `json:"translations,omitempty"`
+	Parameters   map[string]any    `json:"parameters,omitempty"`
 }
 
 // APIError is returned when the MYRA API rejects a request, either with a non-successful
@@ -517,18 +526,31 @@ func decodeBaseResponse(resp *http.Response) (*Response, error) {
 func formatAPIErrorMessage(errorMessage string, violations []*Violation) string {
 	var msg strings.Builder
 	for _, v := range violations {
-		// Global violations (e.g. "Wrong format for provided dates!") carry no
-		// property path; do not prefix them with a bare colon.
-		if v.Path == "" {
-			fmt.Fprintf(&msg, "%s\n", v.Message)
-			continue
-		}
-		fmt.Fprintf(&msg, "%s: %s\n", v.Path, v.Message)
+		fmt.Fprintf(&msg, "%s\n", formatFinding(v.Path, v.Message, v.Code))
 	}
 	if errorMessage != "" {
 		fmt.Fprintf(&msg, "%s\n", errorMessage)
 	}
 	return msg.String()
+}
+
+// formatFinding renders one violation or warning as "path: message [CODE]". The path is left out
+// for global findings (e.g. "Wrong format for provided dates!") and the code when the API sent none.
+func formatFinding(path, message, code string) string {
+	text := message
+	if path != "" {
+		text = path + ": " + text
+	}
+	if code != "" {
+		text += " [" + code + "]"
+	}
+
+	return text
+}
+
+// String renders the warning as "path: message [CODE]".
+func (w *Warning) String() string {
+	return formatFinding(w.Path, w.Message, w.Code)
 }
 
 // prepareRequest builds an HTTP request bound to ctx from the given API method definition and payload.
