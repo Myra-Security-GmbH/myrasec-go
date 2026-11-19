@@ -11,7 +11,7 @@ const sslCertificateSavedBody = `{"error": false, "data": [
 	{"id": 5, "subjectAlternatives": ["example.com"], "subject": "CN=example.com", "subdomains": ["example.com"]}
 ], "warningList": [
 	{"propertyPath": "intermediates", "message": "The chain has no intermediate certificate.", "code": "CHAIN_INTERMEDIATE_MISSING",
-	 "translations": {"en": "The chain has no intermediate certificate.", "de": "Der Kette fehlt das Zwischenzertifikat."}, "parameters": {}},
+	 "translations": {"en": "The chain has no intermediate certificate.", "de": "Der Kette fehlt das Zwischenzertifikat."}},
 	{"propertyPath": "cert", "message": "The certificate expires in 10 days.", "code": "LEAF_EXPIRES_SOON",
 	 "translations": {"en": "The certificate expires in 10 days.", "de": "Das Zertifikat läuft in 10 Tagen ab."}, "parameters": {"days": 10, "date": "2026-11-28"}}
 ]}`
@@ -89,7 +89,7 @@ func TestUpdateSSLCertificateWithWarningsKeepsTheWarnings(t *testing.T) {
 	assertSavedWarnings(t, warnings)
 }
 
-func TestSaveSSLCertificateWithoutWarningsStillReturnsTheCertificate(t *testing.T) {
+func TestPlainSaveMethodsReturnTheCertificateAndDropTheWarnings(t *testing.T) {
 	api, _ := newTestAPI(t, map[string]testResponse{
 		"POST /domain/1/certificates":  {Status: http.StatusOK, Body: sslCertificateSavedBody},
 		"PUT /domain/1/certificates/5": {Status: http.StatusOK, Body: sslCertificateSavedBody},
@@ -103,6 +103,25 @@ func TestSaveSSLCertificateWithoutWarningsStillReturnsTheCertificate(t *testing.
 	updated, err := api.UpdateSSLCertificate(newSSLCertificateFixture(), 1)
 	if err != nil || updated.ID != 5 {
 		t.Fatalf("Expected the updated certificate [5] but got [%v] with error [%v]", updated, err)
+	}
+}
+
+func TestSaveSSLCertificateWithoutWarningsReturnsNoWarnings(t *testing.T) {
+	api, _ := newTestAPI(t, map[string]testResponse{
+		"POST /domain/1/certificates": {Status: http.StatusOK, Body: `{"error": false, "data": [{"id": 5, "subject": "CN=example.com"}]}`},
+	})
+
+	saved, warnings, err := api.CreateSSLCertificateWithWarningsContext(context.Background(), newSSLCertificateFixture(), 1)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if saved.ID != 5 {
+		t.Errorf("Expected the saved certificate [5] but got [%d]", saved.ID)
+	}
+
+	if len(warnings) != 0 {
+		t.Errorf("Expected no warnings but got [%v]", warnings)
 	}
 }
 
