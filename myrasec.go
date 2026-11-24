@@ -89,10 +89,11 @@ type Response struct {
 }
 
 // Violation defines a violation VO, returned by the MYRA API.
-// Code, Translations and Parameters are set by endpoints that report machine-readable results,
-// such as the SSL certificate upload; other endpoints leave them empty.
+// Code is set on the validation errors of many endpoints, not only the SSL certificate upload
+// (for example DOMAIN_NAME_REQUIRED when a domain is created without a name). Translations and
+// Parameters are mostly set by the SSL certificate upload. Each field is empty when the API sent none.
 type Violation struct {
-	Path         string            `json:"propertypath,omitempty"`
+	Path         string            `json:"propertyPath,omitempty"`
 	Message      string            `json:"message,omitempty"`
 	Code         string            `json:"code,omitempty"`
 	Translations map[string]string `json:"translations,omitempty"`
@@ -120,6 +121,9 @@ type APIError struct {
 	ErrorMessage string
 	// Violations are the violationList entries of the API response, if the response carried any.
 	Violations []*Violation
+	// Warnings are the warningList entries of the API response. A rejected SSL certificate upload
+	// returns its warnings next to the blocking violations, so they can be shown together.
+	Warnings []*Warning
 	// Body is the raw response body of a non-successful response. It is empty for access
 	// denied responses (the API answers them without a body) and for error envelopes in
 	// successful responses.
@@ -167,6 +171,7 @@ func newAPIError(resp *http.Response) *APIError {
 
 	apiErr.ErrorMessage = res.ErrorMessage
 	apiErr.Violations = res.ViolationList
+	apiErr.Warnings = res.WarningList
 
 	return apiErr
 }
@@ -515,7 +520,10 @@ func decodeBaseResponse(resp *http.Response) (*Response, error) {
 	}
 
 	if res.Error {
-		return nil, newAPIErrorFromEnvelope(resp.StatusCode, res.ErrorMessage, res.ViolationList)
+		apiErr := newAPIErrorFromEnvelope(resp.StatusCode, res.ErrorMessage, res.ViolationList)
+		apiErr.Warnings = res.WarningList
+
+		return nil, apiErr
 	}
 
 	return &res, nil

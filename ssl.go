@@ -101,9 +101,10 @@ type SSLCertificate struct {
 	// Read-only; automatically parsed from the uploaded PEM data.
 	SubjectAlternatives []string `json:"subjectAlternatives" jsonschema:"List of Subject Alternative Names (SANs) and the CN covered by this certificate. Read-only; automatically populated by the server."`
 
-	// Intermediates contains the chain of intermediate certificates.
-	// The system automatically sorts and filters these based on the uploaded certificate.
-	Intermediates []SSLIntermediate `json:"intermediates,omitempty" jsonschema:"List of intermediate certificates required for the chain of trust. Read-only; automatically generated/sorted by the server upon upload."`
+	// Intermediates contains the chain of intermediate certificates. They are sent on create and
+	// update and validated when the certificate is saved: a broken chain rejects the save, a missing
+	// intermediate is a warning. The server sorts them by subject and issuer.
+	Intermediates []SSLIntermediate `json:"intermediates,omitempty" jsonschema:"List of intermediate certificates required for the chain of trust. Sent on create and update and validated on save: a broken chain rejects the save, a missing intermediate is a warning. Sorted by the server by subject and issuer."`
 
 	// Wildcard indicates if the certificate is a wildcard certificate (*.domain.tld).
 	// Read-only; automatically determined from the subject.
@@ -291,11 +292,16 @@ func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	return api.DeleteSSLCertificateContext(context.Background(), cert, domainId)
 }
 
+// sslCertificateSaveResult carries the saved certificate together with the warnings of the same
+// response. The generic call path returns a single value, and the warnings only exist in the
+// response envelope, so the save decoder has to hand both back through this wrapper.
 type sslCertificateSaveResult struct {
 	certificate *SSLCertificate
 	warnings    []*Warning
 }
 
+// decodeSSLCertificateSaveResponse decodes the response of a certificate create or update and keeps
+// the warningList, which the default decoder drops.
 func decodeSSLCertificateSaveResponse(resp *http.Response, definition APIMethod) (any, error) {
 	res, err := decodeBaseResponse(resp)
 	if err != nil {

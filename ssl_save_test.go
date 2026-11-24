@@ -21,6 +21,8 @@ const sslCertificateRejectedBody = `{"error": true, "data": [], "violationList":
 	 "translations": {"en": "The certificate has expired.", "de": "Das Zertifikat ist abgelaufen."}, "parameters": {"date": "2026-01-01"}},
 	{"propertyPath": "intermediates[0].cert", "message": "Intermediate certificate 1 was not issued with the expected key.", "code": "INTERMEDIATE_WRONG_KEY",
 	 "translations": {"en": "Intermediate certificate 1 was not issued with the expected key.", "de": "Zwischenzertifikat 1 wurde nicht mit dem erwarteten Schlüssel ausgestellt."}, "parameters": {"index": 0}}
+], "warningList": [
+	{"propertyPath": "intermediates", "message": "The chain has no intermediate certificate.", "code": "CHAIN_INTERMEDIATE_MISSING"}
 ]}`
 
 func newSSLCertificateFixture() *SSLCertificate {
@@ -151,6 +153,10 @@ func TestCreateSSLCertificateRejectedKeepsCodeFieldAndParameters(t *testing.T) {
 
 	if apiErr.Violations[0].Translations["de"] != "Das Zertifikat ist abgelaufen." {
 		t.Errorf("Expected the German translation but got [%s]", apiErr.Violations[0].Translations["de"])
+	}
+
+	if len(apiErr.Warnings) != 1 || apiErr.Warnings[0].Code != "CHAIN_INTERMEDIATE_MISSING" || apiErr.Warnings[0].Path != "intermediates" {
+		t.Errorf("Expected the missing intermediate warning next to the violations but got [%v]", apiErr.Warnings)
 	}
 
 	expected := "Bad Request (400):\ncert: The certificate has expired. [LEAF_EXPIRED]\n" +
