@@ -1,6 +1,7 @@
 package myrasec
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -141,5 +142,47 @@ func TestAPIErrorEnvelopeInSuccessfulResponse(t *testing.T) {
 
 	if (&APIError{StatusCode: http.StatusOK}).Error() != "The API returned an error." {
 		t.Errorf("Expected the fallback message for an empty envelope")
+	}
+}
+
+func TestAPIErrorCodeOnANonCertificateViolation(t *testing.T) {
+	const body = `{"error": true, "data": [], "violationList": [
+		{"propertyPath": "name", "message": "This value should not be blank.", "code": "DOMAIN_NAME_REQUIRED"}
+	], "warningList": [{"propertyPath": "", "message": "Some warning.", "code": "SOME_WARNING"}]}`
+
+	tests := []struct {
+		name     string
+		status   int
+		expected string
+	}{
+		{name: "rejected with status 400", status: http.StatusBadRequest, expected: "Bad Request (400):\nname: This value should not be blank. [DOMAIN_NAME_REQUIRED]\n"},
+		{name: "error envelope with status 200", status: http.StatusOK, expected: "name: This value should not be blank. [DOMAIN_NAME_REQUIRED]\n"},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			api, _ := newTestAPI(t, map[string]testResponse{
+				"POST /domains": {Status: tc.status, Body: body},
+			})
+
+			_, err := api.CreateDomainContext(context.Background(), &Domain{})
+
+			var apiErr *APIError
+			if !errors.As(err, &apiErr) {
+				t.Fatalf("Expected an *APIError but got %T", err)
+			}
+
+			if err.Error() != tc.expected {
+				t.Errorf("Expected error message [%q] but got [%q]", tc.expected, err.Error())
+			}
+
+			if len(apiErr.Violations) != 1 || apiErr.Violations[0].Code != "DOMAIN_NAME_REQUIRED" {
+				t.Errorf("Expected the DOMAIN_NAME_REQUIRED violation but got [%v]", apiErr.Violations)
+			}
+
+			if len(apiErr.Warnings) != 1 || apiErr.Warnings[0].Code != "SOME_WARNING" {
+				t.Errorf("Expected the warning of the response but got [%v]", apiErr.Warnings)
+			}
+		})
 	}
 }

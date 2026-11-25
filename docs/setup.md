@@ -92,8 +92,11 @@ if err != nil {
 |---|---|---|
 | `StatusCode` | int | The HTTP status code of the response. |
 | `ErrorMessage` | string | The `errorMessage` attribute of the response, empty when the API sent none. |
-| `Violations` | []*Violation | The `violationList` entries of the response with `Path` and `Message`, empty when the API sent none. Access denied responses (403) carry no body, so both are empty then. |
+| `Violations` | []*Violation | The `violationList` entries of the response with `Path`, `Message` and, when the API sent them, `Code`, `Translations` and `Parameters`; empty when the API sent none. Access denied responses (403) carry no body, so both are empty then. |
+| `Warnings` | []*Warning | The `warningList` entries of the response, same fields as a violation. A rejected SSL certificate upload returns its warnings here next to the violations; most endpoints send none. |
 | `Body` | string | The raw body of a non-successful response. Useful when the body is not a JSON error envelope, for example HTML from a proxy. In that case the error message carries the status only. |
+
+The error message lists one violation per line as `path: message [CODE]`. The path is left out for a violation without one, and the `[CODE]` suffix when the API sent no code. Many endpoints send a code with their validation errors, not only the SSL certificate upload: creating a domain without a name, for example, ends in `[DOMAIN_NAME_REQUIRED]`. Match on `Violation.Code` instead of parsing the message.
 
 A successful status with an error envelope (`error: true`, used by some endpoints for validation failures) is returned as `*APIError` as well. Its `StatusCode` is the successful status and its message carries the violations and the error message without a status prefix, exactly the message the library returned before `APIError` existed. Errors that happen before a response arrives (network errors, the client side rate limit, an unsupported action) are returned as plain errors.
 

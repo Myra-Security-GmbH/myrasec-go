@@ -48,7 +48,7 @@ type SSLCertificate struct {
 | Field | Type | Description |  
 |---|---|---|  
 | `SubjectAlternatives` | string | Contains a list of subdomains which can be validated using this certificate. This list also contains the CN of the subject. |  
-| `Intermediates` | []SSLIntermediate | Contains a list of intermediate certificates to be used in order to generate a chain of trust. The intermediates are filtered and sorted based on subject / issuer relationship. Uploading a partial or a completely different chain will result in an empty list. |  
+| `Intermediates` | []SSLIntermediate | The intermediate certificates of the chain of trust. They are sent on create and update and validated when the certificate is saved (see [Validation: errors and warnings](#validation-errors-and-warnings)). A broken intermediate rejects the save, e.g. one with the wrong key or an invalid signature (`INTERMEDIATE_WRONG_KEY`, `INTERMEDIATE_SIGNATURE_INVALID`), one that is not a CA or one that has expired. A missing intermediate is a warning (`CHAIN_INTERMEDIATE_MISSING`). Certificates that do not belong to the chain are discarded with a warning (`CHAIN_UNRELATED_CERTIFICATES`) and the save goes through; only the certificates of the chain are stored. The API sorts them by subject and issuer. |  
 | `Wildcard` | bool | This property shows whether the certificate is valid for multiple subdomains of a domain. The certificate needs to have a *.domain.tld subject to return true. |  
 | `ExtendedValidation` | bool | True if the browser handles the certificate as extended validation. We use the OIDs from Google Chrome™ to measure the extended validation level. |  
 | `Subdomains` | []string | A list of subdomains assigned to this certificate. |  
@@ -104,6 +104,31 @@ ssl := &myrasec.SSLCertificate{
 cert, err := api.CreateSSLCertificateContext(ctx, ssl, "example.com")
 if err != nil {
     log.Fatal(err)
+}
+```
+
+### Validation: errors and warnings
+The API checks every uploaded certificate, key and chain when it is saved (create, renewal with `certToRefresh` and an update of the intermediates). The SDK relies on this save-time check; it has no separate preview call.
+
+- A blocking result rejects the request and nothing is stored. The error is an `*APIError` whose `Violations` carry, per result, the field (`Path`, e.g. `cert`, `key`, `intermediates[0].cert`), the stable `Code` (e.g. `LEAF_EXPIRED`), the `Translations` (`en`, `de`) and the `Parameters` of the message. `err.Error()` renders each as `path: message [CODE]`. The warnings of the same check come with it in `Warnings`, so a rejected save shows every result at once.
+- A warning (e.g. `CHAIN_INTERMEDIATE_MISSING`, `CHAIN_UNRELATED_CERTIFICATES`, `LEAF_EXPIRES_SOON`) does not fail the request. `CreateSSLCertificateWithWarningsContext` and `UpdateSSLCertificateWithWarningsContext` return the warnings next to the saved certificate; `CreateSSLCertificateContext` and `UpdateSSLCertificateContext` drop them. Warnings come only with the response of the save that triggered them; reading a certificate (`GetSSLCertificateContext`, `ListSSLCertificatesContext`) never returns them.
+
+```go
+cert, warnings, err := api.CreateSSLCertificateWithWarningsContext(ctx, ssl, domainId)
+if err != nil {
+    var apiErr *myrasec.APIError
+    if errors.As(err, &apiErr) {
+        for _, v := range apiErr.Violations {
+            log.Printf("%s: %s [%s]", v.Path, v.Message, v.Code)
+        }
+        for _, w := range apiErr.Warnings {
+            log.Printf("warning: %s", w)
+        }
+    }
+    log.Fatal(err)
+}
+for _, w := range warnings {
+    log.Printf("warning: %s", w)
 }
 ```
 

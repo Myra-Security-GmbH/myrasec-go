@@ -25,16 +25,18 @@ func getSSLMethods() map[string]APIMethod {
 			Result: []SSLCertificate{},
 		},
 		"createSSLCertificate": {
-			Name:   "createSSLCertificate",
-			Action: "domain/%d/certificates",
-			Method: http.MethodPost,
-			Result: SSLCertificate{},
+			Name:               "createSSLCertificate",
+			Action:             "domain/%d/certificates",
+			Method:             http.MethodPost,
+			Result:             SSLCertificate{},
+			ResponseDecodeFunc: decodeSSLCertificateSaveResponse,
 		},
 		"updateSSLCertificate": {
-			Name:   "updateSSLCertificate",
-			Action: "domain/%d/certificates/%d",
-			Method: http.MethodPut,
-			Result: SSLCertificate{},
+			Name:               "updateSSLCertificate",
+			Action:             "domain/%d/certificates/%d",
+			Method:             http.MethodPut,
+			Result:             SSLCertificate{},
+			ResponseDecodeFunc: decodeSSLCertificateSaveResponse,
 		},
 		"deleteSSLCertificate": {
 			Name:   "deleteSSLCertificate",
@@ -99,9 +101,12 @@ type SSLCertificate struct {
 	// Read-only; automatically parsed from the uploaded PEM data.
 	SubjectAlternatives []string `json:"subjectAlternatives" jsonschema:"List of Subject Alternative Names (SANs) and the CN covered by this certificate. Read-only; automatically populated by the server."`
 
-	// Intermediates contains the chain of intermediate certificates.
-	// The system automatically sorts and filters these based on the uploaded certificate.
-	Intermediates []SSLIntermediate `json:"intermediates,omitempty" jsonschema:"List of intermediate certificates required for the chain of trust. Read-only; automatically generated/sorted by the server upon upload."`
+	// Intermediates contains the chain of intermediate certificates. They are sent on create and
+	// update and validated when the certificate is saved: a broken intermediate (wrong key, invalid
+	// signature, not a CA, expired) rejects the save, a missing intermediate is a warning, and
+	// certificates that do not belong to the chain are discarded with a warning. The server sorts
+	// them by subject and issuer.
+	Intermediates []SSLIntermediate `json:"intermediates,omitempty" jsonschema:"List of intermediate certificates required for the chain of trust. Sent on create and update and validated on save: a broken intermediate (wrong key, invalid signature, not a CA, expired) rejects the save, a missing intermediate is a warning, and certificates that do not belong to the chain are discarded with a warning. Sorted by the server by subject and issuer."`
 
 	// Wildcard indicates if the certificate is a wildcard certificate (*.domain.tld).
 	// Read-only; automatically determined from the subject.
@@ -199,24 +204,28 @@ func (api *API) ListSSLCertificates(domainId int, params map[string]string) ([]S
 	return api.ListSSLCertificatesContext(context.Background(), domainId, params)
 }
 
-// CreateSSLCertificateContext creates a new SSL certificates on the passed domain (ID) using the MYRA API
+// CreateSSLCertificateContext creates a new SSL certificates on the passed domain (ID) using the MYRA API.
+// Warnings the API returns next to the saved certificate are dropped; use
+// CreateSSLCertificateWithWarningsContext to receive them.
 func (api *API) CreateSSLCertificateContext(ctx context.Context, cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
+	saved, _, err := api.CreateSSLCertificateWithWarningsContext(ctx, cert, domainId)
+
+	return saved, err
+}
+
+// CreateSSLCertificateWithWarningsContext creates a new SSL certificate on the passed domain (ID) and
+// returns the warnings the API reported next to it (for example an incomplete chain). A rejected
+// upload is an *APIError whose Violations carry the code and field of every blocking result; the
+// API then stores nothing.
+func (api *API) CreateSSLCertificateWithWarningsContext(ctx context.Context, cert *SSLCertificate, domainId int) (*SSLCertificate, []*Warning, error) {
 	if _, ok := api.methods["createSSLCertificate"]; !ok {
-		return nil, fmt.Errorf("passed action [%s] is not supported", "createSSLCertificate")
+		return nil, nil, fmt.Errorf("passed action [%s] is not supported", "createSSLCertificate")
 	}
 
 	definition := api.methods["createSSLCertificate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId)
 
-	result, err := api.call(ctx, definition, cert)
-	if err != nil {
-		return nil, err
-	}
-	res, ok := result.(*SSLCertificate)
-	if !ok {
-		return nil, fmt.Errorf("unexpected result type %T", result)
-	}
-	return res, nil
+	return api.saveSSLCertificate(ctx, definition, cert)
 }
 
 // CreateSSLCertificate is equivalent to CreateSSLCertificateContext with context.Background().
@@ -226,24 +235,27 @@ func (api *API) CreateSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCe
 	return api.CreateSSLCertificateContext(context.Background(), cert, domainId)
 }
 
-// UpdateSSLCertificateContext updates the passed SSL certificate using the MYRA API
+// UpdateSSLCertificateContext updates the passed SSL certificate using the MYRA API.
+// Warnings the API returns next to the saved certificate are dropped; use
+// UpdateSSLCertificateWithWarningsContext to receive them.
 func (api *API) UpdateSSLCertificateContext(ctx context.Context, cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
+	saved, _, err := api.UpdateSSLCertificateWithWarningsContext(ctx, cert, domainId)
+
+	return saved, err
+}
+
+// UpdateSSLCertificateWithWarningsContext updates the passed SSL certificate and returns the warnings
+// the API reported next to it. A rejected update is an *APIError and leaves the stored certificate
+// unchanged.
+func (api *API) UpdateSSLCertificateWithWarningsContext(ctx context.Context, cert *SSLCertificate, domainId int) (*SSLCertificate, []*Warning, error) {
 	if _, ok := api.methods["updateSSLCertificate"]; !ok {
-		return nil, fmt.Errorf("passed action [%s] is not supported", "updateSSLCertificate")
+		return nil, nil, fmt.Errorf("passed action [%s] is not supported", "updateSSLCertificate")
 	}
 
 	definition := api.methods["updateSSLCertificate"]
 	definition.Action = fmt.Sprintf(definition.Action, domainId, cert.ID)
 
-	result, err := api.call(ctx, definition, cert)
-	if err != nil {
-		return nil, err
-	}
-	res, ok := result.(*SSLCertificate)
-	if !ok {
-		return nil, fmt.Errorf("unexpected result type %T", result)
-	}
-	return res, nil
+	return api.saveSSLCertificate(ctx, definition, cert)
 }
 
 // UpdateSSLCertificate is equivalent to UpdateSSLCertificateContext with context.Background().
@@ -280,4 +292,47 @@ func (api *API) DeleteSSLCertificateContext(ctx context.Context, cert *SSLCertif
 // Deprecated: use DeleteSSLCertificateContext.
 func (api *API) DeleteSSLCertificate(cert *SSLCertificate, domainId int) (*SSLCertificate, error) {
 	return api.DeleteSSLCertificateContext(context.Background(), cert, domainId)
+}
+
+// sslCertificateSaveResult carries the saved certificate together with the warnings of the same
+// response. The generic call path returns a single value, and the warnings only exist in the
+// response envelope, so the save decoder has to hand both back through this wrapper.
+type sslCertificateSaveResult struct {
+	certificate *SSLCertificate
+	warnings    []*Warning
+}
+
+// decodeSSLCertificateSaveResponse decodes the response of a certificate create or update and keeps
+// the warningList, which the default decoder drops.
+func decodeSSLCertificateSaveResponse(resp *http.Response, definition APIMethod) (any, error) {
+	res, err := decodeBaseResponse(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := prepareResult(*res, definition)
+	if err != nil {
+		return nil, err
+	}
+
+	certificate, ok := result.(*SSLCertificate)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result type %T", result)
+	}
+
+	return &sslCertificateSaveResult{certificate: certificate, warnings: res.WarningList}, nil
+}
+
+func (api *API) saveSSLCertificate(ctx context.Context, definition APIMethod, cert *SSLCertificate) (*SSLCertificate, []*Warning, error) {
+	result, err := api.call(ctx, definition, cert)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	saved, ok := result.(*sslCertificateSaveResult)
+	if !ok {
+		return nil, nil, fmt.Errorf("unexpected result type %T", result)
+	}
+
+	return saved.certificate, saved.warnings, nil
 }
