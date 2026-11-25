@@ -102,9 +102,11 @@ type SSLCertificate struct {
 	SubjectAlternatives []string `json:"subjectAlternatives" jsonschema:"List of Subject Alternative Names (SANs) and the CN covered by this certificate. Read-only; automatically populated by the server."`
 
 	// Intermediates contains the chain of intermediate certificates. They are sent on create and
-	// update and validated when the certificate is saved: a broken chain rejects the save, a missing
-	// intermediate is a warning. The server sorts them by subject and issuer.
-	Intermediates []SSLIntermediate `json:"intermediates,omitempty" jsonschema:"List of intermediate certificates required for the chain of trust. Sent on create and update and validated on save: a broken chain rejects the save, a missing intermediate is a warning. Sorted by the server by subject and issuer."`
+	// update and validated when the certificate is saved: a broken intermediate (wrong key, invalid
+	// signature, not a CA, expired) rejects the save, a missing intermediate is a warning, and
+	// certificates that do not belong to the chain are discarded with a warning. The server sorts
+	// them by subject and issuer.
+	Intermediates []SSLIntermediate `json:"intermediates,omitempty" jsonschema:"List of intermediate certificates required for the chain of trust. Sent on create and update and validated on save: a broken intermediate (wrong key, invalid signature, not a CA, expired) rejects the save, a missing intermediate is a warning, and certificates that do not belong to the chain are discarded with a warning. Sorted by the server by subject and issuer."`
 
 	// Wildcard indicates if the certificate is a wildcard certificate (*.domain.tld).
 	// Read-only; automatically determined from the subject.
