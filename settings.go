@@ -276,6 +276,9 @@ type Settings struct {
 	// SSLOriginPort sets the port for SSL upstream connections.
 	SSLOriginPort int `json:"ssl_origin_port,omitempty" jsonschema:"The TCP port used to connect to the origin server via HTTPS (usually 443)."`
 
+	// WAFAfterWhitelistMatch runs the WAF on requests that matched a whitelist rule.
+	WAFAfterWhitelistMatch *bool `json:"waf_after_whitelist_match,omitempty" jsonschema:"Security toggle: If true, HTTPS requests that match a whitelist rule are still inspected by the WAF. By default such requests skip the WAF."`
+
 	// WAFEnable toggles the Web Application Firewall.
 	WAFEnable *bool `json:"waf_enable,omitempty" jsonschema:"Master switch: Enables or disables the Web Application Firewall (WAF) for this domain."`
 

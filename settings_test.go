@@ -62,6 +62,7 @@ func TestListSettings(t *testing.T) {
 				"spdy": true,
 				"ssl_origin_port": 443,
 				"ssl_client_certificate": [],
+				"waf_after_whitelist_match": true,
 				"waf_enable": true,
 				"waf_levels_enable": [],
 				"waf_policy": "allow"
@@ -264,6 +265,10 @@ func TestListSettings(t *testing.T) {
 
 	if settings.SSLOriginPort != 443 {
 		t.Errorf("Expected to get Setting with SSLOriginPort [%d] but got [%d]", 443, settings.SSLOriginPort)
+	}
+
+	if settings.WAFAfterWhitelistMatch == nil || *settings.WAFAfterWhitelistMatch != true {
+		t.Errorf("Expected to get Setting with WAFAfterWhitelistMatch [%t] but got [%s]", true, boolPtrStr(settings.WAFAfterWhitelistMatch))
 	}
 
 	if settings.WAFEnable == nil || *settings.WAFEnable != true {

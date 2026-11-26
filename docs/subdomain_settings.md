@@ -64,6 +64,7 @@ type Settings struct {
 	SSLClientHeaderVerification string   `json:"ssl_client_header_verification,omitempty"`
 	SSLClientHeaderFingerprint  string   `json:"ssl_client_header_fingerprint,omitempty"`
 	SSLOriginPort               int      `json:"ssl_origin_port,omitempty"`
+	WAFAfterWhitelistMatch      *bool    `json:"waf_after_whitelist_match,omitempty"`
 	WAFEnable                   *bool    `json:"waf_enable,omitempty"`
 	WAFLevelsEnable             []string `json:"waf_levels_enable,omitempty"`
 	WAFPolicy                   string   `json:"waf_policy,omitempty"`
@@ -134,6 +135,7 @@ type Settings struct {
 | SSLClientHeaderVerification | string | The name of the header, which contains the SSL verification status. |
 | SSLClientHeaderFingerprint | string | Contains the fingerprint of the certificate, the client used to authenticate itself. |
 | SSLOriginPort | int | Allows to set a port for communication with origin via SSL. |
+| WAFAfterWhitelistMatch | *bool | Enables or disables the WAF for HTTPS requests that match a whitelist rule. Such requests are normally not checked by the WAF; when enabled, they are inspected by the WAF as well. |
 | WAFEnable | *bool | Enables or disables the Web Application Firewall. |
 | WAFLevelsEnable | []string | Level of applied Web Application Firewall rules. |
 | WAFPolicy | string | Default policy for the Web Application Firewall in case of rule error. |
