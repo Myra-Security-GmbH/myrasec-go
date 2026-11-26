@@ -62,6 +62,7 @@ func TestListSettings(t *testing.T) {
 				"spdy": true,
 				"ssl_origin_port": 443,
 				"ssl_client_certificate": [],
+				"waf_after_whitelist_match": true,
 				"waf_enable": true,
 				"waf_levels_enable": [],
 				"waf_policy": "allow"
@@ -266,11 +267,40 @@ func TestListSettings(t *testing.T) {
 		t.Errorf("Expected to get Setting with SSLOriginPort [%d] but got [%d]", 443, settings.SSLOriginPort)
 	}
 
+	if settings.WAFAfterWhitelistMatch == nil || *settings.WAFAfterWhitelistMatch != true {
+		t.Errorf("Expected to get Setting with WAFAfterWhitelistMatch [%t] but got [%s]", true, boolPtrStr(settings.WAFAfterWhitelistMatch))
+	}
+
 	if settings.WAFEnable == nil || *settings.WAFEnable != true {
 		t.Errorf("Expected to get Setting with WAFEnable [%t] but got [%s]", true, boolPtrStr(settings.WAFEnable))
 	}
 
 	if settings.WAFPolicy != "allow" {
 		t.Errorf("Expected to get Setting with WAFPolicy [%s] but got [%s]", "allow", settings.WAFPolicy)
+	}
+}
+
+func TestListSettingsDomainLevelWAFAfterWhitelistMatch(t *testing.T) {
+	api, err := setupPreCachedAPI(
+		preCacheRequest(
+			"https://apiv2.myracloud.com/domain/1/ALL-1./settings?flat=",
+			`{
+				"waf_after_whitelist_match": false,
+				"waf_enable": true
+			}`,
+			"listSettings",
+		),
+	)
+	if err != nil {
+		t.Error("Unexpected error.")
+	}
+
+	settings, err := api.ListSettings(1, "ALL-1.", nil)
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if settings.WAFAfterWhitelistMatch == nil || *settings.WAFAfterWhitelistMatch != false {
+		t.Errorf("Expected to get Setting with WAFAfterWhitelistMatch [%t] but got [%s]", false, boolPtrStr(settings.WAFAfterWhitelistMatch))
 	}
 }

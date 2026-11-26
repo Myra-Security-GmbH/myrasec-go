@@ -33,6 +33,7 @@ func TestListTagSettings(t *testing.T) {
 					"request_limit_report": false,
 					"rewrite": false,
 					"spdy": true,
+					"waf_after_whitelist_match": true,
 					"waf_enable": true
 				}
 			}`,
@@ -134,6 +135,10 @@ func TestListTagSettings(t *testing.T) {
 
 	if settings.Spdy == nil || *settings.Spdy != true {
 		t.Errorf("Expected to get Setting with Spdy [%t] but got [%s]", true, boolPtrStr(settings.Spdy))
+	}
+
+	if settings.WAFAfterWhitelistMatch == nil || *settings.WAFAfterWhitelistMatch != true {
+		t.Errorf("Expected to get Setting with WAFAfterWhitelistMatch [%t] but got [%s]", true, boolPtrStr(settings.WAFAfterWhitelistMatch))
 	}
 
 	if settings.WAFEnable == nil || *settings.WAFEnable != true {
