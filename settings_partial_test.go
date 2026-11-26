@@ -31,6 +31,13 @@ var partialSettingsUpdates = []partialSettingsUpdate{
 			return api.UpdateSettingsPartialContext(context.Background(), settings, 1, "www.example.com")
 		},
 	},
+	{
+		name:  "domain settings",
+		route: "POST /domain/1/ALL-1./settings",
+		call: func(api *API, settings map[string]any) (any, error) {
+			return api.UpdateSettingsPartialContext(context.Background(), settings, 1, "ALL-1.")
+		},
+	},
 }
 
 func TestUpdateSettingsPartialResponses(t *testing.T) {

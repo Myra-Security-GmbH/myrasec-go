@@ -279,3 +279,28 @@ func TestListSettings(t *testing.T) {
 		t.Errorf("Expected to get Setting with WAFPolicy [%s] but got [%s]", "allow", settings.WAFPolicy)
 	}
 }
+
+func TestListSettingsDomainLevelWAFAfterWhitelistMatch(t *testing.T) {
+	api, err := setupPreCachedAPI(
+		preCacheRequest(
+			"https://apiv2.myracloud.com/domain/1/ALL-1./settings?flat=",
+			`{
+				"waf_after_whitelist_match": false,
+				"waf_enable": true
+			}`,
+			"listSettings",
+		),
+	)
+	if err != nil {
+		t.Error("Unexpected error.")
+	}
+
+	settings, err := api.ListSettings(1, "ALL-1.", nil)
+	if err != nil {
+		t.Fatalf("Expected not to get an error but got [%s]", err.Error())
+	}
+
+	if settings.WAFAfterWhitelistMatch == nil || *settings.WAFAfterWhitelistMatch != false {
+		t.Errorf("Expected to get Setting with WAFAfterWhitelistMatch [%t] but got [%s]", false, boolPtrStr(settings.WAFAfterWhitelistMatch))
+	}
+}
